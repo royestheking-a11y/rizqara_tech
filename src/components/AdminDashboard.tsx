@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import { useData } from '../context/DataContext';
-import { AdminCard, StatCard, AdminButton, AdminInput, AdminTextArea, AdminSelect } from './AdminComponents';
+import { AdminCard, AdminButton, AdminInput, AdminTextArea, AdminSelect } from './AdminComponents';
 import {
     LayoutDashboard, Briefcase, Users, MessageSquare,
     Plus, Trash2, Edit2, Save, X, RotateCcw,
     FileText, PlayCircle, Image, Settings, LogOut,
-    ChevronRight, Search, Sliders, Globe, Inbox, ShoppingCart, Mail, FileDown, Tag, Percent, Check
+    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Check
 } from 'lucide-react';
 import { ImageUploader } from './admin/ImageUploader';
 import { UserInteractionAnalytics } from './admin/UserInteractionAnalytics';
@@ -87,6 +87,15 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             delete data.gallery_1;
             delete data.gallery_2;
             delete data.gallery_3;
+        }
+
+        if (modalType === 'video' && data.url) {
+            const videoId = getYoutubeId(data.url);
+            if (videoId) {
+                data.thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            } else {
+                data.thumbnail = 'https://via.placeholder.com/640x360?text=No+Thumbnail';
+            }
         }
 
         const newItem = {
@@ -636,7 +645,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <ImageUploader
                                         label="Project Preview Image"
                                         defaultValue={editingItem?.image}
-                                        onImageChange={(val) => {
+                                        onImageChange={() => {
                                             // Since ImageUploader updates a hidden input, we don't strictly need this callback 
                                             // if we rely on formData, but for preview/state sync it's good.
                                             // However, AdminDashboard handles form via FormData, so we need to ensure 
@@ -669,7 +678,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         />
                                     </div>
 
-                                    <AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} />
+                                    <AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} required />
                                     <AdminInput label="Project Link" name="link" defaultValue={editingItem?.link} placeholder="https://..." />
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
                                 </>}
@@ -678,8 +687,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                 {modalType === 'blog' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
-                                    <AdminInput label="Date" name="date" defaultValue={editingItem?.date} />
-                                    <AdminInput label="Category" name="category" defaultValue={editingItem?.category} />
+                                    <AdminInput label="Date" name="date" defaultValue={editingItem?.date} required />
+                                    <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required />
 
                                     <ImageUploader
                                         label="Blog Featured Image"
@@ -688,15 +697,15 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         aspectRatio={16 / 9}
                                     />
 
-                                    <AdminTextArea label="Excerpt" name="excerpt" defaultValue={editingItem?.excerpt} />
-                                    <AdminTextArea label="Content" name="content" defaultValue={editingItem?.content} />
+                                    <AdminTextArea label="Excerpt" name="excerpt" defaultValue={editingItem?.excerpt} required />
+                                    <AdminTextArea label="Content" name="content" defaultValue={editingItem?.content} required />
                                 </>}
 
                                 {modalType === 'job' && <><AdminInput label="Job Title" name="title" defaultValue={editingItem?.title} required /><AdminInput label="Location" name="location" defaultValue={editingItem?.location} /><AdminInput label="Salary" name="salary" defaultValue={editingItem?.salary} /><AdminInput label="Type" name="type" defaultValue={editingItem?.type} /><AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} /></>}
 
                                 {modalType === 'video' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
-                                    <AdminInput label="Category" name="category" defaultValue={editingItem?.category} />
+                                    <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required />
 
                                     <div className="mb-4">
                                         <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Link</label>
@@ -734,7 +743,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                 {modalType === 'carousel' && <>
                                     <AdminInput label="Headline" name="title" defaultValue={editingItem?.title} required />
-                                    <AdminInput label="Subtitle" name="subtitle" defaultValue={editingItem?.subtitle} />
+                                    <AdminInput label="Subtitle" name="subtitle" defaultValue={editingItem?.subtitle} required />
 
                                     <ImageUploader
                                         label="Background Image"

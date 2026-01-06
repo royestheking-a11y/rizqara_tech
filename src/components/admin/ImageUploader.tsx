@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../utils/canvasUtils';
-import { Slider } from '../ui/slider'; // We might need to create this or use standard input range
-import { Upload, X, Check, RotateCw, ZoomIn, Image as ImageIcon, Crop } from 'lucide-react';
+// Slider removed
+import { X, Check, RotateCw, ZoomIn, Image as ImageIcon, Crop } from 'lucide-react';
 import { AdminButton } from '../AdminComponents';
 
 interface ImageUploaderProps {
@@ -22,7 +22,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
     const [isEditorOpen, setIsEditorOpen] = useState(false);
 
-    const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
@@ -61,7 +61,8 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                 const formData = new FormData();
                 formData.append('file', blob, 'upload.jpg');
 
-                const uploadRes = await fetch('http://localhost:5001/api/upload', {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+                const uploadRes = await fetch(`${API_URL}/upload`, {
                     method: 'POST',
                     body: formData
                 });
