@@ -92,9 +92,7 @@ const ServiceDetail = () => {
     if (!service) return <div className="pt-32 text-center text-gray-900">Service not found</div>;
 
     const demoImages = [
-        service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070&auto=format&fit=crop"
+        service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
     ];
 
     const title = language === 'bn' ? (service.title_bn || service.title) : service.title;

@@ -1120,18 +1120,15 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
     const { carouselSlides, language } = useData();
     const [current, setCurrent] = useState(0);
 
-    const slides = carouselSlides && carouselSlides.length > 0 ? carouselSlides : [
-        {
-            id: '1',
-            title: "We Build Digital Excellence",
-            title_bn: "আমরা ডিজিটাল শ্রেষ্ঠত্ব তৈরি করি",
-            subtitle: "Premium software solutions tailored for the modern enterprise.",
-            subtitle_bn: "আধুনিক এন্টারপ্রাইজের জন্য তৈরি প্রিমিয়াম সফটওয়্যার সমাধান।",
-            image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
-            cta: "Contact Now",
-            cta_bn: "এখনই যোগাযোগ করুন"
-        }
-    ];
+    const slides = carouselSlides || [];
+
+    if (slides.length === 0) {
+        return (
+            <div className="relative h-[90vh] w-full overflow-hidden bg-gray-50 animate-pulse flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#500000] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -1152,9 +1149,9 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
     };
 
     const currentSlide = slides[current];
-    const title = language === 'bn' ? (currentSlide.title_bn || currentSlide.title) : currentSlide.title;
-    const subtitle = language === 'bn' ? (currentSlide.subtitle_bn || currentSlide.subtitle) : currentSlide.subtitle;
-    const cta = language === 'bn' ? (currentSlide.cta_bn || currentSlide.cta || 'Contact Now') : (currentSlide.cta || 'Contact Now');
+    const title = language === 'bn' ? (currentSlide?.title_bn || currentSlide?.title) : currentSlide?.title;
+    const subtitle = language === 'bn' ? (currentSlide?.subtitle_bn || currentSlide?.subtitle) : currentSlide?.subtitle;
+    const cta = language === 'bn' ? (currentSlide?.cta_bn || currentSlide?.cta || 'Contact Now') : (currentSlide?.cta || 'Contact Now');
 
     return (
         <div className="relative h-[90vh] w-full overflow-hidden bg-white">
