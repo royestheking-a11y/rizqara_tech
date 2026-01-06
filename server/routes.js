@@ -100,29 +100,39 @@ router.post('/:collection', async (req, res) => {
 });
 
 // PUT Update
-router.put('/:collection', async (req, res) => { // Expects array update (bulk replace) or specific ID? 
-    // The frontend logic (localStorage style) sends the WHOLE array for updates usually.
-    // But for a real API, we should update mostly single items or handle bulk.
-    // However, existing "updateData" implies replacing the state.
-
-    // For specific Item update by ID (standard REST)
-    // We will support both: /:collection/:id (single) and POST /:collection/bulk (replace all - careful!)
-    // But let's stick to standard first.
-
-    // Wait, the client might send a replace request. 
-    // If the body is an array, we might assume bulk replace (DANGEROUS but matches localStorage behavior).
-
+router.put('/:collection', async (req, res) => {
     const model = models[req.params.collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
         if (Array.isArray(req.body)) {
-            // Bulk Replace Strategy: Delete All and Insert All
+            // SAFE Bulk Validate First
+            for (const item of req.body) {
+                const doc = new model(item);
+                try {
+                    await doc.validate();
+                } catch (validationError) {
+                    console.error('Validation Error (Bulk Aborted):', validationError.message);
+                    return res.status(400).json({ error: validationError.message });
+                }
+            }
+
+            // If we get here, all items are valid. proceed to replace.
             await model.deleteMany({});
             const inserted = await model.insertMany(req.body);
             res.json(inserted);
+
         } else if (typeof req.body === 'object' && req.body !== null) {
-            // Singleton Strategy (for Promotion, etc.): Replace single document
+            // SAFE Singleton Validate
+            const doc = new model(req.body);
+            try {
+                await doc.validate();
+            } catch (validationError) {
+                console.error('Validation Error (Singleton Aborted):', validationError.message);
+                return res.status(400).json({ error: validationError.message });
+            }
+
+            // Replace single document
             await model.deleteMany({});
             const created = await model.create(req.body);
             res.json(created);
@@ -130,6 +140,7 @@ router.put('/:collection', async (req, res) => { // Expects array update (bulk r
             res.status(400).json({ error: 'Body must be an Array or Object' });
         }
     } catch (err) {
+        console.error('SERVER ERROR (Bulk Update):', err.message);
         res.status(500).json({ error: err.message });
     }
 });

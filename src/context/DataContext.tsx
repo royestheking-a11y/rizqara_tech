@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { toast } from "sonner";
 import { translations, Language } from '../utils/translations';
 
 // --- Types ---
@@ -596,16 +597,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // API Sync (Bulk PUT)
     try {
-      await fetch(`${API_URL}/${key}`, {
+      const response = await fetch(`${API_URL}/${key}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-    } catch (error) {
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Server Error');
+      }
+      toast.success('Changes saved successfully');
+    } catch (error: any) {
       console.error(`Failed to update ${key}:`, error);
-      // toast.error('Failed to save changes to server.'); // Assuming toast is defined elsewhere
+      toast.error(`Failed to save: ${error.message}`);
+      // Revert state (Optional but recommended for robust apps - simpler here to just notify)
     }
   };
 
