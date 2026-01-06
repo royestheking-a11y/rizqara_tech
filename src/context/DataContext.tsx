@@ -224,7 +224,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const [
           servicesRes, projectsRes, reviewsRes, blogsRes,
           jobsRes, videosRes, carouselRes, buildOptionsRes,
-          messagesRes, promotionRes
+          messagesRes, promotionRes, careerApplicationsRes
         ] = await Promise.all([
           fetch(`${API_URL}/services`),
           fetch(`${API_URL}/projects`),
@@ -235,7 +235,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           fetch(`${API_URL}/carousel`),
           fetch(`${API_URL}/buildOptions`),
           fetch(`${API_URL}/messages`),
-          fetch(`${API_URL}/promotion`) // This might return array or object depending on implementation
+          fetch(`${API_URL}/promotion`),
+          fetch(`${API_URL}/careerApplications`)
         ]);
 
         if (servicesRes.ok) setServices(await servicesRes.json());
@@ -252,6 +253,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // API might return array for 'promotion' collection, we need the first item or the object itself
           setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
         }
+        if (careerApplicationsRes.ok) setCareerApplications(await careerApplicationsRes.json());
 
 
       } catch (error) {
