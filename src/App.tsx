@@ -91,9 +91,9 @@ const ServiceDetail = () => {
 
     if (!service) return <div className="pt-32 text-center text-gray-900">Service not found</div>;
 
-    const demoImages = [
-        service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
-    ];
+    const demoImages = service.gallery && service.gallery.length > 0
+        ? [service.image, ...service.gallery]
+        : [service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"];
 
     const title = language === 'bn' ? (service.title_bn || service.title) : service.title;
     const description = language === 'bn' ? (service.description_bn || service.description) : service.description;
@@ -146,14 +146,18 @@ const ServiceDetail = () => {
                     </div>
 
                     {/* Smaller Grid */}
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm">
-                            <img src={demoImages[1]} alt="Service Details" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    {demoImages.length > 1 && (
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className={`h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm ${!demoImages[2] ? 'col-span-2' : ''}`}>
+                                <img src={demoImages[1]} alt="Service Details" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            </div>
+                            {demoImages[2] && (
+                                <div className="h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm">
+                                    <img src={demoImages[2]} alt="Tech Stack" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                </div>
+                            )}
                         </div>
-                        <div className="h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm">
-                            <img src={demoImages[2]} alt="Tech Stack" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                        </div>
-                    </div>
+                    )}
 
                     <div className="p-6 bg-gray-50 border border-gray-200 rounded-2xl shadow-sm">
                         <h4 className="font-bold text-gray-900 mb-2">{t('readyToBuild')}</h4>

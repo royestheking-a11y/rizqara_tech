@@ -18,6 +18,7 @@ export type Service = {
   process: string[];
   process_bn?: string[];
   image?: string;
+  gallery?: string[];
 };
 
 export type Project = {

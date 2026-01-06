@@ -13,7 +13,8 @@ const ServiceSchema = new mongoose.Schema({
     capabilities_bn: [String],
     process: [String],
     process_bn: [String],
-    image: String
+    image: String,
+    gallery: [String]
 }, { timestamps: true });
 
 const ProjectSchema = new mongoose.Schema({
