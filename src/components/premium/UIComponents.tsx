@@ -706,7 +706,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
             <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
                 {/* Video Player Section */}
-                <div className="w-full md:w-auto md:flex-1 h-auto aspect-video md:h-full md:aspect-auto shrink-0 bg-black flex items-center justify-center relative group order-2 md:order-1">
+                <div className="w-full md:flex-1 md:w-0 md:min-w-0 h-auto aspect-video md:h-full md:aspect-auto bg-black flex items-center justify-center relative group order-2 md:order-1">
                     {videoId ? (
                         <iframe
                             width="100%"
@@ -725,7 +725,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                     )}
                 </div>
 
-                {/* Close Button */}
+                {/* Close Button Mobile */}
                 <button
                     onClick={onClose}
                     className="absolute top-3 right-3 z-[60] p-2 bg-white rounded-full text-gray-900 hover:bg-gray-100 hover:text-[#500000] transition-colors shadow-lg border border-gray-100 md:hidden"
@@ -744,16 +744,16 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                     </button>
 
                     <div className="p-4 md:p-6 border-b border-gray-200 bg-white shrink-0">
-                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1 pr-8">{video.title}</h3>
-                        <p className="text-gray-500 text-xs mt-1 uppercase tracking-wider">{video.category}</p>
+                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1 pr-8 text-left">{video.title}</h3>
+                        <p className="text-gray-500 text-xs mt-1 uppercase tracking-wider text-left">{video.category}</p>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-                        <h4 className="text-gray-700 text-sm font-bold sticky top-0 bg-gray-50 py-2 z-10">{language === 'bn' ? 'মন্তব্যসমূহ' : 'Comments'} ({video.comments?.length || 0})</h4>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar text-left">
+                        <h4 className="text-gray-700 text-sm font-bold sticky top-0 bg-gray-50 py-2 z-10 text-left">{language === 'bn' ? 'মন্তব্যসমূহ' : 'Comments'} ({video.comments?.length || 0})</h4>
 
                         {video.comments && video.comments.length > 0 ? (
                             video.comments.map((c: any) => (
-                                <div key={c.id} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                                <div key={c.id} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-left">
                                     <div className="flex justify-between items-start mb-1">
                                         <span className="font-bold text-gray-900 text-sm">{c.user}</span>
                                         <span className="text-[10px] text-gray-400">{c.date}</span>
