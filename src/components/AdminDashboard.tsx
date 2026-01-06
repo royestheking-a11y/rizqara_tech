@@ -40,6 +40,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
+    const [carouselImage, setCarouselImage] = useState('');
 
     // Local state for live preview in Admin
     const [localPromotion, setLocalPromotion] = useState(promotion);
@@ -124,6 +125,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'video') {
             setVideoUrl(item?.url || '');
         }
+        setCarouselImage(item?.image || '');
         setIsModalOpen(true);
     };
 
@@ -748,9 +750,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <ImageUploader
                                         label="Background Image"
                                         defaultValue={editingItem?.image}
-                                        onImageChange={() => { }}
+                                        onImageChange={(url) => setCarouselImage(url)}
                                         aspectRatio={16 / 9}
                                     />
+                                    <input type="hidden" name="image" value={carouselImage} />
 
                                     <AdminSelect label="Button Action" name="cta" defaultValue={editingItem?.cta || 'Contact Now'}>
                                         <option value="View Projects">View Projects</option>
