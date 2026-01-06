@@ -1708,7 +1708,7 @@ export const ContactFormWithMap = () => {
             {/* Google Map Embed */}
             <div className="mt-16 md:mt-24 rounded-3xl overflow-hidden shadow-xl border border-gray-200 h-[400px] md:h-[500px] relative grayscale hover:grayscale-0 transition-all duration-700">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d289.61021828103947!2d90.35723458444419!3d22.696004690883026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2s!5e0!3m2!1sen!2sbd!4v1767634458260!5m2!1sen!2sbd"
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d456.196619620925!2d90.41513833191516!3d23.83377999382946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1767719304428!5m2!1sen!2sbd"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
@@ -1723,7 +1723,7 @@ export const ContactFormWithMap = () => {
                     </div>
                     <div>
                         <div className="text-xs font-bold text-gray-500 uppercase">Our Location</div>
-                        <div className="font-bold text-gray-900">Barisal, Bangladesh</div>
+                        <div className="font-bold text-gray-900">Dhaka, Bangladesh</div>
                     </div>
                 </div>
             </div>

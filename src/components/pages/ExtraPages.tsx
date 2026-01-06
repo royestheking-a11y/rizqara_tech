@@ -354,7 +354,7 @@ export const TeamSection = () => {
                 { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718534/Gemini_Generated_Image_sypwsnsypwsnsypw_bajvm8.png" },
                 { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716768/Gemini_Generated_Image_zdffldzdffldzdff_okx6rf.png" },
                 { name: "Aurangzeb Sunny", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
-                { name: "Md Mizanur Rahman", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
+                { name: "Nasim Hoseini", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
             ]
         },
         {
