@@ -411,7 +411,7 @@ const Navbar = () => {
 
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
-    const { services, projects, language, t } = useData();
+    const { services, projects, language, t, addMessage } = useData();
 
     const onNavigate = (page: string, id?: string) => {
         if (page === 'ServiceDetail') navigate(`/services/${id}`);
@@ -556,7 +556,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                                 <h3 className="text-2xl font-bold text-white mb-1">{title}</h3>
                                                 <p className="text-white/70 text-sm">{category}</p>
                                             </div>
-                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                            <div className="flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0">
                                                 {project.link && (
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}

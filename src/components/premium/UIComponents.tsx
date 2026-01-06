@@ -790,7 +790,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
     );
 };
 
-export const LatestVideos = () => {
+export const LatestVideos = ({ onNavigate }: { onNavigate?: (page: string, id?: string) => void }) => {
     const { videos, language } = useData();
     const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
