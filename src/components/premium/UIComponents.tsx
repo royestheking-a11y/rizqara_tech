@@ -706,7 +706,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
             <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
                 {/* Video Player Section */}
-                <div className="w-full md:flex-1 h-auto aspect-video md:h-full md:aspect-auto bg-black flex items-center justify-center relative group shrink-0 md:shrink">
+                <div className="relative flex-1 bg-black flex items-center justify-center group shrink-0 w-full md:w-0 min-w-0 order-first">
                     {videoId ? (
                         <iframe
                             width="100%"
@@ -715,7 +715,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                             title={video.title}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
-                            className="w-full h-full"
+                            className="w-full h-full aspect-video md:aspect-auto"
                         ></iframe>
                     ) : (
                         <div className="text-white/50 flex flex-col items-center">
@@ -734,7 +734,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                 </button>
 
                 {/* Comments Section */}
-                <div className="flex-1 md:flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0 relative shrink-0">
+                <div className="flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0 relative shrink-0">
                     {/* Desktop Close Button (inside comments on top right) */}
                     <button
                         onClick={onClose}
