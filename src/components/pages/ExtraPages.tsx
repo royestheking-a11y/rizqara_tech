@@ -332,7 +332,7 @@ export const TeamSection = () => {
         {
             role: "Chairman",
             members: [
-                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png", bio: language === 'bn' ? "টেক উদ্ভাবনে ২০+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 2+ years in tech innovation." }
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718113/Gemini_Generated_Image_qbpg2xqbpg2xqbpg_okkcne.png", bio: language === 'bn' ? "টেক উদ্ভাবনে ২০+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 2+ years in tech innovation." }
             ]
         },
         {
@@ -351,8 +351,8 @@ export const TeamSection = () => {
             role: "Engineering & Design",
             members: [
                 { name: "Pritom Sarker", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
-                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" },
-                { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" },
+                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718534/Gemini_Generated_Image_sypwsnsypwsnsypw_bajvm8.png" },
+                { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716768/Gemini_Generated_Image_zdffldzdffldzdff_okx6rf.png" },
                 { name: "Aurangzeb Sunny", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
                 { name: "Md Mizanur Rahman", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
             ]
@@ -360,7 +360,7 @@ export const TeamSection = () => {
         {
             role: "Growth & Marketing",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" },
+                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718157/Gemini_Generated_Image_hvtfh4hvtfh4hvtf_dg2s3o.png" },
                 { name: "Arzu Hasanova", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
             ]
         }
