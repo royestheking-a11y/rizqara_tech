@@ -485,7 +485,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 3. TRUSTED COMPANIES */}
             <section className="container mx-auto px-6">
-                <div className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">Trusted by Industry Leaders</div>
+                <div className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</div>
                 <AutoScrollCarousel items={
                     partners.map((partner, i) => (
                         <div key={i} className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[140px]">
