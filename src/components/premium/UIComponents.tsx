@@ -705,6 +705,14 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
             <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
+                {/* Close Button (Universal) */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-3 right-3 z-[100] p-2 bg-white rounded-full text-gray-900 hover:bg-gray-100 hover:text-[#500000] transition-colors shadow-lg border border-gray-100"
+                >
+                    <X size={20} />
+                </button>
+
                 {/* Video Player Section */}
                 <div className="relative flex-1 bg-black flex items-center justify-center group shrink-0 w-full md:w-0 min-w-0 order-first">
                     {videoId ? (
@@ -725,26 +733,10 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                     )}
                 </div>
 
-                {/* Close Button Mobile */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-3 right-3 z-[60] p-2 bg-white rounded-full text-gray-900 hover:bg-gray-100 hover:text-[#500000] transition-colors shadow-lg border border-gray-100 md:hidden"
-                >
-                    <X size={20} />
-                </button>
-
                 {/* Comments Section */}
                 <div className="flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0 relative shrink-0">
-                    {/* Desktop Close Button (inside comments on top right) */}
-                    <button
-                        onClick={onClose}
-                        className="hidden md:flex absolute top-4 right-4 z-50 p-2 bg-white/50 hover:bg-white rounded-full text-gray-900 transition-colors"
-                    >
-                        <X size={20} />
-                    </button>
-
                     <div className="p-4 md:p-6 border-b border-gray-200 bg-white shrink-0">
-                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1 pr-8 text-left">{video.title}</h3>
+                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1 pr-12 text-left">{video.title}</h3>
                         <p className="text-gray-500 text-xs mt-1 uppercase tracking-wider text-left">{video.category}</p>
                     </div>
 
