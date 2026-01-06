@@ -563,7 +563,8 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
 };
 
 // --- 6. PRICING DETAILED ---
-export const PricingDetailed = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
+type PricingDetailedProps = { onNavigate: (page: string, id?: string) => void };
+export const PricingDetailed: React.FC<PricingDetailedProps> = ({ onNavigate }) => {
     const { language } = useData();
     const packages = [
         {

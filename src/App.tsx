@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
-    Menu, X, ChevronRight, Check, Users,
+    Menu, X, ChevronRight, Check,
     Code2, Palette, Globe, Smartphone, BarChart, Layout,
-    ArrowRight, Play, Star, MapPin, Phone, Mail,
-    Linkedin, Twitter, Instagram, Facebook,
+    ArrowRight, Star,
+    Linkedin, Instagram, Facebook,
     Shield, Zap, MessageSquare, Briefcase,
-    MousePointer, FileText, PlayCircle, Database, Server,
+    Server,
     Lock, User, ExternalLink, Share2,
     Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
@@ -14,9 +14,9 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation,
 
 // Imports
 import { Toaster, toast } from 'sonner';
-import { DataProvider, useData, Service, Project } from './context/DataContext';
+import { DataProvider, useData } from './context/DataContext';
 import { AdminDashboard } from './components/AdminDashboard';
-import { GlassCard } from './components/ui/GlassCard';
+
 import { SEO } from './components/SEO';
 import { partners } from './data/partners';
 import { techStack } from './data/techStack';
@@ -411,7 +411,7 @@ const Navbar = () => {
 
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
-    const { services, projects, reviews, language, t, addMessage } = useData();
+    const { services, projects, language, t } = useData();
 
     const onNavigate = (page: string, id?: string) => {
         if (page === 'ServiceDetail') navigate(`/services/${id}`);
@@ -930,7 +930,7 @@ const MainContent = () => {
     });
     const location = useLocation();
     const navigate = useNavigate();
-    const { t, language, addMessage } = useData();
+    const { t, language } = useData();
 
     // Scroll to top on route change
     useLayoutEffect(() => {
