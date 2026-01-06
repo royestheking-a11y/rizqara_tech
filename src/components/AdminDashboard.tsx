@@ -41,6 +41,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [carouselImage, setCarouselImage] = useState('');
+    const [projectImage, setProjectImage] = useState('');
+    const [blogImage, setBlogImage] = useState('');
 
     // Local state for live preview in Admin
     const [localPromotion, setLocalPromotion] = useState(promotion);
@@ -126,6 +128,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             setVideoUrl(item?.url || '');
         }
         setCarouselImage(item?.image || '');
+        setProjectImage(item?.image || '');
+        setBlogImage(item?.image || '');
         setIsModalOpen(true);
     };
 
@@ -647,14 +651,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <ImageUploader
                                         label="Project Preview Image"
                                         defaultValue={editingItem?.image}
-                                        onImageChange={() => {
-                                            // Since ImageUploader updates a hidden input, we don't strictly need this callback 
-                                            // if we rely on formData, but for preview/state sync it's good.
-                                            // However, AdminDashboard handles form via FormData, so we need to ensure 
-                                            // the hidden input inside ImageUploader has the name="image" which it does.
-                                        }}
+                                        onImageChange={(url) => setProjectImage(url)}
                                         aspectRatio={4 / 5}
                                     />
+                                    <input type="hidden" name="image" value={projectImage} />
 
                                     <div className="grid grid-cols-3 gap-4 mb-6">
                                         <ImageUploader
@@ -695,9 +695,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <ImageUploader
                                         label="Blog Featured Image"
                                         defaultValue={editingItem?.image}
-                                        onImageChange={() => { }}
+                                        onImageChange={(url) => setBlogImage(url)}
                                         aspectRatio={16 / 9}
                                     />
+                                    <input type="hidden" name="image" value={blogImage} />
 
                                     <AdminTextArea label="Excerpt" name="excerpt" defaultValue={editingItem?.excerpt} required />
                                     <AdminTextArea label="Content" name="content" defaultValue={editingItem?.content} required />
