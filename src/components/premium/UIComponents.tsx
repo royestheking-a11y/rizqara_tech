@@ -702,19 +702,19 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 pt-24 md:pt-28 animate-in fade-in duration-300">
-            <div className="bg-white w-full max-w-6xl rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[80vh] shadow-2xl relative">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 bg-white/80 rounded-full text-gray-900 hover:bg-white hover:text-[#500000] transition-colors shadow-sm"
+                    className="absolute top-3 right-3 z-[60] p-2 bg-white rounded-full text-gray-900 hover:bg-gray-100 hover:text-[#500000] transition-colors shadow-lg border border-gray-100"
                 >
-                    <X size={24} />
+                    <X size={20} />
                 </button>
 
                 {/* Video Player Section */}
-                <div className="flex-1 bg-black flex items-center justify-center relative">
+                <div className="w-full md:flex-1 h-auto aspect-video md:h-full md:aspect-auto shrink-0 bg-black flex items-center justify-center relative group">
                     {videoId ? (
                         <iframe
                             width="100%"
@@ -723,7 +723,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                             title={video.title}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowFullScreen
-                            className="w-full h-full aspect-video"
+                            className="w-full h-full"
                         ></iframe>
                     ) : (
                         <div className="text-white/50 flex flex-col items-center">
@@ -734,9 +734,9 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                 </div>
 
                 {/* Comments Section */}
-                <div className="w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-l border-gray-200 flex flex-col">
-                    <div className="p-6 border-b border-gray-200 bg-white">
-                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1">{video.title}</h3>
+                <div className="flex-1 md:flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0">
+                    <div className="p-4 md:p-6 border-b border-gray-200 bg-white shrink-0">
+                        <h3 className="font-bold text-gray-900 text-lg line-clamp-1 pr-8">{video.title}</h3>
                         <p className="text-gray-500 text-xs mt-1 uppercase tracking-wider">{video.category}</p>
                     </div>
 
@@ -761,7 +761,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                         )}
                     </div>
 
-                    <div className="p-4 bg-white border-t border-gray-200">
+                    <div className="p-4 bg-white border-t border-gray-200 shrink-0">
                         <form onSubmit={handleCommentSubmit} className="space-y-3">
                             <input
                                 placeholder={language === 'bn' ? "আপনার নাম" : "Your Name"}
@@ -775,7 +775,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                                     placeholder={language === 'bn' ? "একটি মন্তব্য যোগ করুন..." : "Add a comment..."}
                                     value={commentText}
                                     onChange={e => setCommentText(e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-[#500000] placeholder:text-gray-400 pr-10 resize-none h-20"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-[#500000] placeholder:text-gray-400 pr-10 resize-none h-14 md:h-20"
                                     required
                                 />
                                 <button type="submit" className="absolute bottom-2 right-2 p-1.5 bg-[#500000] text-white rounded-md hover:bg-[#3a0000] transition-colors shadow-sm">
