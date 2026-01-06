@@ -790,7 +790,8 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
     );
 };
 
-export const LatestVideos = ({ onNavigate }: { onNavigate?: (page: string, id?: string) => void }) => {
+type LatestVideosProps = { onNavigate?: (page: string, id?: string) => void };
+export const LatestVideos: React.FC<LatestVideosProps> = () => {
     const { videos, language } = useData();
     const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
