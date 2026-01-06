@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useData } from '../../context/DataContext';
-import { ButtonGlass } from '../ui/Buttons';
+
 import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { VideoModal, getYoutubeId } from '../premium/UIComponents';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -60,14 +60,14 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 top-0 left-0 h-screen w-screen">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 className="bg-white border border-gray-200 rounded-3xl p-8 w-full max-w-lg relative z-10 shadow-2xl max-h-[85vh] overflow-y-auto"
             >
                 <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 bg-gray-100 rounded-full p-2 transition-colors"><X size={20} /></button>
-                
+
                 {status === 'success' ? (
                     <div className="text-center py-12">
                         <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white">
@@ -80,7 +80,7 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
                     <>
                         <h2 className="text-2xl font-bold text-gray-900 mb-1">{language === 'bn' ? `${job.title}-এর জন্য আবেদন করুন` : `Apply for ${job.title}`}</h2>
                         <p className="text-gray-500 text-sm mb-6">{language === 'bn' ? 'আপনার আবেদন জমা দিতে নিচের ফর্মটি পূরণ করুন।' : 'Complete the form below to submit your application.'}</p>
-                        
+
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'পুরো নাম' : 'Full Name'}</label>
@@ -98,10 +98,10 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'কেন আপনি এই পদের জন্য উপযুক্ত?' : 'Why are you perfect for this role?'}</label>
                                 <textarea name="reason" rows={3} required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
                             </div>
-                            
+
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'জীবনবৃত্তান্ত / সিভি' : 'Resume / CV'}</label>
-                                <div 
+                                <div
                                     onClick={() => fileInputRef.current?.click()}
                                     className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors group"
                                 >
@@ -136,11 +136,11 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
 
     return (
         <div className="container mx-auto px-6 py-32">
-            <PageHeader 
-                title={language === 'bn' ? 'সর্বশেষ অন্তর্দৃষ্টি' : "Latest Insights"} 
-                subtitle={language === 'bn' ? 'প্রযুক্তি, ডিজাইন এবং ডিজিটাল ব্যবসার ভবিষ্যৎ নিয়ে চিন্তা-ভাবনা।' : "Thoughts on technology, design, and the future of digital business."} 
+            <PageHeader
+                title={language === 'bn' ? 'সর্বশেষ অন্তর্দৃষ্টি' : "Latest Insights"}
+                subtitle={language === 'bn' ? 'প্রযুক্তি, ডিজাইন এবং ডিজিটাল ব্যবসার ভবিষ্যৎ নিয়ে চিন্তা-ভাবনা।' : "Thoughts on technology, design, and the future of digital business."}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {blogs.map(post => {
                     const title = language === 'bn' ? (post.title_bn || post.title) : post.title;
@@ -148,21 +148,22 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
                     const category = language === 'bn' ? (post.category_bn || post.category) : post.category;
 
                     return (
-                    <div key={post.id} className="group cursor-pointer" onClick={() => onNavigate('BlogDetail', post.id)}>
-                        <div className="aspect-[16/10] overflow-hidden rounded-2xl mb-6 relative shadow-md">
-                            <img src={post.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                            <div className="absolute top-4 left-4 bg-white text-[#500000] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">{category}</div>
+                        <div key={post.id} className="group cursor-pointer" onClick={() => onNavigate('BlogDetail', post.id)}>
+                            <div className="aspect-[16/10] overflow-hidden rounded-2xl mb-6 relative shadow-md">
+                                <img src={post.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                <div className="absolute top-4 left-4 bg-white text-[#500000] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">{category}</div>
+                            </div>
+                            <div className="flex items-center gap-3 text-gray-400 text-xs mb-3 font-medium uppercase tracking-widest">
+                                <Calendar size={12} /> {post.date}
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#500000] transition-colors leading-tight">{title}</h3>
+                            <p className="text-gray-600 mb-6 line-clamp-2 leading-relaxed">{excerpt}</p>
+                            <div className="flex items-center text-[#500000] font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
+                                {language === 'bn' ? 'নিবন্ধ পড়ুন' : 'Read Article'} <ArrowRight size={16} className="ml-2" />
+                            </div>
                         </div>
-                        <div className="flex items-center gap-3 text-gray-400 text-xs mb-3 font-medium uppercase tracking-widest">
-                            <Calendar size={12} /> {post.date}
-                        </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#500000] transition-colors leading-tight">{title}</h3>
-                        <p className="text-gray-600 mb-6 line-clamp-2 leading-relaxed">{excerpt}</p>
-                        <div className="flex items-center text-[#500000] font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                            {language === 'bn' ? 'নিবন্ধ পড়ুন' : 'Read Article'} <ArrowRight size={16} className="ml-2" />
-                        </div>
-                    </div>
-                )})}
+                    )
+                })}
             </div>
         </div>
     );
@@ -182,10 +183,10 @@ export const BlogDetail = () => {
 
     return (
         <div className="container mx-auto px-6 py-32 min-h-screen">
-             <button onClick={() => navigate('/blog')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
+            <button onClick={() => navigate('/blog')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
                     <ArrowRight className="rotate-180" size={20} />
-                </div> 
+                </div>
                 <span className="text-sm uppercase tracking-widest font-bold">{language === 'bn' ? 'ব্লগে ফিরে যান' : 'Back to Blog'}</span>
             </button>
             <div className="max-w-4xl mx-auto">
@@ -195,7 +196,7 @@ export const BlogDetail = () => {
                     </div>
                     <div className="flex items-center gap-6 mb-8">
                         <span className="bg-[#500000] text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">{category}</span>
-                        <span className="text-gray-500 flex items-center gap-2 text-sm"><Calendar size={16}/> {blog.date}</span>
+                        <span className="text-gray-500 flex items-center gap-2 text-sm"><Calendar size={16} /> {blog.date}</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">{title}</h1>
                     <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed whitespace-pre-line border-l border-gray-200 pl-6">
@@ -207,23 +208,23 @@ export const BlogDetail = () => {
     );
 };
 
-export const CareersPage = ({ onNavigate }: { onNavigate: (page: string, id?: string) => void }) => {
+export const CareersPage: React.FC<{ onNavigate?: (page: string, id?: string) => void }> = () => {
     const { jobs, addCareerApplication, language } = useData();
     const [selectedJob, setSelectedJob] = useState<any>(null);
 
     return (
         <div className="container mx-auto px-6 py-32">
-            <PageHeader 
-                title={language === 'bn' ? 'টিমে যোগ দিন' : "Join the Team"} 
-                subtitle={language === 'bn' ? 'আমরা ভবিষ্যৎ গড়তে আমাদের সাহায্য করার জন্য উৎসাহী ব্যক্তিদের খুঁজছি।' : "We are looking for passionate individuals to help us build the future."} 
+            <PageHeader
+                title={language === 'bn' ? 'টিমে যোগ দিন' : "Join the Team"}
+                subtitle={language === 'bn' ? 'আমরা ভবিষ্যৎ গড়তে আমাদের সাহায্য করার জন্য উৎসাহী ব্যক্তিদের খুঁজছি।' : "We are looking for passionate individuals to help us build the future."}
             />
-            
+
             <AnimatePresence>
                 {selectedJob && (
-                    <ApplicationModal 
-                        job={selectedJob} 
-                        onClose={() => setSelectedJob(null)} 
-                        onSubmit={addCareerApplication} 
+                    <ApplicationModal
+                        job={selectedJob}
+                        onClose={() => setSelectedJob(null)}
+                        onSubmit={addCareerApplication}
                     />
                 )}
             </AnimatePresence>
@@ -235,75 +236,77 @@ export const CareersPage = ({ onNavigate }: { onNavigate: (page: string, id?: st
                     const type = language === 'bn' && job.type === 'Full-time' ? 'ফুল-টাইম' : job.type; // Simple mapping, could be extended
 
                     return (
-                    <div key={job.id} className="group p-8 bg-white border border-gray-200 hover:shadow-lg rounded-3xl transition-all duration-300 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-900 group-hover:text-[#500000] mb-2 transition-colors">{title}</h3>
-                            <div className="flex gap-4 text-gray-500 text-sm">
-                                <span className="flex items-center gap-1"><MapPin size={14}/> {location}</span>
-                                <span>•</span>
-                                <span>{type}</span>
-                                <span>•</span>
-                                <span className="font-bold text-[#500000]">{job.salary}</span>
+                        <div key={job.id} className="group p-8 bg-white border border-gray-200 hover:shadow-lg rounded-3xl transition-all duration-300 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+                            <div>
+                                <h3 className="text-2xl font-bold text-gray-900 group-hover:text-[#500000] mb-2 transition-colors">{title}</h3>
+                                <div className="flex gap-4 text-gray-500 text-sm">
+                                    <span className="flex items-center gap-1"><MapPin size={14} /> {location}</span>
+                                    <span>•</span>
+                                    <span>{type}</span>
+                                    <span>•</span>
+                                    <span className="font-bold text-[#500000]">{job.salary}</span>
+                                </div>
                             </div>
+                            <button
+                                onClick={() => setSelectedJob(job)}
+                                className="px-6 py-3 rounded-full border border-gray-200 text-gray-700 hover:bg-[#500000] hover:text-white hover:border-[#500000] transition-all font-medium shadow-sm"
+                            >
+                                {language === 'bn' ? 'আবেদন করুন' : 'Apply Now'}
+                            </button>
                         </div>
-                        <button 
-                            onClick={() => setSelectedJob(job)}
-                            className="px-6 py-3 rounded-full border border-gray-200 text-gray-700 hover:bg-[#500000] hover:text-white hover:border-[#500000] transition-all font-medium shadow-sm"
-                        >
-                            {language === 'bn' ? 'আবেদন করুন' : 'Apply Now'}
-                        </button>
-                    </div>
-                )})}
+                    )
+                })}
             </div>
         </div>
     );
 };
 
-export const VideosPage = ({ onNavigate }: { onNavigate: (page: string, id?: string) => void }) => {
+export const VideosPage: React.FC<{ onNavigate?: (page: string, id?: string) => void }> = () => {
     const { videos, language } = useData();
     const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
     return (
         <div className="container mx-auto px-6 py-32">
-            <PageHeader 
-                title={language === 'bn' ? 'ফিচার্ড কন্টেন্ট' : "Featured Content"} 
-                subtitle={language === 'bn' ? 'আমাদের সর্বশেষ শোরিল, টিউটোরিয়াল এবং সাফল্যের গল্প দেখুন।' : "Watch our latest showreels, tutorials, and success stories."} 
+            <PageHeader
+                title={language === 'bn' ? 'ফিচার্ড কন্টেন্ট' : "Featured Content"}
+                subtitle={language === 'bn' ? 'আমাদের সর্বশেষ শোরিল, টিউটোরিয়াল এবং সাফল্যের গল্প দেখুন।' : "Watch our latest showreels, tutorials, and success stories."}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {videos.map(video => {
                     const title = language === 'bn' ? (video.title_bn || video.title) : video.title;
                     return (
-                    <div 
-                        key={video.id} 
-                        className="group relative cursor-pointer rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all"
-                        onClick={() => setSelectedVideo(video)}
-                    >
-                        <div className="aspect-video relative overflow-hidden">
-                            {/* Use YouTube Thumbnail if available, else fallback to stored thumbnail */}
-                            <img 
-                                src={getYoutubeId(video.url) ? `https://img.youtube.com/vi/${getYoutubeId(video.url)}/maxresdefault.jpg` : video.thumbnail} 
-                                alt={title} 
-                                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform border border-white/50 group-hover:bg-[#500000] shadow-lg">
-                                    <Play size={32} className="text-white ml-1 fill-current" />
+                        <div
+                            key={video.id}
+                            className="group relative cursor-pointer rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all"
+                            onClick={() => setSelectedVideo(video)}
+                        >
+                            <div className="aspect-video relative overflow-hidden">
+                                {/* Use YouTube Thumbnail if available, else fallback to stored thumbnail */}
+                                <img
+                                    src={getYoutubeId(video.url) ? `https://img.youtube.com/vi/${getYoutubeId(video.url)}/maxresdefault.jpg` : video.thumbnail}
+                                    alt={title}
+                                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform border border-white/50 group-hover:bg-[#500000] shadow-lg">
+                                        <Play size={32} className="text-white ml-1 fill-current" />
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-gray-900 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+                                    <PlayCircle size={12} /> {language === 'bn' ? 'দেখতে ক্লিক করুন' : 'Click to View'}
                                 </div>
                             </div>
-                            <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-gray-900 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
-                                <PlayCircle size={12} /> {language === 'bn' ? 'দেখতে ক্লিক করুন' : 'Click to View'}
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#500000] transition-colors line-clamp-1">{title}</h3>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-md border border-gray-200">{video.category}</span>
+                                    <span className="text-xs text-gray-400 flex items-center gap-1"><MessageSquare size={14} /> {video.comments?.length || 0} {language === 'bn' ? 'মন্তব্য' : 'Comments'}</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="p-6">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#500000] transition-colors line-clamp-1">{title}</h3>
-                            <div className="flex justify-between items-center">
-                                <span className="text-xs text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-md border border-gray-200">{video.category}</span>
-                                <span className="text-xs text-gray-400 flex items-center gap-1"><MessageSquare size={14} /> {video.comments?.length || 0} {language === 'bn' ? 'মন্তব্য' : 'Comments'}</span>
-                            </div>
-                        </div>
-                    </div>
-                )})}
+                    )
+                })}
             </div>
 
             <AnimatePresence>
@@ -317,7 +320,15 @@ export const VideosPage = ({ onNavigate }: { onNavigate: (page: string, id?: str
 
 export const TeamSection = () => {
     const { language } = useData();
-    const team = [
+
+    type TeamMember = {
+        name: string;
+        position: string;
+        image: string;
+        bio?: string;
+    };
+
+    const team: { role: string; members: TeamMember[] }[] = [
         {
             role: "Chairman",
             members: [
@@ -360,7 +371,7 @@ export const TeamSection = () => {
     return (
         <div className="flex flex-wrap justify-center gap-8">
             {allMembers.map((member, idx) => (
-                <motion.div 
+                <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -371,7 +382,7 @@ export const TeamSection = () => {
                     <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-6 border border-gray-200 bg-gray-100 relative shadow-md">
                         <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        
+
                         <div className="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform">
                             <div className="flex gap-3 mb-4 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
                                 <button className="p-2 bg-white text-[#500000] rounded-full hover:bg-gray-200 shadow-lg"><Linkedin size={16} /></button>
@@ -395,9 +406,9 @@ export const TeamPage = () => {
     const { language } = useData();
     return (
         <div className="container mx-auto px-6 py-32 min-h-screen">
-            <PageHeader 
-                title={language === 'bn' ? 'আমাদের টিম' : "Our Team"} 
-                subtitle={language === 'bn' ? 'রিজকারা টেকের উদ্ভাবনের পিছনে থাকা মেধাবী মন।' : "The brilliant minds behind Rizqara Tech's innovations."} 
+            <PageHeader
+                title={language === 'bn' ? 'আমাদের টিম' : "Our Team"}
+                subtitle={language === 'bn' ? 'রিজকারা টেকের উদ্ভাবনের পিছনে থাকা মেধাবী মন।' : "The brilliant minds behind Rizqara Tech's innovations."}
             />
             <TeamSection />
         </div>
