@@ -685,7 +685,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
                                 </>}
 
-                                {modalType === 'review' && <><AdminInput label="Client Name" name="name" defaultValue={editingItem?.name} required /><AdminInput label="Company" name="company" defaultValue={editingItem?.company} /><AdminTextArea label="Review" name="content" defaultValue={editingItem?.content} /><AdminInput label="Rating (1-5)" name="rating" defaultValue={editingItem?.rating} type="number" max="5" min="1" /></>}
+                                {modalType === 'review' && <><AdminInput label="Client Name" name="name" defaultValue={editingItem?.name} required /><AdminInput label="Role" name="role" defaultValue={editingItem?.role} required /><AdminInput label="Company" name="company" defaultValue={editingItem?.company} required /><AdminTextArea label="Review" name="content" defaultValue={editingItem?.content} required /><AdminInput label="Rating (1-5)" name="rating" defaultValue={editingItem?.rating} type="number" max="5" min="1" required /></>}
 
                                 {modalType === 'blog' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
