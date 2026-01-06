@@ -32,9 +32,10 @@ async function processImages() {
         console.log(`Found ${files.length} generated images.`);
 
         for (const service of services) {
+            console.log('Service Title:', service.title);
             // Identify keywords based on service title
             let keywords = [];
-            if (service.title.toLowerCase().includes('web development')) keywords = ['web_dev'];
+            if (service.title.toLowerCase().includes('web development') || service.title.toLowerCase().includes('website')) keywords = ['web_dev'];
             else if (service.title.toLowerCase().includes('web application') || service.title.toLowerCase().includes('web app')) keywords = ['web_app'];
             else if (service.title.toLowerCase().includes('ui/ux') || service.title.toLowerCase().includes('design')) keywords = ['ui_ux'];
             else if (service.title.toLowerCase().includes('custom software') || service.title.toLowerCase().includes('software')) keywords = ['custom_soft'];
