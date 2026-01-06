@@ -17,6 +17,7 @@ import { Toaster, toast } from 'sonner';
 import { DataProvider, useData, Service, Project } from './context/DataContext';
 import { AdminDashboard } from './components/AdminDashboard';
 import { GlassCard } from './components/ui/GlassCard';
+import { SEO } from './components/SEO';
 import { partners } from './data/partners';
 import { techStack } from './data/techStack';
 import {
@@ -470,6 +471,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
         <div className="space-y-32 pb-0 overflow-x-hidden">
 
             {/* 1. HERO CAROUSEL */}
+            <SEO
+                title="RizQara Tech | Premium Software & AI Company in Bangladesh"
+                description="RizQara Tech is a top-rated software company in Bangladesh offering web development, UI UX design, AI solutions, mobile apps, and custom software for startups and enterprises."
+                canonical="https://rizqaratech.vercel.app/"
+            />
             <HeroCarousel onNavigate={onNavigate} />
 
             {/* 2. BUILD PROJECT TEASER */}
@@ -959,17 +965,50 @@ const MainContent = () => {
             <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
                     <Route path="/" element={<Home setBuildConfig={setBuildConfig} />} />
-                    <Route path="/services" element={<ServicesPage />} />
-                    <Route path="/services/:id" element={<ServiceDetail />} />
-                    <Route path="/projects" element={<ProjectsPage />} />
-                    <Route path="/projects/:id" element={<ProjectDetail />} />
+
+                    <Route path="/services" element={<>
+                        <SEO
+                            title="Software Development Services | RizQara Tech Bangladesh"
+                            description="Our services include web development, UI UX design, AI solutions, mobile apps, SEO, and custom enterprise software."
+                            canonical="https://rizqaratech.vercel.app/services"
+                        />
+                        <ServicesPage />
+                    </>} />
+                    <Route path="/services/:id" element={<><SEO title="Service Details | RizQara Tech" description="View detailed capabilities and process for our software services." /><ServiceDetail /></>} />
+
+                    <Route path="/projects" element={<>
+                        <SEO
+                            title="Our Projects | Software & AI Solutions by RizQara Tech"
+                            description="Explore real-world software, AI, and digital projects delivered by RizQara Tech for local and global clients."
+                            canonical="https://rizqaratech.vercel.app/projects"
+                        />
+                        <ProjectsPage />
+                    </>} />
+                    <Route path="/projects/:id" element={<><SEO title="Project Details | RizQara Tech" description="Case study and details of our successful software projects." /><ProjectDetail /></>} />
+
                     <Route path="/packages" element={<div className="container mx-auto px-6 pt-32 pb-32"><SectionTitle title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"} /><PricingDetailed onNavigate={onNavigate} /></div>} />
                     <Route path="/contact" element={<div className="pt-20 pb-32 container mx-auto px-6"><SectionTitle title={t('contact')} center /><ContactFormWithMap /></div>} />
-                    <Route path="/about" element={<div className="bg-white"><div className="container mx-auto px-6 py-32"><JourneyRoadmap /><div className="mt-32"><SectionTitle title={t('meetOurTeam')} center /><TeamSection /></div></div></div>} />
+
+                    <Route path="/about" element={<>
+                        <SEO
+                            title="About RizQara Tech | Leading Software Company in Bangladesh"
+                            description="Learn about RizQara Tech’s journey, mission, and vision to become a global software and AI company from Bangladesh."
+                            canonical="https://rizqaratech.vercel.app/about"
+                        />
+                        <div className="bg-white"><div className="container mx-auto px-6 py-32"><JourneyRoadmap /><div className="mt-32"><SectionTitle title={t('meetOurTeam')} center /><TeamSection /></div></div></div>
+                    </>} />
                     <Route path="/team" element={<TeamPage />} />
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
-                    <Route path="/careers" element={<CareersPage onNavigate={onNavigate} />} />
+
+                    <Route path="/careers" element={<>
+                        <SEO
+                            title="Careers at RizQara Tech | Software Jobs in Bangladesh"
+                            description="Join RizQara Tech. Explore software developer, UI UX designer, and AI engineer jobs in Bangladesh."
+                            canonical="https://rizqaratech.vercel.app/careers"
+                        />
+                        <CareersPage onNavigate={onNavigate} />
+                    </>} />
                     <Route path="/videos" element={<VideosPage onNavigate={onNavigate} />} />
                     <Route path="/build" element={<BuildPage onNavigate={onNavigate} initialConfig={buildConfig} />} />
                     <Route path="/feature/:id" element={<FeatureDetailWrapper />} />
