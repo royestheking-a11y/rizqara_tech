@@ -1122,6 +1122,15 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
 
     const slides = carouselSlides || [];
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            if (slides.length > 0) {
+                setCurrent((prev) => (prev + 1) % slides.length);
+            }
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [slides.length]);
+
     if (slides.length === 0) {
         return (
             <div className="relative h-[90vh] w-full overflow-hidden bg-gray-50 animate-pulse flex items-center justify-center">
@@ -1129,13 +1138,6 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
             </div>
         );
     }
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrent((prev) => (prev + 1) % slides.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, [slides.length]);
 
     const handleCtaClick = (action: string) => {
         // Map localized action back to English action for logic if needed, or just handle navigation
