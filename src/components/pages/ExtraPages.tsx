@@ -332,35 +332,36 @@ export const TeamSection = () => {
         {
             role: "Chairman",
             members: [
-                { name: "Ahmed Rizq", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "টেক উদ্ভাবনে ২০+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 20+ years in tech innovation." }
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "টেক উদ্ভাবনে ২০+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 2+ years in tech innovation." }
             ]
         },
         {
             role: "Executive Leadership",
             members: [
-                { name: "Sarah Chen", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
+                { name: "Pritom Sarker", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
             ]
         },
         {
             role: "Management",
             members: [
-                { name: "Michael Ross", position: language === 'bn' ? "অপারেশন ম্যানেজার" : "Operations Manager", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." }
+                { name: "Sanju Monowara", position: language === 'bn' ? "অপারেশন ম্যানেজার" : "Operations Manager", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." }
             ]
         },
         {
             role: "Engineering & Design",
             members: [
-                { name: "David Kim", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=2000&auto=format&fit=crop" },
-                { name: "Elena Rodriguez", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000&auto=format&fit=crop" },
-                { name: "James Wilson", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop" },
-                { name: "Anita Patel", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000&auto=format&fit=crop" }
+                { name: "Pritom Sarker", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=2000&auto=format&fit=crop" },
+                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000&auto=format&fit=crop" },
+                { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000&auto=format&fit=crop" },
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop" },
+                { name: "Md Mizanur Rahman", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000&auto=format&fit=crop" }
             ]
         },
         {
             role: "Growth & Marketing",
             members: [
-                { name: "Robert Taylor", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2000&auto=format&fit=crop" },
-                { name: "Lisa Wong", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2000&auto=format&fit=crop" }
+                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2000&auto=format&fit=crop" },
+                { name: "Arzu Hasanova", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2000&auto=format&fit=crop" }
             ]
         }
     ];

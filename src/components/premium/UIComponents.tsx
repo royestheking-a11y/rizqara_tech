@@ -706,7 +706,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
             <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
                 {/* Video Player Section */}
-                <div className="w-full md:flex-1 md:w-0 md:min-w-0 h-auto aspect-video md:h-full md:aspect-auto bg-black flex items-center justify-center relative group order-2 md:order-1">
+                <div className="w-full md:flex-1 h-auto aspect-video md:h-full md:aspect-auto bg-black flex items-center justify-center relative group shrink-0 md:shrink">
                     {videoId ? (
                         <iframe
                             width="100%"
@@ -734,7 +734,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                 </button>
 
                 {/* Comments Section */}
-                <div className="flex-1 md:flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0 order-3 md:order-2 relative">
+                <div className="flex-1 md:flex-none w-full md:w-[350px] lg:w-[400px] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex flex-col min-h-0 relative shrink-0">
                     {/* Desktop Close Button (inside comments on top right) */}
                     <button
                         onClick={onClose}
