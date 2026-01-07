@@ -539,7 +539,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     <SectionTitle title={t('ourProjects')} />
 
                     {/* Homepage Project Search */}
-                    <div className="relative max-w-md mx-auto -mt-8 mb-8 z-10">
+                    <div className="relative max-w-md md:max-w-2xl mx-auto -mt-8 mb-8 z-10">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                             <Search size={18} />
                         </div>
@@ -981,23 +981,23 @@ const ProjectsPage = () => {
             {/* Filters & Search */}
             <div className="mb-12 space-y-6">
                 {/* Search Bar */}
-                <div className="relative max-w-xl mx-auto">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <Search size={22} />
+                <div className="relative max-w-md md:max-w-2xl mx-auto">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <Search size={20} />
                     </div>
                     <input
                         type="text"
                         placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search projects...'}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-14 pr-12 py-4 bg-white border border-gray-200 rounded-full focus:outline-none focus:border-[#500000] focus:ring-4 focus:ring-[#500000]/5 shadow-lg shadow-gray-100 transition-all text-lg"
+                        className="w-full pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all"
                     />
                     {searchQuery && (
                         <button
                             onClick={() => setSearchQuery('')}
-                            className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-[#500000]"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#500000] bg-gray-100 rounded-full transition-colors"
                         >
-                            <X size={16} />
+                            <X size={14} />
                         </button>
                     )}
                 </div>
