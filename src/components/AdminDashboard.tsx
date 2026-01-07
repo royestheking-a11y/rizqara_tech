@@ -211,6 +211,66 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         );
     };
 
+    const handleAutoTranslate = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        const form = document.getElementById('admin-form') as HTMLFormElement;
+        if (!form) return;
+
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+        const translatePairs = [
+            { src: 'title', dest: 'title_bn' },
+            { src: 'subtitle', dest: 'subtitle_bn' },
+            { src: 'description', dest: 'description_bn' },
+            { src: 'details', dest: 'details_bn' },
+            { src: 'cta', dest: 'cta_bn' },
+            { src: 'category', dest: 'category_bn' },
+            { src: 'excerpt', dest: 'excerpt_bn' },
+            { src: 'content', dest: 'content_bn' },
+            // Project select fallback
+            { src: 'category', dest: 'category_bn' }
+        ];
+
+        const toTranslate: { text: string, destEl: HTMLInputElement | HTMLTextAreaElement }[] = [];
+
+        for (const pair of translatePairs) {
+            const srcEl = form.elements.namedItem(pair.src) as HTMLInputElement | HTMLTextAreaElement;
+            const destEl = form.elements.namedItem(pair.dest) as HTMLInputElement | HTMLTextAreaElement;
+
+            if (srcEl && destEl && srcEl.value && !destEl.value) {
+                // Determine source text (if it's a select, usually value is enough, but check)
+                toTranslate.push({ text: srcEl.value, destEl });
+            }
+        }
+
+        if (toTranslate.length === 0) {
+            toast.info(language === 'bn' ? "অনুবাদের জন্য কোনো খালি ফিল্ড নেই।" : "No empty Bengali fields to translate.");
+            return;
+        }
+
+        const toastId = toast.loading(language === 'bn' ? "অনুবাদ করা হচ্ছে..." : `Translating ${toTranslate.length} fields...`);
+
+        try {
+            await Promise.all(toTranslate.map(async (item) => {
+                try {
+                    const res = await fetch(`${API_URL}/translate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: item.text })
+                    });
+                    const data = await res.json();
+                    if (data.translatedText) {
+                        item.destEl.value = data.translatedText;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }));
+            toast.success(language === 'bn' ? "অনুবাদ সম্পন্ন!" : "Translation complete!", { id: toastId });
+        } catch (e) {
+            toast.error("Translation failed", { id: toastId });
+        }
+    };
+
     const navItems = [
         { id: 'dashboard', icon: LayoutDashboard, label: language === 'bn' ? 'ড্যাশবোর্ড' : 'Dashboard' },
         { id: 'inbox', icon: Inbox, label: language === 'bn' ? 'বার্তা' : 'Messages' },
@@ -622,17 +682,38 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             <h3 className="text-xl font-bold text-gray-800">
                                 {editingItem ? (language === 'bn' ? 'সম্পাদনা করুন' : 'Edit') : (language === 'bn' ? 'নতুন যোগ করুন' : 'Add New')} {modalType.charAt(0).toUpperCase() + modalType.slice(1)}
                             </h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-800 transition-colors bg-white p-2 rounded-full shadow-sm hover:shadow-md">
-                                <X size={20} />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleAutoTranslate}
+                                    className="text-gray-400 hover:text-[#500000] transition-colors bg-white p-2 rounded-full shadow-sm hover:shadow-md"
+                                    title={language === 'bn' ? 'স্বয়ংক্রিয় অনুবাদ (খালি ঘর পূরণ)' : 'Auto Translate Empty Fields'}
+                                >
+                                    <Globe size={20} />
+                                </button>
+                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-800 transition-colors bg-white p-2 rounded-full shadow-sm hover:shadow-md">
+                                    <X size={20} />
+                                </button>
+                            </div>
                         </div>
 
                         <div className="p-8 overflow-y-auto">
                             <form id="admin-form" onSubmit={handleSave}>
-                                {modalType === 'service' && <><AdminInput label="Title" name="title" defaultValue={editingItem?.title} required /><AdminInput label="Icon Name" name="icon" defaultValue={editingItem?.icon} /><AdminTextArea label="Short Description" name="description" defaultValue={editingItem?.description} /><AdminTextArea label="Full Details" name="details" defaultValue={editingItem?.details} /></>}
+                                {modalType === 'service' && <>
+                                    <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
+
+                                    <AdminInput label="Icon Name" name="icon" defaultValue={editingItem?.icon} />
+
+                                    <AdminTextArea label="Short Description" name="description" defaultValue={editingItem?.description} />
+                                    <AdminTextArea label="Short Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
+
+                                    <AdminTextArea label="Full Details" name="details" defaultValue={editingItem?.details} />
+                                    <AdminTextArea label="Full Details (Bengali)" name="details_bn" defaultValue={editingItem?.details_bn} placeholder="বাংলা বিস্তারিত" />
+                                </>}
 
                                 {modalType === 'project' && <>
                                     <AdminInput label="Project Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Project Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
 
                                     {/* Improved Category Selector based on Build Options */}
                                     <AdminSelect label="Project Type (For Builder Preview)" name="category" defaultValue={editingItem?.category || 'Web App'}>
@@ -641,6 +722,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         ))}
                                         <option value="Other">Other</option>
                                     </AdminSelect>
+                                    <AdminInput label="Project Type (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ধরণ" />
 
                                     <AdminSelect label="Status" name="status" defaultValue={editingItem?.status}>
                                         <option value="Live">Live</option>
@@ -681,6 +763,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     </div>
 
                                     <AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} required />
+                                    <AdminTextArea label="Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
+
                                     <AdminInput label="Project Link" name="link" defaultValue={editingItem?.link} placeholder="https://..." />
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
                                 </>}
@@ -689,8 +773,12 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                 {modalType === 'blog' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
+
                                     <AdminInput label="Date" name="date" defaultValue={editingItem?.date} required />
+
                                     <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required />
+                                    <AdminInput label="Category (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ক্যাটাগরি" />
 
                                     <ImageUploader
                                         label="Blog Featured Image"
@@ -701,7 +789,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <input type="hidden" name="image" value={blogImage} />
 
                                     <AdminTextArea label="Excerpt" name="excerpt" defaultValue={editingItem?.excerpt} required />
+                                    <AdminTextArea label="Excerpt (Bengali)" name="excerpt_bn" defaultValue={editingItem?.excerpt_bn} placeholder="বাংলা সারাংশ" />
+
                                     <AdminTextArea label="Content" name="content" defaultValue={editingItem?.content} required />
+                                    <AdminTextArea label="Content (Bengali)" name="content_bn" defaultValue={editingItem?.content_bn} placeholder="বাংলা বিষয়বস্তু" />
                                 </>}
 
                                 {modalType === 'job' && <><AdminInput label="Job Title" name="title" defaultValue={editingItem?.title} required /><AdminInput label="Location" name="location" defaultValue={editingItem?.location} /><AdminInput label="Salary" name="salary" defaultValue={editingItem?.salary} /><AdminInput label="Type" name="type" defaultValue={editingItem?.type} /><AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} /></>}
@@ -746,7 +837,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                 {modalType === 'carousel' && <>
                                     <AdminInput label="Headline" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Headline (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
                                     <AdminInput label="Subtitle" name="subtitle" defaultValue={editingItem?.subtitle} required />
+                                    <AdminInput label="Subtitle (Bengali)" name="subtitle_bn" defaultValue={editingItem?.subtitle_bn} placeholder="বাংলা সাবটাইটেল" />
 
                                     <ImageUploader
                                         label="Background Image"
@@ -764,6 +857,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         <option value="View Packages">View Packages</option>
                                         <option value="View Blogs">View Blogs</option>
                                     </AdminSelect>
+                                    <AdminInput label="Button Label (Bengali)" name="cta_bn" defaultValue={editingItem?.cta_bn} placeholder="উদাহরণ: আমাদের সাথে কথা বলুন" />
                                 </>}
 
                                 {modalType === 'buildOption' && <>

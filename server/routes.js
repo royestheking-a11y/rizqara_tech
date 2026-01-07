@@ -30,6 +30,8 @@ const models = {
     careerApplications: CareerApplication
 };
 
+const translate = require('translation-google');
+
 // --- UPLOAD ROUTE (Must be before generic :collection routes) ---
 router.post('/upload', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -45,6 +47,20 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         res.json({ url: result.secure_url });
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+// --- TRANSLATE ROUTE ---
+router.post('/translate', async (req, res) => {
+    const { text, to = 'bn' } = req.body;
+    if (!text) return res.status(400).json({ error: 'Text is required' });
+
+    try {
+        const result = await translate(text, { to });
+        res.json({ translatedText: result.text });
+    } catch (err) {
+        console.error('Translation error:', err);
+        res.status(500).json({ error: 'Translation failed' });
     }
 });
 
