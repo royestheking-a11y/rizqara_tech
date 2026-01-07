@@ -550,7 +550,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         <input
                             type="text"
                             placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search featured projects...'}
-                            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all"
+                            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all text-gray-900"
                             onChange={(e) => {
                                 // Simple local filter for the carousel
                                 const q = e.target.value.toLowerCase();
@@ -597,9 +597,10 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[400px] shrink-0 group relative cursor-pointer"
+                                className="w-[85vw] md:w-[400px] shrink-0 group relative cursor-pointer project-card"
+                                data-title={title.toLowerCase()}
                             >
-                                <div className="aspect-[4/5] rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
+                                <div className="aspect-video rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                                     <div className="absolute bottom-0 left-0 p-8 w-full">
