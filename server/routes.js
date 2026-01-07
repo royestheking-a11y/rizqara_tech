@@ -51,27 +51,38 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 // --- IMAGE PROXY ROUTE (Bypass ISP Blocks) ---
-router.get('/proxy-image', async (req, res) => {
-    const { url } = req.query;
-    if (!url) return res.status(400).send('URL required');
+router.get('/proxy-image', (req, res) => {
+    const imageUrl = req.query.url;
+    if (!imageUrl) return res.status(400).send('URL required');
 
     try {
-        const { default: fetch } = await import('node-fetch');
-        const response = await fetch(url);
+        const { URL } = require('url');
+        const parsedUrl = new URL(imageUrl);
+        const protocol = parsedUrl.protocol === 'https:' ? require('https') : require('http');
 
-        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+        const proxyReq = protocol.get(imageUrl, (proxyRes) => {
+            if (proxyRes.statusCode !== 200) {
+                proxyRes.resume(); // Consume response data to free up memory
+                return res.status(502).send(`Upstream Error: ${proxyRes.statusCode}`);
+            }
 
-        const contentType = response.headers.get('content-type');
-        if (contentType) res.setHeader('Content-Type', contentType);
+            const contentType = proxyRes.headers['content-type'];
+            if (contentType) res.setHeader('Content-Type', contentType);
 
-        res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-        res.setHeader('Access-Control-Allow-Origin', '*'); // Allow CORS
+            res.setHeader('Cache-Control', 'public, max-age=86400');
+            res.setHeader('Access-Control-Allow-Origin', '*');
 
-        response.body.pipe(res);
+            proxyRes.pipe(res);
+        });
+
+        proxyReq.on('error', (err) => {
+            console.error('Proxy Error:', err.message);
+            if (!res.headersSent) res.status(500).send(`Proxy Request Failed: ${err.message}`);
+        });
 
     } catch (err) {
-        console.error('Proxy Error:', err.message);
-        res.status(500).send('Image fetch failed');
+        console.error('Proxy URL Error:', err.message);
+        if (!res.headersSent) res.status(400).send(`Invalid URL: ${err.message}`);
     }
 });
 
