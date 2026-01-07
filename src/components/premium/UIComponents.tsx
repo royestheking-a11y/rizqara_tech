@@ -1169,7 +1169,15 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                     {/* Gradient Overlay: White -> Transparent */}
                     <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
 
-                    <img src={currentSlide.image} alt="" className="w-full h-full object-cover" />
+                    <img
+                        src={currentSlide.image}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            console.error('Failed to load image:', currentSlide.image);
+                            e.currentTarget.style.display = 'none';
+                        }}
+                    />
                 </motion.div>
             </AnimatePresence>
 
