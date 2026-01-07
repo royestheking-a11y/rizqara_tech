@@ -179,8 +179,16 @@ const ServiceDetail = () => {
 const ProjectDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { projects, language, t } = useData();
-    const project = projects.find(p => p.id === id);
+    const { projects, language, t, loading } = useData();
+    const project = projects.find(p => String(p.id) === id);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center pt-32">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#500000]"></div>
+            </div>
+        );
+    }
 
     if (!project) return <div className="pt-32 text-center text-gray-900">Project not found</div>;
 
@@ -206,6 +214,7 @@ const ProjectDetail = () => {
                 await navigator.clipboard.writeText(url);
                 toast.success('Link copied to clipboard!');
             } catch (err) {
+                // Fallback for copy
                 const textArea = document.createElement("textarea");
                 textArea.value = url;
                 textArea.style.position = "fixed";
@@ -216,9 +225,7 @@ const ProjectDetail = () => {
                 textArea.select();
                 try {
                     const successful = document.execCommand('copy');
-                    if (successful) {
-                        toast.success('Link copied to clipboard!');
-                    }
+                    if (successful) toast.success('Link copied to clipboard!');
                 } catch (e) {
                     prompt("Copy this link:", url);
                 }

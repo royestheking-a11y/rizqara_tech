@@ -170,6 +170,7 @@ export type DataContextType = {
   deleteData: (key: string, id: string) => Promise<void>;
   addVideoComment: (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => void;
   t: (key: keyof typeof translations['en']) => string;
+  loading: boolean;
 };
 
 // --- Mock Data (Initial Seed) ---
@@ -207,6 +208,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
   const [language, setLanguage] = useState<Language>('en');
+  const [loading, setLoading] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
@@ -264,6 +266,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // For now, allow empty state or keep loading false
         // Or duplicate INITIAL constants here as fallback, but better to fix API.
 
+      }
+      finally {
+        setLoading(false);
       }
     };
 
@@ -409,7 +414,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading }}>
       {children}
     </DataContext.Provider>
   );

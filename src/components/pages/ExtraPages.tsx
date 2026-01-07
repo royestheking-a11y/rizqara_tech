@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useData } from '../../context/DataContext';
 
-import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { VideoModal, getYoutubeId } from '../premium/UIComponents';
@@ -170,24 +171,77 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
 
 export const BlogDetail = () => {
     const { id } = useParams();
-    const { blogs, language } = useData();
+    const { blogs, language, loading } = useData();
     const navigate = useNavigate();
-    const blog = blogs.find(b => b.id === id);
+    const blog = blogs.find(b => String(b.id) === id);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center pt-32">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#500000]"></div>
+            </div>
+        );
+    }
 
     if (!blog) return <div className="text-gray-900 pt-32 text-center text-xl font-light">Blog post not found</div>;
 
     const title = language === 'bn' ? (blog.title_bn || blog.title) : blog.title;
     const content = language === 'bn' ? (blog.content_bn || blog.content) : blog.content;
     const category = language === 'bn' ? (blog.category_bn || blog.category) : blog.category;
+    const excerpt = language === 'bn' ? (blog.excerpt_bn || blog.excerpt) : blog.excerpt;
+
+    const handleShare = async () => {
+        const url = window.location.href;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: title,
+                    text: excerpt,
+                    url: url,
+                });
+            } catch (error) {
+                console.log('Error sharing', error);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                toast.success('Link copied to clipboard!');
+            } catch (err) {
+                // Fallback for copy
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) toast.success('Link copied to clipboard!');
+                } catch (e) {
+                    prompt("Copy this link:", url);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+    };
 
     return (
         <div className="container mx-auto px-6 py-32 min-h-screen">
-            <button onClick={() => navigate('/blog')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
-                <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
-                    <ArrowRight className="rotate-180" size={20} />
-                </div>
-                <span className="text-sm uppercase tracking-widest font-bold">{language === 'bn' ? 'ব্লগে ফিরে যান' : 'Back to Blog'}</span>
-            </button>
+            <div className="flex justify-between items-center mb-12">
+                <button onClick={() => navigate('/blog')} className="flex items-center text-gray-500 hover:text-[#500000] transition-colors group">
+                    <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
+                        <ArrowRight className="rotate-180" size={20} />
+                    </div>
+                    <span className="text-sm uppercase tracking-widest font-bold">{language === 'bn' ? 'ব্লগে ফিরে যান' : 'Back to Blog'}</span>
+                </button>
+                <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:bg-[#500000] hover:text-white hover:border-[#500000] transition-all text-sm font-bold text-gray-600">
+                    <Share2 size={16} /> {language === 'bn' ? 'শেয়ার করুন' : 'Share'}
+                </button>
+            </div>
+
             <div className="max-w-4xl mx-auto">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                     <div className="aspect-video rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl">
