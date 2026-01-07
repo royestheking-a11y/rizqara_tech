@@ -268,7 +268,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchData();
   }, []);
 
-  const updateData = async (key: string, data: any) => {
+  const updateData = async (key: string, data: any, silent: boolean = false) => {
     // Optimistic Update
     if (key === 'services') setServices(data);
     if (key === 'projects') setProjects(data);
@@ -296,7 +296,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const errData = await response.json();
         throw new Error(errData.error || 'Server Error');
       }
-      toast.success('Changes saved successfully');
+      if (!silent) toast.success('Changes saved successfully');
     } catch (error: any) {
       console.error(`Failed to update ${key}:`, error);
       toast.error(`Failed to save: ${error.message}`);
@@ -364,7 +364,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // For now, just update local state to avoid crashing, but it won't persist to DB unless I add schema.
     // I will add schema in next step.
-    updateData('careerApplications', updated);
+    updateData('careerApplications', updated, true);
   };
 
   const deleteMessage = (id: string) => {

@@ -6,7 +6,7 @@ import {
     Linkedin, Instagram, Facebook,
     Shield, Zap, MessageSquare, Briefcase,
     Server,
-    Lock, User, ExternalLink, Share2,
+    Lock, User, ExternalLink, Share2, Search,
     Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -891,25 +891,127 @@ const ServicesPage = () => {
 const ProjectsPage = () => {
     const { projects, t, language } = useData();
     const navigate = useNavigate();
-    return (
-        <div className="container mx-auto px-6 py-32">
-            <SectionTitle title={t('ourProjects')} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {projects.map(p => {
-                    const title = language === 'bn' ? (p.title_bn || p.title) : p.title;
-                    const category = language === 'bn' ? (p.category_bn || p.category) : p.category;
+    const [selectedCategory, setSelectedCategory] = useState("All Projects");
+    const [searchQuery, setSearchQuery] = useState("");
 
-                    return (
-                        <div key={p.id} onClick={() => navigate(`/projects/${p.id}`)} className="group cursor-pointer">
-                            <div className="aspect-video rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
-                                <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="" />
-                                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
+    const categories = [
+        "All Projects",
+        "SaaS Platforms",
+        "E-Commerce",
+        "UMS type",
+        "Restaurant Websites",
+        "Mobile App",
+        "Business Website",
+        "Web Applications",
+        "Enterprise Collaboration"
+    ];
+
+    const filteredProjects = projects.filter(p => {
+        const title = language === 'bn' ? (p.title_bn || p.title) : p.title;
+        const desc = language === 'bn' ? (p.description_bn || p.description) : p.description;
+        const category = language === 'bn' ? (p.category_bn || p.category) : p.category;
+
+        const matchesCategory = selectedCategory === "All Projects" ||
+            (category && category.toLowerCase().includes(selectedCategory.toLowerCase())) ||
+            (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase()));
+
+        const matchesSearch = !searchQuery ||
+            title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (desc && desc.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        return matchesCategory && matchesSearch;
+    });
+
+    return (
+        <div className="container mx-auto px-6 py-32 min-h-screen">
+            <SectionTitle title={t('ourProjects')} />
+
+            {/* Filters & Search */}
+            <div className="mb-12 space-y-6">
+                {/* Search Bar */}
+                <div className="relative max-w-xl mx-auto">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <Search size={20} />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search projects...'}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] shadow-sm transition-all"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery('')}
+                            className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-[#500000]"
+                        >
+                            <X size={16} />
+                        </button>
+                    )}
+                </div>
+
+                {/* Categories */}
+                <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${selectedCategory === cat
+                                ? 'bg-[#500000] text-white shadow-md transform scale-105'
+                                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Projects Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <AnimatePresence mode="popLayout">
+                    {filteredProjects.length > 0 ? (
+                        filteredProjects.map(p => {
+                            const title = language === 'bn' ? (p.title_bn || p.title) : p.title;
+                            const category = language === 'bn' ? (p.category_bn || p.category) : p.category;
+
+                            return (
+                                <motion.div
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.3 }}
+                                    key={p.id}
+                                    onClick={() => navigate(`/projects/${p.id}`)}
+                                    className="group cursor-pointer"
+                                >
+                                    <div className="aspect-video rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
+                                        <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="" />
+                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
+                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#500000] shadow-sm">
+                                            {category}
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-1 group-hover:text-[#500000] transition-colors">{title}</h3>
+                                    <p className="text-gray-500 line-clamp-2">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                </motion.div>
+                            )
+                        })
+                    ) : (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="col-span-1 md:col-span-2 text-center py-20"
+                        >
+                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                                <Search size={32} />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-1 group-hover:text-[#500000]">{title}</h3>
-                            <p className="text-gray-500">{category}</p>
-                        </div>
-                    )
-                })}
+                            <p className="text-xl font-bold text-gray-600">{language === 'bn' ? 'কোনো প্রকল্প পাওয়া যায়নি' : 'No projects found'}</p>
+                            <p className="text-gray-400">{language === 'bn' ? 'অন্য ক্যাটাগরি বা শব্দ দিয়ে চেষ্টা করুন' : 'Try a different category or search term'}</p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     )

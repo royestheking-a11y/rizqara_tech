@@ -4,7 +4,7 @@ import { useData } from '../../context/DataContext';
 
 import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from "sonner";
+
 import { VideoModal, getYoutubeId } from '../premium/UIComponents';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -51,7 +51,7 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
         setTimeout(() => {
             onSubmit(appData);
             setStatus('success');
-            toast.success(language === 'bn' ? "আবেদন সফলভাবে জমা দেওয়া হয়েছে!" : "Application submitted successfully!");
+            // Toast removed to avoid redundancy (Modal has success UI)
             setTimeout(onClose, 2000);
         }, 1500);
     };
