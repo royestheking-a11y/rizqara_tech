@@ -230,7 +230,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             { src: 'category', dest: 'category_bn' },
             { src: 'location', dest: 'location_bn' },
             { src: 'salary', dest: 'salary_bn' },
-            { src: 'type', dest: 'type_bn' }
+            { src: 'type', dest: 'type_bn' },
+            { src: 'role', dest: 'role_bn' },
+            { src: 'company', dest: 'company_bn' }
         ];
 
         const toTranslate: { text: string, destEl: HTMLInputElement | HTMLTextAreaElement }[] = [];
@@ -773,7 +775,20 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
                                 </>}
 
-                                {modalType === 'review' && <><AdminInput label="Client Name" name="name" defaultValue={editingItem?.name} required /><AdminInput label="Role" name="role" defaultValue={editingItem?.role} required /><AdminInput label="Company" name="company" defaultValue={editingItem?.company} required /><AdminTextArea label="Review" name="content" defaultValue={editingItem?.content} required /><AdminInput label="Rating (1-5)" name="rating" defaultValue={editingItem?.rating} type="number" max="5" min="1" required /></>}
+                                {modalType === 'review' && <>
+                                    <AdminInput label="Client Name" name="name" defaultValue={editingItem?.name} required />
+
+                                    <AdminInput label="Role" name="role" defaultValue={editingItem?.role} required />
+                                    <AdminInput label="Role (Bengali)" name="role_bn" defaultValue={editingItem?.role_bn} placeholder="বাংলা পদবী" />
+
+                                    <AdminInput label="Company" name="company" defaultValue={editingItem?.company} required />
+                                    <AdminInput label="Company (Bengali)" name="company_bn" defaultValue={editingItem?.company_bn} placeholder="বাংলা কোম্পানি" />
+
+                                    <AdminTextArea label="Review" name="content" defaultValue={editingItem?.content} required />
+                                    <AdminTextArea label="Review (Bengali)" name="content_bn" defaultValue={editingItem?.content_bn} placeholder="বাংলা পর্যালোচনা" />
+
+                                    <AdminInput label="Rating (1-5)" name="rating" defaultValue={editingItem?.rating} type="number" max="5" min="1" required />
+                                </>}
 
                                 {modalType === 'blog' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
