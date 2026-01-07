@@ -75,7 +75,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
 
                 if (uploadRes.ok) {
                     const data = await uploadRes.json();
-                    setPreviewUrl(data.url);
+                    setPreviewUrl(croppedImage); // Use local preview for instant feedback
                     onImageChange(data.url);
                     toast.success('Image uploaded successfully! 📸');
                 } else {
