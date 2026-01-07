@@ -261,15 +261,19 @@ const ProjectDetail = () => {
                         </ButtonPremium>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Key Features</h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[1, 2, 3, 4].map((_, i) => (
-                            <li key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-                                <Check className="text-[#500000]" size={18} />
-                                <span className="text-gray-700">Premium Feature Implementation</span>
-                            </li>
-                        ))}
-                    </ul>
+                    {((project.features && project.features.length > 0) || (project.features_bn && project.features_bn.length > 0)) && (
+                        <>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}</h3>
+                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {(language === 'bn' && project.features_bn && project.features_bn.length > 0 ? project.features_bn : (project.features || [])).map((feature: string, i: number) => (
+                                    <li key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+                                        <Check className="text-[#500000]" size={18} />
+                                        <span className="text-gray-700">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
 
                     {project.gallery && project.gallery.length > 0 && (
                         <div className="mt-16 animate-in slide-in-from-bottom-8 duration-700">

@@ -32,6 +32,8 @@ export type Project = {
   description: string;
   description_bn?: string;
   tech: string[];
+  features?: string[];
+  features_bn?: string[];
   gallery?: string[];
   link?: string;
 };

@@ -27,6 +27,8 @@ const ProjectSchema = new mongoose.Schema({
     status: { type: String, enum: ['Live', 'Ongoing', 'Completed'], required: true },
     description: { type: String, required: true },
     description_bn: String,
+    features: [String],
+    features_bn: [String],
     tech: [String],
     gallery: [String],
     link: String

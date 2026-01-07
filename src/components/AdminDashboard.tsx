@@ -77,6 +77,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'project' && data.tech) {
             data.tech = data.tech.split(',').map((t: string) => t.trim());
         }
+        if (modalType === 'project') {
+            if (data.features) data.features = data.features.split(',').map((t: string) => t.trim());
+            if (data.features_bn) data.features_bn = data.features_bn.split(',').map((t: string) => t.trim());
+        }
 
         // Handle Project Gallery
         if (modalType === 'project') {
@@ -231,6 +235,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             { src: 'location', dest: 'location_bn' },
             { src: 'salary', dest: 'salary_bn' },
             { src: 'type', dest: 'type_bn' },
+            { src: 'features', dest: 'features_bn' },
             { src: 'role', dest: 'role_bn' },
             { src: 'company', dest: 'company_bn' }
         ];
@@ -772,6 +777,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminTextArea label="Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
 
                                     <AdminInput label="Project Link" name="link" defaultValue={editingItem?.link} placeholder="https://..." />
+                                    <AdminInput label="Key Features (Comma separated)" name="features" defaultValue={editingItem?.features?.join(', ')} placeholder="Feature 1, Feature 2" />
+                                    <AdminInput label="Key Features (Bengali)" name="features_bn" defaultValue={editingItem?.features_bn?.join(', ')} placeholder="বাংলা বৈশিষ্ট্য ১, বৈশিষ্ট্য ২" />
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
                                 </>}
 
