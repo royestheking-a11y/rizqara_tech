@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, ArrowRight, Tag, Percent, Gift } from 'lucide-react';
+import { X, Clock, ArrowRight, Gift } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -71,15 +71,15 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                 </button>
             )}
 
-            <div className="relative pt-12 px-8 pb-8 text-center">
+            <div className="relative pt-10 px-5 pb-6 md:pt-12 md:px-8 md:pb-8 text-center">
                 {/* Floating Icon */}
                 <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="mx-auto w-20 h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center text-[#500000] mb-8 relative z-10 ring-4 ring-white"
+                    className="mx-auto w-16 h-16 md:w-20 md:h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center text-[#500000] mb-6 md:mb-8 relative z-10 ring-4 ring-white"
                 >
-                    <Gift size={36} strokeWidth={2.5} />
+                    <Gift size={32} className="md:w-9 md:h-9" strokeWidth={2.5} />
                 </motion.div>
 
                 <motion.div
@@ -87,10 +87,10 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
                 >
-                    <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2 tracking-tight">
                         {language === 'bn' ? 'এক্সক্লুসিভ অফার' : 'Exclusive Offer'}
                     </h2>
-                    <p className="text-gray-500 mb-8 font-medium max-w-xs mx-auto leading-relaxed">
+                    <p className="text-gray-500 mb-6 md:mb-8 font-medium max-w-xs mx-auto leading-relaxed text-sm md:text-base">
                         {language === 'bn' ? 'একটি অপরাজেয় হারে আপনার ব্যবসার জন্য প্রিমিয়াম সক্ষমতা আনলক করুন।' : 'Unlock premium capabilities for your business at an unbeatable rate.'}
                     </p>
                 </motion.div>
@@ -100,21 +100,21 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-6 border border-gray-200 mb-8 relative overflow-hidden group"
+                    className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-4 md:p-6 border border-gray-200 mb-6 md:mb-8 relative overflow-hidden group"
                 >
                     <div className="absolute top-0 left-0 w-1 h-full bg-[#500000]"></div>
                     <div className="flex flex-col items-center relative z-10">
-                        <div className="text-sm font-bold text-[#500000] uppercase tracking-widest mb-1">{language === 'bn' ? 'সীমিত সময়ের ডিসকাউন্ট' : 'Limited Time Discount'}</div>
+                        <div className="text-xs md:text-sm font-bold text-[#500000] uppercase tracking-widest mb-1">{language === 'bn' ? 'সীমিত সময়ের ডিসকাউন্ট' : 'Limited Time Discount'}</div>
                         <div className="flex items-baseline justify-center gap-1 mb-1">
-                            <span className="text-6xl font-black text-gray-900 tracking-tight">{offerRate}%</span>
-                            <span className="text-2xl font-bold text-gray-400">{language === 'bn' ? 'ছাড়' : 'OFF'}</span>
+                            <span className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight">{offerRate}%</span>
+                            <span className="text-xl md:text-2xl font-bold text-gray-400">{language === 'bn' ? 'ছাড়' : 'OFF'}</span>
                         </div>
-                        <div className="text-gray-600 font-medium">{serviceName}</div>
+                        <div className="text-gray-600 font-medium text-sm md:text-base">{serviceName}</div>
                     </div>
                 </motion.div>
 
                 {/* Countdown Timer */}
-                <div className="flex justify-center gap-4 mb-8">
+                <div className="flex justify-center gap-3 md:gap-4 mb-6 md:mb-8">
                     {[
                         { val: timeDisplay.days, label: language === 'bn' ? 'দিন' : 'Days' },
                         { val: timeDisplay.hours, label: language === 'bn' ? 'ঘন্টা' : 'Hours' },
@@ -122,10 +122,10 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                         { val: timeDisplay.seconds, label: language === 'bn' ? 'সেকেন্ড' : 'Secs' }
                     ].map((item, i) => (
                         <div key={i} className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-white border border-gray-200 text-gray-900 rounded-xl flex items-center justify-center text-lg font-bold shadow-sm mb-2">
+                            <div className="w-10 h-10 md:w-12 md:h-12 bg-white border border-gray-200 text-gray-900 rounded-xl flex items-center justify-center text-base md:text-lg font-bold shadow-sm mb-1 md:mb-2">
                                 {item.val.toString().padStart(2, '0')}
                             </div>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{item.label}</span>
+                            <span className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-wider">{item.label}</span>
                         </div>
                     ))}
                 </div>
@@ -133,13 +133,13 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                 {/* CTA */}
                 <button
                     onClick={onClaim}
-                    className="w-full py-4 bg-[#500000] text-white rounded-xl font-bold shadow-xl shadow-red-900/20 hover:bg-[#3a0000] hover:shadow-2xl hover:shadow-red-900/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group"
+                    className="w-full py-3 md:py-4 bg-[#500000] text-white rounded-xl font-bold shadow-xl shadow-red-900/20 hover:bg-[#3a0000] hover:shadow-2xl hover:shadow-red-900/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group text-sm md:text-base"
                 >
                     <span>{language === 'bn' ? 'এই অফারটি দাবি করুন' : 'Claim This Offer'}</span>
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
 
-                <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+                <div className="mt-4 md:mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
                     <Clock size={12} />
                     <span>{language === 'bn' ? 'মেয়াদ শেষ হবে' : 'Expires on'} {new Date(expiryDate).toLocaleDateString()}</span>
                 </div>
