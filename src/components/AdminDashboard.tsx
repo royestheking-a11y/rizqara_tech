@@ -740,7 +740,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         label="Project Preview Image"
                                         defaultValue={editingItem?.image}
                                         onImageChange={(url) => setProjectImage(url)}
-                                        aspectRatio={4 / 5}
+                                        aspectRatio={16 / 9}
                                     />
                                     <input type="hidden" name="image" value={projectImage} />
 
