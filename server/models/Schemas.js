@@ -78,7 +78,7 @@ const VideoSchema = new mongoose.Schema({
     title_bn: String,
     thumbnail: { type: String, required: true },
     url: { type: String, required: true },
-    category: { type: String, enum: ['Demo', 'Ad', 'Showcase'], required: true },
+    category: { type: String, required: true },
     comments: [{
         id: String,
         user: String,
