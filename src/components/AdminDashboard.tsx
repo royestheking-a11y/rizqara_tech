@@ -80,6 +80,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'project') {
             if (data.features) data.features = data.features.split(',').map((t: string) => t.trim());
             if (data.features_bn) data.features_bn = data.features_bn.split(',').map((t: string) => t.trim());
+            // Explicitly set image from state to ensure it's not empty
+            if (projectImage) data.image = projectImage;
         }
 
         // Handle Project Gallery
@@ -747,7 +749,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onImageChange={(url) => setProjectImage(url)}
                                         aspectRatio={16 / 9}
                                     />
-                                    <input type="hidden" name="image" value={projectImage} />
+
 
                                     <div className="grid grid-cols-3 gap-4 mb-6">
                                         <ImageUploader
