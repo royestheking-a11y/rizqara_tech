@@ -1191,7 +1191,7 @@ const MainContent = () => {
             </main>
 
             <RizqAIBot />
-            <PromotionOverlay />
+            {!location.pathname.startsWith('/admin') && <PromotionOverlay />}
             <CookieConsent />
         </div>
     );

@@ -6,7 +6,7 @@ import {
     LayoutDashboard, Briefcase, Users, MessageSquare,
     Plus, Trash2, Edit2, Save, X, RotateCcw,
     FileText, PlayCircle, Image, Settings, LogOut,
-    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Check
+    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag
 } from 'lucide-react';
 import { ImageUploader } from './admin/ImageUploader';
 import { UserInteractionAnalytics } from './admin/UserInteractionAnalytics';
@@ -368,20 +368,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         e.preventDefault();
                                         updateData('promotion', localPromotion);
                                         // Custom Premium Toast
-                                        toast.custom((t) => (
-                                            <div className="flex items-center gap-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-sm animate-in slide-in-from-top-5 fade-in duration-300">
-                                                <div className="w-10 h-10 rounded-full bg-[#500000] flex items-center justify-center text-white shadow-lg shrink-0">
-                                                    <Check size={20} />
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900 text-sm">Update Successful!</h4>
-                                                    <p className="text-xs text-gray-500">Promotion is now live on the site.</p>
-                                                </div>
-                                                <button onClick={() => toast.dismiss(t)} className="ml-auto p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors">
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ), { duration: 4000 });
+
                                     }}>
                                         <div className="space-y-6">
                                             <label className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-[#500000]/30 transition-colors cursor-pointer">
