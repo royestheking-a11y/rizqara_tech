@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { getProxiedImage } from '../../utils/imageProxy';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
     ArrowRight, ChevronLeft, ChevronRight, Check, X,
@@ -1170,7 +1171,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                     <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
 
                     <img
-                        src={currentSlide.image}
+                        src={getProxiedImage(currentSlide.image)}
                         alt=""
                         className="w-full h-full object-cover"
                         onError={(e) => {

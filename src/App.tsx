@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { getProxiedImage } from './utils/imageProxy';
 import {
     Menu, X, ChevronRight, Check,
     Code2, Palette, Globe, Smartphone, BarChart, Layout,
@@ -523,7 +524,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div key={service.id} onClick={() => onNavigate('ServiceDetail', service.id)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                                 <div className="h-48 overflow-hidden relative shrink-0">
                                     <img
-                                        src={service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
+                                        src={getProxiedImage(service.image) || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
                                         alt={title}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         onError={(e) => {

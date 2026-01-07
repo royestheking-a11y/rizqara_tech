@@ -50,6 +50,31 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 });
 
+// --- IMAGE PROXY ROUTE (Bypass ISP Blocks) ---
+router.get('/proxy-image', async (req, res) => {
+    const { url } = req.query;
+    if (!url) return res.status(400).send('URL required');
+
+    try {
+        const { default: fetch } = await import('node-fetch');
+        const response = await fetch(url);
+
+        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+
+        const contentType = response.headers.get('content-type');
+        if (contentType) res.setHeader('Content-Type', contentType);
+
+        res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
+        res.setHeader('Access-Control-Allow-Origin', '*'); // Allow CORS
+
+        response.body.pipe(res);
+
+    } catch (err) {
+        console.error('Proxy Error:', err.message);
+        res.status(500).send('Image fetch failed');
+    }
+});
+
 // --- TRANSLATE ROUTE ---
 router.post('/translate', async (req, res) => {
     const { text, to = 'bn' } = req.body;

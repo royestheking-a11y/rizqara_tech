@@ -1,22 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../utils/canvasUtils';
-// Slider removed
 import { X, Check, RotateCw, ZoomIn, Image as ImageIcon, Crop } from 'lucide-react';
 import { AdminButton } from '../AdminComponents';
 import { toast } from 'sonner';
+import { getProxiedImage } from '../../utils/imageProxy';
 
 interface ImageUploaderProps {
     label?: string;
     name?: string;
     defaultValue?: string;
     onImageChange: (base64: string) => void;
-    aspectRatio?: number; // e.g., 16/9 or 1
+    aspectRatio?: number;
 }
 
 export const ImageUploader = ({ label = "Image", name = "image", defaultValue = "", onImageChange, aspectRatio = 16 / 9 }: ImageUploaderProps) => {
     const [imageSrc, setImageSrc] = useState<string | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string>(defaultValue);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
@@ -24,8 +24,10 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
     const [isEditorOpen, setIsEditorOpen] = useState(false);
 
     // Sync state with prop
-    React.useEffect(() => {
-        setPreviewUrl(defaultValue);
+    useEffect(() => {
+        if (defaultValue && defaultValue !== previewUrl) {
+            setPreviewUrl(getProxiedImage(defaultValue));
+        }
     }, [defaultValue]);
 
     const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
@@ -215,7 +217,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
             )}
 
             {/* Hidden Input to store value for form submission */}
-            <input type="hidden" name={name} value={previewUrl} />
+            <input type="hidden" name={name} value={previewUrl || ''} />
         </div>
     );
 };
