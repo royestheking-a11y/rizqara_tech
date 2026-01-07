@@ -4,6 +4,7 @@ import getCroppedImg from '../../utils/canvasUtils';
 // Slider removed
 import { X, Check, RotateCw, ZoomIn, Image as ImageIcon, Crop } from 'lucide-react';
 import { AdminButton } from '../AdminComponents';
+import { toast } from 'sonner';
 
 interface ImageUploaderProps {
     label?: string;
@@ -21,6 +22,11 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
     const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
     const [isEditorOpen, setIsEditorOpen] = useState(false);
+
+    // Sync state with prop
+    React.useEffect(() => {
+        setPreviewUrl(defaultValue);
+    }, [defaultValue]);
 
     const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -71,15 +77,18 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                     const data = await uploadRes.json();
                     setPreviewUrl(data.url);
                     onImageChange(data.url);
+                    toast.success('Image uploaded successfully! 📸');
                 } else {
                     console.error('Upload failed, falling back to local data');
                     setPreviewUrl(croppedImage);
                     onImageChange(croppedImage);
+                    toast.error('Upload failed, using local fallback');
                 }
             } catch (uploadError) {
                 console.error('Upload error:', uploadError);
                 setPreviewUrl(croppedImage);
                 onImageChange(croppedImage);
+                toast.error('Upload error, using local fallback');
             }
 
             setIsEditorOpen(false);
@@ -87,6 +96,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
             setRotation(0);
         } catch (e) {
             console.error(e);
+            toast.error('Error processing image');
         }
     }, [imageSrc, croppedAreaPixels, rotation, onImageChange]);
 

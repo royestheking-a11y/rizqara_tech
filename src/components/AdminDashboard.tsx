@@ -82,6 +82,11 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             if (data.features_bn) data.features_bn = data.features_bn.split(',').map((t: string) => t.trim());
             // Explicitly set image from state to ensure it's not empty
             if (projectImage) data.image = projectImage;
+
+            if (!data.image) {
+                toast.error('Project image is required! Please upload an image.');
+                return;
+            }
         }
 
         // Handle Project Gallery
@@ -105,7 +110,15 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             } else {
                 data.thumbnail = 'https://via.placeholder.com/640x360?text=No+Thumbnail';
             }
+            if (videoId) {
+                data.thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            } else {
+                data.thumbnail = 'https://via.placeholder.com/640x360?text=No+Thumbnail';
+            }
         }
+
+        if (modalType === 'carousel' && carouselImage) data.image = carouselImage;
+        if (modalType === 'blog' && blogImage) data.image = blogImage;
 
         const newItem = {
             id: editingItem ? editingItem.id : generateId(),
@@ -136,6 +149,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         setCarouselImage(item?.image || '');
         setProjectImage(item?.image || '');
         setBlogImage(item?.image || '');
+        // Service uses projectImage state for convenience if not separate? No, check form.
         setIsModalOpen(true);
     };
 
