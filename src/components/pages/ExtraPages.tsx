@@ -28,29 +28,13 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const file = fileInputRef.current?.files?.[0];
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-
         let cvUrl = '';
         if (file) {
-            try {
-                const uploadFormData = new FormData();
-                uploadFormData.append('file', file);
-
-                const response = await fetch(`${API_URL}/upload`, {
-                    method: 'POST',
-                    body: uploadFormData
-                });
-
-                if (!response.ok) throw new Error('Failed to upload CV');
-
-                const data = await response.json();
-                cvUrl = data.url;
-            } catch (error) {
-                console.error('CV Upload Error:', error);
-                toast.error(language === 'bn' ? "সিভি আপলোড ব্যর্থ হয়েছে" : "Failed to upload CV");
-                setStatus('idle');
-                return;
-            }
+            cvUrl = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(file);
+            });
         }
 
         const appData = {
@@ -63,17 +47,13 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
             jobId: job.id
         };
 
-        // Submit application
-        try {
-            await onSubmit(appData);
+        // Simulate network delay
+        setTimeout(() => {
+            onSubmit(appData);
             setStatus('success');
             toast.success(language === 'bn' ? "আবেদন সফলভাবে জমা দেওয়া হয়েছে!" : "Application submitted successfully!");
             setTimeout(onClose, 2000);
-        } catch (error) {
-            console.error('Submission Error:', error);
-            toast.error(language === 'bn' ? "আবেদন জমা দিতে ব্যর্থ হয়েছে" : "Failed to submit application");
-            setStatus('idle');
-        }
+        }, 1500);
     };
 
     return createPortal(
