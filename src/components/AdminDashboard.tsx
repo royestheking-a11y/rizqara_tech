@@ -227,7 +227,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             { src: 'excerpt', dest: 'excerpt_bn' },
             { src: 'content', dest: 'content_bn' },
             // Project select fallback
-            { src: 'category', dest: 'category_bn' }
+            { src: 'category', dest: 'category_bn' },
+            { src: 'location', dest: 'location_bn' },
+            { src: 'salary', dest: 'salary_bn' },
+            { src: 'type', dest: 'type_bn' }
         ];
 
         const toTranslate: { text: string, destEl: HTMLInputElement | HTMLTextAreaElement }[] = [];
@@ -796,7 +799,22 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminTextArea label="Content (Bengali)" name="content_bn" defaultValue={editingItem?.content_bn} placeholder="বাংলা বিষয়বস্তু" />
                                 </>}
 
-                                {modalType === 'job' && <><AdminInput label="Job Title" name="title" defaultValue={editingItem?.title} required /><AdminInput label="Location" name="location" defaultValue={editingItem?.location} /><AdminInput label="Salary" name="salary" defaultValue={editingItem?.salary} /><AdminInput label="Type" name="type" defaultValue={editingItem?.type} /><AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} /></>}
+                                {modalType === 'job' && <>
+                                    <AdminInput label="Job Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Job Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
+
+                                    <AdminInput label="Location" name="location" defaultValue={editingItem?.location} />
+                                    <AdminInput label="Location (Bengali)" name="location_bn" defaultValue={editingItem?.location_bn} placeholder="বাংলা অবস্থান" />
+
+                                    <AdminInput label="Salary" name="salary" defaultValue={editingItem?.salary} />
+                                    <AdminInput label="Salary (Bengali)" name="salary_bn" defaultValue={editingItem?.salary_bn} placeholder="বাংলা বেতন" />
+
+                                    <AdminInput label="Type" name="type" defaultValue={editingItem?.type} />
+                                    <AdminInput label="Type (Bengali)" name="type_bn" defaultValue={editingItem?.type_bn} placeholder="বাংলা ধরণ" />
+
+                                    <AdminTextArea label="Description" name="description" defaultValue={editingItem?.description} />
+                                    <AdminTextArea label="Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
+                                </>}
 
                                 {modalType === 'video' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
