@@ -856,7 +856,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                 {modalType === 'video' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
+
                                     <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required />
+                                    <AdminInput label="Category (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ক্যাটাগরি" />
 
                                     <div className="mb-4">
                                         <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Link</label>
