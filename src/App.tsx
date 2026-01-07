@@ -522,7 +522,18 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         return (
                             <div key={service.id} onClick={() => onNavigate('ServiceDetail', service.id)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                                 <div className="h-48 overflow-hidden relative shrink-0">
-                                    <img src={service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <img
+                                        src={service.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
+                                        alt={title}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = 'none'; // Or set to fallback
+                                            // Better: fallback URL
+                                            e.currentTarget.src = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop";
+                                            // Prevent infinite loop if fallback also fails
+                                            e.currentTarget.onerror = null;
+                                        }}
+                                    />
                                     <div className="absolute top-4 left-4 w-12 h-12 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center text-[#500000] shadow-sm">
                                         <Icon size={24} />
                                     </div>
