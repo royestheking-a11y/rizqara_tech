@@ -1172,7 +1172,9 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
 
                     <img
                         src={getProxiedImage(currentSlide.image)}
-                        alt=""
+                        alt={title}
+                        loading="eager"
+                        fetchPriority="high"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                             console.error('Failed to load image:', currentSlide.image);
@@ -1288,7 +1290,7 @@ export const BuildPreviewTeaser = ({ onNavigate, setBuildConfig }: any) => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#500000]/10 border border-[#500000]/20 text-xs font-bold text-[#500000] uppercase tracking-wider mb-4">
                             <Rocket size={12} className="text-[#500000]" /> {language === 'bn' ? 'তৈরি শুরু করুন' : 'Start Building'}
                         </div>
-                        <h3 className="text-3xl font-black text-gray-900 mb-2 leading-tight">{language === 'bn' ? 'আপনার স্বপ্নের প্রকল্প তৈরি করুন' : 'Build Your Dream Project'}</h3>
+                        <h2 className="text-3xl font-black text-gray-900 mb-2 leading-tight">{language === 'bn' ? 'আপনার স্বপ্নের প্রকল্প তৈরি করুন' : 'Build Your Dream Project'}</h2>
                         <p className="text-gray-500 text-sm">{language === 'bn' ? 'একটি তাত্ক্ষণিক উদ্ধৃতি এবং প্রিভিউ পেতে নিচে কনফিগার করুন।' : 'Configure below to get an instant quote and preview.'}</p>
                     </div>
 

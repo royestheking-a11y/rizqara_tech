@@ -486,8 +486,8 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 1. HERO CAROUSEL */}
             <SEO
-                title="RizQara Tech | Premium Software & AI Company in Bangladesh"
-                description="RizQara Tech is a top-rated software company in Bangladesh offering web development, UI UX design, AI solutions, mobile apps, and custom software for startups and enterprises."
+                title="RizQara Tech | Enterprise Software, AI & Web Development"
+                description="RizQara Tech offers premium web development, AI solutions, mobile apps, and UI/UX design for startups and enterprises worldwide."
                 canonical="https://rizqaratech.vercel.app/"
             />
             <HeroCarousel onNavigate={onNavigate} />
@@ -499,7 +499,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 3. TRUSTED COMPANIES */}
             <section className="container mx-auto px-6">
-                <div className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</div>
+                <h2 className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</h2>
                 <AutoScrollCarousel items={
                     partners.map((partner, i) => (
                         <div key={i} className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[140px]">

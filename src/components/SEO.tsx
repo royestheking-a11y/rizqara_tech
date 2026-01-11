@@ -16,10 +16,11 @@ export const SEO: React.FC<SEOProps> = ({
     image = 'https://rizqaratech.vercel.app/og-image.png',
     type = 'website'
 }) => {
+    const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`; // Auto-append brand if missing
     return (
         <Helmet>
             {/* Primary Meta Tags */}
-            <title>{title}</title>
+            <title>{fullTitle}</title>
             <meta name="description" content={description} />
             {canonical && <link rel="canonical" href={canonical} />}
 
