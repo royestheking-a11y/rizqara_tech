@@ -1753,7 +1753,7 @@ export const ContactFormWithMap = () => {
 // --- RizqAI Chatbot ---
 export const RizqAIBot = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { language, services, jobs } = useData();
+    const { language, services, jobs, projects } = useData();
     const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link', actionLink?: string, actionLabel?: string }[]>([
         { id: 1, text: language === 'bn' ? 'হ্যালো! আমি RizqAI। আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?' : "Hello! I'm RizqAI. How can I help you build your digital product today?", sender: 'bot', type: 'text' }
     ]);
@@ -1783,90 +1783,118 @@ export const RizqAIBot = () => {
     const simulateAIResponse = (userText: string) => {
         setIsTyping(true);
         setTimeout(() => {
+            // Default Fallback (Updated dynamically below)
             let reply = language === 'bn'
-                ? "দুঃখিত, আমি এটি বুঝতে পারিনি। আপনি কি আমাদের পরিষেবা বা মূল্য সম্পর্কে জানতে চান?"
-                : "I didn't quite catch that. Could you ask about our services, team, or projects?";
+                ? "আমি দুঃখিত, আমি ঠিক বুঝতে পারছি না। আপনি কি নির্দিষ্ট কিছু খুঁজছেন? আপনি আমাদের সাথে সরাসরি WhatsApp-এ কথা বলতে পারেন।"
+                : "I didn't quite catch that. Could you ask about our services, team, or projects? Or chat with us on WhatsApp.";
             let type: 'text' | 'button' | 'link' = 'text';
             let actionLink = '';
             let actionLabel = '';
 
             const lowerText = userText.toLowerCase();
 
-            // --- 1. GREETING & SMALL TALK ---
-            if (lowerText.match(/\b(hello|hi|hey|greetings|start)\b/)) {
+            // --- 1. ENHANCED GREETINGS ---
+            if (lowerText.match(/\b(hello|hi|hey|greetings|start|good morning|whatsup|sup|howdy)\b/)) {
                 const greetings = [
-                    "Hey there! How are you doing today?",
-                    "Hello! Great to see you. How can I assist you?",
-                    "Hi! Welcome to RizQara Tech. What are you looking to build?"
+                    "Hello! Welcome to RizQara Tech. I'm here to help you build your next big digital product.",
+                    "Hi there! Great to see you. How can I assist you with your software needs today?",
+                    "Hey! I'm RizqAI. Whether it's AI, Web, or Mobile, I can guide you. What's on your mind?"
                 ];
                 reply = language === 'bn' ? "হ্যালো! আপনাকে কিভাবে সাহায্য করতে পারি?" : greetings[Math.floor(Math.random() * greetings.length)];
             }
-            else if (lowerText.match(/\b(how are you|how r u)\b/)) {
-                reply = "I'm doing fantastic, thanks for asking! I'm fully operational and ready to help you.";
+            else if (lowerText.match(/\b(how are you|how r u|how are things)\b/)) {
+                reply = "I'm just a bot, but I'm functioning perfectly! Ready to help you grow your business.";
             }
             else if (lowerText.match(/\b(who are you|what are you)\b/)) {
-                reply = "I am RizqAI, your virtual assistant. I'm here to guide you through our services, projects, and team.";
+                reply = "I am RizqAI, your intelligent virtual assistant. I know all about our services, projects, and team!";
             }
-            else if (lowerText.match(/\b(what do you need|why are you here)\b/)) {
-                reply = "I'm here to serve you! Whether you need a website, app, or AI solution, I can help you find the right information.";
-            }
-            // --- 2. CONTACT / WHATSAPP ---
-            else if (lowerText.match(/\b(contact|email|phone|call|whatsapp|chat|help)\b/)) {
+
+            // --- 2. DYNAMIC KNOWLEDGE BASE (Services & Projects) ---
+
+            // A. Check Services (Detailed Line-by-Line)
+            else if (lowerText.match(/\b(service|offer|do|provide)\b/) && !lowerText.match(/\b(how|what|which)\b/)) {
+                // General Service Inquiry
+                const serviceNames = services.map(s => s.title).join('\n• ');
                 reply = language === 'bn'
-                    ? "আপনি আমাদের সাথে সরাসরি চ্যাট করতে পারেন!"
-                    : "Let's connect directly! You can chat with our team on WhatsApp right now.";
-                type = 'button';
-                actionLabel = "Chat on WhatsApp";
-                actionLink = "https://wa.link/bx60tv";
+                    ? `আমরা নিম্নলিখিত পরিষেবাগুলি প্রদান করি:\n• ${serviceNames}\n\nআপনি কোন পরিষেবা সম্পর্কে বিস্তারিত জানতে চান?`
+                    : `We offer a wide range of premium services:\n• ${serviceNames}\n\nAsk me about any specific service (e.g., 'Web Development') for details!`;
             }
-            // --- 3. PRICING ---
-            else if (lowerText.match(/\b(price|cost|package|rate|money)\b/)) {
-                reply = language === 'bn'
-                    ? "আমাদের বিভিন্ন প্যাকেজ আছে: বেসিক, এসএমই, এবং এন্টারপ্রাইজ। বিস্তারিত দেখতে 'প্যাকেজ' পেজ ভিজিট করুন।"
-                    : "We have flexible pricing models tailored to your needs. Check out our packages/pricing page for details.";
-                type = 'link';
-                actionLabel = "View Packages";
-                actionLink = "/packages";
-            }
-            // --- 4. SERVICES ---
-            else if (lowerText.match(/\b(service|offer|do|web|app|ai|tech)\b/)) {
-                const serviceList = services.slice(0, 3).map((s: any) => s.title).join(', '); // Limit to 3 for brevity
-                reply = language === 'bn'
-                    ? `আমরা প্রদান করি: ${serviceList}...`
-                    : `We specialize in ${serviceList}, and much more. What specific solution are you looking for?`;
-            }
-            // --- 5. TEAM ---
-            else if (lowerText.match(/\b(team|ceo|founder|developer|designer|who)\b/)) {
-                const foundMember = teamData.find(m => lowerText.includes(m.name.toLowerCase()) || lowerText.includes(m.role.toLowerCase()));
-                if (foundMember) {
-                    reply = `${foundMember.name} is our ${foundMember.role}. ${foundMember.bio}`;
-                } else {
+            else {
+                // Specific Service Search
+                const foundService = services.find(s => lowerText.includes(s.title.toLowerCase()) || (s.title_bn && lowerText.includes(s.title_bn.toLowerCase())));
+
+                if (foundService) {
+                    const title = language === 'bn' ? (foundService.title_bn || foundService.title) : foundService.title;
+                    const desc = language === 'bn' ? (foundService.description_bn || foundService.description) : foundService.description;
+                    // Format detailed response
                     reply = language === 'bn'
-                        ? "আমাদের একটি বিশেষজ্ঞ দল আছে। আপনি কি নির্দিষ্ট কারো সম্পর্কে জানতে চান?"
-                        : "We have a world-class team! You can ask about our CEO, Developers, or Designers.";
-                }
-            }
-            // --- 6. CAREERS ---
-            else if (lowerText.match(/\b(job|career|hiring|work|vacancy)\b/)) {
-                if (jobs.length > 0) {
-                    reply = language === 'bn'
-                        ? `আমরা নিয়োগ দিচ্ছি!`
-                        : `Yes, we are hiring! We're looking for talented individuals to join our team.`;
+                        ? `**${title}**\n\n${desc}\n\nবিস্তারিত জানতে আমাদের 'সেবাসমূহ' পেজটি ভিজিট করুন।`
+                        : `**${title}**\n\n${desc}\n\nWe provide end-to-end solutions in this domain. Would you like to see our portfolio?`;
                     type = 'link';
-                    actionLabel = "View Openings";
-                    actionLink = "/careers";
-                } else {
-                    reply = "We don't have open positions right now, but feel free to send us your CV for future opportunities.";
+                    actionLabel = "View Service";
+                    actionLink = `/services/${foundService.id}`;
                 }
-            }
-            // --- 7. PROJECTS ---
-            else if (lowerText.match(/\b(project|portfolio|built|work|case)\b/)) {
-                reply = language === 'bn'
-                    ? "আমাদের সেরা কিছু প্রকল্প দেখুন।"
-                    : "We've delivered enterprise solutions globally. Check out our latest success stories.";
-                type = 'link';
-                actionLabel = "View Projects";
-                actionLink = "/projects";
+
+                // B. Check Projects
+                else {
+                    const foundProject = projects.find(p => lowerText.includes(p.title.toLowerCase()) || (p.title_bn && lowerText.includes(p.title_bn.toLowerCase())));
+
+                    if (foundProject) {
+                        const title = language === 'bn' ? (foundProject.title_bn || foundProject.title) : foundProject.title;
+                        const cat = language === 'bn' ? (foundProject.category_bn || foundProject.category) : foundProject.category;
+                        reply = language === 'bn'
+                            ? `হ্যাঁ, **${title}** আমাদের অন্যতম সেরা প্রকল্প (${cat})। আপনি কি এটি দেখতে চান?`
+                            : `Yes! **${title}** is one of our featured ${cat} projects. Would you like to see the case study?`;
+                        type = 'link';
+                        actionLabel = "View Project";
+                        actionLink = `/projects/${foundProject.id}`;
+
+                    }
+
+                    // C. General Topics (Pricing, Team, Careers)
+                    else if (lowerText.match(/\b(price|cost|package|rate|money)\b/)) {
+                        reply = language === 'bn'
+                            ? "আমাদের বিভিন্ন প্যাকেজ আছে। বিস্তারিত দেখতে 'প্যাকেজ' পেজ ভিজিট করুন।"
+                            : "We have flexible pricing models. Check out our packages page for details.";
+                        type = 'link';
+                        actionLabel = "View Packages";
+                        actionLink = "/packages";
+                    }
+                    else if (lowerText.match(/\b(team|ceo|founder|developer|designer|who)\b/)) {
+                        const foundMember = teamData.find(m => lowerText.includes(m.name.toLowerCase()) || lowerText.includes(m.role.toLowerCase()));
+                        if (foundMember) {
+                            reply = `${foundMember.name} is our ${foundMember.role}. ${foundMember.bio}`;
+                        } else {
+                            reply = language === 'bn'
+                                ? "আমাদের একটি বিশ্বমানের বিশেষজ্ঞ দল আছে। আপনি কি নির্দিষ্ট কারো সম্পর্কে জানতে চান?"
+                                : "We have a world-class team of experts! You can ask about our CEO, Developers, or Designers.";
+                        }
+                        type = 'link';
+                        actionLabel = "Meet Team";
+                        actionLink = "/team";
+                    }
+                    else if (lowerText.match(/\b(job|career|hiring|work|vacancy)\b/)) {
+                        if (jobs.length > 0) {
+                            reply = language === 'bn' ? "আমরা নিয়োগ দিচ্ছি! আমাদের ক্যারিয়ার পেজ দেখুন।" : "Yes, we are hiring! Check out our Careers page.";
+                            actionLabel = "View Openings";
+                        } else {
+                            reply = language === 'bn' ? "এই মুহূর্তে আমাদের কোনো নিয়োগ বিজ্ঞপ্তি নেই।" : "We don't have open positions right now, but feel free to send us your CV.";
+                            actionLabel = "Careers";
+                        }
+                        type = 'link';
+                        actionLink = "/careers";
+                    }
+                    // --- 3. SMART FALLBACK (WHATSAPP) ---
+                    else {
+                        // Fallback for unknown queries
+                        reply = language === 'bn'
+                            ? "দুঃখিত, আমি এই মুহূর্তে এই তথ্যটি জানি না। তবে আমাদের এইচআর বা সাপোর্ট টিম আপনাকে সাহায্য করতে পারে। সরাসরি WhatsApp-এ যোগাযোগ করুন।"
+                            : "I apologize, I don't have that specific information right now. However, our HR and Support team can answer you immediately on WhatsApp!";
+                        type = 'button';
+                        actionLabel = "Chat on WhatsApp";
+                        actionLink = "https://wa.link/bx60tv";
+                    }
+                }
             }
 
             setMessages(prev => [...prev, { id: Date.now(), text: reply, sender: 'bot', type, actionLink, actionLabel }]);
