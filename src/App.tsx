@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { getProxiedImage } from './utils/imageProxy';
 import {
-    Menu, X, Check,
+    Menu, X, ChevronRight, Check,
     Code2, Palette, Globe, Smartphone, BarChart, Layout,
     ArrowRight, Star,
     Linkedin, Instagram, Facebook,
     Shield, Zap, MessageSquare, Briefcase,
     Server,
-    Lock, User, ExternalLink, Share2, Search, Mail,
+    Lock, User, ExternalLink, Share2, Search,
     Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -765,21 +765,16 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             </section>
 
             {/* 16. FULL FOOTER */}
-            {/* 16. FULL FOOTER */}
-            <footer className="bg-[#050505] text-white pt-24 pb-12 mt-32 border-t border-[#500000]/30 relative overflow-hidden">
-                {/* Background Effects */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000] shadow-[0_0_20px_rgba(220,38,38,0.5)]"></div>
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#500000] rounded-full blur-[150px] opacity-20 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#500000] rounded-full blur-[180px] opacity-10 pointer-events-none"></div>
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"></div>
+            <footer className="bg-gray-50 text-gray-900 pt-24 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
 
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                         <div className="lg:col-span-2">
-                            <div className="flex items-center gap-3 mb-8">
-                                <h2 className="text-3xl font-black tracking-tighter text-white">RIZQARA TECH</h2>
+                            <div className="flex items-center gap-3 mb-6">
+                                <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
                             </div>
-                            <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
+                            <p className="text-gray-600 text-sm leading-relaxed mb-8 max-w-sm">
                                 {language === 'bn' ? "রিজকারা টেক একটি প্রিমিয়ার সফটওয়্যার ডেভেলপমেন্ট এজেন্সি যা এন্টারপ্রাইজ-গ্রেড সমাধান প্রদান করে।" : "Rizqara Tech is a premier software development company delivering enterprise-grade solutions."}
                             </p>
                             <div className="flex gap-4">
@@ -789,7 +784,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
                                     { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' }
                                 ].map(({ Icon, link }, i) => (
-                                    <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 border border-white/10 rounded-full text-gray-400 hover:bg-[#500000] hover:text-white hover:border-[#500000] transition-all cursor-pointer group shadow-lg hover:shadow-red-900/50 flex items-center justify-center">
+                                    <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
                                         <Icon size={18} className="group-hover:scale-110 transition-transform" />
                                     </a>
                                 ))}
@@ -797,11 +792,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-white font-bold mb-8 text-lg">{t('company')}</h3>
-                            <ul className="space-y-4 text-sm text-gray-400">
+                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('company')}</h3>
+                            <ul className="space-y-3 text-sm text-gray-600">
                                 {['Home', 'About', 'Careers', 'Contact'].map(item => (
                                     <li key={item} onClick={() => onNavigate(item)} className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-[#500000] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
                                         {t(item.toLowerCase() as any) || item}
                                     </li>
                                 ))}
@@ -809,11 +804,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-white font-bold mb-8 text-lg">{language === 'bn' ? 'সমাধান' : 'Solutions'}</h3>
-                            <ul className="space-y-4 text-sm text-gray-400">
+                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{language === 'bn' ? 'সমাধান' : 'Solutions'}</h3>
+                            <ul className="space-y-3 text-sm text-gray-600">
                                 {['Services', 'Projects', 'Team'].map(item => (
                                     <li key={item} onClick={() => onNavigate(item)} className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-[#500000] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
                                         {t(item.toLowerCase() as any) || item}
                                     </li>
                                 ))}
@@ -821,8 +816,8 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-white font-bold mb-8 text-lg">{t('newsletter')}</h3>
-                            <p className="text-sm text-gray-400 mb-6">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
+                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('newsletter')}</h3>
+                            <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
                             <form onSubmit={async (e) => {
                                 e.preventDefault();
                                 const form = e.target as HTMLFormElement;
@@ -848,28 +843,19 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     toast.error('Failed to subscribe.');
                                 }
                             }} className="flex flex-col gap-3">
-                                <div className="relative group">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#500000] transition-colors" size={18} />
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        required
-                                        className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all"
-                                    />
-                                </div>
-                                <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-all shadow-lg hover:shadow-red-900/20">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
+                                <input name="email" type="email" placeholder="Enter your email" required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000]" />
+                                <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
                             </form>
                         </div>
                     </div>
 
-                    <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                    <div className="border-t border-gray-200 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
                         <p>© {new Date().getFullYear()} Rizqara Tech. All rights reserved.</p>
-                        <div className="flex gap-8 mt-4 md:mt-0">
-                            <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-white transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
-                            <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-white transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
-                            <span onClick={() => navigate('/terms-of-service')} className="cursor-pointer hover:text-white transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</span>
-                            <span onClick={() => navigate('/admin')} className="cursor-pointer hover:text-white transition-colors">{language === 'bn' ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
+                        <div className="flex gap-6 mt-4 md:mt-0">
+                            <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
+                            <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
+                            <span onClick={() => navigate('/terms-of-service')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</span>
+                            <span onClick={() => navigate('/admin')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
                         </div>
                     </div>
                 </div>

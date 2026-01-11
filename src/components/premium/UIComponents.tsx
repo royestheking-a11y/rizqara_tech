@@ -877,6 +877,15 @@ export const TestimonialSlider = () => {
     const { reviews, language } = useData();
     const [index, setIndex] = useState(0);
 
+    // Auto-change every 5 seconds
+    useEffect(() => {
+        if (reviews.length === 0) return;
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+        }, 5000); // 5 seconds
+        return () => clearInterval(interval);
+    }, [reviews.length]);
+
     return (
         <div className="relative bg-white border border-gray-200 rounded-3xl p-12 shadow-xl text-center max-w-4xl mx-auto">
             <AnimatePresence mode='wait'>
