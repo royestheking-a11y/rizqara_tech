@@ -1193,7 +1193,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                         <div className="inline-block px-4 py-1 border border-[#500000]/20 rounded-full text-[#500000] text-sm uppercase tracking-widest mb-6 backdrop-blur-md bg-white/50 font-bold shadow-sm">
                             Rizqara Tech • 2025
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-[#500000] mb-6 leading-tight drop-shadow-sm">
+                        <h1 className="text-5xl md:text-6xl font-black text-[#500000] mb-6 leading-tight drop-shadow-sm">
                             {title}
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-xl font-light leading-relaxed">
