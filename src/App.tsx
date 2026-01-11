@@ -559,7 +559,10 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             {/* 6. REAL PROJECTS PREVIEW (Carousel) */}
             <section className="w-full py-24 bg-gray-50 border-y border-gray-200">
                 <div className="container mx-auto px-6 mb-12">
-                    <SectionTitle title={t('ourProjects')} />
+                    <SectionTitle
+                        title={t('ourProjects')}
+                        subtitle={language === 'bn' ? "আমাদের সাম্প্রতিক কাজ এবং সাফল্যের গল্প দেখুন।" : "Explore our latest work and success stories delivering impact."}
+                    />
 
                     {/* Homepage Project Search */}
                     <div className="relative max-w-md md:max-w-2xl mx-auto -mt-8 mb-8 z-10">
@@ -657,7 +660,10 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 7. WHY RIZQARA (Redesigned) */}
             <section className="container mx-auto px-6">
-                <SectionTitle title={language === 'bn' ? "কেন আমাদের নির্বাচন করবেন" : "Why Choose Us"} />
+                <SectionTitle
+                    title={language === 'bn' ? "কেন আমাদের নির্বাচন করবেন" : "Why Choose Us"}
+                    subtitle={language === 'bn' ? "আমরা আপনার ব্যবসার জন্য সর্বোত্তম সমাধান প্রদান করি।" : "We deliver tailored excellence to drive your business forward."}
+                />
                 <PremiumComparison onNavigate={onNavigate} />
             </section>
 
@@ -672,14 +678,21 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 9. PACKAGES (Detailed) */}
             <section className="container mx-auto px-6">
-                <SectionTitle title={language === 'bn' ? "মূল্য নির্ধারণ প্যাকেজ" : "Pricing Packages"} center />
+                <SectionTitle
+                    title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"}
+                    subtitle={language === 'bn' ? "আপনার ব্যবসার জন্য সেরা পরিকল্পনা চয়ন করুন।" : "Choose the perfect plan for your business growth."}
+                    center
+                />
                 <PricingDetailed onNavigate={onNavigate} />
             </section>
 
             {/* 10. NEW: BLOG SECTION */}
             <section className="container mx-auto px-6">
                 <div className="flex justify-between items-end mb-12">
-                    <h2 className="text-4xl font-black text-[#500000]">{language === 'bn' ? "টেক ব্লগ" : "Tech Blog"}</h2>
+                    <SectionTitle
+                        title={language === 'bn' ? "টেক ব্লগ" : "Tech Blog"}
+                        subtitle={language === 'bn' ? "প্রযুক্তি এবং উদ্ভাবন সম্পর্কে আমাদের সর্বশেষ চিন্তা।" : "Our latest thoughts on technology, innovation, and industry trends."}
+                    />
                     <button onClick={() => onNavigate('Blog')} className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold">{t('readMore')} <ArrowRight size={16} /></button>
                 </div>
                 <LatestBlogs onNavigate={onNavigate} />
@@ -712,8 +725,12 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* NEW: OUR TECH STACK */}
             <section className="container mx-auto px-6 mb-24">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl font-black text-[#500000] mb-2">{language === 'bn' ? "আমাদের প্রযুক্তি স্ট্যাক" : "Our Tech Stack"}</h2>
+                <div className="mb-12">
+                    <SectionTitle
+                        title={language === 'bn' ? "আমাদের প্রযুক্তি স্ট্যাক" : "Our Tech Stack"}
+                        subtitle={language === 'bn' ? "আমরা সর্বোত্তম ফলাফলের জন্য আধুনিক প্রযুক্তি ব্যবহার করি।" : "We leverage cutting-edge technologies to build robust and scalable solutions."}
+                        center
+                    />
 
                 </div>
                 <AutoScrollCarousel items={
@@ -730,7 +747,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 12. FEEDBACK (Testimonials) - Separated & Carousel */}
             <section className="container mx-auto px-6">
-                <SectionTitle title={t('whatClientsSay')} center />
+                <SectionTitle
+                    title={t('whatClientsSay')}
+                    subtitle={language === 'bn' ? "আমাদের গ্রাহকরা আমাদের সম্পর্কে যা বলেন।" : "Hear from our satisfied partners and clients worldwide."}
+                    center
+                />
                 <TestimonialSlider />
             </section>
 
