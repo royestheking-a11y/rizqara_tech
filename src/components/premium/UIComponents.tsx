@@ -1759,6 +1759,7 @@ export const RizqAIBot = () => {
     ]);
     const [inputText, setInputText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [chatState, setChatState] = useState<'idle' | 'collecting_requirements'>('idle');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Local Team Data
@@ -1793,8 +1794,27 @@ export const RizqAIBot = () => {
 
             const lowerText = userText.toLowerCase();
 
-            // --- 1. ENHANCED GREETINGS ---
-            if (lowerText.match(/\b(hello|hi|hey|greetings|start|good morning|whatsup|sup|howdy)\b/)) {
+            // --- 0. PRIORITY: ACTIVE CONVERSATION FLOW ---
+            if (chatState === 'collecting_requirements') {
+                reply = language === 'bn'
+                    ? "ধন্যবাদ! আপনার প্রয়োজনীয়তা নোট করা হয়েছে। একটি বিস্তারিত কোট পেতে আমাদের টিমের সাথে এই তথ্যগুলি WhatsApp-এ শেয়ার করুন।"
+                    : "Thanks! I've noted your requirements. Based on this, I recommend discussing the details directly with our team on WhatsApp for a custom quote.";
+                type = 'button';
+                actionLabel = "Continue to WhatsApp";
+                actionLink = "https://wa.link/bx60tv";
+                setChatState('idle'); // Reset state
+            }
+
+            // --- 1. NEW INQUIRY: LEAD QUALIFICATION ---
+            else if (lowerText.match(/\b(need|want|make|build|create|looking for)\b/) && lowerText.match(/\b(website|app|software|solution|system)\b/)) {
+                reply = language === 'bn'
+                    ? "দারুণ! আমরা আপনাকে সাহায্য করতে পারি। দয়া করে আমাদের জানান:\n১. আপনি কি ধরণের ওয়েবসাইট/অ্যাপ চাচ্ছেন?\n২. আপনার বাজেট কত?\n৩. আপনার সময়সীমা কতদিন?"
+                    : "That's great! We specialize in building custom solutions. To help you better, could you please tell me:\n\n1. What type of website/app/software do you need?\n2. What is your estimated budget?\n3. What is your expected timeline?";
+                setChatState('collecting_requirements');
+            }
+
+            // --- 2. ENHANCED GREETINGS ---
+            else if (lowerText.match(/\b(hello|hi|hey|greetings|start|good morning|whatsup|sup|howdy)\b/)) {
                 const greetings = [
                     "Hello! Welcome to RizQara Tech. I'm here to help you build your next big digital product.",
                     "Hi there! Great to see you. How can I assist you with your software needs today?",
