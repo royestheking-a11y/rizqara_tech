@@ -7,6 +7,9 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust Proxy (Required for Render/Heroku to pass correct IPs)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -25,9 +28,11 @@ app.get('/', (req, res) => {
 });
 
 // Health Check Endpoint for Render Keep-Alive
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-});
+// Added aliases because /health might be rate-limited by platform
+const healthCheck = (req, res) => res.status(200).send('OK');
+app.get('/health', healthCheck);
+app.get('/ping', healthCheck);
+app.get('/api/health', healthCheck);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

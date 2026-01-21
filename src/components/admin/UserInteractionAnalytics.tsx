@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
     AreaChart,
     Area,
@@ -8,7 +8,7 @@ import {
     Tooltip,
     ResponsiveContainer
 } from 'recharts';
-import { Users, MousePointer, Activity, TrendingUp, Calendar, ArrowUpRight, ArrowDownRight, Mail, FileText } from 'lucide-react';
+import { Activity, Mail, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useData } from '../../context/DataContext';
 
@@ -133,8 +133,8 @@ export const UserInteractionAnalytics = () => {
                             key={range}
                             onClick={() => setTimeRange(range as any)}
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeRange === range
-                                    ? 'bg-white text-[#500000] shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700'
+                                ? 'bg-white text-[#500000] shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
                                 }`}
                         >
                             {range.charAt(0).toUpperCase() + range.slice(1)}

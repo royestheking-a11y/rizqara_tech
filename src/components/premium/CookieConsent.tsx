@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Cookie, X, Check, Shield, ChevronRight, Settings, Info } from 'lucide-react';
+import { Cookie, X, Shield, Settings, Info } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 
 // ... imports

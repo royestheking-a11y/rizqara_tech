@@ -1204,7 +1204,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                         <div className="inline-block px-4 py-1 border border-[#500000]/20 rounded-full text-[#500000] text-sm uppercase tracking-widest mb-6 backdrop-blur-md bg-white/50 font-bold shadow-sm">
                             Rizqara Tech • 2025
                         </div>
-                        <h1 className="text-5xl md:text-6xl font-black text-[#500000] mb-6 leading-tight drop-shadow-sm">
+                        <h1 className="text-3xl md:text-5xl font-black text-[#500000] mb-6 leading-tight drop-shadow-sm">
                             {title}
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-xl font-light leading-relaxed">
@@ -1218,16 +1218,6 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                         </button>
                     </motion.div>
                 </div>
-            </div>
-
-            {/* Controls */}
-            <div className="absolute bottom-12 right-6 md:right-12 z-30 flex gap-4">
-                <button onClick={() => setCurrent((prev) => (prev - 1 + slides.length) % slides.length)} className="p-4 rounded-full border border-white/50 text-white hover:bg-white hover:text-[#500000] transition-colors bg-black/10 backdrop-blur-md">
-                    <ChevronLeft size={24} />
-                </button>
-                <button onClick={() => setCurrent((prev) => (prev + 1) % slides.length)} className="p-4 rounded-full border border-white/50 text-white hover:bg-white hover:text-[#500000] transition-colors bg-black/10 backdrop-blur-md">
-                    <ChevronRight size={24} />
-                </button>
             </div>
 
             {/* Indicators */}
