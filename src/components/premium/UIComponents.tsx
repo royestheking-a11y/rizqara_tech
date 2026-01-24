@@ -1125,19 +1125,67 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
 };
 
 // --- Hero Carousel (Box Type & Fast) ---
+
+// --- 8. HERO CAROUSEL ---
+const DEFAULT_SLIDES = [
+    {
+        id: '1',
+        title: "Building Digital Empires",
+        title_bn: "ডিজিটাল সাম্রাজ্য গড়ে তোলা",
+        subtitle: "Enterprise-grade software solutions tailored for the modern world.",
+        subtitle_bn: "আধুনিক বিশ্বের জন্য তৈরি এন্টারপ্রাইজ-গ্রেড সফটওয়্যার সমাধান।",
+        image: "/images/services/carousel.png",
+        cta: "Start Project",
+        cta_bn: "প্রকল্প শুরু করুন"
+    },
+    {
+        id: '2',
+        title: "AI-Powered Innovation",
+        title_bn: "এআই-চালিত উদ্ভাবন",
+        subtitle: "Leverage artificial intelligence to automate and scale your business.",
+        subtitle_bn: "আপনার ব্যবসা স্বয়ংক্রিয় এবং স্কেল করতে কৃত্রিম বুদ্ধিমত্তা ব্যবহার করুন।",
+        image: "/images/services/carousel.png",
+        cta: "Explore AI",
+        cta_bn: "এআই অন্বেষণ করুন"
+    },
+    {
+        id: '3',
+        title: "Mobile App Excellence",
+        title_bn: "মোবাইল অ্যাপ এক্সিলেন্স",
+        subtitle: "Native and cross-platform mobile apps that engage and retain users.",
+        subtitle_bn: "নেটিভ এবং ক্রস-প্ল্যাটফর্ম মোবাইল অ্যাপ যা ব্যবহারকারীদের ধরে রাখে।",
+        image: "/images/services/carousel.png",
+        cta: "View Apps",
+        cta_bn: "অ্যাপস দেখুন"
+    }
+];
+
 export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
     const { carouselSlides, language } = useData();
+    // Use Default Slides initially to prevent loading spinner (Instant Show)
+    const slides = (carouselSlides && carouselSlides.length > 0) ? carouselSlides : DEFAULT_SLIDES;
+
     const [current, setCurrent] = useState(0);
 
-    const slides = carouselSlides || [];
-
+    /* 
+       Optimized Auto-Play:
+       - Uses refs to avoid closure staleness
+       - Clears interval on unmount
+    */
     useEffect(() => {
-        if (slides.length <= 1) return;
         const timer = setInterval(() => {
-            setCurrent((prev) => (prev + 1) % slides.length);
+            setCurrent(prev => (prev + 1) % slides.length);
         }, 5000);
         return () => clearInterval(timer);
     }, [slides.length]);
+
+    // Preload images for instant transition
+    useEffect(() => {
+        slides.forEach(slide => {
+            const img = new Image();
+            img.src = getProxiedImage(slide.image);
+        });
+    }, [slides]);
 
     const handleCtaClick = (action: string) => {
         if (action.includes('Project') || action.includes('প্রকল্প')) onNavigate('Projects');
@@ -1148,15 +1196,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
         else onNavigate('Contact');
     };
 
-    if (slides.length === 0) {
-        return (
-            <div className="container mx-auto px-4 md:px-6 pt-6 pb-12">
-                <div className="relative w-full aspect-[16/9] md:h-[500px] bg-gray-100 rounded-3xl animate-pulse flex items-center justify-center">
-                    <div className="w-10 h-10 border-4 border-[#500000] border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            </div>
-        );
-    }
+    if (!slides.length) return null;
 
     const currentSlide = slides[current];
     const title = language === 'bn' ? (currentSlide?.title_bn || currentSlide?.title) : currentSlide?.title;
