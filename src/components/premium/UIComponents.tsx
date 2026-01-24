@@ -465,7 +465,7 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
 
                                 {/* Hover Cue */}
                                 <div className={`flex items-center gap-2 mt-6 opacity-0 group-hover:opacity-100 transition-opacity text-sm ${isMaroon ? 'text-white' : 'text-[#500000]'}`}>
-                                    {language === 'bn' ? 'আরও পড়তে ক্লিক করুন' : 'Click to Read More'} <ArrowRight size={12} />
+                                    {language === 'bn' ? 'আরও পড়তে ক্লিক করুন' : 'Click to Read More'}
                                 </div>
                             </motion.div>
                         );
@@ -979,7 +979,6 @@ export const PremiumComparison = ({ onNavigate }: { onNavigate: (page: string, i
 
                     {/* Corner Accent */}
                     <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
-                        <ArrowRight className="text-[#500000]" />
                     </div>
                 </div>
             ))}
@@ -1125,7 +1124,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
     );
 };
 
-// --- Hero Carousel ---
+// --- Hero Carousel (Box Type & Fast) ---
 export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
     const { carouselSlides, language } = useData();
     const [current, setCurrent] = useState(0);
@@ -1133,25 +1132,14 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
     const slides = carouselSlides || [];
 
     useEffect(() => {
+        if (slides.length <= 1) return;
         const timer = setInterval(() => {
-            if (slides.length > 0) {
-                setCurrent((prev) => (prev + 1) % slides.length);
-            }
+            setCurrent((prev) => (prev + 1) % slides.length);
         }, 5000);
         return () => clearInterval(timer);
     }, [slides.length]);
 
-    if (slides.length === 0) {
-        return (
-            <div className="relative h-[90vh] w-full overflow-hidden bg-gray-50 animate-pulse flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-[#500000] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-        );
-    }
-
     const handleCtaClick = (action: string) => {
-        // Map localized action back to English action for logic if needed, or just handle navigation
-        // For simplicity, just navigate to Contact unless specific keywords match
         if (action.includes('Project') || action.includes('প্রকল্প')) onNavigate('Projects');
         else if (action.includes('Service') || action.includes('সেবা')) onNavigate('Services');
         else if (action.includes('Package') || action.includes('প্যাকেজ')) onNavigate('Packages');
@@ -1160,77 +1148,85 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
         else onNavigate('Contact');
     };
 
+    if (slides.length === 0) {
+        return (
+            <div className="container mx-auto px-4 md:px-6 pt-6 pb-12">
+                <div className="relative w-full aspect-[16/9] md:h-[500px] bg-gray-100 rounded-3xl animate-pulse flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-[#500000] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        );
+    }
+
     const currentSlide = slides[current];
     const title = language === 'bn' ? (currentSlide?.title_bn || currentSlide?.title) : currentSlide?.title;
     const subtitle = language === 'bn' ? (currentSlide?.subtitle_bn || currentSlide?.subtitle) : currentSlide?.subtitle;
     const cta = language === 'bn' ? (currentSlide?.cta_bn || currentSlide?.cta || 'Contact Now') : (currentSlide?.cta || 'Contact Now');
 
     return (
-        <div className="relative h-[90vh] w-full overflow-hidden bg-white">
-            <AnimatePresence mode='wait'>
-                <motion.div
-                    key={current}
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1.5 }}
-                    className="absolute inset-0"
-                >
-                    {/* Gradient Overlay: White -> Transparent */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
+        <section className="container mx-auto px-4 md:px-6 pt-32 pb-12"> {/* Added pt-32 to clear fixed navbar */}
+            <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-900 group border border-gray-200">
+                {/* Fixed Aspect Ratio Container */}
+                <div className="relative w-full h-[500px] md:h-[600px] lg:h-[650px]">
 
-                    <img
-                        src={getProxiedImage(currentSlide.image)}
-                        alt={title}
-                        loading="eager"
-                        fetchPriority="high"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                            console.error('Failed to load image:', currentSlide.image);
-                            e.currentTarget.style.display = 'none';
-                        }}
-                    />
-                </motion.div>
-            </AnimatePresence>
-
-            <div className="absolute inset-0 z-20 container mx-auto px-6 flex items-center">
-                <div className="max-w-3xl pt-20">
-                    <motion.div
-                        key={`text-${current}`}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
-                    >
-                        <div className="inline-block px-4 py-1 border border-[#500000]/20 rounded-full text-[#500000] text-sm uppercase tracking-widest mb-6 backdrop-blur-md bg-white/50 font-bold shadow-sm">
-                            Rizqara Tech • 2025
-                        </div>
-                        <h1 className="text-3xl md:text-5xl font-black text-[#500000] mb-6 leading-tight drop-shadow-sm">
-                            {title}
-                        </h1>
-                        <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-xl font-light leading-relaxed">
-                            {subtitle}
-                        </p>
-                        <button
-                            onClick={() => handleCtaClick(currentSlide.cta || 'Contact Now')}
-                            className="bg-[#500000] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#3a0000] transition-all flex items-center gap-3 shadow-[0_10px_30px_rgba(80,0,0,0.3)] hover:-translate-y-1"
+                    {/* Images */}
+                    {slides.map((slide, idx) => (
+                        <div
+                            key={slide.id || idx}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${current === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                         >
-                            {cta} <ArrowRight size={20} />
-                        </button>
-                    </motion.div>
+                            <img
+                                src={getProxiedImage(slide.image)}
+                                alt={slide.title}
+                                loading={idx === 0 ? "eager" : "lazy"}
+                                className="w-full h-full object-cover"
+                            />
+                            {/* Stronger Gradient Overlay for Text Readability */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent opacity-60" />
+                        </div>
+                    ))}
+
+                    {/* Content Layer */}
+                    <div className="absolute inset-0 z-20 flex flex-col justify-end md:justify-center p-8 md:p-16 lg:p-24 pb-16 md:pb-16 text-left pointer-events-none">
+                        <div className="max-w-3xl pointer-events-auto">
+                            <span className="inline-block px-3 py-1 bg-[#500000]/90 backdrop-blur-md border border-[#500000] rounded-full text-white text-xs font-bold uppercase tracking-widest mb-4 shadow-lg">
+                                Rizqara Tech
+                            </span>
+
+                            {/* Text Transition */}
+                            <div className="transition-all duration-500 ease-out transform translate-y-0 opacity-100">
+                                <h1 key={`t-${current}`} className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight animate-in fade-in slide-in-from-bottom-4 duration-500 drop-shadow-lg">
+                                    {title}
+                                </h1>
+                                <p key={`s-${current}`} className="text-lg md:text-xl text-white/90 mb-8 max-w-xl font-light leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-500 delay-100 drop-shadow-md">
+                                    {subtitle}
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() => handleCtaClick(currentSlide.cta || 'Contact Now')}
+                                className="bg-[#500000] text-white px-8 py-4 rounded-full font-bold text-base md:text-lg hover:bg-[#3a0000] transition-all flex items-center gap-2 shadow-[0_10px_20px_rgba(80,0,0,0.4)] hover:-translate-y-1 active:translate-y-0 border border-white/10"
+                            >
+                                {cta}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Indicators */}
+                    <div className="absolute bottom-6 md:bottom-10 right-6 md:right-10 z-30 flex gap-2">
+                        {slides.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrent(idx)}
+                                className={`h-2 rounded-full transition-all duration-300 ${current === idx ? 'w-8 bg-[#500000]' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
-
-            {/* Indicators */}
-            <div className="absolute bottom-12 left-6 md:left-12 z-30 flex gap-3">
-                {slides.map((_, idx) => (
-                    <div
-                        key={idx}
-                        onClick={() => setCurrent(idx)}
-                        className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${current === idx ? 'w-12 bg-[#500000]' : 'w-4 bg-gray-300 hover:bg-[#500000]/50'}`}
-                    />
-                ))}
-            </div>
-        </div>
+        </section>
     );
 };
 
@@ -1332,7 +1328,7 @@ export const BuildPreviewTeaser = ({ onNavigate, setBuildConfig }: any) => {
                             onClick={handleGenerate}
                             className="w-full md:w-auto px-8 py-4 bg-[#500000] hover:bg-[#3a0000] text-white rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-3 shadow-lg group"
                         >
-                            {language === 'bn' ? 'প্রকল্প তৈরি করুন' : 'Generate Project'} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            {language === 'bn' ? 'প্রকল্প তৈরি করুন' : 'Generate Project'}
                         </button>
                     </div>
                 </div>
@@ -1433,7 +1429,7 @@ export const BuildPage = ({ onNavigate, initialConfig }: { onNavigate: (page: st
                                 onClick={handlePurchase}
                                 className={`w-full py-4 rounded-xl font-bold text-lg transition-colors flex justify-center items-center gap-2 bg-white text-[#500000] hover:bg-gray-100`}
                             >
-                                {language === 'bn' ? 'অনুরোধ জমা দিন' : 'Submit Request'} <ArrowRight size={18} />
+                                {language === 'bn' ? 'অনুরোধ জমা দিন' : 'Submit Request'}
                             </button>
                         </div>
                         <div className="absolute top-0 right-0 p-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/20 transition-colors" />

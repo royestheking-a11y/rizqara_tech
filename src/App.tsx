@@ -22,20 +22,13 @@ import { SEO } from './components/SEO';
 import { partners } from './data/partners';
 import { techStack } from './data/techStack';
 import {
-    StatsCounter,
+    Carousel, AutoScrollCarousel, StatsCounter,
     JourneyRoadmap,
     HeroCarousel, BuildPreviewTeaser, BuildPage,
     PricingDetailed, LatestVideos, LatestBlogs,
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail
 } from './components/premium/UIComponents';
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "./components/ui/carousel";
 import { BlogPage, CareersPage, VideosPage, TeamPage, BlogDetail, TeamSection } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
@@ -507,29 +500,15 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             {/* 3. TRUSTED COMPANIES */}
             <section className="container mx-auto px-6">
                 <h2 className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</h2>
-                <div className="px-12 relative group/partners">
-                    <Carousel
-                        opts={{
-                            align: "start",
-                            loop: true,
-                        }}
-                        className="w-full max-w-7xl mx-auto"
-                    >
-                        <CarouselContent className="-ml-2 md:-ml-4">
-                            {partners.map((partner, i) => (
-                                <CarouselItem key={i} className="pl-2 md:pl-4 basis-1/2 md:basis-1/4 lg:basis-1/6">
-                                    <div className="flex items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all h-24 grayscale hover:grayscale-0 opacity-70 hover:opacity-100 group">
-                                        <div className="h-8 w-auto flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                                            {partner.logo}
-                                        </div>
-                                    </div>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="hidden md:flex -left-12 border-none bg-transparent hover:bg-transparent text-gray-300 hover:text-[#500000]" />
-                        <CarouselNext className="hidden md:flex -right-12 border-none bg-transparent hover:bg-transparent text-gray-300 hover:text-[#500000]" />
-                    </Carousel>
-                </div>
+                <AutoScrollCarousel items={
+                    partners.map((partner, i) => (
+                        <div key={i} className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[140px]">
+                            <div className="h-10 w-auto flex items-center justify-center">
+                                {partner.logo}
+                            </div>
+                        </div>
+                    ))
+                } />
             </section>
 
             {/* 4. SERVICES */}
@@ -631,65 +610,52 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                    I'll modify the top of App to add `const [homeProjectSearch, setHomeProjectSearch] = useState("");`
                    and use it here.
                 */}
-                <div className="px-4 md:px-12 relative group/projects">
-                    <Carousel
-                        opts={{
-                            align: "start",
-                            loop: true,
-                        }}
-                        className="w-full max-w-[1400px] mx-auto"
-                    >
-                        <CarouselContent className="-ml-4">
-                            {projects.map(project => {
-                                const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
-                                const category = language === 'bn' ? (project.category_bn || project.category) : project.category;
+                <Carousel className="pl-6 md:pl-[max(2rem,calc((100vw-1400px)/2+2rem))]">
+                    {projects.map(project => {
+                        const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
+                        const category = language === 'bn' ? (project.category_bn || project.category) : project.category;
 
-                                return (
-                                    <CarouselItem key={project.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                        <div
-                                            onClick={() => onNavigate('ProjectDetail', project.id)}
-                                            className="group relative cursor-pointer project-card bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col"
-                                            data-title={title.toLowerCase()}
-                                        >
-                                            <div className="aspect-[4/3] overflow-hidden relative">
-                                                <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-
-                                                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-[-10px] group-hover:translate-y-0">
-                                                    {project.link && (
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                            className="p-2.5 bg-white/20 backdrop-blur-md text-white rounded-full hover:bg-white hover:text-[#500000] transition-all shadow-lg border border-white/20"
-                                                            title="View Live"
-                                                        >
-                                                            <ExternalLink size={16} />
-                                                        </button>
-                                                    )}
+                        return (
+                            <div
+                                key={project.id}
+                                onClick={() => onNavigate('ProjectDetail', project.id)}
+                                className="w-[85vw] md:w-[400px] shrink-0 group relative cursor-pointer project-card"
+                                data-title={title.toLowerCase()}
+                            >
+                                <div className="aspect-video rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
+                                    <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                                    <div className="absolute bottom-0 left-0 p-8 w-full">
+                                        <div className="flex justify-between items-end">
+                                            <div>
+                                                <h3 className="text-2xl font-bold text-white mb-1">{title}</h3>
+                                                <p className="text-white/70 text-sm">{category}</p>
+                                            </div>
+                                            <div className="flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0">
+                                                {project.link && (
                                                     <button
-                                                        onClick={(e) => { e.stopPropagation(); handleShare(project); }}
-                                                        className="p-2.5 bg-white/20 backdrop-blur-md text-white rounded-full hover:bg-white hover:text-[#500000] transition-all shadow-lg border border-white/20"
-                                                        title="Share"
+                                                        onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
+                                                        className="p-3 bg-white text-[#500000] rounded-full hover:bg-gray-100 transition-colors shadow-lg"
+                                                        title="View Live"
                                                     >
-                                                        <Share2 size={16} />
+                                                        <ExternalLink size={18} />
                                                     </button>
-                                                </div>
-
-                                                <div className="absolute bottom-0 left-0 p-8 w-full">
-                                                    <span className="inline-block px-3 py-1 rounded-full bg-[#500000] text-white text-[10px] font-bold uppercase tracking-wider mb-3 shadow-lg">
-                                                        {category}
-                                                    </span>
-                                                    <h3 className="text-2xl font-bold text-white mb-2 leading-tight group-hover:text-red-50 transition-colors">{title}</h3>
-                                                </div>
+                                                )}
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleShare(project); }}
+                                                    className="p-3 bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-full hover:bg-white/30 transition-colors shadow-lg"
+                                                    title="Share"
+                                                >
+                                                    <Share2 size={18} />
+                                                </button>
                                             </div>
                                         </div>
-                                    </CarouselItem>
-                                )
-                            })}
-                        </CarouselContent>
-                        <CarouselPrevious className="hidden md:flex -left-12 w-12 h-12 border border-gray-200 bg-white hover:bg-[#500000] hover:text-white" />
-                        <CarouselNext className="hidden md:flex -right-12 w-12 h-12 border border-gray-200 bg-white hover:bg-[#500000] hover:text-white" />
-                    </Carousel>
-                </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </Carousel>
             </section>
 
             {/* 7. WHY RIZQARA (Redesigned) */}
@@ -767,30 +733,16 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     />
 
                 </div>
-                <div className="px-12 relative group/tech">
-                    <Carousel
-                        opts={{
-                            align: "start",
-                            loop: true,
-                        }}
-                        className="w-full max-w-7xl mx-auto"
-                    >
-                        <CarouselContent className="-ml-2 md:-ml-4">
-                            {techStack.map((tech, i) => (
-                                <CarouselItem key={i} className="pl-2 md:pl-4 basis-1/3 md:basis-1/4 lg:basis-1/6">
-                                    <div className="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl hover:border-[#500000]/20 hover:shadow-lg transition-all group h-32 cursor-pointer" title={tech.name}>
-                                        <div className="h-10 w-auto flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 mb-3 grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100">
-                                            {tech.logo}
-                                        </div>
-                                        <span className="text-xs font-bold text-gray-400 group-hover:text-gray-900 transition-colors">{tech.name}</span>
-                                    </div>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="hidden md:flex -left-12 border-none bg-transparent hover:bg-transparent text-gray-300 hover:text-[#500000]" />
-                        <CarouselNext className="hidden md:flex -right-12 border-none bg-transparent hover:bg-transparent text-gray-300 hover:text-[#500000]" />
-                    </Carousel>
-                </div>
+                <AutoScrollCarousel items={
+                    techStack.map((tech, i) => (
+                        <div key={i} className="flex flex-col items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[100px] group cursor-pointer" title={tech.name}>
+                            <div className="h-12 w-auto flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                                {tech.logo}
+                            </div>
+                            <span className="text-xs font-bold text-gray-400 group-hover:text-gray-900 transition-colors mt-2 opacity-0 group-hover:opacity-100">{tech.name}</span>
+                        </div>
+                    ))
+                } />
             </section>
 
             {/* 12. FEEDBACK (Testimonials) - Separated & Carousel */}
