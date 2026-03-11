@@ -2144,7 +2144,7 @@ export const ProjectsSkeleton = () => (
         </div>
         <div className="flex gap-6 px-6 overflow-hidden">
             {[1, 2, 3, 4].map(i => (
-                <div key={i} className="min-w-[320px] md:min-w-[320px] bg-white rounded-3xl border border-gray-100 overflow-hidden">
+                <div key={i} className="min-w-[280px] md:min-w-[280px] bg-white rounded-3xl border border-gray-100 overflow-hidden">
                     <Skeleton className="w-full h-64 rounded-none" />
                     <div className="p-8">
                         <Skeleton className="w-24 h-4 mb-3" />

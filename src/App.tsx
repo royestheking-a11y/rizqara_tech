@@ -625,7 +625,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[320px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[280px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
                                 <div className="aspect-video relative overflow-hidden">
