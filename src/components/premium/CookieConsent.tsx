@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Cookie, X, Shield, Settings, Info } from 'lucide-react';
 import { useData } from '../../context/DataContext';
+import { SEO } from '../SEO';
 
 // ... imports
 
@@ -59,6 +60,10 @@ export const CookieConsent = () => {
     <AnimatePresence>
       {isVisible && (
         <>
+          <SEO 
+            title={language === 'bn' ? 'কুকি সেটিংস | RizQara Tech - সফটওয়্যার কোম্পানি' : 'Cookie Settings | RizQara Tech - Software Company'} 
+            description={language === 'bn' ? 'রিজকারা টেকের কুকি সেটিংস পরিচালনা করুন। সেরা সফটওয়্যার কোম্পানি হিসেবে আমরা আপনার অনলাইন গোপনীয়তাকে গুরুত্ব দেই।' : 'Manage your cookie settings at RizQara Tech. As a leading software company, we value your privacy and security.'}
+          />
           {showDetails && (
             <motion.div
               initial={{ opacity: 0 }}

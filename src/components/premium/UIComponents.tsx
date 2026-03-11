@@ -2113,7 +2113,30 @@ export const HeroSkeleton = () => (
     </div>
 );
 
-export const ServicesSkeleton = () => (
+export const WhyChooseUsSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="text-center mb-16">
+            <Skeleton className="w-64 h-10 mx-auto mb-4" />
+            <Skeleton className="w-full max-w-2xl h-6 mx-auto" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-6">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="flex gap-4 p-6 bg-gray-50 rounded-2xl">
+                        <Skeleton className="w-12 h-12 rounded-xl shrink-0" />
+                        <div className="space-y-2 flex-1">
+                            <Skeleton className="w-1/3 h-6" />
+                            <Skeleton className="w-full h-4" />
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <Skeleton className="w-full h-[500px] rounded-3xl" />
+        </div>
+    </section>
+);
+
+export const VideosSkeleton = () => (
     <section className="container mx-auto px-6 py-24">
         <div className="flex justify-between items-end mb-12">
             <div>
@@ -2122,37 +2145,90 @@ export const ServicesSkeleton = () => (
             </div>
             <Skeleton className="w-24 h-6" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white border border-gray-100 rounded-3xl p-8 h-80">
-                    <Skeleton className="w-12 h-12 mb-6" />
-                    <Skeleton className="w-3/4 h-8 mb-4" />
-                    <Skeleton className="w-full h-4 mb-2" />
-                    <Skeleton className="w-full h-4 mb-2" />
-                    <Skeleton className="w-2/3 h-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[1, 2].map(i => (
+                <div key={i} className="space-y-4">
+                    <Skeleton className="w-full aspect-video rounded-3xl" />
+                    <Skeleton className="w-3/4 h-8" />
+                    <Skeleton className="w-full h-4" />
                 </div>
             ))}
         </div>
     </section>
 );
 
-export const ProjectsSkeleton = () => (
-    <section className="w-full py-24 bg-gray-50">
-        <div className="container mx-auto px-6 mb-12">
-            <Skeleton className="w-48 h-10 mb-4" />
-            <Skeleton className="w-64 h-6" />
+export const PackagesSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="text-center mb-16">
+            <Skeleton className="w-48 h-10 mx-auto mb-4" />
+            <Skeleton className="w-64 h-6 mx-auto" />
         </div>
-        <div className="flex gap-8 px-6 overflow-hidden">
-            {[1, 2, 3, 4].map(i => (
-                <div key={i} className="min-w-[320px] md:min-w-[400px] bg-white rounded-3xl border border-gray-100 overflow-hidden">
-                    <Skeleton className="w-full h-64 rounded-none" />
-                    <div className="p-8">
-                        <Skeleton className="w-24 h-4 mb-3" />
-                        <Skeleton className="w-3/4 h-10 mb-5" />
-                        <Skeleton className="w-full h-4 mb-2" />
-                        <Skeleton className="w-2/3 h-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="p-8 bg-white border border-gray-100 rounded-3xl h-[600px] space-y-6">
+                    <Skeleton className="w-20 h-20 rounded-2xl mx-auto" />
+                    <Skeleton className="w-1/2 h-8 mx-auto" />
+                    <Skeleton className="w-3/4 h-6 mx-auto" />
+                    <div className="space-y-3 pt-8">
+                        {[1, 2, 3, 4, 5].map(j => <Skeleton key={j} className="w-full h-4" />)}
                     </div>
+                    <Skeleton className="w-full h-14 rounded-full mt-auto" />
                 </div>
+            ))}
+        </div>
+    </section>
+);
+
+export const BlogSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="flex justify-between items-end mb-12">
+            <div>
+                <Skeleton className="w-48 h-10 mb-4" />
+                <Skeleton className="w-64 h-6" />
+            </div>
+            <Skeleton className="w-24 h-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="space-y-4">
+                    <Skeleton className="w-full aspect-[16/10] rounded-2xl" />
+                    <Skeleton className="w-24 h-4" />
+                    <Skeleton className="w-full h-8" />
+                    <Skeleton className="w-full h-12" />
+                </div>
+            ))}
+        </div>
+    </section>
+);
+
+export const StatsSkeleton = () => (
+    <section className="py-24 bg-gray-50 border-y border-gray-100">
+        <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+                <Skeleton className="w-64 h-10 mx-auto mb-4" />
+                <Skeleton className="w-full max-w-xl h-6 mx-auto" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="p-8 bg-white rounded-3xl border border-gray-100 text-center space-y-3">
+                        <Skeleton className="w-16 h-12 mx-auto" />
+                        <Skeleton className="w-full h-4 mx-auto" />
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
+);
+
+export const TechStackSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="text-center mb-16">
+            <Skeleton className="w-64 h-10 mx-auto mb-4" />
+            <Skeleton className="w-full max-w-xl h-6 mx-auto" />
+        </div>
+        <div className="flex justify-center gap-12 grayscale opacity-30">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+                <Skeleton key={i} className="w-24 h-12 rounded-lg" />
             ))}
         </div>
     </section>
@@ -2170,6 +2246,12 @@ export const HomeSkeleton = () => {
             </div>
             <ServicesSkeleton />
             <ProjectsSkeleton />
+            <WhyChooseUsSkeleton />
+            <VideosSkeleton />
+            <PackagesSkeleton />
+            <BlogSkeleton />
+            <StatsSkeleton />
+            <TechStackSkeleton />
         </div>
     );
 };
