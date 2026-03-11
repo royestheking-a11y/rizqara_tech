@@ -589,30 +589,30 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[360px] shrink-0 group relative cursor-pointer project-card bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[400px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
-                                <div className="aspect-video relative overflow-hidden">
+                                <div className="h-64 relative overflow-hidden">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-6">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div className="flex-1 pr-3">
+                                <div className="p-8">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex-1 pr-4">
                                             <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
+                                            <h3 className="text-2xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
                                         </div>
                                         {project.link && (
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                className="p-2 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
+                                                className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
                                                 title="View Live"
                                             >
-                                                <ExternalLink size={16} />
+                                                <ExternalLink size={20} />
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-gray-500 text-sm line-clamp-2 font-medium leading-relaxed">
+                                    <p className="text-gray-500 text-sm line-clamp-3 font-medium leading-relaxed">
                                         {language === 'bn' ? project.description_bn : project.description}
                                     </p>
                                 </div>

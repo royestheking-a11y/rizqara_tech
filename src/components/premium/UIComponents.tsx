@@ -2144,11 +2144,11 @@ export const ProjectsSkeleton = () => (
         </div>
         <div className="flex gap-8 px-6 overflow-hidden">
             {[1, 2, 3, 4].map(i => (
-                <div key={i} className="min-w-[320px] md:min-w-[360px] bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                    <Skeleton className="w-full aspect-video rounded-none" />
-                    <div className="p-6">
+                <div key={i} className="min-w-[320px] md:min-w-[400px] bg-white rounded-3xl border border-gray-100 overflow-hidden">
+                    <Skeleton className="w-full h-64 rounded-none" />
+                    <div className="p-8">
                         <Skeleton className="w-24 h-4 mb-3" />
-                        <Skeleton className="w-3/4 h-8 mb-4" />
+                        <Skeleton className="w-3/4 h-10 mb-5" />
                         <Skeleton className="w-full h-4 mb-2" />
                         <Skeleton className="w-2/3 h-4" />
                     </div>
