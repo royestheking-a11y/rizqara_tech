@@ -2110,7 +2110,49 @@ export const HeroSkeleton = () => (
                 <Skeleton className="w-40 h-14 rounded-full" />
             </div>
         </div>
-    </div>
+export const ServicesSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="flex justify-between items-end mb-12">
+            <div>
+                <Skeleton className="w-48 h-10 mb-4" />
+                <Skeleton className="w-64 h-6" />
+            </div>
+            <Skeleton className="w-24 h-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white border border-gray-100 rounded-3xl p-8 h-80">
+                    <Skeleton className="w-12 h-12 mb-6" />
+                    <Skeleton className="w-3/4 h-8 mb-4" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-2/3 h-4" />
+                </div>
+            ))}
+        </div>
+    </section>
+);
+
+export const ProjectsSkeleton = () => (
+    <section className="w-full py-24 bg-gray-50">
+        <div className="container mx-auto px-6 mb-12">
+            <Skeleton className="w-48 h-10 mb-4" />
+            <Skeleton className="w-64 h-6" />
+        </div>
+        <div className="flex gap-8 px-6 overflow-hidden">
+            {[1, 2, 3, 4].map(i => (
+                <div key={i} className="min-w-[320px] md:min-w-[400px] bg-white rounded-3xl border border-gray-100 overflow-hidden">
+                    <Skeleton className="w-full h-64 rounded-none" />
+                    <div className="p-8">
+                        <Skeleton className="w-24 h-4 mb-3" />
+                        <Skeleton className="w-3/4 h-10 mb-5" />
+                        <Skeleton className="w-full h-4 mb-2" />
+                        <Skeleton className="w-2/3 h-4" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    </section>
 );
 
 export const WhyChooseUsSkeleton = () => (
