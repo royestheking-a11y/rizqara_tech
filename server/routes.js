@@ -135,36 +135,9 @@ router.get('/rss', async (req, res) => {
         </item>`;
         });
 
-        const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" 
-    xmlns:content="http://purl.org/rss/1.0/modules/content/"
-    xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:atom="http://www.w3.org/2005/Atom"
-    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-    xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-    xmlns:media="http://search.yahoo.com/mrss/">
-<channel>
-    <title>RizQara Tech | Latest Insights & Projects</title>
-    <atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" />
-    <link>${siteUrl}</link>
-    <description>Enterprise-grade software, AI, and digital solutions from RizQara Tech.</description>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <language>en-US</language>
-    <sy:updatePeriod>hourly</sy:updatePeriod>
-    <sy:updateFrequency>1</sy:updateFrequency>
-    <image>
-        <url>${logoUrl}</url>
-        <title>RizQara Tech | Latest Insights & Projects</title>
-        <link>${siteUrl}</link>
-        <width>32</width>
-        <height>32</height>
-    </image>
-    ${rssItems}
-</channel>
-</rss>`;
+        const rssFeed = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/"><channel><title>RizQara Tech | Latest Insights &amp; Projects</title><atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" /><link>${siteUrl}</link><description>Enterprise-grade software, AI, and digital solutions from RizQara Tech.</description><lastBuildDate>${new Date().toUTCString()}</lastBuildDate><language>en-US</language><sy:updatePeriod xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">hourly</sy:updatePeriod><sy:updateFrequency xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">1</sy:updateFrequency><image><url>${logoUrl}</url><title>RizQara Tech | Latest Insights &amp; Projects</title><link>${siteUrl}</link></image>${rssItems}</channel></rss>`;
 
-        res.set('Content-Type', 'application/rss+xml; charset=utf-8');
+        res.set('Content-Type', 'text/xml; charset=utf-8');
         res.send(rssFeed.trim());
     } catch (err) {
         console.error('RSS Generation Error:', err);
