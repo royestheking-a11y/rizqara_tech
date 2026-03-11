@@ -625,39 +625,32 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[280px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[300px] shrink-0 group relative cursor-pointer project-card bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
-                                <div className="aspect-video relative overflow-hidden">
+                                <div className="h-44 relative overflow-hidden">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-8">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="flex-1 pr-4">
-                                            <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-2xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
+                                <div className="p-5">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className="flex-1 pr-2">
+                                            <div className="text-[10px] font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
+                                            <h3 className="text-lg font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-1.5">
                                             {project.link && (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                    className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
+                                                    className="p-2 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
                                                     title="View Live"
                                                 >
-                                                    <ExternalLink size={18} />
+                                                    <ExternalLink size={14} />
                                                 </button>
                                             )}
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); handleShare(project); }}
-                                                className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
-                                                title="Share"
-                                            >
-                                                <Share2 size={18} />
-                                            </button>
                                         </div>
                                     </div>
-                                    <p className="text-gray-500 text-sm line-clamp-2 font-medium leading-relaxed">
+                                    <p className="text-gray-500 text-xs line-clamp-2 font-medium leading-relaxed">
                                         {language === 'bn' ? project.description_bn : project.description}
                                     </p>
                                 </div>
@@ -1074,7 +1067,7 @@ const ProjectsPage = () => {
             </div>
 
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence mode="popLayout">
                     {filteredProjects.length > 0 ? (
                         filteredProjects.map(p => {
@@ -1090,16 +1083,16 @@ const ProjectsPage = () => {
                                     transition={{ duration: 0.3 }}
                                     key={p.id}
                                     onClick={() => navigate(`/projects/${p.id}`)}
-                                    className="group cursor-pointer bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                    className="group cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                                 >
-                                    <div className="aspect-video relative overflow-hidden">
+                                    <div className="h-44 relative overflow-hidden">
                                         <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
-                                    <div className="p-8">
-                                        <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                        <h3 className="text-2xl font-bold text-[#500000] mb-3 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight">{title}</h3>
-                                        <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                    <div className="p-5">
+                                        <div className="text-[10px] font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
+                                        <h3 className="text-lg font-bold text-[#500000] mb-2 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight">{title}</h3>
+                                        <p className="text-gray-500 line-clamp-2 text-xs font-medium leading-relaxed">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
                                     </div>
                                 </motion.div>
                             )
