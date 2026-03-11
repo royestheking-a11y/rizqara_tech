@@ -144,6 +144,18 @@ router.get('/rss', async (req, res) => {
 });
 
 // --- TRANSLATE ROUTE ---
+router.post('/translate', async (req, res) => {
+    const { text, to = 'bn' } = req.body;
+    if (!text) return res.status(400).json({ error: 'Text is required' });
+
+    try {
+        const result = await translate(text, { to });
+        res.json({ translatedText: result.text });
+    } catch (err) {
+        console.error('Translation error:', err);
+        res.status(500).json({ error: 'Translation failed' });
+    }
+});
 
 // --- GENERIC CRUD ROUTES ---
 
