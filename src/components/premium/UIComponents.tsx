@@ -2110,6 +2110,9 @@ export const HeroSkeleton = () => (
                 <Skeleton className="w-40 h-14 rounded-full" />
             </div>
         </div>
+    </div>
+);
+
 export const ServicesSkeleton = () => (
     <section className="container mx-auto px-6 py-24">
         <div className="flex justify-between items-end mb-12">
