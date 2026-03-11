@@ -86,19 +86,64 @@ router.get('/proxy-image', (req, res) => {
     }
 });
 
-// --- TRANSLATE ROUTE ---
-router.post('/translate', async (req, res) => {
-    const { text, to = 'bn' } = req.body;
-    if (!text) return res.status(400).json({ error: 'Text is required' });
-
+// --- RSS FEED ROUTE ---
+router.get('/rss', async (req, res) => {
     try {
-        const result = await translate(text, { to });
-        res.json({ translatedText: result.text });
+        const blogs = await Blog.find().sort({ date: -1 }).limit(20);
+        const projects = await Project.find().sort({ createdAt: -1 }).limit(10);
+
+        const siteUrl = 'https://rizqara.tech';
+        
+        let rssItems = '';
+
+        // Add Blogs to RSS
+        blogs.forEach(blog => {
+            rssItems += `
+        <item>
+            <title><![CDATA[${blog.title}]]></title>
+            <link>${siteUrl}/blog/${blog.id}</link>
+            <guid isPermaLink="false">${blog.id}</guid>
+            <pubDate>${new Date(blog.date).toUTCString()}</pubDate>
+            <description><![CDATA[${blog.excerpt}]]></description>
+            <category>Blog</category>
+        </item>`;
+        });
+
+        // Add Projects to RSS
+        projects.forEach(project => {
+            rssItems += `
+        <item>
+            <title><![CDATA[Project: ${project.title}]]></title>
+            <link>${siteUrl}/projects/${project.id}</link>
+            <guid isPermaLink="false">${project.id}</guid>
+            <pubDate>${new Date(project.updatedAt || Date.now()).toUTCString()}</pubDate>
+            <description><![CDATA[${project.description}]]></description>
+            <category>Project</category>
+        </item>`;
+        });
+
+        const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+    <title>RizQara Tech | Latest Insights & Projects</title>
+    <link>${siteUrl}</link>
+    <description>Enterprise-grade software, AI, and digital solutions from RizQara Tech.</description>
+    <language>en-us</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" />
+    ${rssItems}
+</channel>
+</rss>`;
+
+        res.header('Content-Type', 'application/xml');
+        res.send(rssFeed);
     } catch (err) {
-        console.error('Translation error:', err);
-        res.status(500).json({ error: 'Translation failed' });
+        console.error('RSS Generation Error:', err);
+        res.status(500).send('Error generating RSS feed');
     }
 });
+
+// --- TRANSLATE ROUTE ---
 
 // --- GENERIC CRUD ROUTES ---
 
