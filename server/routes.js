@@ -97,20 +97,25 @@ router.get('/rss', async (req, res) => {
         
         let rssItems = '';
 
+        // Helper to escape XML special characters
+        const esc = (str) => (str || '').replace(/[&<>"']/g, (m) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
+        }[m]));
+
         // Add Blogs to RSS
         blogs.forEach(blog => {
             const blogLink = `${siteUrl}/blog/${blog.id}`;
             const pubDate = new Date(blog.date).toUTCString();
             rssItems += `
         <item>
-            <title><![CDATA[${blog.title}]]></title>
+            <title>${esc(blog.title)}</title>
             <link>${blogLink}</link>
-            <guid isPermaLink="false">${blog.id}</guid>
+            <guid isPermaLink="true">${blogLink}</guid>
             <pubDate>${pubDate}</pubDate>
             <description><![CDATA[${blog.excerpt}]]></description>
-            <category><![CDATA[${blog.category || 'Blog'}]]></category>
-            <enclosure url="${blog.image}" length="0" type="image/jpeg" />
-            <media:content url="${blog.image}" medium="image">
+            <category>${esc(blog.category || 'Blog')}</category>
+            <enclosure url="${blog.image}" length="512000" type="image/jpeg" />
+            <media:content url="${blog.image}" medium="image" width="1200" height="630">
                 <media:title type="html"><![CDATA[${blog.title}]]></media:title>
             </media:content>
         </item>`;
@@ -122,20 +127,44 @@ router.get('/rss', async (req, res) => {
             const pubDate = new Date(project.updatedAt || project.createdAt || Date.now()).toUTCString();
             rssItems += `
         <item>
-            <title><![CDATA[Project: ${project.title}]]></title>
+            <title>Project: ${esc(project.title)}</title>
             <link>${projectLink}</link>
-            <guid isPermaLink="false">${project.id}</guid>
+            <guid isPermaLink="true">${projectLink}</guid>
             <pubDate>${pubDate}</pubDate>
             <description><![CDATA[${project.description}]]></description>
-            <category><![CDATA[${project.category || 'Project'}]]></category>
-            <enclosure url="${project.image}" length="0" type="image/jpeg" />
-            <media:content url="${project.image}" medium="image">
+            <category>${esc(project.category || 'Project')}</category>
+            <enclosure url="${project.image}" length="512000" type="image/jpeg" />
+            <media:content url="${project.image}" medium="image" width="1200" height="630">
                 <media:title type="html"><![CDATA[${project.title}]]></media:title>
             </media:content>
         </item>`;
         });
 
-        const rssFeed = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/"><channel><title>RizQara Tech | Latest Insights &amp; Projects</title><atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" /><link>${siteUrl}</link><description>Enterprise-grade software, AI, and digital solutions from RizQara Tech.</description><lastBuildDate>${new Date().toUTCString()}</lastBuildDate><language>en-US</language><sy:updatePeriod xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">hourly</sy:updatePeriod><sy:updateFrequency xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">1</sy:updateFrequency><image><url>${logoUrl}</url><title>RizQara Tech | Latest Insights &amp; Projects</title><link>${siteUrl}</link></image>${rssItems}</channel></rss>`;
+        const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" 
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:media="http://search.yahoo.com/mrss/">
+<channel>
+    <title>RizQara Tech | Latest Insights &amp; Projects</title>
+    <atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" />
+    <link>${siteUrl}</link>
+    <description>Enterprise-grade software, AI, and digital solutions from RizQara Tech.</description>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <language>en-US</language>
+    <sy:updatePeriod>hourly</sy:updatePeriod>
+    <sy:updateFrequency>1</sy:updateFrequency>
+    <ttl>60</ttl>
+    <image>
+        <url>${logoUrl}</url>
+        <title>RizQara Tech | Latest Insights &amp; Projects</title>
+        <link>${siteUrl}</link>
+    </image>
+    ${rssItems}
+</channel>
+</rss>`;
 
         res.set('Content-Type', 'text/xml; charset=utf-8');
         res.send(rssFeed.trim());
