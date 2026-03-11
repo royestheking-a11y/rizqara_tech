@@ -450,42 +450,6 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
         else navigate(`/${page.toLowerCase()}`);
     };
 
-    const handleShare = async (project: any) => {
-        const url = `${window.location.origin}/projects/${project.id}`;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: project.title,
-                    text: project.description,
-                    url: url,
-                });
-            } catch (error) {
-                console.log('Error sharing', error);
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(url);
-                toast.success('Link copied to clipboard!');
-            } catch (err) {
-                const textArea = document.createElement("textarea");
-                textArea.value = url;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) toast.success('Link copied to clipboard!');
-                } catch (e) {
-                    // ignore
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-    };
 
     return (
         <div className="space-y-32 pb-0 overflow-x-hidden">
