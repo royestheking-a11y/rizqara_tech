@@ -589,18 +589,18 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[260px] shrink-0 group relative cursor-pointer project-card bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[240px] shrink-0 group relative cursor-pointer project-card bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
-                                <div className="h-36 relative overflow-hidden">
+                                <div className="h-32 relative overflow-hidden">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-4">
-                                    <div className="flex justify-between items-start mb-2">
+                                <div className="p-3">
+                                    <div className="flex justify-between items-start mb-1.5">
                                         <div className="flex-1 pr-1">
-                                            <div className="text-[9px] font-black text-[#500000]/60 uppercase tracking-widest mb-0.5">{category}</div>
-                                            <h3 className="text-base font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
+                                            <div className="text-[8px] font-black text-[#500000]/60 uppercase tracking-widest mb-0.5">{category}</div>
+                                            <h3 className="text-sm font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
                                         </div>
                                         {project.link && (
                                             <button
@@ -608,11 +608,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                                 className="p-1.5 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
                                                 title="View Live"
                                             >
-                                                <ExternalLink size={12} />
+                                                <ExternalLink size={10} />
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-gray-500 text-[10px] line-clamp-2 font-medium leading-relaxed">
+                                    <p className="text-gray-500 text-[9px] line-clamp-2 font-medium leading-relaxed">
                                         {language === 'bn' ? project.description_bn : project.description}
                                     </p>
                                 </div>
@@ -1029,7 +1029,7 @@ const ProjectsPage = () => {
             </div>
 
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <AnimatePresence mode="popLayout">
                     {filteredProjects.length > 0 ? (
                         filteredProjects.map(p => {
@@ -1045,16 +1045,16 @@ const ProjectsPage = () => {
                                     transition={{ duration: 0.3 }}
                                     key={p.id}
                                     onClick={() => navigate(`/projects/${p.id}`)}
-                                    className="group cursor-pointer bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+                                    className="group cursor-pointer bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
                                 >
-                                    <div className="h-40 relative overflow-hidden">
+                                    <div className="h-32 relative overflow-hidden">
                                         <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
-                                    <div className="p-4">
-                                        <div className="text-[9px] font-black text-[#500000]/60 uppercase tracking-widest mb-0.5">{category}</div>
-                                        <h3 className="text-base font-bold text-[#500000] mb-1.5 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight">{title}</h3>
-                                        <p className="text-gray-500 line-clamp-2 text-[10px] font-medium leading-relaxed">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                    <div className="p-3">
+                                        <div className="text-[8px] font-black text-[#500000]/60 uppercase tracking-widest mb-0.5">{category}</div>
+                                        <h3 className="text-sm font-bold text-[#500000] mb-1 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight">{title}</h3>
+                                        <p className="text-gray-500 line-clamp-2 text-[9px] font-medium leading-relaxed">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
                                     </div>
                                 </motion.div>
                             )
