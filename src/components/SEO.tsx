@@ -13,7 +13,7 @@ export const SEO: React.FC<SEOProps> = ({
     title,
     description,
     canonical,
-    image = 'https://rizqaratech.vercel.app/og-image.png',
+    image = 'https://rizqara.tech/og-image.png',
     type = 'website'
 }) => {
     const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`; // Auto-append brand if missing

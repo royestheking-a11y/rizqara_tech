@@ -273,6 +273,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     fetchData();
+
+    // Render Keep-Alive Pinger
+    const pingBackend = () => {
+      fetch(`${API_URL.replace('/api', '')}/health`).catch(() => { });
+    };
+
+    // Ping immediately and then every 4 minutes
+    pingBackend();
+    const intervalId = setInterval(pingBackend, 4 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const updateData = async (key: string, data: any, silent: boolean = false) => {

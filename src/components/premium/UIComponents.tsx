@@ -2092,3 +2092,134 @@ export const RizqAIBot = () => {
         </div>
     );
 };
+
+// --- 20. SKELETON LOADING COMPONENTS ---
+
+const Skeleton = ({ className }: { className: string }) => (
+    <div className={`animate-pulse bg-gray-200 rounded-2xl ${className}`} />
+);
+
+export const HeroSkeleton = () => (
+    <div className="relative w-full h-[60vh] md:h-[85vh] bg-gray-100 overflow-hidden">
+        <div className="container mx-auto px-6 h-full flex flex-col justify-center">
+            <Skeleton className="w-24 h-6 mb-8" />
+            <Skeleton className="w-full max-w-2xl h-16 md:h-24 mb-6" />
+            <Skeleton className="w-full max-w-xl h-20 mb-10" />
+            <div className="flex gap-4">
+                <Skeleton className="w-40 h-14 rounded-full" />
+                <Skeleton className="w-40 h-14 rounded-full" />
+            </div>
+        </div>
+    </div>
+);
+
+export const ServicesSkeleton = () => (
+    <section className="container mx-auto px-6 py-24">
+        <div className="flex justify-between items-end mb-12">
+            <div>
+                <Skeleton className="w-48 h-10 mb-4" />
+                <Skeleton className="w-64 h-6" />
+            </div>
+            <Skeleton className="w-24 h-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white border border-gray-100 rounded-3xl p-8 h-80">
+                    <Skeleton className="w-12 h-12 mb-6" />
+                    <Skeleton className="w-3/4 h-8 mb-4" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-2/3 h-4" />
+                </div>
+            ))}
+        </div>
+    </section>
+);
+
+export const ProjectsSkeleton = () => (
+    <section className="w-full py-24 bg-gray-50">
+        <div className="container mx-auto px-6 mb-12">
+            <Skeleton className="w-48 h-10 mb-4" />
+            <Skeleton className="w-64 h-6" />
+        </div>
+        <div className="flex gap-6 px-6 overflow-hidden">
+            {[1, 2, 3, 4].map(i => (
+                <div key={i} className="min-w-[300px] md:min-w-[400px] h-[500px] bg-white rounded-3xl p-6">
+                    <Skeleton className="w-full h-64 mb-6 rounded-2xl" />
+                    <Skeleton className="w-3/4 h-8 mb-4" />
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-2/3 h-4" />
+                </div>
+            ))}
+        </div>
+    </section>
+);
+
+export const HomeSkeleton = () => {
+    return (
+        <div className="space-y-32">
+            <HeroSkeleton />
+            <div className="container mx-auto px-6">
+                <Skeleton className="w-full h-40 rounded-3xl" />
+            </div>
+            <div className="container mx-auto px-6">
+                <Skeleton className="w-full h-24 rounded-full" />
+            </div>
+            <ServicesSkeleton />
+            <ProjectsSkeleton />
+        </div>
+    );
+};
+
+export const AboutSkeleton = () => (
+    <div className="container mx-auto px-6 py-32">
+        <div className="mb-16">
+            <Skeleton className="w-48 h-10 mb-4" />
+            <Skeleton className="w-full max-w-2xl h-6 mb-2" />
+            <Skeleton className="w-1/2 h-6" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="aspect-[3/4] rounded-2xl bg-gray-100 animate-pulse" />
+            ))}
+        </div>
+    </div>
+);
+
+export const CareersSkeleton = () => (
+    <div className="container mx-auto px-6 py-32">
+        <div className="mb-16">
+            <Skeleton className="w-48 h-10 mb-4" />
+            <Skeleton className="w-64 h-6" />
+        </div>
+        <div className="grid grid-cols-1 gap-6 max-w-4xl">
+            {[1, 2, 3].map(i => (
+                <div key={i} className="p-8 bg-white border border-gray-100 rounded-3xl h-32">
+                    <div className="flex justify-between items-center h-full">
+                        <div className="space-y-3 w-1/2">
+                            <Skeleton className="w-3/4 h-8" />
+                            <Skeleton className="w-1/2 h-4" />
+                        </div>
+                        <Skeleton className="w-32 h-12 rounded-full" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+export const ContactSkeleton = () => (
+    <div className="container mx-auto px-6 py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <Skeleton className="w-48 h-10 mb-8" />
+                <div className="space-y-6">
+                    <Skeleton className="w-full h-16" />
+                    <Skeleton className="w-full h-16" />
+                    <Skeleton className="w-full h-16" />
+                </div>
+            </div>
+            <Skeleton className="w-full h-[500px] rounded-3xl" />
+        </div>
+    </div>
+);

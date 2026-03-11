@@ -27,7 +27,9 @@ import {
     HeroCarousel, BuildPreviewTeaser, BuildPage,
     PricingDetailed, LatestVideos, LatestBlogs,
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
-    RizqAIBot, FeatureDetail
+    RizqAIBot, FeatureDetail, HomeSkeleton,
+    AboutSkeleton, CareersSkeleton, ContactSkeleton,
+    ServicesSkeleton, ProjectsSkeleton
 } from './components/premium/UIComponents';
 import { BlogPage, CareersPage, VideosPage, TeamPage, BlogDetail, TeamSection } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
@@ -425,7 +427,11 @@ const Navbar = () => {
 
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
-    const { services, projects, language, t, addMessage } = useData();
+    const { services, projects, loading, language, t, addMessage } = useData();
+
+    if (loading) {
+        return <HomeSkeleton />;
+    }
 
     const onNavigate = (page: string, id?: string) => {
         if (page === 'ServiceDetail') navigate(`/services/${id}`);
@@ -488,7 +494,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             <SEO
                 title="RizQara Tech | Enterprise Software, AI & Web Development"
                 description="RizQara Tech offers premium web development, AI solutions, mobile apps, and UI/UX design for startups and enterprises worldwide."
-                canonical="https://rizqaratech.vercel.app/"
+                canonical="https://rizqara.tech/"
             />
             <HeroCarousel onNavigate={onNavigate} />
 
@@ -624,12 +630,12 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             >
                                 <div className="aspect-video rounded-3xl overflow-hidden mb-6 border border-gray-200 relative shadow-lg">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent"></div>
                                     <div className="absolute bottom-0 left-0 p-8 w-full">
                                         <div className="flex justify-between items-end">
                                             <div>
-                                                <h3 className="text-2xl font-bold text-white mb-1">{title}</h3>
-                                                <p className="text-white/70 text-sm">{category}</p>
+                                                <h3 className="text-2xl font-bold text-[#500000] mb-1">{title}</h3>
+                                                <p className="text-[#500000]/70 text-sm font-medium">{category}</p>
                                             </div>
                                             <div className="flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0">
                                                 {project.link && (
@@ -643,7 +649,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                                 )}
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleShare(project); }}
-                                                    className="p-3 bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-full hover:bg-white/30 transition-colors shadow-lg"
+                                                    className="p-3 bg-white text-[#500000] border border-gray-100 rounded-full hover:bg-gray-50 transition-colors shadow-lg"
                                                     title="Share"
                                                 >
                                                     <Share2 size={18} />
@@ -1131,7 +1137,7 @@ const MainContent = () => {
     });
     const location = useLocation();
     const navigate = useNavigate();
-    const { t, language } = useData();
+    const { t, language, loading } = useData();
 
     // Scroll to top on route change
     useLayoutEffect(() => {
@@ -1171,9 +1177,9 @@ const MainContent = () => {
                         <SEO
                             title="Software Development Services | RizQara Tech Bangladesh"
                             description="Our services include web development, UI UX design, AI solutions, mobile apps, SEO, and custom enterprise software."
-                            canonical="https://rizqaratech.vercel.app/services"
+                            canonical="https://rizqara.tech/services"
                         />
-                        <ServicesPage />
+                        {loading ? <ServicesSkeleton /> : <ServicesPage />}
                     </>} />
                     <Route path="/services/:id" element={<><SEO title="Service Details | RizQara Tech" description="View detailed capabilities and process for our software services." /><ServiceDetail /></>} />
 
@@ -1181,22 +1187,45 @@ const MainContent = () => {
                         <SEO
                             title="Our Projects | Software & AI Solutions by RizQara Tech"
                             description="Explore real-world software, AI, and digital projects delivered by RizQara Tech for local and global clients."
-                            canonical="https://rizqaratech.vercel.app/projects"
+                            canonical="https://rizqara.tech/projects"
                         />
-                        <ProjectsPage />
+                        {loading ? <ProjectsSkeleton /> : <ProjectsPage />}
                     </>} />
                     <Route path="/projects/:id" element={<><SEO title="Project Details | RizQara Tech" description="Case study and details of our successful software projects." /><ProjectDetail /></>} />
 
                     <Route path="/packages" element={<div className="container mx-auto px-6 pt-32 pb-32"><SectionTitle title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"} /><PricingDetailed onNavigate={onNavigate} /></div>} />
-                    <Route path="/contact" element={<div className="pt-20 pb-32 container mx-auto px-6"><SectionTitle title={t('contact')} center /><ContactFormWithMap /></div>} />
+                    <Route path="/contact" element={
+                        <div className="pt-20 pb-32 container mx-auto px-6">
+                            {loading ? (
+                                <ContactSkeleton />
+                            ) : (
+                                <>
+                                    <SectionTitle title={t('contact')} center />
+                                    <ContactFormWithMap />
+                                </>
+                            )}
+                        </div>
+                    } />
 
                     <Route path="/about" element={<>
                         <SEO
                             title="About RizQara Tech | Leading Software Company in Bangladesh"
                             description="Learn about RizQara Tech’s journey, mission, and vision to become a global software and AI company from Bangladesh."
-                            canonical="https://rizqaratech.vercel.app/about"
+                            canonical="https://rizqara.tech/about"
                         />
-                        <div className="bg-white"><div className="container mx-auto px-6 py-32"><JourneyRoadmap /><div className="mt-32"><SectionTitle title={t('meetOurTeam')} center /><TeamSection /></div></div></div>
+                        <div className="bg-white">
+                            {loading ? (
+                                <AboutSkeleton />
+                            ) : (
+                                <div className="container mx-auto px-6 py-32">
+                                    <JourneyRoadmap />
+                                    <div className="mt-32">
+                                        <SectionTitle title={t('meetOurTeam')} center />
+                                        <TeamSection />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </>} />
                     <Route path="/team" element={<TeamPage />} />
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
@@ -1206,9 +1235,9 @@ const MainContent = () => {
                         <SEO
                             title="Careers at RizQara Tech | Software Jobs in Bangladesh"
                             description="Join RizQara Tech. Explore software developer, UI UX designer, and AI engineer jobs in Bangladesh."
-                            canonical="https://rizqaratech.vercel.app/careers"
+                            canonical="https://rizqara.tech/careers"
                         />
-                        <CareersPage onNavigate={onNavigate} />
+                        {loading ? <CareersSkeleton /> : <CareersPage onNavigate={onNavigate} />}
                     </>} />
                     <Route path="/videos" element={<VideosPage onNavigate={onNavigate} />} />
                     <Route path="/build" element={<BuildPage onNavigate={onNavigate} initialConfig={buildConfig} />} />

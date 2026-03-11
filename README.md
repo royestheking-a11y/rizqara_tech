@@ -2,10 +2,10 @@
 
 RizQara Tech is a premier software development agency delivering enterprise-grade Web Applications, AI Solutions, and Mobile Apps. This repository contains the source code for the official website and client platform.
 
-🌐 **Live Website**: [https://rizqaratech.vercel.app/](https://rizqaratech.vercel.app/)
+🌐 **Live Website**: [https://rizqara.tech/](https://rizqara.tech/)
 📂 **GitHub Organization**: [https://github.com/royestheking-a11y](https://github.com/royestheking-a11y)
 
-![RizQara Tech Banner](https://rizqaratech.vercel.app/og-image.png)
+![RizQara Tech Banner](https://rizqara.tech/og-image.png)
 
 ## 🚀 Features
 
