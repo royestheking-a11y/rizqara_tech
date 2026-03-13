@@ -171,6 +171,7 @@ export type DataContextType = {
   addVideoComment: (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => void;
   t: (key: keyof typeof translations['en']) => string;
   loading: boolean;
+  fetchAdminData: () => Promise<void>;
 };
 
 // --- Mock Data (Initial Seed) ---
@@ -210,7 +211,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [language, setLanguage] = useState<Language>('en');
   const [loading, setLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://rizqaratech-backend.onrender.com/api';
+
+  const fetchWithTimeout = async (resource: string, options: any = {}, timeout = 8000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+      const response = await fetch(resource, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const storedLang = localStorage.getItem('rizqara_language') as Language;
@@ -224,51 +241,47 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fetch Data from API
   useEffect(() => {
     const fetchData = async () => {
+      // Phase 1: Critical Data (Required to show the main page)
       try {
-        const [
-          servicesRes, projectsRes, reviewsRes, blogsRes,
-          jobsRes, videosRes, carouselRes, buildOptionsRes,
-          messagesRes, promotionRes, careerApplicationsRes
-        ] = await Promise.all([
-          fetch(`${API_URL}/services`),
-          fetch(`${API_URL}/projects`),
-          fetch(`${API_URL}/reviews`),
-          fetch(`${API_URL}/blogs`),
-          fetch(`${API_URL}/jobs`),
-          fetch(`${API_URL}/videos`),
-          fetch(`${API_URL}/carousel`),
-          fetch(`${API_URL}/buildOptions`),
-          fetch(`${API_URL}/messages`),
-          fetch(`${API_URL}/promotion`),
-          fetch(`${API_URL}/careerApplications`)
+        const [servicesRes, projectsRes, carouselRes, promotionRes] = await Promise.all([
+          fetchWithTimeout(`${API_URL}/services`),
+          fetchWithTimeout(`${API_URL}/projects`),
+          fetchWithTimeout(`${API_URL}/carousel`),
+          fetchWithTimeout(`${API_URL}/promotion`)
         ]);
 
         if (servicesRes.ok) setServices(await servicesRes.json());
         if (projectsRes.ok) setProjects(await projectsRes.json());
+        if (carouselRes.ok) setCarouselSlides(await carouselRes.json());
+        if (promotionRes.ok) {
+          const promoData = await promotionRes.json();
+          setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
+        }
+
+        // We can show the site now!
+        setLoading(false);
+      } catch (error) {
+        console.error('Phase 1 fetch failed:', error);
+        setLoading(false); // Still show site even if some items fail
+      }
+
+      // Phase 2: Secondary Data (Background load)
+      try {
+        const [reviewsRes, blogsRes, jobsRes, videosRes, buildOptionsRes] = await Promise.all([
+          fetchWithTimeout(`${API_URL}/reviews`),
+          fetchWithTimeout(`${API_URL}/blogs`),
+          fetchWithTimeout(`${API_URL}/jobs`),
+          fetchWithTimeout(`${API_URL}/videos`),
+          fetchWithTimeout(`${API_URL}/buildOptions`)
+        ]);
+
         if (reviewsRes.ok) setReviews(await reviewsRes.json());
         if (blogsRes.ok) setBlogs(await blogsRes.json());
         if (jobsRes.ok) setJobs(await jobsRes.json());
         if (videosRes.ok) setVideos(await videosRes.json());
-        if (carouselRes.ok) setCarouselSlides(await carouselRes.json());
         if (buildOptionsRes.ok) setBuildOptions(await buildOptionsRes.json());
-        if (messagesRes.ok) setMessages(await messagesRes.json());
-        if (promotionRes.ok) {
-          const promoData = await promotionRes.json();
-          // API might return array for 'promotion' collection, we need the first item or the object itself
-          setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
-        }
-        if (careerApplicationsRes.ok) setCareerApplications(await careerApplicationsRes.json());
-
-
       } catch (error) {
-        console.error('Failed to fetch data:', error);
-        // Fallback or Error State?
-        // For now, allow empty state or keep loading false
-        // Or duplicate INITIAL constants here as fallback, but better to fix API.
-
-      }
-      finally {
-        setLoading(false);
+        console.error('Phase 2 fetch failed:', error);
       }
     };
 
@@ -276,15 +289,35 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Render Keep-Alive Pinger
     const pingBackend = () => {
-      fetch(`${API_URL.replace('/api', '')}/health`).catch(() => { });
+      // Use clean URL for ping
+      const pingUrl = API_URL.replace(/\/api$/, '') + '/health';
+      fetch(pingUrl).catch(() => { });
     };
 
-    // Ping immediately and then every 4 minutes
-    pingBackend();
+    // Ping after a small delay to not compete with initial load
+    const pingTimeout = setTimeout(pingBackend, 2000);
     const intervalId = setInterval(pingBackend, 4 * 60 * 1000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(pingTimeout);
+    };
   }, []);
+
+  const fetchAdminData = async () => {
+    try {
+      const [messagesRes, careerApplicationsRes] = await Promise.all([
+        fetchWithTimeout(`${API_URL}/messages`),
+        fetchWithTimeout(`${API_URL}/careerApplications`)
+      ]);
+
+      if (messagesRes.ok) setMessages(await messagesRes.json());
+      if (careerApplicationsRes.ok) setCareerApplications(await careerApplicationsRes.json());
+    } catch (error) {
+      console.error('Failed to fetch admin data:', error);
+      toast.error('Failed to load admin documents');
+    }
+  };
 
   const updateData = async (key: string, data: any, silent: boolean = false) => {
     // Optimistic Update
@@ -425,7 +458,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );

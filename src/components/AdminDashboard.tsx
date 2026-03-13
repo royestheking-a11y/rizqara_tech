@@ -33,7 +33,11 @@ const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, updateData, resetData, language, deleteData } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, updateData, resetData, language, deleteData, fetchAdminData } = useData();
+
+    React.useEffect(() => {
+        fetchAdminData();
+    }, []);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -4,6 +4,8 @@ import { X, Clock, ArrowRight, Gift } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 
+const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
 interface PromotionCardProps {
     offerRate: string;
     serviceName: string;
@@ -191,7 +193,7 @@ export const PromotionOverlay = () => {
                                 setIsVisible(false);
                                 const targetService = services.find(s => s.title === promotion.serviceName);
                                 if (targetService) {
-                                    navigate(`/services/${targetService.id}`);
+                                    navigate(`/services/${getSlug(targetService.title)}`);
                                 } else {
                                     navigate('/contact');
                                 }

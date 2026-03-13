@@ -37,6 +37,9 @@ import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
 import { FAQSection } from './components/premium/FAQSection';
 
+// --- Utils ---
+const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
 // --- Premium UI Components (Internal) ---
 
 const XLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
@@ -84,15 +87,54 @@ const ButtonPremium = ({ children, onClick, className = "", variant = "primary" 
     );
 };
 
+// --- Skeletons ---
+
+const DetailSkeleton = () => (
+    <div className="container mx-auto px-6 py-24 min-h-screen">
+        <div className="mb-12 animate-pulse w-32 h-6 bg-gray-200 rounded-full"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+            <div>
+                <div className="h-16 md:h-24 bg-gray-200 rounded-2xl w-full mb-8 animate-pulse"></div>
+                <div className="h-16 md:h-24 bg-gray-200 rounded-2xl w-3/4 mb-12 animate-pulse"></div>
+                <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+                </div>
+            </div>
+            <div className="aspect-video bg-gray-200 rounded-3xl animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+        </div>
+    </div>
+);
+
 // --- Detail Components ---
 
 const ServiceDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { services, language, t } = useData();
-    const service = services.find(s => s.id === id);
+    const { services, language, t, loading } = useData();
 
-    if (!service) return <div className="pt-32 text-center text-gray-900">Service not found</div>;
+    const service = services.find(s => 
+        s.id === id || 
+        getSlug(s.title) === id
+    );
+
+    // Redirect to slug if currently using number ID
+    useLayoutEffect(() => {
+        if (!loading && service && service.id === id) {
+            const slug = getSlug(service.title);
+            if (slug) navigate(`/services/${slug}`, { replace: true });
+        }
+    }, [id, service, loading, navigate]);
+
+    if (loading) return <DetailSkeleton />;
+
+    if (!service) return <div className="pt-32 text-center text-gray-900 min-h-screen">Service not found</div>;
 
     const demoImages = service.gallery && service.gallery.length > 0
         ? [service.image, ...service.gallery]
@@ -106,6 +148,11 @@ const ServiceDetail = () => {
 
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
+            <SEO 
+                title={`${title} | RizQara Tech`} 
+                description={description} 
+                canonical={`https://rizqara.tech/services/${id}`}
+            />
             <button onClick={() => navigate('/services')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
                     <ArrowRight className="rotate-180" size={20} />
@@ -182,17 +229,23 @@ const ProjectDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { projects, language, t, loading } = useData();
-    const project = projects.find(p => String(p.id) === id);
+    
+    const project = projects.find(p => 
+        String(p.id) === id || 
+        getSlug(p.title) === id
+    );
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center pt-32">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#500000]"></div>
-            </div>
-        );
-    }
+    // Redirect to slug if currently using number ID
+    useLayoutEffect(() => {
+        if (!loading && project && String(project.id) === id) {
+            const slug = getSlug(project.title);
+            if (slug) navigate(`/projects/${slug}`, { replace: true });
+        }
+    }, [id, project, loading, navigate]);
 
-    if (!project) return <div className="pt-32 text-center text-gray-900">Project not found</div>;
+    if (loading) return <DetailSkeleton />;
+
+    if (!project) return <div className="pt-32 text-center text-gray-900 min-h-screen">Project not found</div>;
 
     const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
     const description = language === 'bn' ? (project.description_bn || project.description) : project.description;
@@ -238,6 +291,11 @@ const ProjectDetail = () => {
 
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
+            <SEO 
+                title={`${title} | RizQara Tech`} 
+                description={description} 
+                canonical={`https://rizqara.tech/projects/${id}`}
+            />
             <button onClick={() => navigate('/projects')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
                     <ArrowRight className="rotate-180" size={20} />
@@ -433,11 +491,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
         return <HomeSkeleton />;
     }
 
-    const onNavigate = (page: string, id?: string) => {
-        if (page === 'ServiceDetail') navigate(`/services/${id}`);
-        else if (page === 'ProjectDetail') navigate(`/projects/${id}`);
-        else if (page === 'FeatureDetail' && id) navigate(`/feature/${id}`);
-        else if (page === 'BlogDetail' && id) navigate(`/blog/${id}`);
+    const onNavigate = (page: string, identifier?: string) => {
+        if (page === 'ServiceDetail' && identifier) navigate(`/services/${identifier}`);
+        else if (page === 'ProjectDetail' && identifier) navigate(`/projects/${identifier}`);
+        else if (page === 'FeatureDetail' && identifier) navigate(`/feature/${identifier}`);
+        else if (page === 'BlogDetail' && identifier) navigate(`/blog/${identifier}`);
         else if (page === 'Services') navigate('/services');
         else if (page === 'Projects') navigate('/projects');
         else if (page === 'Blog') navigate('/blog');
@@ -498,7 +556,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         const desc = language === 'bn' ? (service.description_bn || service.description) : service.description;
 
                         return (
-                            <div key={service.id} onClick={() => onNavigate('ServiceDetail', service.id)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
+                            <div key={service.id} onClick={() => onNavigate('ServiceDetail', getSlug(service.title))} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                                 <div className="h-48 overflow-hidden relative shrink-0">
                                     <img
                                         src={getProxiedImage(service.image) || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
@@ -535,7 +593,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     />
 
                     {/* Homepage Project Search */}
-                    <div className="relative max-w-md md:max-w-2xl mx-auto -mt-8 mb-8 z-10">
+                    <div className="relative max-w-md md:max-w-6xl mx-auto -mt-8 mb-8 z-10">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                             <Search size={18} />
                         </div>
@@ -924,7 +982,7 @@ const ServicesPage = () => {
                     const desc = language === 'bn' ? (s.description_bn || s.description) : s.description;
 
                     return (
-                        <div key={s.id} onClick={() => navigate(`/services/${s.id}`)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
+                        <div key={s.id} onClick={() => navigate(`/services/${getSlug(s.title)}`)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                             <div className="h-48 overflow-hidden relative shrink-0">
                                 <img src={s.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                 <div className="absolute top-4 left-4 w-12 h-12 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center text-[#500000] shadow-sm">
@@ -990,7 +1048,7 @@ const ProjectsPage = () => {
             {/* Filters & Search */}
             <div className="mb-12 space-y-6">
                 {/* Search Bar */}
-                <div className="relative max-w-md md:max-w-2xl mx-auto">
+                <div className="relative max-w-md md:max-w-6xl mx-auto">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                         <Search size={20} />
                     </div>
@@ -1044,7 +1102,7 @@ const ProjectsPage = () => {
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.3 }}
                                     key={p.id}
-                                    onClick={() => navigate(`/projects/${p.id}`)}
+                                    onClick={() => navigate(`/projects/${getSlug(p.title)}`)}
                                     className="group cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 >
                                     <div className="aspect-video relative overflow-hidden">
@@ -1139,7 +1197,7 @@ const MainContent = () => {
                         />
                         {loading ? <ServicesSkeleton /> : <ServicesPage />}
                     </>} />
-                    <Route path="/services/:id" element={<><SEO title="Service Details | RizQara Tech" description="View detailed capabilities and process for our software services." /><ServiceDetail /></>} />
+                    <Route path="/services/:id" element={<ServiceDetail />} />
 
                     <Route path="/projects" element={<>
                         <SEO
@@ -1149,7 +1207,7 @@ const MainContent = () => {
                         />
                         {loading ? <ProjectsSkeleton /> : <ProjectsPage />}
                     </>} />
-                    <Route path="/projects/:id" element={<><SEO title="Project Details | RizQara Tech" description="Case study and details of our successful software projects." /><ProjectDetail /></>} />
+                    <Route path="/projects/:id" element={<ProjectDetail />} />
 
                     <Route path="/packages" element={<div className="container mx-auto px-6 pt-32 pb-32"><SectionTitle title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"} /><PricingDetailed onNavigate={onNavigate} /></div>} />
                     <Route path="/contact" element={
