@@ -330,7 +330,7 @@ const ProjectDetail = () => {
                         </ButtonPremium>
                     </div>
 
-                    {((project.features && project.features.length > 0) || (project.features_bn && project.features_bn.length > 0)) && (
+                    {Array.isArray(project.features) && project.features.length > 0 && (
                         <div className="mb-16">
                             <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -346,7 +346,7 @@ const ProjectDetail = () => {
                         </div>
                     )}
 
-                    {project.tech && project.tech.length > 0 && (
+                    {Array.isArray(project.tech) && project.tech.length > 0 && (
                         <div className="mb-16">
                             <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'ব্যবহৃত প্রযুক্তি' : 'Technologies Used'}</h3>
                             <div className="flex flex-wrap gap-3">

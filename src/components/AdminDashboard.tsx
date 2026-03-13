@@ -797,9 +797,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminTextArea label="Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
 
                                     <AdminInput label="Project Link" name="link" defaultValue={editingItem?.link} placeholder="https://..." />
-                                    <AdminInput label="Key Features (Comma separated)" name="features" defaultValue={editingItem?.features?.join(', ')} placeholder="Feature 1, Feature 2" />
-                                    <AdminInput label="Key Features (Bengali)" name="features_bn" defaultValue={editingItem?.features_bn?.join(', ')} placeholder="বাংলা বৈশিষ্ট্য ১, বৈশিষ্ট্য ২" />
-                                    <AdminInput label="Tech Stack" name="tech" defaultValue={editingItem?.tech?.join(', ')} placeholder="React, Node, etc." />
+                                    <AdminInput label="Key Features (Comma separated)" name="features" defaultValue={Array.isArray(editingItem?.features) ? editingItem.features.join(', ') : (editingItem?.features || '')} placeholder="Feature 1, Feature 2" />
+                                    <AdminInput label="Key Features (Bengali)" name="features_bn" defaultValue={Array.isArray(editingItem?.features_bn) ? editingItem.features_bn.join(', ') : (editingItem?.features_bn || '')} placeholder="বাংলা বৈশিষ্ট্য ১, বৈশিষ্ট্য ২" />
+                                    <AdminInput label="Tech Stack" name="tech" defaultValue={Array.isArray(editingItem?.tech) ? editingItem.tech.join(', ') : (editingItem?.tech || '')} placeholder="React, Node, etc." />
                                 </>}
 
                                 {modalType === 'review' && <>

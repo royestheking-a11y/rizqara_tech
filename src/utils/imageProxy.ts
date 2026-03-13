@@ -1,5 +1,6 @@
 export const getProxiedImage = (url: string | undefined | null) => {
     if (!url) return '';
+    if (url.startsWith('data:') || url.startsWith('blob:')) return url;
 
     // If it's a Cloudinary URL, serve it directly with optimizations
     if (url.includes('cloudinary.com')) {
