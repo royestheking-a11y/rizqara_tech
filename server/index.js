@@ -16,9 +16,21 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Database Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB Connected'))
+mongoose.connect(process.env.MONGODB_URI, {
+    maxPoolSize: 10, // Maintain up to 10 socket connections
+    serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+})
+    .then(() => console.log('MongoDB Connected (Connection Pool: 10)'))
     .catch(err => console.error('MongoDB Connection Error:', err));
+
+// Global Error Handler to prevent process crashes
+app.use((err, req, res, next) => {
+    console.error('SERVER ERROR:', err.stack);
+    if (!res.headersSent) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 // Routes
 app.use('/api', require('./routes'));

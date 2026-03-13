@@ -32,7 +32,8 @@ export default async function getCroppedImg(
   imageSrc: string,
   pixelCrop: { x: number; y: number; width: number; height: number },
   rotation = 0,
-  flip = { horizontal: false, vertical: false }
+  flip = { horizontal: false, vertical: false },
+  quality = 0.75 // Default 75% quality for compression
 ): Promise<string> {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
@@ -73,13 +74,37 @@ export default async function getCroppedImg(
     pixelCrop.height
   )
 
+  // --- Optimization Rule: Max width/height to avoid massive payloads ---
+  const MAX_DIMENSION = 1600; 
+  let targetWidth = pixelCrop.width;
+  let targetHeight = pixelCrop.height;
+
+  if (targetWidth > MAX_DIMENSION || targetHeight > MAX_DIMENSION) {
+    const ratio = Math.min(MAX_DIMENSION / targetWidth, MAX_DIMENSION / targetHeight);
+    targetWidth = Math.round(targetWidth * ratio);
+    targetHeight = Math.round(targetHeight * ratio);
+  }
+
   // set canvas width to final desired crop size - this will clear existing context
-  canvas.width = pixelCrop.width
-  canvas.height = pixelCrop.height
+  canvas.width = targetWidth
+  canvas.height = targetHeight
 
-  // paste generated rotate image at the top left corner
-  ctx.putImageData(data, 0, 0)
+  // scale down if needed
+  if (targetWidth !== pixelCrop.width) {
+    // Create temporary canvas to hold the original crop
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = pixelCrop.width;
+    tempCanvas.height = pixelCrop.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    if (tempCtx) {
+      tempCtx.putImageData(data, 0, 0);
+      ctx.drawImage(tempCanvas, 0, 0, targetWidth, targetHeight);
+    }
+  } else {
+    // paste generated rotate image at the top left corner
+    ctx.putImageData(data, 0, 0)
+  }
 
-  // As Base64 string
-  return canvas.toDataURL('image/jpeg')
+  // As Base64 string with JPEG compression
+  return canvas.toDataURL('image/jpeg', quality)
 }

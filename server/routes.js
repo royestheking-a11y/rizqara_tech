@@ -32,6 +32,31 @@ const models = {
 
 const translate = require('translation-google');
 
+// --- In-Memory Cache Implementation ---
+const cache = {
+    data: {},
+    ttl: 5 * 60 * 1000, // 5 minute TTL
+    set: function(key, val) {
+        this.data[key] = {
+            value: val,
+            expiry: Date.now() + this.ttl
+        };
+    },
+    get: function(key) {
+        const item = this.data[key];
+        if (!item) return null;
+        if (Date.now() > item.expiry) {
+            delete this.data[key];
+            return null;
+        }
+        return item.value;
+    },
+    clear: function(key) {
+        if (key) delete this.data[key];
+        else this.data = {};
+    }
+};
+
 // --- UPLOAD ROUTE (Must be before generic :collection routes) ---
 router.post('/upload', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -192,19 +217,26 @@ router.post('/translate', async (req, res) => {
 
 // GET All
 router.get('/:collection', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
-        // Default sort: Newest First (-1) for Blogs, Projects, etc.
-        // Exception: Services & BuildOptions need logical order (Oldest First / Insertion Order)
-        let sortOrder = { createdAt: -1 };
+        // Check Cache
+        const cachedData = cache.get(collection);
+        if (cachedData) return res.json(cachedData);
 
-        if (req.params.collection === 'services' || req.params.collection === 'buildOptions') {
+        // Default sort: Newest First (-1)
+        let sortOrder = { createdAt: -1 };
+        if (collection === 'services' || collection === 'buildOptions') {
             sortOrder = { createdAt: 1 };
         }
 
         const items = await model.find().sort(sortOrder);
+        
+        // Save to Cache
+        cache.set(collection, items);
+        
         res.json(items);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -213,11 +245,12 @@ router.get('/:collection', async (req, res) => {
 
 // GET One by ID
 router.get('/:collection/:id', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection, id } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
-        const item = await model.findOne({ id: req.params.id });
+        const item = await model.findOne({ id });
         if (!item) return res.status(404).json({ error: 'Item not found' });
         res.json(item);
     } catch (err) {
@@ -227,21 +260,27 @@ router.get('/:collection/:id', async (req, res) => {
 
 // POST Create
 router.post('/:collection', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
         const newItem = new model(req.body);
         const savedItem = await newItem.save();
+        
+        // Invalidate Cache for this collection
+        cache.clear(collection);
+        
         res.status(201).json(savedItem);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// PUT Update
+// PUT Update (Bulk or Singleton)
 router.put('/:collection', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
@@ -260,6 +299,10 @@ router.put('/:collection', async (req, res) => {
             // If we get here, all items are valid. proceed to replace.
             await model.deleteMany({});
             const inserted = await model.insertMany(req.body);
+            
+            // Invalidate Cache
+            cache.clear(collection);
+            
             res.json(inserted);
 
         } else if (typeof req.body === 'object' && req.body !== null) {
@@ -275,6 +318,10 @@ router.put('/:collection', async (req, res) => {
             // Replace single document
             await model.deleteMany({});
             const created = await model.create(req.body);
+            
+            // Invalidate Cache
+            cache.clear(collection);
+            
             res.json(created);
         } else {
             res.status(400).json({ error: 'Body must be an Array or Object' });
@@ -286,11 +333,16 @@ router.put('/:collection', async (req, res) => {
 });
 
 router.put('/:collection/:id', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection, id } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
-        const updated = await model.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+        const updated = await model.findOneAndUpdate({ id }, req.body, { new: true });
+        
+        // Invalidate Cache
+        cache.clear(collection);
+        
         res.json(updated);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -306,6 +358,8 @@ const deleteImage = async (url) => {
         // Public ID: folder/id (without extension)
         const parts = url.split('/');
         const versionIndex = parts.findIndex(part => part.startsWith('v'));
+        if (versionIndex === -1) return;
+        
         const publicIdParts = parts.slice(versionIndex + 1);
         const publicIdWithExt = publicIdParts.join('/');
         const publicId = publicIdWithExt.split('.')[0];
@@ -317,29 +371,30 @@ const deleteImage = async (url) => {
     }
 };
 
+// DELETE
 router.delete('/:collection/:id', async (req, res) => {
-    const model = models[req.params.collection];
+    const { collection, id } = req.params;
+    const model = models[collection];
     if (!model) return res.status(404).json({ error: 'Collection not found' });
 
     try {
-        // 1. Find the item
-        const item = await model.findOne({ id: req.params.id });
+        const item = await model.findOne({ id });
         if (!item) return res.status(404).json({ error: 'Item not found' });
 
-        // 2. Scan for images and delete them
-        // Common fields: image, thumbnail
+        // Clean up Cloudinary images before deletion
         if (item.image) await deleteImage(item.image);
         if (item.thumbnail) await deleteImage(item.thumbnail);
-
-        // Gallery (Projects)
         if (item.gallery && Array.isArray(item.gallery)) {
             for (const img of item.gallery) {
                 await deleteImage(img);
             }
         }
 
-        // 3. Delete from DB
-        await model.findOneAndDelete({ id: req.params.id });
+        await model.findOneAndDelete({ id });
+        
+        // Invalidate Cache
+        cache.clear(collection);
+        
         res.json({ message: 'Deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
