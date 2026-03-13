@@ -2,13 +2,19 @@ name: Keep Backend Alive
 
 on:
   schedule:
-    - cron: '*/14 * * * *' # Every 14 minutes
-  workflow_dispatch: # Allows manual trigger
+    - cron: '*/5 * * * *' # Every 5 minutes to beat Render's 15m sleep
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Backend
+      - name: Ping Backend Multi-Endpoints
         run: |
-          curl -f https://rizqaratech-backend.onrender.com/health || echo "Ping failed"
+          URL="https://rizqaratech-backend.onrender.com"
+          echo "Pinging $URL/health..."
+          curl -f "$URL/health" || echo "Health ping failed"
+          echo "Pinging $URL/ping..."
+          curl -f "$URL/ping" || echo "Ping endpoint failed"
+          echo "Pinging $URL/api/health..."
+          curl -f "$URL/api/health" || echo "API health failed"
