@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # exit on error
-set -o errexit
+set -e
 
 echo "--- Render Build Logic Starting ---"
 echo "Node version: $(node -v)"
