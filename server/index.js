@@ -25,19 +25,22 @@ app.use('/api', require('./routes'));
 
 // Serve Static Frontend (Vite Build)
 const distPath = path.join(__dirname, '../dist');
+console.log('Frontend dist path:', distPath);
 app.use(express.static(distPath));
 
-// Webmail/SPA Support: Handle client-side routing
-app.get('(.*)', (req, res) => {
-    // If it's an API request that didn't match /api, return 404
+// Fallback: Handle client-side routing (SPA)
+app.use((req, res) => {
+    // If it's an API request that reached here, it's a 404 for the API
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ error: 'API route not found' });
     }
-    // Otherwise serve the frontend index.html
+    
+    // Otherwise serve the frontend index.html for any other route
     const indexPath = path.join(distPath, 'index.html');
     res.sendFile(indexPath, (err) => {
         if (err) {
-            res.status(200).send('RizQaratech API is running (Frontend build folder not found or not yet built)');
+            console.log('Notice: index.html not found at', indexPath);
+            res.status(200).send('RizQaratech API is running (Frontend not built yet)');
         }
     });
 });
