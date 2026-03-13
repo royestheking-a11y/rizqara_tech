@@ -1130,18 +1130,18 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
 const DEFAULT_SLIDES = [
     {
         id: '1',
-        title: "Building Digital Empires",
-        title_bn: "ডিজিটাল সাম্রাজ্য গড়ে তোলা",
-        subtitle: "Enterprise-grade software solutions tailored for the modern world.",
-        subtitle_bn: "আধুনিক বিশ্বের জন্য তৈরি এন্টারপ্রাইজ-গ্রেড সফটওয়্যার সমাধান।",
+        title: "Best Software Company in Bangladesh",
+        title_bn: "বাংলাদেশের সেরা সফটওয়্যার কোম্পানি",
+        subtitle: "Enterprise-grade software solutions tailored for your business success.",
+        subtitle_bn: "আপনার ব্যবসার সাফল্যের জন্য তৈরি এন্টারপ্রাইজ-গ্রেড সফটওয়্যার সমাধান।",
         image: "/images/services/carousel.png",
         cta: "Start Project",
         cta_bn: "প্রকল্প শুরু করুন"
     },
     {
         id: '2',
-        title: "AI-Powered Innovation",
-        title_bn: "এআই-চালিত উদ্ভাবন",
+        title: "Advanced AI Solutions BD",
+        title_bn: "উন্নত এআই সমাধান বিডি",
         subtitle: "Leverage artificial intelligence to automate and scale your business.",
         subtitle_bn: "আপনার ব্যবসা স্বয়ংক্রিয় এবং স্কেল করতে কৃত্রিম বুদ্ধিমত্তা ব্যবহার করুন।",
         image: "/images/services/carousel.png",
@@ -1150,8 +1150,8 @@ const DEFAULT_SLIDES = [
     },
     {
         id: '3',
-        title: "Mobile App Excellence",
-        title_bn: "মোবাইল অ্যাপ এক্সিলেন্স",
+        title: "Premium Mobile App Development",
+        title_bn: "প্রিমিয়াম মোবাইল অ্যাপ ডেভেলপমেন্ট",
         subtitle: "Native and cross-platform mobile apps that engage and retain users.",
         subtitle_bn: "নেটিভ এবং ক্রস-প্ল্যাটফর্ম মোবাইল অ্যাপ যা ব্যবহারকারীদের ধরে রাখে।",
         image: "/images/services/carousel.png",

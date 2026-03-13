@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 type SEOProps = {
     title: string;
     description: string;
+    keywords?: string;
     canonical?: string;
     image?: string;
     type?: string;
@@ -12,6 +13,7 @@ type SEOProps = {
 export const SEO: React.FC<SEOProps> = ({
     title,
     description,
+    keywords,
     canonical,
     image = 'https://rizqara.tech/og-image.png',
     type = 'website'
@@ -22,6 +24,7 @@ export const SEO: React.FC<SEOProps> = ({
             {/* Primary Meta Tags */}
             <title>{fullTitle}</title>
             <meta name="description" content={description} />
+            {keywords && <meta name="keywords" content={keywords} />}
             {canonical && <link rel="canonical" href={canonical} />}
 
             {/* Open Graph / Facebook */}

@@ -151,6 +151,7 @@ const ServiceDetail = () => {
             <SEO 
                 title={`${title} | RizQara Tech`} 
                 description={description} 
+                keywords={`${title}, software company Bangladesh, ${title} service Dhaka, best ${title} company`}
                 canonical={`https://rizqara.tech/services/${id}`}
             />
             <button onClick={() => navigate('/services')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
@@ -514,8 +515,9 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 1. HERO CAROUSEL */}
             <SEO
-                title="RizQara Tech | Enterprise Software, AI & Web Development"
-                description="RizQara Tech offers premium web development, AI solutions, mobile apps, and UI/UX design for startups and enterprises worldwide."
+                title="RizQara Tech | Best Software & AI Solutions Company in Bangladesh"
+                description="RizQara Tech: The best software company in Bangladesh. Premium web development, AI solutions, mobile apps, and UI/UX design engineered for performance."
+                keywords="RizQara Tech, Rizq, Rizq Tech, Rizq Ara, software company Bangladesh, software development company in Dhaka, best software company in Bangladesh, AI software solutions BD, mobile app development Bangladesh"
                 canonical="https://rizqara.tech/"
             />
             <HeroCarousel onNavigate={onNavigate} />
