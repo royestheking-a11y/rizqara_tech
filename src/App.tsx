@@ -649,37 +649,41 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[400px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[400px] h-[540px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
                                 <div className="h-64 relative overflow-hidden">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-8 flex flex-col h-[300px]">
-                                    <div className="flex justify-between items-start mb-4 h-16 shrink-0">
-                                        <div className="flex-1 pr-4">
-                                            <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30 line-clamp-2">{title}</h3>
+                                <div className="p-8 flex flex-col h-[284px] overflow-hidden bg-white">
+                                    <div className="h-16 mb-4 shrink-0 overflow-hidden">
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex-1 pr-6">
+                                                <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
+                                                <h3 className="text-xl font-bold text-[#500000] leading-tight line-clamp-2 h-12 overflow-hidden">{title}</h3>
+                                            </div>
+                                            {project.link && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
+                                                    className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm shrink-0"
+                                                    title="View Live"
+                                                >
+                                                    <ExternalLink size={18} />
+                                                </button>
+                                            )}
                                         </div>
-                                        {project.link && (
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm shrink-0"
-                                                title="View Live"
-                                            >
-                                                <ExternalLink size={18} />
-                                            </button>
-                                        )}
                                     </div>
-                                    <div className="flex-grow overflow-hidden mb-4">
-                                        <p className="text-gray-500 text-sm line-clamp-4 font-medium leading-relaxed">
-                                            {language === 'bn' ? project.description_bn : project.description}
+                                    
+                                    <div className="h-[80px] mb-4 shrink-0 overflow-hidden">
+                                        <p className="text-gray-500 text-sm font-medium leading-relaxed">
+                                            {(language === 'bn' ? project.description_bn : project.description)?.slice(0, 140)}...
                                         </p>
                                     </div>
-                                    <div className="mt-auto flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all shrink-0">
+
+                                    <div className="mt-auto flex items-center text-[#500000] font-bold text-sm hover:gap-3 gap-2 transition-all shrink-0">
                                         <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
-                                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                        <ArrowRight size={16} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </div>
                             </div>
@@ -1118,12 +1122,18 @@ const ProjectsPage = () => {
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
                                     <div className="p-6 flex flex-col h-[240px]">
-                                        <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                        <h3 className="text-lg font-bold text-[#500000] mb-3 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2 h-12">{title}</h3>
-                                        <div className="flex-grow">
-                                            <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed mb-4">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                        <div className="h-14 mb-3 shrink-0">
+                                            <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
+                                            <h3 className="text-lg font-bold text-[#500000] group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2">{title}</h3>
                                         </div>
-                                        <div className="flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all">
+
+                                        <div className="h-12 mb-4 shrink-0 overflow-hidden">
+                                            <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed">
+                                                {language === 'bn' ? (p.description_bn || p.description) : p.description}
+                                            </p>
+                                        </div>
+
+                                        <div className="mt-auto flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all shrink-0">
                                             <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
                                             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                         </div>
