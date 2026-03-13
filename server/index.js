@@ -23,8 +23,23 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/api', require('./routes'));
 
-app.get('/', (req, res) => {
-    res.send('RizQaratech API is running');
+// Serve Static Frontend (Vite Build)
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// Webmail/SPA Support: Handle client-side routing
+app.get('*', (req, res) => {
+    // If it's an API request that didn't match /api, return 404
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ error: 'API route not found' });
+    }
+    // Otherwise serve the frontend index.html
+    const indexPath = path.join(distPath, 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.status(200).send('RizQaratech API is running (Frontend build folder not found or not yet built)');
+        }
+    });
 });
 
 // Health Check Endpoint for Render Keep-Alive

@@ -2,23 +2,25 @@
 # exit on error
 set -o errexit
 
-echo "--- Starting Render Build Process ---"
+echo "--- Render Build Logic Starting ---"
+echo "Node version: $(node -v)"
+echo "NPM version: $(npm -v)"
 
-# Step 1: Install root dependencies
-echo "Installing root dependencies..."
-npm install
+# Step 1: Install frontend dependencies
+echo "Installing Root/Frontend dependencies..."
+npm install --no-audit --no-fund
 
-# Step 2: Build the frontend (Vite)
-echo "Building frontend..."
+# Step 2: Build frontend
+echo "Building Frontend (Vite)..."
 npm run build
 
-# Step 3: Clean up root node_modules if needed (Optional, but saves space)
-# rm -rf node_modules
+# Step 3: Remove heavy frontend node_modules to save RAM for server install
+echo "Cleaning up Frontend node_modules..."
+rm -rf node_modules
 
-# Step 4: Install server dependencies
-echo "Installing server dependencies..."
+# Step 4: Install Server dependencies
+echo "Installing Server dependencies..."
 cd server
-npm install
+npm install --no-audit --no-fund
 
-echo "--- Build Process Completed Successfully ---"
-exit 0
+echo "--- Build Completed Successfully ---"
