@@ -213,9 +213,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const API_URL = import.meta.env.VITE_API_URL || 'https://rizqaratech-backend.onrender.com/api';
 
-  const fetchWithTimeout = async (resource: string, options: any = {}, timeout = 8000) => {
+  const fetchWithTimeout = async (resource: string, options: any = {}, timeout = 60000) => {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
+    const id = setTimeout(() => {
+      // @ts-ignore - Some environments support reason
+      controller.abort('timeout');
+    }, timeout);
+    
     try {
       const response = await fetch(resource, {
         ...options,
@@ -227,6 +231,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearTimeout(id);
       throw error;
     }
+  };
+
+  const fetchWithRetry = async (resource: string, options: any = {}, retries = 2, delay = 2000) => {
+    for (let i = 0; i <= retries; i++) {
+      try {
+        const response = await fetchWithTimeout(resource, options);
+        if (response.ok) return response;
+        if (i === retries) return response; // Return last failed response
+      } catch (err) {
+        if (i === retries) throw err;
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, delay * (i + 1))); 
+      }
+    }
+    throw new Error('Fetch failed after retries');
   };
 
   useEffect(() => {
@@ -244,10 +263,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Phase 1: Critical Data (Required to show the main page)
       try {
         const [servicesRes, projectsRes, carouselRes, promotionRes] = await Promise.all([
-          fetchWithTimeout(`${API_URL}/services`),
-          fetchWithTimeout(`${API_URL}/projects`),
-          fetchWithTimeout(`${API_URL}/carousel`),
-          fetchWithTimeout(`${API_URL}/promotion`)
+          fetchWithRetry(`${API_URL}/services`),
+          fetchWithRetry(`${API_URL}/projects`),
+          fetchWithRetry(`${API_URL}/carousel`),
+          fetchWithRetry(`${API_URL}/promotion`)
         ]);
 
         if (servicesRes.ok) setServices(await servicesRes.json());
