@@ -315,7 +315,7 @@ const ProjectDetail = () => {
                         <span className="px-4 py-1 rounded-full bg-[#500000] text-white text-xs font-bold uppercase tracking-wider">{project.status}</span>
                     </div>
                     <h1 className="text-5xl font-black text-[#500000] mb-8">{title}</h1>
-                    <p className="text-xl text-gray-600 leading-relaxed mb-12 font-light">
+                    <p className="text-xl text-gray-600 leading-relaxed mb-12 font-light whitespace-pre-line">
                         {description}
                     </p>
 
@@ -331,17 +331,32 @@ const ProjectDetail = () => {
                     </div>
 
                     {((project.features && project.features.length > 0) || (project.features_bn && project.features_bn.length > 0)) && (
-                        <>
+                        <div className="mb-16">
                             <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}</h3>
-                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {(language === 'bn' && project.features_bn && project.features_bn.length > 0 ? project.features_bn : (project.features || [])).map((feature: string, i: number) => (
-                                    <li key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-                                        <Check className="text-[#500000]" size={18} />
-                                        <span className="text-gray-700">{feature}</span>
-                                    </li>
+                                    <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                                        <div className="w-8 h-8 rounded-full bg-[#500000]/10 flex items-center justify-center shrink-0">
+                                            <Check className="text-[#500000]" size={16} />
+                                        </div>
+                                        <span className="text-gray-700 font-medium">{feature}</span>
+                                    </div>
                                 ))}
-                            </ul>
-                        </>
+                            </div>
+                        </div>
+                    )}
+
+                    {project.tech && project.tech.length > 0 && (
+                        <div className="mb-16">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'ব্যবহৃত প্রযুক্তি' : 'Technologies Used'}</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {project.tech.map((t: string, i: number) => (
+                                    <div key={i} className="px-6 py-3 rounded-2xl bg-gray-50 border border-gray-100 text-[#500000] font-black text-xs uppercase tracking-widest shadow-sm transition-all hover:bg-white hover:shadow-md">
+                                        {t}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     )}
 
                     {project.gallery && project.gallery.length > 0 && (
@@ -351,7 +366,7 @@ const ProjectDetail = () => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {project.gallery.map((img, i) => (
-                                    <div key={i} className="group rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative aspect-[16/9] cursor-zoom-in">
+                                    <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-sm relative aspect-[16/9] cursor-zoom-in">
                                         <img
                                             src={img}
                                             alt={`Gallery ${i + 1}`}
@@ -364,6 +379,47 @@ const ProjectDetail = () => {
                             </div>
                         </div>
                     )}
+                </div>
+
+                <div className="lg:col-span-1 space-y-8">
+                    <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm space-y-6 sticky top-32">
+                        <h4 className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-4">Project Information</h4>
+                        
+                        <div>
+                            <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Category</p>
+                            <p className="text-gray-900 font-bold">{category}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Status</p>
+                            <p className="text-gray-900 font-bold">{project.status}</p>
+                        </div>
+
+                        {project.link && (
+                            <div>
+                                <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Project Link</p>
+                                <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-[#500000] font-bold hover:underline transition-all flex items-center gap-2 mt-1">
+                                    Visit Live Site <ExternalLink size={16} />
+                                </a>
+                            </div>
+                        )}
+
+                        <div>
+                            <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-4">Share this project</p>
+                            <ButtonPremium variant="glass" className="w-full justify-center" onClick={handleShare}>
+                                <Share2 size={18} /> Get Project Link
+                            </ButtonPremium>
+                        </div>
+                    </div>
+
+                    <div className="p-10 bg-[#500000] rounded-[40px] text-white shadow-2xl shadow-[#500000]/20 relative overflow-hidden group">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                        <h4 className="text-2xl font-bold mb-4 relative z-10">Have a similar idea?</h4>
+                        <p className="text-white/70 text-sm mb-8 leading-relaxed relative z-10">We specialize in building custom solutions that drive business growth. Let's make it happen.</p>
+                        <ButtonPremium variant="white" className="w-full justify-center relative z-10 hover:shadow-xl transition-all" onClick={() => navigate('/contact')}>
+                            Start Your Project
+                        </ButtonPremium>
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,19 +705,19 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div
                                 key={project.id}
                                 onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[400px] h-[540px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                className="w-[85vw] md:w-[400px] h-[556px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 data-title={title.toLowerCase()}
                             >
                                 <div className="h-64 relative overflow-hidden">
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-8 flex flex-col h-[284px] overflow-hidden bg-white">
-                                    <div className="h-16 mb-4 shrink-0 overflow-hidden">
+                                <div className="p-8 flex flex-col h-[300px] overflow-hidden bg-white">
+                                    <div className="h-[88px] mb-4 shrink-0">
                                         <div className="flex justify-between items-start">
                                             <div className="flex-1 pr-6">
                                                 <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                                <h3 className="text-xl font-bold text-[#500000] leading-tight line-clamp-2 h-12 overflow-hidden">{title}</h3>
+                                                <h3 className="text-xl font-bold text-[#500000] leading-tight line-clamp-2 pt-2">{title}</h3>
                                             </div>
                                             {project.link && (
                                                 <button
@@ -1121,15 +1177,15 @@ const ProjectsPage = () => {
                                         <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
-                                    <div className="p-6 flex flex-col h-[240px]">
-                                        <div className="h-14 mb-3 shrink-0">
+                                    <div className="p-6 flex flex-col h-[260px]">
+                                        <div className="h-[80px] mb-3 shrink-0">
                                             <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-lg font-bold text-[#500000] group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2">{title}</h3>
+                                            <h3 className="text-lg font-bold text-[#500000] group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2 pt-2">{title}</h3>
                                         </div>
 
-                                        <div className="h-12 mb-4 shrink-0 overflow-hidden">
-                                            <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed">
-                                                {language === 'bn' ? (p.description_bn || p.description) : p.description}
+                                        <div className="h-[60px] mb-4 shrink-0 overflow-hidden text-ellipsis">
+                                            <p className="text-gray-500 text-sm font-medium leading-relaxed">
+                                                {(language === 'bn' ? (p.description_bn || p.description) : p.description)?.slice(0, 100)}...
                                             </p>
                                         </div>
 
