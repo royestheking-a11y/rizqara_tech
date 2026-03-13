@@ -412,12 +412,12 @@ const ProjectDetail = () => {
                         </div>
                     </div>
 
-                    <div className="p-10 bg-[#500000] rounded-[40px] text-white shadow-2xl shadow-[#500000]/20 relative overflow-hidden group">
-                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                        <h4 className="text-2xl font-bold mb-4 relative z-10">Have a similar idea?</h4>
-                        <p className="text-white/70 text-sm mb-8 leading-relaxed relative z-10">We specialize in building custom solutions that drive business growth. Let's make it happen.</p>
-                        <ButtonPremium variant="white" className="w-full justify-center relative z-10 hover:shadow-xl transition-all" onClick={() => navigate('/contact')}>
-                            Start Your Project
+                    <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm relative overflow-hidden group">
+                        <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#500000]/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                        <h4 className="text-xl font-bold text-gray-900 mb-3 relative z-10">Have a similar idea?</h4>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed relative z-10">We specialize in building custom solutions that drive business growth. Let's make it happen.</p>
+                        <ButtonPremium className="w-full justify-center relative z-10 hover:shadow-lg transition-all" onClick={() => navigate('/contact')}>
+                            Start Your Project <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
                         </ButtonPremium>
                     </div>
                 </div>
