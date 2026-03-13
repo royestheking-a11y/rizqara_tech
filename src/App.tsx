@@ -656,25 +656,31 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-8">
+                                <div className="p-8 flex flex-col h-[280px]">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex-1 pr-4">
                                             <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-2xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30">{title}</h3>
+                                            <h3 className="text-xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30 line-clamp-2 h-14">{title}</h3>
                                         </div>
                                         {project.link && (
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm"
+                                                className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm shrink-0"
                                                 title="View Live"
                                             >
-                                                <ExternalLink size={20} />
+                                                <ExternalLink size={18} />
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-gray-500 text-sm line-clamp-3 font-medium leading-relaxed">
-                                        {language === 'bn' ? project.description_bn : project.description}
-                                    </p>
+                                    <div className="flex-grow">
+                                        <p className="text-gray-500 text-sm line-clamp-3 font-medium leading-relaxed mb-4">
+                                            {language === 'bn' ? project.description_bn : project.description}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all">
+                                        <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
+                                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -1111,10 +1117,16 @@ const ProjectsPage = () => {
                                         <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
-                                    <div className="p-6">
+                                    <div className="p-6 flex flex-col h-[240px]">
                                         <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                        <h3 className="text-xl font-bold text-[#500000] mb-3 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight">{title}</h3>
-                                        <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                        <h3 className="text-lg font-bold text-[#500000] mb-3 group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2 h-12">{title}</h3>
+                                        <div className="flex-grow">
+                                            <p className="text-gray-500 line-clamp-2 text-sm font-medium leading-relaxed mb-4">{language === 'bn' ? (p.description_bn || p.description) : p.description}</p>
+                                        </div>
+                                        <div className="flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all">
+                                            <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
+                                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                        </div>
                                     </div>
                                 </motion.div>
                             )
