@@ -291,10 +291,11 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
             {/* Grid of Milestone Cards */}
             <div className="max-w-7xl mx-auto relative">
                 {/* Connecting Lines SVG - Desktop */}
-                <svg className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
                     {milestones.map((_, i) => {
                         if (i === milestones.length - 1) return null;
 
+                        const totalRows = Math.ceil(milestones.length / 3);
                         // Calculate grid positions (3 columns on desktop)
                         const currentCol = i % 3;
                         const currentRow = Math.floor(i / 3);
@@ -302,15 +303,14 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                         const nextRow = Math.floor((i + 1) / 3);
 
                         // Card dimensions and gaps (approximate)
-                        const cardWidth = 100 / 3; // percentage
-                        const gapX = 2.5; // percentage
-                        const rowHeight = 600; // pixels
+                        const cardWidth = 100 / 3;
+                        const gapX = 2.5;
 
-                        // Calculate center points of cards
+                        // Calculate center points of cards (normalized 0-100)
                         const x1 = (currentCol * cardWidth) + (currentCol * gapX) + (cardWidth / 2);
-                        const y1 = (currentRow * rowHeight) + 300;
+                        const y1 = ((currentRow + 0.5) / totalRows) * 100;
                         const x2 = (nextCol * cardWidth) + (nextCol * gapX) + (cardWidth / 2);
-                        const y2 = (nextRow * rowHeight) + 300;
+                        const y2 = ((nextRow + 0.5) / totalRows) * 100;
 
                         // Create smooth curve
                         const midX = (x1 + x2) / 2;
@@ -319,11 +319,11 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                         return (
                             <motion.path
                                 key={`line-${i}`}
-                                d={`M ${x1}% ${y1} Q ${midX}% ${midY}, ${x2}% ${y2}`}
+                                d={`M ${x1} ${y1} Q ${midX} ${midY}, ${x2} ${y2}`}
                                 stroke="#500000"
-                                strokeWidth="3"
+                                strokeWidth="0.5"
                                 fill="none"
-                                strokeDasharray="8 4"
+                                strokeDasharray="1 0.5"
                                 opacity="0.2"
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 0.2 }}
@@ -335,10 +335,11 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                 </svg>
 
                 {/* Connecting Lines SVG - Tablet */}
-                <svg className="hidden md:block lg:hidden absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="hidden md:block lg:hidden absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
                     {milestones.map((_, i) => {
                         if (i === milestones.length - 1) return null;
 
+                        const totalRows = Math.ceil(milestones.length / 2);
                         // Calculate grid positions (2 columns on tablet)
                         const currentCol = i % 2;
                         const currentRow = Math.floor(i / 2);
@@ -347,12 +348,11 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
 
                         const cardWidth = 50;
                         const gapX = 3;
-                        const rowHeight = 600;
 
                         const x1 = (currentCol * cardWidth) + (currentCol * gapX) + (cardWidth / 2);
-                        const y1 = (currentRow * rowHeight) + 300;
+                        const y1 = ((currentRow + 0.5) / totalRows) * 100;
                         const x2 = (nextCol * cardWidth) + (nextCol * gapX) + (cardWidth / 2);
-                        const y2 = (nextRow * rowHeight) + 300;
+                        const y2 = ((nextRow + 0.5) / totalRows) * 100;
 
                         const midX = (x1 + x2) / 2;
                         const midY = (y1 + y2) / 2;
@@ -360,11 +360,11 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                         return (
                             <motion.path
                                 key={`line-${i}`}
-                                d={`M ${x1}% ${y1} Q ${midX}% ${midY}, ${x2}% ${y2}`}
+                                d={`M ${x1} ${y1} Q ${midX} ${midY}, ${x2} ${y2}`}
                                 stroke="#500000"
-                                strokeWidth="3"
+                                strokeWidth="0.5"
                                 fill="none"
-                                strokeDasharray="8 4"
+                                strokeDasharray="1 0.5"
                                 opacity="0.2"
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 0.2 }}
@@ -376,25 +376,25 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                 </svg>
 
                 {/* Connecting Lines SVG - Mobile */}
-                <svg className="md:hidden absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="md:hidden absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
                     {milestones.map((_, i) => {
                         if (i === milestones.length - 1) return null;
 
-                        const rowHeight = 650;
+                        const totalRows = milestones.length;
                         const x = 50; // center
-                        const y1 = (i * rowHeight) + 300;
-                        const y2 = ((i + 1) * rowHeight) + 300;
+                        const y1 = ((i + 0.5) / totalRows) * 100;
+                        const y2 = (((i + 1) + 0.5) / totalRows) * 100;
 
                         return (
                             <motion.line
                                 key={`line-${i}`}
-                                x1={`${x}%`}
+                                x1={x}
                                 y1={y1}
-                                x2={`${x}%`}
+                                x2={x}
                                 y2={y2}
                                 stroke="#500000"
-                                strokeWidth="3"
-                                strokeDasharray="8 4"
+                                strokeWidth="0.5"
+                                strokeDasharray="1 0.5"
                                 opacity="0.2"
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 0.2 }}
