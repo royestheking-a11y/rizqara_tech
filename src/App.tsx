@@ -656,11 +656,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="p-8 flex flex-col h-[280px]">
-                                    <div className="flex justify-between items-start mb-4">
+                                <div className="p-8 flex flex-col h-[300px]">
+                                    <div className="flex justify-between items-start mb-4 h-16 shrink-0">
                                         <div className="flex-1 pr-4">
                                             <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30 line-clamp-2 h-14">{title}</h3>
+                                            <h3 className="text-xl font-bold text-[#500000] leading-tight group-hover:underline decoration-[#500000]/30 line-clamp-2">{title}</h3>
                                         </div>
                                         {project.link && (
                                             <button
@@ -672,12 +672,12 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                             </button>
                                         )}
                                     </div>
-                                    <div className="flex-grow">
-                                        <p className="text-gray-500 text-sm line-clamp-3 font-medium leading-relaxed mb-4">
+                                    <div className="flex-grow overflow-hidden mb-4">
+                                        <p className="text-gray-500 text-sm line-clamp-4 font-medium leading-relaxed">
                                             {language === 'bn' ? project.description_bn : project.description}
                                         </p>
                                     </div>
-                                    <div className="flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all">
+                                    <div className="mt-auto flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all shrink-0">
                                         <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
                                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                     </div>
