@@ -65,8 +65,7 @@
       },
       "scripts": {
             "dev": "vite",
-            "start:server": "cd server && npm start",
-            "build": "vite build",
-            "build:render": "npm install && npm run build && cd server && npm install"
+            "start:server": "cd server && node index.js",
+            "build": "npm install && vite build && cd server && npm install"
       }
 }
