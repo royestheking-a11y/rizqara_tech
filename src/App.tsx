@@ -242,57 +242,64 @@ const CaseStudyDetail = () => {
                         </div>
                     </div>
 
-                    <div className="space-y-24">
-                        {/* High-level Sections */}
-                        <div className="grid grid-cols-1 gap-20">
-                            <section className="bg-white p-10 md:p-16 rounded-[50px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500">
+                    <div className="space-y-32">
+                        {/* Phase 01: Identification */}
+                        <section className="relative">
+                            <div className="absolute -left-16 -top-16 text-[180px] font-black text-gray-100/50 select-none pointer-events-none">01</div>
+                            <div className="relative z-10">
                                 <h2 className="text-4xl font-black text-[#500000] mb-12 flex items-center gap-6">
-                                    <div className="w-16 h-16 rounded-[24px] bg-[#500000] flex items-center justify-center shrink-0 shadow-2xl shadow-[#500000]/30 transform group-hover:rotate-6 transition-transform">
-                                        <Activity size={32} className="text-white" />
+                                    <div className="w-16 h-16 rounded-3xl bg-gray-50 flex items-center justify-center shrink-0 shadow-sm border border-gray-100">
+                                        <Activity size={32} className="text-[#500000]" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">01. The Challenge</span>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">Phase Alpha</span>
                                         {language === 'bn' ? 'প্রধান সমস্যা' : 'Identification'}
                                     </div>
                                 </h2>
-                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-gray-50 pl-10">
+                                <div className="text-2xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-[#500000] pl-10 md:mr-12">
                                     {problem}
                                 </div>
-                            </section>
+                            </div>
+                        </section>
 
-                            <section className="bg-white p-10 md:p-16 rounded-[50px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500">
+                        {/* Phase 02: Strategy & Execution */}
+                        <section className="bg-gray-50/80 backdrop-blur-sm p-12 md:p-20 rounded-[60px] border border-gray-100 relative group">
+                            <div className="absolute right-12 top-12 text-[120px] font-black text-[#500000]/5 select-none pointer-events-none group-hover:scale-110 transition-transform duration-1000">02</div>
+                            <div className="relative z-10">
                                 <h2 className="text-4xl font-black text-[#500000] mb-12 flex items-center gap-6">
-                                    <div className="w-16 h-16 rounded-[24px] bg-[#500000] flex items-center justify-center shrink-0 shadow-2xl shadow-[#500000]/30">
-                                        <Cpu size={32} className="text-white" />
+                                    <div className="w-16 h-16 rounded-3xl bg-white flex items-center justify-center shrink-0 shadow-xl shadow-[#500000]/5">
+                                        <Cpu size={32} className="text-[#500000]" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">02. The Action</span>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">Phase Beta</span>
                                         {language === 'bn' ? 'সমাধান এবং কৌশল' : 'Strategy & Execution'}
                                     </div>
                                 </h2>
-                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-gray-50 pl-10">
+                                <div className="text-2xl text-gray-900 leading-relaxed font-normal whitespace-pre-line pl-10">
                                     {solution}
                                 </div>
-                            </section>
+                            </div>
+                        </section>
 
-                            <section className="bg-[#500000] p-10 md:p-16 rounded-[50px] text-white shadow-2xl relative overflow-hidden group">
-                                <div className="relative z-10">
-                                    <h2 className="text-4xl font-black mb-12 flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-[24px] bg-white text-[#500000] flex items-center justify-center shrink-0 shadow-2xl">
-                                            <Zap size={32} />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mb-1">03. The Result</span>
-                                            {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
-                                        </div>
-                                    </h2>
-                                    <div className="text-xl text-white/90 leading-relaxed font-medium whitespace-pre-line border-l-4 border-white/10 pl-10">
-                                        {impact}
+                        {/* Phase 03: Business Impact */}
+                        <section className="relative">
+                            <div className="absolute -left-16 -top-16 text-[180px] font-black text-[#500000]/5 select-none pointer-events-none">03</div>
+                            <div className="relative z-10">
+                                <h2 className="text-4xl font-black text-[#500000] mb-12 flex items-center gap-6">
+                                    <div className="w-16 h-16 rounded-3xl bg-[#500000]/5 flex items-center justify-center shrink-0 border border-[#500000]/10">
+                                        <Zap size={32} className="text-[#500000]" />
                                     </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">Phase Omega</span>
+                                        {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
+                                    </div>
+                                </h2>
+                                <div className="text-2xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-emerald-500/20 pl-10 md:mr-12">
+                                    {impact}
                                 </div>
-                                <Activity className="absolute -right-20 -bottom-20 text-white/5 rotate-12 scale-150 transition-transform group-hover:scale-[1.7] duration-1000" size={300} />
-                            </section>
-                        </div>
+                            </div>
+                            <Activity className="absolute -right-20 -bottom-20 text-[#500000]/5 rotate-12 scale-150 transition-transform group-hover:scale-[1.7] duration-1000" size={300} />
+                        </section>
 
                         {/* Visual Showcase */}
                         {study.gallery && study.gallery.length > 0 && (
