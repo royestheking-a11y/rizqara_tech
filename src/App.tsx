@@ -215,94 +215,111 @@ const CaseStudyDetail = () => {
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
                     <ArrowRight className="rotate-180" size={20} />
                 </div>
-                <span className="text-sm uppercase tracking-widest font-bold">{language === 'bn' ? 'কেস স্টাডিজে ফিরে যান' : 'Back to Case Studies'}</span>
+                <span className="text-sm uppercase tracking-widest font-black">{language === 'bn' ? 'কেস স্টাডিজে ফিরে যান' : 'Back to Case Studies'}</span>
             </button>
 
-            <div className="rounded-[40px] overflow-hidden mb-16 border border-gray-100 shadow-2xl relative group h-[50vh] md:h-[60vh]">
-                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                <div className="absolute bottom-12 left-12 right-12">
-                    <span className="px-4 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black uppercase tracking-widest mb-4 inline-block">
-                        {study.category}
-                    </span>
-                    <h1 className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl">
-                        {title}
-                    </h1>
-                </div>
+            <div className="rounded-[40px] overflow-hidden mb-12 border border-gray-100 shadow-2xl h-[45vh] md:h-[55vh] relative group">
+                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
                 <div className="lg:col-span-2">
-                    <div className="space-y-16">
-                        {/* Summary / Overview */}
-                        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                            <p className="text-2xl md:text-3xl text-gray-600 leading-relaxed font-light italic border-l-4 border-[#500000] pl-8">
+                    <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                        <div className="flex items-center gap-4 mb-8">
+                            <span className="px-5 py-2 rounded-full border border-gray-200 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] bg-gray-50/50">{study.category}</span>
+                            <span className="px-5 py-2 rounded-full bg-[#500000] text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-[#500000]/20">Featured Case Study</span>
+                        </div>
+                        <h1 className="text-5xl md:text-8xl font-black text-[#500000] leading-[1.05] mb-12 tracking-tight">
+                            {title}
+                        </h1>
+                        <div className="relative p-10 md:p-14 bg-gray-50 rounded-[50px] border border-gray-100 shadow-sm overflow-hidden group">
+                            <div className="absolute left-0 top-0 bottom-0 w-3 bg-[#500000] rounded-r-full transition-transform duration-500 group-hover:scale-y-110" />
+                            <p className="text-2xl md:text-4xl text-gray-600 leading-relaxed font-light italic pl-6">
                                 "{description}"
                             </p>
-                        </section>
+                            <Lightbulb className="absolute -right-8 -bottom-8 text-[#500000]/5 rotate-12" size={160} />
+                        </div>
+                    </div>
 
-                        <hr className="border-gray-100" />
-
+                    <div className="space-y-24">
                         {/* High-level Sections */}
-                        <div className="grid grid-cols-1 gap-16">
-                            <section>
-                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
-                                        <Activity size={24} className="text-[#500000]" />
+                        <div className="grid grid-cols-1 gap-20">
+                            <section className="bg-white p-10 md:p-16 rounded-[50px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500">
+                                <h2 className="text-4xl font-black text-[#500000] mb-12 flex items-center gap-6">
+                                    <div className="w-16 h-16 rounded-[24px] bg-[#500000] flex items-center justify-center shrink-0 shadow-2xl shadow-[#500000]/30 transform group-hover:rotate-6 transition-transform">
+                                        <Activity size={32} className="text-white" />
                                     </div>
-                                    {language === 'bn' ? 'প্রধান সমস্যা' : 'The Challenge'}
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">01. The Challenge</span>
+                                        {language === 'bn' ? 'প্রধান সমস্যা' : 'Identification'}
+                                    </div>
                                 </h2>
-                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
+                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-gray-50 pl-10">
                                     {problem}
                                 </div>
                             </section>
 
-                            <section>
-                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
-                                        <Lightbulb size={24} className="text-[#500000]" />
+                            <section className="bg-white p-10 md:p-16 rounded-[50px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500">
+                                <h2 className="text-4xl font-black text-[#500000] mb-12 flex items-center gap-6">
+                                    <div className="w-16 h-16 rounded-[24px] bg-[#500000] flex items-center justify-center shrink-0 shadow-2xl shadow-[#500000]/30">
+                                        <Cpu size={32} className="text-white" />
                                     </div>
-                                    {language === 'bn' ? 'সমাধান এবং কৌশল' : 'The Solution & Strategy'}
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-1">02. The Action</span>
+                                        {language === 'bn' ? 'সমাধান এবং কৌশল' : 'Strategy & Execution'}
+                                    </div>
                                 </h2>
-                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
+                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line border-l-4 border-gray-50 pl-10">
                                     {solution}
                                 </div>
                             </section>
 
-                            <section>
-                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
-                                        <Zap size={24} className="text-[#500000]" />
+                            <section className="bg-[#500000] p-10 md:p-16 rounded-[50px] text-white shadow-2xl relative overflow-hidden group">
+                                <div className="relative z-10">
+                                    <h2 className="text-4xl font-black mb-12 flex items-center gap-6">
+                                        <div className="w-16 h-16 rounded-[24px] bg-white text-[#500000] flex items-center justify-center shrink-0 shadow-2xl">
+                                            <Zap size={32} />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mb-1">03. The Result</span>
+                                            {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
+                                        </div>
+                                    </h2>
+                                    <div className="text-xl text-white/90 leading-relaxed font-medium whitespace-pre-line border-l-4 border-white/10 pl-10">
+                                        {impact}
                                     </div>
-                                    {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
-                                </h2>
-                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
-                                    {impact}
                                 </div>
+                                <Activity className="absolute -right-20 -bottom-20 text-white/5 rotate-12 scale-150 transition-transform group-hover:scale-[1.7] duration-1000" size={300} />
                             </section>
                         </div>
 
                         {/* Visual Showcase */}
                         {study.gallery && study.gallery.length > 0 && (
-                            <section className="pt-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                                <h3 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
-                                    <ImageIcon size={28} className="text-[#500000]" /> Visual Showcase
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <section className="pt-12">
+                                <div className="flex items-center justify-between mb-12">
+                                    <h3 className="text-3xl font-black text-gray-900 flex items-center gap-4">
+                                        <ImageIcon size={32} className="text-[#500000]" /> Product Showcase
+                                    </h3>
+                                    <div className="flex gap-2">
+                                        <div className="w-12 h-1 bg-[#500000] rounded-full" />
+                                        <div className="w-4 h-1 bg-gray-200 rounded-full" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     {study.gallery.map((img, i) => (
                                         <motion.div 
                                             key={i}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
                                             viewport={{ once: true }}
-                                            className="group rounded-[32px] overflow-hidden border border-gray-100 shadow-xl aspect-[16/10] relative cursor-zoom-in"
+                                            className="group rounded-[40px] overflow-hidden border border-gray-100 shadow-2xl aspect-[16/11] relative cursor-zoom-in"
                                             onClick={() => window.open(img, '_blank')}
                                         >
-                                            <img src={img} alt={`Gallery ${i+1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-                                                    <Plus size={24} />
+                                            <img src={img} alt={`Gallery ${i+1}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                                                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center text-white transform scale-50 group-hover:scale-100 transition-transform duration-500">
+                                                    <Plus size={32} />
                                                 </div>
                                             </div>
                                         </motion.div>
@@ -314,17 +331,20 @@ const CaseStudyDetail = () => {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <div className="sticky top-32 space-y-8">
+                    <div className="sticky top-32 space-y-10">
                         {/* Information Card */}
-                        <div className="bg-white border border-gray-100 p-10 rounded-[40px] shadow-2xl space-y-10">
-                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest border-b border-gray-50 pb-6">Case Information</h4>
+                        <div className="bg-white border border-gray-100 p-12 rounded-[50px] shadow-2xl space-y-12 border-t-[12px] border-t-[#500000]">
+                            <h4 className="text-3xl font-black text-gray-900 leading-none tracking-tight">Case Summary</h4>
                             
-                            <div className="space-y-8">
+                            <div className="space-y-12">
                                 <div>
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Platform & Tech</p>
-                                    <div className="flex flex-wrap gap-2">
+                                    <p className="text-[11px] font-black text-gray-950 uppercase tracking-[0.25em] mb-6 flex items-center gap-3">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-[#500000] shadow-sm" /> 
+                                        Technology
+                                    </p>
+                                    <div className="flex flex-wrap gap-2.5">
                                         {techs.map((t, i) => (
-                                            <span key={i} className="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-[#500000] uppercase tracking-wider">
+                                            <span key={i} className="px-5 py-2.5 bg-gray-50 border border-gray-100 rounded-2xl text-[11px] font-black text-gray-800 uppercase tracking-widest hover:bg-[#500000] hover:text-white hover:border-[#500000] hover:shadow-xl transition-all cursor-default">
                                                 {t}
                                             </span>
                                         ))}
@@ -333,14 +353,17 @@ const CaseStudyDetail = () => {
 
                                 {features.length > 0 && (
                                     <div>
-                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Core Deliverables</p>
-                                        <div className="space-y-3">
+                                        <p className="text-[11px] font-black text-gray-950 uppercase tracking-[0.25em] mb-8 flex items-center gap-3">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[#500000] shadow-sm" /> 
+                                            Key Results
+                                        </p>
+                                        <div className="space-y-4">
                                             {features.map((f, i) => (
-                                                <div key={i} className="flex items-start gap-3">
-                                                    <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center shrink-0 mt-0.5">
-                                                        <Check className="text-green-600" size={12} strokeWidth={3} />
+                                                <div key={i} className="flex items-start gap-4 p-5 bg-gray-50/50 rounded-[24px] border border-gray-100/50 hover:bg-white hover:shadow-xl hover:border-white transition-all group">
+                                                    <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 group-hover:bg-green-500 group-hover:text-white transition-all duration-500 shadow-sm">
+                                                        <Check size={14} strokeWidth={4} />
                                                     </div>
-                                                    <span className="text-gray-600 text-sm font-medium leading-relaxed">{f}</span>
+                                                    <span className="text-gray-900 text-[13px] font-bold leading-relaxed">{f}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -350,33 +373,38 @@ const CaseStudyDetail = () => {
 
                             <hr className="border-gray-50" />
 
-                            <div className="space-y-6">
-                                <h5 className="text-xl font-black text-gray-900">Ready to replicate this success?</h5>
-                                <p className="text-gray-500 text-sm leading-relaxed">
-                                    We combine technical precision with business strategy to deliver results that matter.
-                                </p>
+                            <div className="space-y-8">
+                                <div className="space-y-4">
+                                    <h5 className="text-2xl font-black text-gray-900 leading-tight">Build your success story today.</h5>
+                                    <p className="text-gray-500 text-sm leading-relaxed">
+                                        Schedule a free strategic audit and discover how we can transform your digital infrastructure.
+                                    </p>
+                                </div>
                                 <ButtonPremium 
-                                    className="w-full justify-center group"
+                                    className="w-full justify-center group h-16 rounded-[24px] shadow-2xl shadow-[#500000]/20"
                                     onClick={() => navigate('/contact')}
                                 >
-                                    Work With Us <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
+                                    Start Project <ArrowRight size={20} className="ml-3 transition-transform group-hover:translate-x-2" />
                                 </ButtonPremium>
                             </div>
                         </div>
 
                         {/* Secondary CTA */}
-                        <div className="bg-[#500000] p-10 rounded-[40px] text-white shadow-2xl relative overflow-hidden group">
+                        <div className="bg-gray-900 p-12 rounded-[50px] text-white shadow-2xl relative overflow-hidden group">
                            <div className="relative z-10">
-                                <h5 className="text-xl font-black mb-4">Free Audit?</h5>
-                                <p className="text-white/60 text-sm mb-6">Let's audit your current systems and suggest immediate improvements.</p>
+                                <div className="w-12 h-12 rounded-2xl bg-[#500000] flex items-center justify-center mb-8 shadow-xl">
+                                    <MessageSquare size={24} />
+                                </div>
+                                <h5 className="text-2xl font-black mb-4">Expert Advice?</h5>
+                                <p className="text-white/40 text-sm mb-10 leading-relaxed font-light">Get a 30-minute consultation with our lead technical architect to discuss your vision.</p>
                                 <button 
                                     onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
-                                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:gap-4 transition-all"
+                                    className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] hover:text-[#500000] transition-all group/btn"
                                 >
-                                    Book a Call <ArrowRight size={16} />
+                                    Book Strategy Call <ArrowRight size={18} className="group-hover/btn:translate-x-2 transition-transform" />
                                 </button>
                            </div>
-                           <Activity className="absolute -right-8 -bottom-8 text-white/5 rotate-12 transition-transform group-hover:scale-110 duration-700" size={200} />
+                           <Layers className="absolute -right-16 -bottom-16 text-white/5 rotate-12 transition-transform group-hover:scale-110 duration-1000" size={240} />
                         </div>
                     </div>
                 </div>
