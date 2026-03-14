@@ -8,7 +8,7 @@ import {
     Shield, Zap, MessageSquare, Briefcase,
     Server,
     Lock, User, ExternalLink, Share2, Search,
-    Lightbulb, Cpu, Activity, Layers, Image as ImageIcon, Plus
+    Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
@@ -178,7 +178,7 @@ const CaseStudiesPage = () => {
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { caseStudies, language, loading } = useData();
+    const { caseStudies, language, t, loading } = useData();
 
     const study = caseStudies.find(s => 
         String(s.id) === id || 
@@ -203,260 +203,204 @@ const CaseStudyDetail = () => {
     const techs = study.tech || [];
     const features = language === 'bn' && study.features_bn ? study.features_bn : (study.features || []);
 
+    const handleShare = async () => {
+        const url = window.location.href;
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: title, text: description, url: url });
+            } catch (error) { console.log('Error sharing', error); }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                toast.success('Link copied to clipboard!');
+            } catch (err) {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) toast.success('Link copied to clipboard!');
+                } catch (e) { prompt("Copy this link:", url); }
+                document.body.removeChild(textArea);
+            }
+        }
+    };
+
     return (
-        <div className="bg-white min-h-screen selection:bg-[#500000] selection:text-white">
+        <div className="container mx-auto px-6 py-24 min-h-screen">
             <SEO 
                 title={`${title} | Case Study | RizQara Tech`} 
                 description={description} 
                 canonical={`https://rizqara.tech/case-studies/${id}`}
             />
             
-            {/* Editorial Hero */}
-            <div className="relative h-[90vh] md:h-screen w-full overflow-hidden mb-32">
-                <motion.div 
-                    initial={{ scale: 1.1 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="absolute inset-0"
-                >
-                    <img src={study.image} alt={title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/20" />
-                </motion.div>
+            <button onClick={() => navigate('/case-studies')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
+                <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
+                    <ArrowRight className="rotate-180" size={20} />
+                </div>
+                <span className="text-sm uppercase tracking-widest font-bold">{t('back')}</span>
+            </button>
 
-                {/* Navigation Overlay */}
-                <div className="absolute top-32 left-8 md:left-16 z-30">
-                    <button onClick={() => navigate('/case-studies')} className="flex items-center text-white/80 hover:text-white transition-all group">
-                        <div className="p-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mr-4 group-hover:bg-white/20 transition-all">
-                            <ArrowRight className="rotate-180" size={20} />
+            <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl">
+                <img src={study.image} alt={title} className="w-full h-[50vh] object-cover" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                <div className="lg:col-span-2">
+                    <div className="flex items-center gap-4 mb-6">
+                        <span className="px-4 py-1 rounded-full border border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider">{study.category}</span>
+                        <span className="px-4 py-1 rounded-full bg-[#500000] text-white text-xs font-bold uppercase tracking-wider">Featured Case Study</span>
+                    </div>
+                    <h1 className="text-5xl font-black text-[#500000] mb-8">{title}</h1>
+                    <p className="text-xl text-gray-600 leading-relaxed mb-12 font-light whitespace-pre-line">
+                        {description}
+                    </p>
+
+                    <div className="pb-24">
+                        {/* Problem Section */}
+                        <div className="mb-40">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                                <Activity className="text-[#500000]" size={24} />
+                                {language === 'bn' ? 'প্রধান সমস্যা' : 'The Challenge'}
+                            </h3>
+                            <div className="p-8 bg-gray-50 rounded-2xl border border-gray-100 text-lg text-gray-700 leading-relaxed shadow-sm">
+                                {problem}
+                            </div>
                         </div>
-                        <span className="text-[10px] uppercase font-black tracking-[0.3em]">{language === 'bn' ? 'ফিরে যান' : 'Back to Gallery'}</span>
-                    </button>
+
+                        {/* Solution Section */}
+                        <div className="pt-20 mb-40">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                                <Cpu className="text-[#500000]" size={24} />
+                                {language === 'bn' ? 'সমাধান এবং কৌশল' : 'Our Solution'}
+                            </h3>
+                            <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-md text-lg text-gray-700 leading-relaxed">
+                                {solution}
+                            </div>
+                        </div>
+
+                        {/* Impact Section */}
+                        <div className="pt-20 mb-40">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                                <Zap className="text-[#500000]" size={24} />
+                                {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
+                            </h3>
+                            <div className="p-8 bg-[#500000]/5 rounded-2xl border border-[#500000]/10 text-lg text-gray-700 leading-relaxed shadow-sm">
+                                {impact}
+                            </div>
+                        </div>
+
+                        {/* Key Results */}
+                        {features.length > 0 && (
+                            <div className="pt-20 mb-40">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-12">{language === 'bn' ? 'মূল ফলাফল' : 'Key Results'}</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {features.map((f: string, i: number) => (
+                                        <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                                                <Check className="text-green-600" size={16} strokeWidth={3} />
+                                            </div>
+                                            <span className="text-gray-700 font-medium">{f}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tech Stack */}
+                        {techs.length > 0 && (
+                            <div className="pt-20 mb-40">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-12">{language === 'bn' ? 'ব্যবহৃত প্রযুক্তি' : 'Technologies Used'}</h3>
+                                <div className="flex flex-wrap gap-4">
+                                    {techs.map((t: string, i: number) => (
+                                        <div key={i} className="px-8 py-4 rounded-2xl bg-gray-50 border border-gray-100 text-[#500000] font-black text-sm uppercase tracking-widest shadow-sm transition-all hover:bg-white hover:shadow-md">
+                                            {t}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Gallery */}
+                        {study.gallery && study.gallery.length > 0 && (
+                            <div className="pt-20 animate-in slide-in-from-bottom-8 duration-700 mb-40">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-2">
+                                    <ImageIcon size={24} className="text-[#500000]" /> Project Showcase
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {study.gallery.map((img: string, i: number) => (
+                                        <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative aspect-[16/9] cursor-zoom-in">
+                                            <img
+                                                src={img}
+                                                alt={`Gallery ${i + 1}`}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                onClick={() => window.open(img, '_blank')}
+                                            />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* Floating Title Card */}
-                <div className="absolute inset-0 flex items-end md:items-center justify-start p-8 md:p-16 lg:p-32 pointer-events-none">
-                    <div className="w-full lg:col-span-1 pointer-events-auto">
-                        <motion.div 
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5, duration: 1 }}
-                            className="max-w-4xl p-10 md:p-20 bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[40px] md:rounded-[80px] text-white shadow-2xl relative overflow-hidden"
-                        >
-                            <div className="absolute top-0 right-0 p-10 hidden md:block opacity-20">
-                                <Activity size={120} />
-                            </div>
+                <div className="lg:col-span-1">
+                    <div className="sticky top-32 space-y-12">
+                        {/* Summary Card */}
+                        <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm space-y-6">
+                            <h4 className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-4">Case Summary</h4>
                             
-                            <div className="flex items-center gap-4 mb-8">
-                                <span className="px-5 py-2 rounded-full bg-white/20 backdrop-blur text-[10px] font-black uppercase tracking-widest">{study.category}</span>
-                                <span className="px-5 py-2 rounded-full bg-[#500000] text-white text-[10px] font-black uppercase tracking-widest shadow-xl">Portfolio Story</span>
+                            <div>
+                                <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Category</p>
+                                <p className="text-gray-900 font-bold">{study.category}</p>
                             </div>
 
-                            <h1 className="text-5xl md:text-9xl font-black leading-[0.9] mb-12 tracking-tight">
-                                {title}
-                            </h1>
-
-                            <div className="flex flex-col md:flex-row items-start md:items-center gap-12 mt-12 pt-12 border-t border-white/10">
-                                <div>
-                                    <p className="text-[8px] font-black uppercase tracking-[0.5em] text-white/40 mb-2">Duration</p>
-                                    <p className="font-bold">4-6 Months</p>
-                                </div>
-                                <div>
-                                    <p className="text-[8px] font-black uppercase tracking-[0.5em] text-white/40 mb-2">Impact</p>
-                                    <p className="font-bold">Global Presence</p>
-                                </div>
-                                <div>
-                                    <p className="text-[8px] font-black uppercase tracking-[0.5em] text-white/40 mb-2">Status</p>
-                                    <p className="font-bold text-[#500000] bg-white px-3 py-1 rounded-lg">Operational</p>
-                                </div>
+                            <div>
+                                <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Type</p>
+                                <p className="text-gray-900 font-bold">Featured Case Study</p>
                             </div>
-                        </motion.div>
+
+                            <div>
+                                <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-4">Share this case study</p>
+                                <ButtonPremium variant="glass" className="w-full justify-center" onClick={handleShare}>
+                                    <Share2 size={18} /> Share Case Study
+                                </ButtonPremium>
+                            </div>
+
+                            <hr className="border-gray-50" />
+
+                            <div className="space-y-4">
+                                <h5 className="text-xl font-bold text-gray-900 leading-tight">Ready for a similar transformation?</h5>
+                                <p className="text-gray-500 text-sm leading-relaxed">
+                                    Let's discuss how we can help you achieve similar results for your business.
+                                </p>
+                                <ButtonPremium className="w-full justify-center group" onClick={() => navigate('/contact')}>
+                                    Start Your Project <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                </ButtonPremium>
+                            </div>
+                        </div>
+
+                        {/* Consultation Card */}
+                        <div className="p-8 bg-gray-900 rounded-3xl shadow-xl relative overflow-hidden group">
+                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#500000]/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                            <h4 className="text-xl font-bold text-white mb-3 relative z-10">Expert Advice?</h4>
+                            <p className="text-white/60 text-sm mb-8 leading-relaxed relative z-10">Get a 30-minute consultation with our lead technical architect to discuss your vision.</p>
+                            <button 
+                                onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
+                                className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-[#500000] px-6 py-3 rounded-xl hover:bg-[#500000] hover:text-white transition-all shadow-xl active:scale-95 group/btn"
+                            >
+                                Book Strategy Call <ArrowRight size={18} className="group-hover/btn:translate-x-2 transition-transform" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <main className="container mx-auto px-6 lg:px-16">
-                {/* Introduction Narrative */}
-                <section className="max-w-5xl mx-auto mb-64 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <h2 className="text-[10px] font-black uppercase tracking-[0.6em] text-[#500000] mb-12">Executive Summary</h2>
-                        <p className="text-3xl md:text-6xl text-gray-900 leading-[1.1] font-medium tracking-tight whitespace-pre-line">
-                            {description}
-                        </p>
-                    </motion.div>
-                </section>
-
-                {/* Split Story: Phase 01 */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-32 mb-64 items-start">
-                    <div className="lg:sticky lg:top-32">
-                        <div className="relative rounded-[60px] overflow-hidden aspect-[4/5] shadow-2xl group">
-                            <img src={study.image} alt="Process" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#500000]/40 to-transparent" />
-                            <div className="absolute bottom-12 left-12 text-white">
-                                <span className="text-8xl font-black opacity-20">01</span>
-                                <h3 className="text-4xl font-black mt-2">The Friction</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="pt-12">
-                        <div className="flex items-center gap-4 mb-12">
-                            <span className="w-12 h-[2px] bg-[#500000]" />
-                            <span className="text-xs font-black uppercase tracking-[0.4em] text-gray-400">Discovery & Strategy</span>
-                        </div>
-                        <h2 className="text-4xl md:text-6xl font-black text-[#500000] mb-12 leading-tight">
-                            Uncovering the systemic challenges.
-                        </h2>
-                        <div className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light space-y-8">
-                            {problem.split('\n').map((p, i) => (
-                                <p key={i}>{p}</p>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Results Banner (Phase 03 Overload) */}
-                <section className="mb-64">
-                    <div className="bg-gray-50 rounded-[80px] p-12 md:p-32 relative overflow-hidden text-center shadow-sm border border-gray-100">
-                        <div className="absolute top-0 right-0 p-20 opacity-[0.03] select-none pointer-events-none">
-                            <Zap size={400} />
-                        </div>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="relative z-10 max-w-4xl mx-auto"
-                        >
-                            <span className="text-xs font-black uppercase tracking-[0.5em] text-[#500000] mb-12 block">Phase Result</span>
-                            <h2 className="text-4xl md:text-8xl font-black text-[#500000] leading-none mb-16 tracking-tighter italic">
-                                "{impact}"
-                            </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-16 border-t border-[#500000]/5">
-                                {features.slice(0, 4).map((f, i) => (
-                                    <div key={i} className="space-y-4">
-                                        <div className="text-3xl font-black text-[#500000]">0{i+1}</div>
-                                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-400 leading-tight">{f}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Split Story: Phase 02 */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-32 mb-64 items-start">
-                    <div className="order-2 lg:order-1 pt-12">
-                        <div className="flex items-center gap-4 mb-12">
-                            <span className="w-12 h-[2px] bg-[#500000]" />
-                            <span className="text-xs font-black uppercase tracking-[0.4em] text-gray-400">Execution Phase</span>
-                        </div>
-                        <h2 className="text-4xl md:text-6xl font-black text-[#500000] mb-12 leading-tight">
-                            Building a resilient infrastructure.
-                        </h2>
-                        <div className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light space-y-8">
-                            {solution.split('\n').map((p, i) => (
-                                <p key={i}>{p}</p>
-                            ))}
-                        </div>
-                        
-                        <div className="mt-20 pt-20 border-t border-gray-100">
-                            <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-8">Tech Stack Utilized</p>
-                            <div className="flex flex-wrap gap-3">
-                                {techs.map((t, i) => (
-                                    <span key={i} className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[10px] font-black text-gray-900 shadow-sm hover:shadow-xl hover:border-[#500000] hover:-translate-y-1 transition-all cursor-default uppercase tracking-widest">
-                                        {t}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="order-1 lg:order-2 lg:sticky lg:top-32">
-                        <div className="relative rounded-[60px] overflow-hidden aspect-[4/5] shadow-2xl group">
-                            <img src={study.gallery?.[0] || study.image} alt="Solution" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#500000]/40 to-transparent" />
-                            <div className="absolute bottom-12 right-12 text-white text-right">
-                                <span className="text-8xl font-black opacity-20">02</span>
-                                <h3 className="text-4xl font-black mt-2">The Pivot</h3>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Final Showcase Gallery */}
-                {study.gallery && study.gallery.length > 0 && (
-                    <section className="mb-64">
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                            <div className="max-w-2xl">
-                                <h2 className="text-[10px] font-black uppercase tracking-[0.6em] text-[#500000] mb-8">Visual Language</h2>
-                                <h3 className="text-4xl md:text-7xl font-black text-gray-950 leading-[0.9] tracking-tight">Interactive product showcase.</h3>
-                            </div>
-                            <p className="text-gray-500 font-medium max-w-sm">Every element designed with purpose to drive engagement and conversion.</p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                            {study.gallery.map((img, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className={`relative rounded-[40px] overflow-hidden shadow-2xl group cursor-zoom-in ${
-                                        i === 0 ? 'md:col-span-2 md:h-[600px]' : 'h-[400px]'
-                                    }`}
-                                    onClick={() => window.open(img, '_blank')}
-                                >
-                                    <img src={img} alt={`Showcase ${i}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                        <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-3xl border border-white/20 flex items-center justify-center text-white transform scale-50 group-hover:scale-100 transition-all duration-500">
-                                            <Plus size={40} />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {/* Ultimate CTA */}
-                <section className="pb-32">
-                    <div className="bg-[#500000] rounded-[100px] p-12 md:p-32 text-center text-white relative overflow-hidden shadow-2xl">
-                        <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0,transparent_70%)]" />
-                        </div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="relative z-10 max-w-4xl mx-auto"
-                        >
-                            <h2 className="text-4xl md:text-8xl font-black mb-12 leading-none tracking-tighter">Ready to build your masterpiece?</h2>
-                            <p className="text-xl md:text-2xl text-white/60 mb-16 font-light max-w-2xl mx-auto">Join the ranks of successful entrepreneurs who transformed their vision with RizQara Tech.</p>
-                            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-                                <ButtonPremium 
-                                    className="bg-white text-[#500000] hover:bg-gray-100 px-16 h-20 rounded-full text-lg shadow-2xl w-full md:w-auto"
-                                    onClick={() => navigate('/contact')}
-                                >
-                                    Start Your Project <ArrowRight className="ml-3" size={24} />
-                                </ButtonPremium>
-                                <button 
-                                    onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
-                                    className="h-20 px-10 rounded-full border border-white/20 hover:bg-white/10 backdrop-blur-xl text-xs font-black uppercase tracking-[0.3em] transition-all w-full md:w-auto"
-                                >
-                                    Book Free Audit
-                                </button>
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
-            </main>
-
-            <footer className="h-32 flex items-center justify-center text-gray-300 font-black tracking-[0.5em] text-[8px] uppercase">
-                RizQara Tech &copy; 2026 // Design Excellence
-            </footer>
         </div>
     );
 };

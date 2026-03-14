@@ -65,6 +65,7 @@
       },
       "scripts": {
             "dev": "vite",
+            "dev:full": "npx concurrently \"npm run dev\" \"npm run start:server\"",
             "start:server": "node server/index.js",
             "build": "npm install && vite build && cd server && npm install",
             "start": "node server/index.js"
