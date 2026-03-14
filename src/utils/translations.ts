@@ -58,6 +58,7 @@ export const translations = {
     // CTA
     readyToBuild: "Ready to Build Your Vision?",
     letsTalk: "Let's Talk",
+    freeAudit: "Get a Free Audit",
   },
   bn: {
     // Nav
@@ -116,5 +117,6 @@ export const translations = {
     // CTA
     readyToBuild: "আপনার ভিশন তৈরি করতে প্রস্তুত?",
     letsTalk: "কথা বলা যাক",
+    freeAudit: "ফ্রি অডিট পান",
   }
 };

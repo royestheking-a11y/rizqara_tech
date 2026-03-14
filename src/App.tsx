@@ -488,7 +488,7 @@ const Navbar = () => {
                         onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
                         className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] items-center gap-2"
                     >
-                        {language === 'bn' ? 'কল শিডিউল করুন' : 'Schedule a Call'}
+                        {t('freeAudit')}
                     </button>
                 </div>
 
