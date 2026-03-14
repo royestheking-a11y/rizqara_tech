@@ -123,13 +123,13 @@ const CaseStudiesPage = () => {
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
             <SEO 
-                title={`${t('caseStudies')} | RizQara Tech`} 
+                title={`${t ? t('caseStudies') : 'Case Studies'} | RizQara Tech`} 
                 description="Explore our in-depth case studies and success stories."
                 canonical="https://rizqara.tech/case-studies"
             />
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
                 <SectionTitle 
-                    title={t('caseStudies')} 
+                    title={t ? t('caseStudies') : 'Case Studies'} 
                     subtitle={language === 'bn' ? 'আমাদের সাফল্যের গল্প এবং শিল্প প্রভাব।' : 'Our success stories and industry impact.'} 
                 />
             </div>
@@ -178,7 +178,7 @@ const CaseStudiesPage = () => {
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { caseStudies, language, t, loading } = useData();
+    const { caseStudies, language, loading } = useData();
 
     const study = caseStudies.find(s => 
         String(s.id) === id || 
