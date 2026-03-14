@@ -116,7 +116,7 @@ const DetailSkeleton = () => (
 
 const CaseStudiesPage = () => {
     const navigate = useNavigate();
-    const { caseStudies, language, loading } = useData();
+    const { caseStudies, language, t, loading } = useData();
 
     if (loading) return <ProjectsSkeleton />;
 
@@ -178,7 +178,7 @@ const CaseStudiesPage = () => {
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { caseStudies, language, loading } = useData();
+    const { caseStudies, language, t, loading } = useData();
 
     const study = caseStudies.find(s => 
         String(s.id) === id || 
