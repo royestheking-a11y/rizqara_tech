@@ -137,6 +137,27 @@ export type CareerApplication = {
   status: 'New' | 'Reviewed' | 'Rejected' | 'Pending';
 };
 
+export type CaseStudy = {
+  id: string;
+  title: string;
+  title_bn?: string;
+  category: string;
+  category_bn?: string;
+  image: string; // Cover photo
+  description: string;
+  description_bn?: string;
+  problem: string;
+  problem_bn?: string;
+  solution: string;
+  solution_bn?: string;
+  impact: string;
+  impact_bn?: string;
+  features?: string[];
+  features_bn?: string[];
+  tech: string[];
+  gallery?: string[];
+};
+
 export type Promotion = {
   isActive: boolean;
   offerRate: string;
@@ -158,6 +179,7 @@ export type DataContextType = {
   buildOptions: BuildOption[];
   messages: Message[];
   careerApplications: CareerApplication[];
+  caseStudies: CaseStudy[];
   promotion: Promotion;
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -207,6 +229,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [buildOptions, setBuildOptions] = useState<BuildOption[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
   const [language, setLanguage] = useState<Language>('en');
   const [loading, setLoading] = useState(true);
@@ -286,12 +309,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Phase 2: Secondary Data (Background load)
       try {
-        const [reviewsRes, blogsRes, jobsRes, videosRes, buildOptionsRes] = await Promise.all([
+        const [reviewsRes, blogsRes, jobsRes, videosRes, buildOptionsRes, caseStudiesRes] = await Promise.all([
           fetchWithTimeout(`${API_URL}/reviews`),
           fetchWithTimeout(`${API_URL}/blogs`),
           fetchWithTimeout(`${API_URL}/jobs`),
           fetchWithTimeout(`${API_URL}/videos`),
-          fetchWithTimeout(`${API_URL}/buildOptions`)
+          fetchWithTimeout(`${API_URL}/buildOptions`),
+          fetchWithTimeout(`${API_URL}/caseStudies`)
         ]);
 
         if (reviewsRes.ok) setReviews(await reviewsRes.json());
@@ -299,6 +323,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (jobsRes.ok) setJobs(await jobsRes.json());
         if (videosRes.ok) setVideos(await videosRes.json());
         if (buildOptionsRes.ok) setBuildOptions(await buildOptionsRes.json());
+        if (caseStudiesRes.ok) setCaseStudies(await caseStudiesRes.json());
       } catch (error) {
         console.error('Phase 2 fetch failed:', error);
       }
@@ -355,6 +380,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'buildOptions') setBuildOptions(data);
     if (key === 'messages') setMessages(data);
     if (key === 'careerApplications') setCareerApplications(data);
+    if (key === 'caseStudies') setCaseStudies(data);
     if (key === 'promotion') setPromotion(data);
 
     // API Sync (Bulk PUT)
@@ -391,6 +417,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'buildOptions') setBuildOptions(prev => prev.filter(item => item.id !== id));
     if (key === 'messages') setMessages(prev => prev.filter(item => item.id !== id));
     if (key === 'careerApplications') setCareerApplications(prev => prev.filter(item => item.id !== id));
+    if (key === 'caseStudies') setCaseStudies(prev => prev.filter(item => item.id !== id));
 
     // API Call
     try {
@@ -482,7 +509,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );

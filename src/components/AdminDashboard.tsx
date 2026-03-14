@@ -33,7 +33,7 @@ const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, promotion, updateData, resetData, language, deleteData, fetchAdminData } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, updateData, resetData, language, deleteData, fetchAdminData } = useData();
 
     React.useEffect(() => {
         fetchAdminData();
@@ -41,12 +41,14 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption'>('service');
+    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [carouselImage, setCarouselImage] = useState('');
     const [projectImage, setProjectImage] = useState('');
     const [blogImage, setBlogImage] = useState('');
+    const [caseStudyImage, setCaseStudyImage] = useState('');
+    const [caseStudyGallery, setCaseStudyGallery] = useState<string[]>([]);
 
     // Local state for live preview in Admin
     const [localPromotion, setLocalPromotion] = useState(promotion);
@@ -69,6 +71,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'video') await deleteData('videos', id);
         if (type === 'carousel') await deleteData('carousel', id);
         if (type === 'buildOption') await deleteData('buildOptions', id);
+        if (type === 'caseStudy') await deleteData('caseStudies', id);
         // Message and Application handling might be different in UI (check tabs)
         // Note: AdminDashboard usually handles main content. Messages might be handled in "messages" tab
     };
@@ -107,6 +110,28 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             delete data.gallery_3;
         }
 
+        // Handle Case Study Logic
+        if (modalType === 'caseStudy') {
+            if (data.tech) data.tech = data.tech.split(',').map((t: string) => t.trim());
+            if (data.features) data.features = data.features.split(',').map((t: string) => t.trim());
+            if (data.features_bn) data.features_bn = data.features_bn.split(',').map((t: string) => t.trim());
+            
+            if (caseStudyImage) data.image = caseStudyImage;
+            
+            const gallery: string[] = [];
+            if (data.gallery_1) gallery.push(data.gallery_1);
+            if (data.gallery_2) gallery.push(data.gallery_2);
+            if (data.gallery_3) gallery.push(data.gallery_3);
+            if (data.gallery_4) gallery.push(data.gallery_4);
+            if (gallery.length > 0) data.gallery = gallery;
+
+            // Delete temp fields
+            delete data.gallery_1;
+            delete data.gallery_2;
+            delete data.gallery_3;
+            delete data.gallery_4;
+        }
+
         if (modalType === 'video' && data.url) {
             const videoId = getYoutubeId(data.url);
             if (videoId) {
@@ -139,6 +164,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'video') updateData('videos', editingItem ? videos.map(v => v.id === editingItem.id ? newItem : v) : [...videos, newItem]);
         if (modalType === 'carousel') updateData('carousel', editingItem ? carouselSlides.map(c => c.id === editingItem.id ? newItem : c) : [...carouselSlides, newItem]);
         if (modalType === 'buildOption') updateData('buildOptions', editingItem ? buildOptions.map(b => b.id === editingItem.id ? newItem : b) : [...buildOptions, newItem]);
+        if (modalType === 'caseStudy') updateData('caseStudies', editingItem ? caseStudies.map(c => c.id === editingItem.id ? newItem : c) : [...caseStudies, newItem]);
 
         setIsModalOpen(false);
         setEditingItem(null);
@@ -153,6 +179,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         setCarouselImage(item?.image || '');
         setProjectImage(item?.image || '');
         setBlogImage(item?.image || '');
+        setCaseStudyImage(item?.image || '');
+        setCaseStudyGallery(item?.gallery || []);
         // Service uses projectImage state for convenience if not separate? No, check form.
         setIsModalOpen(true);
     };
@@ -166,6 +194,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                 <PremiumStatCard icon={LayoutDashboard} value={projects.length} label={language === 'bn' ? "সক্রিয় প্রকল্প" : "Active Projects"} color="text-blue-600" bg="bg-blue-50" />
                 <PremiumStatCard icon={Inbox} value={messages.filter(m => m.type === 'Contact').length} label={language === 'bn' ? "বার্তা" : "Messages"} color="text-green-600" bg="bg-green-50" />
                 <PremiumStatCard icon={Users} value={jobs.length} label={language === 'bn' ? "খালি পদ" : "Open Jobs"} color="text-yellow-600" bg="bg-yellow-50" />
+                <PremiumStatCard icon={Globe} value={caseStudies.length} label={language === 'bn' ? "কেস স্টাডি" : "Case Studies"} color="text-orange-600" bg="bg-orange-50" />
                 <PremiumStatCard icon={PlayCircle} value={videos.length} label={language === 'bn' ? "ভিডিও" : "Videos"} color="text-pink-600" bg="bg-pink-50" />
                 <PremiumStatCard icon={MessageSquare} value={reviews.length} label={language === 'bn' ? "মোট পর্যালোচনা" : "Total Reviews"} color="text-purple-600" bg="bg-purple-50" />
                 <PremiumStatCard icon={FileDown} value={careerApplications.length} label={language === 'bn' ? "আবেদন" : "Applications"} color="text-teal-600" bg="bg-teal-50" />
@@ -311,6 +340,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         { id: 'projects', icon: LayoutDashboard, label: language === 'bn' ? 'প্রকল্প' : 'Projects' },
         { id: 'reviews', icon: MessageSquare, label: language === 'bn' ? 'পর্যালোচনা' : 'Reviews' },
         { id: 'blogs', icon: FileText, label: language === 'bn' ? 'ব্লগ পোস্ট' : 'Blog Posts' },
+        { id: 'caseStudies', icon: Globe, label: language === 'bn' ? 'কেস স্টাডিজ' : 'Case Studies' },
         { id: 'jobs', icon: Users, label: language === 'bn' ? 'ক্যারিয়ার' : 'Careers (Posts)' },
         { id: 'applications', icon: FileDown, label: language === 'bn' ? 'আবেদন' : 'Applications' },
         { id: 'videos', icon: PlayCircle, label: language === 'bn' ? 'ভিডিও' : 'Videos' },
@@ -702,6 +732,20 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
+                    {activeTab === 'caseStudies' && renderList(language === 'bn' ? 'কেস স্টাডিজ' : 'Case Studies', caseStudies, 'caseStudy', (item) => (
+                        <div className="flex items-center gap-6">
+                            <img src={item.image} alt="" className="w-16 h-16 rounded-xl bg-gray-200 object-cover shadow-sm" />
+                            <div>
+                                <h3 className="font-bold text-gray-800">{item.title}</h3>
+                                <div className="flex gap-2 mt-1">
+                                    <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gray-100 text-gray-600 border border-gray-200 uppercase">
+                                        {item.category}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
                 </div>
             </div>
 
@@ -800,6 +844,76 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Key Features (Comma separated)" name="features" defaultValue={Array.isArray(editingItem?.features) ? editingItem.features.join(', ') : (editingItem?.features || '')} placeholder="Feature 1, Feature 2" />
                                     <AdminInput label="Key Features (Bengali)" name="features_bn" defaultValue={Array.isArray(editingItem?.features_bn) ? editingItem.features_bn.join(', ') : (editingItem?.features_bn || '')} placeholder="বাংলা বৈশিষ্ট্য ১, বৈশিষ্ট্য ২" />
                                     <AdminInput label="Tech Stack" name="tech" defaultValue={Array.isArray(editingItem?.tech) ? editingItem.tech.join(', ') : (editingItem?.tech || '')} placeholder="React, Node, etc." />
+                                </>}
+
+                                {modalType === 'caseStudy' && <>
+                                    <AdminInput label="Case Study Title" name="title" defaultValue={editingItem?.title} required />
+                                    <AdminInput label="Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
+
+                                    <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required placeholder="e.g. Finance, Healthcare" />
+                                    <AdminInput label="Category (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ধরণ" />
+
+                                    <ImageUploader
+                                        label="Cover Image"
+                                        defaultValue={editingItem?.image}
+                                        onImageChange={(url) => setCaseStudyImage(url)}
+                                        aspectRatio={16 / 9}
+                                    />
+
+                                    <AdminTextArea label="Short Summary" name="description" defaultValue={editingItem?.description} required />
+                                    <AdminTextArea label="Short Summary (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
+
+                                    <div className="space-y-4 pt-4 border-t border-gray-100 mt-4">
+                                        <h4 className="font-bold text-gray-800">Section Content (Problem, Solution, Impact)</h4>
+                                        <AdminTextArea label="The Problem" name="problem" defaultValue={editingItem?.problem} required />
+                                        <AdminTextArea label="The Problem (Bengali)" name="problem_bn" defaultValue={editingItem?.problem_bn} />
+
+                                        <AdminTextArea label="The Solution & Strategy" name="solution" defaultValue={editingItem?.solution} required />
+                                        <AdminTextArea label="The Solution (Bengali)" name="solution_bn" defaultValue={editingItem?.solution_bn} />
+
+                                        <AdminTextArea label="The Business Impact" name="impact" defaultValue={editingItem?.impact} required />
+                                        <AdminTextArea label="The Impact (Bengali)" name="impact_bn" defaultValue={editingItem?.impact_bn} />
+                                    </div>
+
+                                    <div className="pt-4 border-t border-gray-100 mt-4">
+                                        <h4 className="font-bold text-gray-800 mb-4">Gallery Showcase (Visuals)</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <ImageUploader
+                                                label="Image 1"
+                                                name="gallery_1"
+                                                defaultValue={editingItem?.gallery?.[0]}
+                                                onImageChange={() => { }}
+                                                aspectRatio={16 / 9}
+                                            />
+                                            <ImageUploader
+                                                label="Image 2"
+                                                name="gallery_2"
+                                                defaultValue={editingItem?.gallery?.[1]}
+                                                onImageChange={() => { }}
+                                                aspectRatio={16 / 9}
+                                            />
+                                            <ImageUploader
+                                                label="Image 3"
+                                                name="gallery_3"
+                                                defaultValue={editingItem?.gallery?.[2]}
+                                                onImageChange={() => { }}
+                                                aspectRatio={16 / 9}
+                                            />
+                                            <ImageUploader
+                                                label="Image 4"
+                                                name="gallery_4"
+                                                defaultValue={editingItem?.gallery?.[3]}
+                                                onImageChange={() => { }}
+                                                aspectRatio={16 / 9}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-gray-100 mt-4">
+                                        <AdminInput label="Tech Stack (Comma separated)" name="tech" defaultValue={Array.isArray(editingItem?.tech) ? editingItem.tech.join(', ') : (editingItem?.tech || '')} placeholder="React, Node.js, AI" />
+                                        <AdminInput label="Key Features (Comma separated)" name="features" defaultValue={Array.isArray(editingItem?.features) ? editingItem.features.join(', ') : (editingItem?.features || '')} placeholder="Feature 1, Feature 2" />
+                                        <AdminInput label="Key Features (Bengali - Comma separated)" name="features_bn" defaultValue={Array.isArray(editingItem?.features_bn) ? editingItem.features_bn.join(', ') : (editingItem?.features_bn || '')} placeholder="বৈশিষ্ট্য ১, বৈশিষ্ট্য ২" />
+                                    </div>
                                 </>}
 
                                 {modalType === 'review' && <>

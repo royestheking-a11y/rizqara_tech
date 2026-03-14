@@ -132,6 +132,27 @@ const CareerApplicationSchema = new mongoose.Schema({
     status: { type: String, default: 'New', enum: ['New', 'Reviewed', 'Rejected', 'Pending'] } // Added Pending to match DataContext
 }, { timestamps: true });
 
+const CaseStudySchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
+    title_bn: String,
+    category: { type: String, required: true },
+    category_bn: String,
+    image: { type: String, required: true }, // Cover photo
+    description: { type: String, required: true },
+    description_bn: String,
+    problem: { type: String, required: true },
+    problem_bn: String,
+    solution: { type: String, required: true },
+    solution_bn: String,
+    impact: { type: String, required: true },
+    impact_bn: String,
+    features: [String],
+    features_bn: [String],
+    tech: [String],
+    gallery: [String]
+}, { timestamps: true });
+
 const PromotionSchema = new mongoose.Schema({
     id: { type: String, default: 'promo_config' },
     isActive: { type: Boolean, default: false },
@@ -154,5 +175,6 @@ module.exports = {
     BuildOption: mongoose.model('BuildOption', BuildOptionSchema),
     Message: mongoose.model('Message', MessageSchema),
     CareerApplication: mongoose.model('CareerApplication', CareerApplicationSchema),
+    CaseStudy: mongoose.model('CaseStudy', CaseStudySchema),
     Promotion: mongoose.model('Promotion', PromotionSchema)
 };

@@ -114,6 +114,264 @@ const DetailSkeleton = () => (
 
 // --- Detail Components ---
 
+const CaseStudiesPage = () => {
+    const navigate = useNavigate();
+    const { caseStudies, language, t, loading } = useData();
+
+    if (loading) return <ProjectsSkeleton />;
+
+    return (
+        <div className="container mx-auto px-6 py-24 min-h-screen">
+            <SEO 
+                title={`${t('caseStudies')} | RizQara Tech`} 
+                description="Explore our in-depth case studies and success stories."
+                canonical="https://rizqara.tech/case-studies"
+            />
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+                <SectionTitle 
+                    title={t('caseStudies')} 
+                    subtitle={language === 'bn' ? 'আমাদের সাফল্যের গল্প এবং শিল্প প্রভাব।' : 'Our success stories and industry impact.'} 
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {caseStudies.map((study) => {
+                    const title = language === 'bn' ? (study.title_bn || study.title) : study.title;
+                    const category = language === 'bn' ? (study.category_bn || study.category) : study.category;
+                    const desc = language === 'bn' ? (study.description_bn || study.description) : study.description;
+
+                    return (
+                        <motion.div
+                            key={study.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            onClick={() => navigate(`/case-studies/${getSlug(study.title)}`)}
+                            className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer overflow-hidden flex flex-col h-full"
+                        >
+                            <div className="h-64 overflow-hidden relative">
+                                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="absolute top-4 left-4">
+                                    <span className="px-3 py-1 bg-white/95 backdrop-blur rounded-full text-[10px] font-black uppercase tracking-widest text-[#500000] shadow-sm">
+                                        {category}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="p-8 flex flex-col flex-grow">
+                                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#500000] transition-colors">{title}</h3>
+                                <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-grow">{desc}</p>
+                                <div className="flex items-center text-[#500000] font-bold text-sm gap-2">
+                                    <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Case Study'}</span>
+                                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const CaseStudyDetail = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { caseStudies, language, t, loading } = useData();
+
+    const study = caseStudies.find(s => 
+        s.id === id || 
+        getSlug(s.title) === id
+    );
+
+    useLayoutEffect(() => {
+        if (!loading && study && study.id === id) {
+            const slug = getSlug(study.title);
+            if (slug) navigate(`/case-studies/${slug}`, { replace: true });
+        }
+    }, [id, study, loading, navigate]);
+
+    if (loading) return <DetailSkeleton />;
+    if (!study) return <div className="pt-32 text-center text-gray-900 min-h-screen">Case Study not found</div>;
+
+    const title = language === 'bn' ? (study.title_bn || study.title) : study.title;
+    const description = language === 'bn' ? (study.description_bn || study.description) : study.description;
+    const problem = language === 'bn' ? (study.problem_bn || study.problem) : study.problem;
+    const solution = language === 'bn' ? (study.solution_bn || study.solution) : study.solution;
+    const impact = language === 'bn' ? (study.impact_bn || study.impact) : study.impact;
+    const techs = study.tech || [];
+    const features = language === 'bn' && study.features_bn ? study.features_bn : (study.features || []);
+
+    return (
+        <div className="min-h-screen pb-24">
+            <SEO 
+                title={`${title} | Case Study | RizQara Tech`} 
+                description={description} 
+                canonical={`https://rizqara.tech/case-studies/${id}`}
+            />
+            
+            {/* Cover Photo */}
+            <div className="h-[60vh] relative overflow-hidden group">
+                <img src={study.image} alt={title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 mt-16">
+                    <motion.button 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        onClick={() => navigate('/case-studies')} 
+                        className="mb-8 text-white/80 hover:text-white flex items-center gap-2 font-black text-xs uppercase tracking-[0.2em] transition-all"
+                    >
+                        <ArrowRight className="rotate-180" size={16} /> Back to case studies
+                    </motion.button>
+                    <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-4xl md:text-7xl font-black text-white max-w-4xl leading-tight"
+                    >
+                        {title}
+                    </motion.h1>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-6 -mt-20 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* Main Content */}
+                    <div className="lg:col-span-2 space-y-12">
+                        {/* Overview */}
+                        <div className="bg-white p-10 md:p-16 rounded-[40px] shadow-2xl border border-gray-100">
+                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light mb-8 italic">
+                                "{description}"
+                            </p>
+                            
+                            <hr className="mb-12 border-gray-100" />
+
+                            <div className="space-y-16">
+                                {/* The Problem */}
+                                <section>
+                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
+                                            <Activity size={20} className="text-[#500000]" />
+                                        </div>
+                                        {language === 'bn' ? 'সমস্যা' : 'The Problem'}
+                                    </h2>
+                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
+                                        {problem}
+                                    </div>
+                                </section>
+
+                                {/* The Solution */}
+                                <section>
+                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
+                                            <Lightbulb size={20} className="text-[#500000]" />
+                                        </div>
+                                        {language === 'bn' ? 'সমাধান এবং কৌশল' : 'The Solution & Strategy'}
+                                    </h2>
+                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
+                                        {solution}
+                                    </div>
+                                </section>
+
+                                {/* The Impact */}
+                                <section>
+                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
+                                            <Zap size={20} className="text-[#500000]" />
+                                        </div>
+                                        {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'The Business Impact'}
+                                    </h2>
+                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
+                                        {impact}
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+
+                        {/* Gallery Showcase */}
+                        {study.gallery && study.gallery.length > 0 && (
+                            <section className="space-y-8">
+                                <h3 className="text-2xl font-black text-[#500000] flex items-center gap-3">
+                                    <ImageIcon size={24} /> Visual Showcase
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {study.gallery.map((img, i) => (
+                                        <motion.div 
+                                            key={i}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            viewport={{ once: true }}
+                                            className="group rounded-[32px] overflow-hidden border border-gray-200 shadow-lg aspect-[4/3] relative cursor-zoom-in"
+                                            onClick={() => window.open(img, '_blank')}
+                                        >
+                                            <img src={img} alt={`Gallery ${i+1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="lg:col-span-1 space-y-8">
+                        {/* Tech Stack & Features */}
+                        <div className="bg-gray-900 p-8 rounded-[40px] text-white shadow-2xl sticky top-32">
+                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-8 border-b border-white/10 pb-4">Key Information</h4>
+                            
+                            <div className="space-y-12">
+                                {/* Tech Stack */}
+                                <div>
+                                    <h5 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                        <Cpu size={18} className="text-[#500000]" /> Tech Stack
+                                    </h5>
+                                    <div className="flex flex-wrap gap-2">
+                                        {techs.map((t, i) => (
+                                            <span key={i} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold transition-colors hover:bg-white/10">
+                                                {t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Features */}
+                                {features.length > 0 && (
+                                    <div>
+                                        <h5 className="font-bold text-lg mb-6 flex items-center gap-2">
+                                            <Layers size={18} className="text-[#500000]" /> {language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}
+                                        </h5>
+                                        <div className="space-y-4">
+                                            {features.map((f, i) => (
+                                                <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 shadow-sm transition-all hover:bg-white/10">
+                                                    <div className="w-6 h-6 rounded-full bg-[#500000] flex items-center justify-center shrink-0">
+                                                        <Check className="text-white" size={14} />
+                                                    </div>
+                                                    <span className="text-white/80 text-sm font-medium">{f}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* CTA Card */}
+                                <div className="pt-6 border-t border-white/10">
+                                    <h4 className="text-xl font-bold mb-4">Want similar results?</h4>
+                                    <p className="text-white/50 text-sm mb-8 leading-relaxed">Let's analyze your project and implement a strategy that drives growth.</p>
+                                    <ButtonPremium 
+                                        className="w-full justify-center bg-white text-[#500000] hover:bg-gray-100"
+                                        onClick={() => navigate('/contact')}
+                                    >
+                                        Start Your Journey <ArrowRight size={18} className="ml-2" />
+                                    </ButtonPremium>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ServiceDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -445,7 +703,7 @@ const Navbar = () => {
         { name: t('about'), path: '/about' },
         { name: t('services'), path: '/services' },
         { name: t('projects'), path: '/projects' },
-        { name: t('careers'), path: '/careers' },
+        { name: t('caseStudies'), path: '/case-studies' },
         { name: t('contact'), path: '/contact' }
     ];
 
@@ -1251,6 +1509,7 @@ const MainContent = () => {
         else if (page === 'Packages') navigate('/packages');
         else if (page === 'Blog') navigate('/blog');
         else if (page === 'Build') navigate('/build');
+        else if (page === 'CaseStudies') navigate('/case-studies');
         else if (page === 'Admin') navigate('/admin');
         else if (page === 'Contact') navigate('/contact');
         else if (page === 'About') navigate('/about');
@@ -1327,14 +1586,8 @@ const MainContent = () => {
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
 
-                    <Route path="/careers" element={<>
-                        <SEO
-                            title="Careers at RizQara Tech | Software Jobs in Bangladesh"
-                            description="Join RizQara Tech. Explore software developer, UI UX designer, and AI engineer jobs in Bangladesh."
-                            canonical="https://rizqara.tech/careers"
-                        />
-                        {loading ? <CareersSkeleton /> : <CareersPage onNavigate={onNavigate} />}
-                    </>} />
+                    <Route path="/case-studies" element={<CaseStudiesPage />} />
+                    <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
                     <Route path="/videos" element={<VideosPage onNavigate={onNavigate} />} />
                     <Route path="/build" element={<BuildPage onNavigate={onNavigate} initialConfig={buildConfig} />} />
                     <Route path="/feature/:id" element={<FeatureDetailWrapper />} />
