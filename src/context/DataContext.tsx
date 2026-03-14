@@ -306,16 +306,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     fetchData();
 
-    // Render Keep-Alive Pinger
+    // Render Keep-Alive Pinger (Fallback)
+    // The server now has a self-pinger, but we keep this as a secondary measure
+    // to ensure the backend stays warm whenever a user is active.
     const pingBackend = () => {
-      // Use clean URL for ping
       const pingUrl = API_URL.replace(/\/api$/, '') + '/health';
-      fetch(pingUrl).catch(() => { });
+      fetch(pingUrl)
+        .then(res => {
+          if (res.ok) console.log('Backend connection warmed');
+        })
+        .catch(() => { });
     };
 
     // Ping after a small delay to not compete with initial load
-    const pingTimeout = setTimeout(pingBackend, 2000);
-    const intervalId = setInterval(pingBackend, 4 * 60 * 1000);
+    const pingTimeout = setTimeout(pingBackend, 5000);
+    const intervalId = setInterval(pingBackend, 5 * 60 * 1000); // 5 minutes
 
     return () => {
       clearInterval(intervalId);

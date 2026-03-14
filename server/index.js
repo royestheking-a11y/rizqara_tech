@@ -40,6 +40,13 @@ const distPath = path.join(__dirname, '../dist');
 console.log('Frontend dist path:', distPath);
 app.use(express.static(distPath));
 
+// Health Check Endpoint for Render Keep-Alive
+// Added aliases because /health might be rate-limited by platform
+const healthCheck = (req, res) => res.status(200).send('OK');
+app.get('/health', healthCheck);
+app.get('/ping', healthCheck);
+app.get('/api/health', healthCheck);
+
 // Fallback: Handle client-side routing (SPA)
 app.use((req, res) => {
     // If it's an API request that reached here, it's a 404 for the API
@@ -57,13 +64,24 @@ app.use((req, res) => {
     });
 });
 
-// Health Check Endpoint for Render Keep-Alive
-// Added aliases because /health might be rate-limited by platform
-const healthCheck = (req, res) => res.status(200).send('OK');
-app.get('/health', healthCheck);
-app.get('/ping', healthCheck);
-app.get('/api/health', healthCheck);
-
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    
+    // --- Render Self-Ping Keep-Alive ---
+    // This keeps the service awake by pinging itself every 10 minutes
+    const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL;
+    if (RENDER_EXTERNAL_URL) {
+        console.log(`Self-ping initialized for: ${RENDER_EXTERNAL_URL}`);
+        setInterval(async () => {
+            try {
+                // We use the external URL to ensure we go through the network stack
+                const response = await fetch(`${RENDER_EXTERNAL_URL}/health`);
+                console.log(`Self-ping status: ${response.status} at ${new Date().toISOString()}`);
+            } catch (err) {
+                console.error('Self-ping failed:', err.message);
+            }
+        }, 10 * 60 * 1000); // 10 minutes
+    } else {
+        console.log('Self-ping skipped: RENDER_EXTERNAL_URL not set (Local Dev)');
+    }
 });
