@@ -8,7 +8,7 @@ import {
     Shield, Zap, MessageSquare, Briefcase,
     Server,
     Lock, User, ExternalLink, Share2, Search,
-    Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
+    Lightbulb, Cpu, Activity, Layers, Image as ImageIcon, Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
@@ -28,10 +28,10 @@ import {
     PricingDetailed, LatestVideos, LatestBlogs,
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail, HomeSkeleton,
-    AboutSkeleton, CareersSkeleton, ContactSkeleton,
+    AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton
 } from './components/premium/UIComponents';
-import { BlogPage, CareersPage, VideosPage, TeamPage, BlogDetail, TeamSection } from './components/pages/ExtraPages';
+import { BlogPage, VideosPage, TeamPage, BlogDetail, TeamSection } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
@@ -116,7 +116,7 @@ const DetailSkeleton = () => (
 
 const CaseStudiesPage = () => {
     const navigate = useNavigate();
-    const { caseStudies, language, t, loading } = useData();
+    const { caseStudies, language, loading } = useData();
 
     if (loading) return <ProjectsSkeleton />;
 
@@ -135,7 +135,7 @@ const CaseStudiesPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {caseStudies.map((study) => {
+                {caseStudies.map((study, idx) => {
                     const title = language === 'bn' ? (study.title_bn || study.title) : study.title;
                     const category = language === 'bn' ? (study.category_bn || study.category) : study.category;
                     const desc = language === 'bn' ? (study.description_bn || study.description) : study.description;
@@ -143,11 +143,12 @@ const CaseStudiesPage = () => {
                     return (
                         <motion.div
                             key={study.id}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1, duration: 0.6 }}
                             onClick={() => navigate(`/case-studies/${getSlug(study.title)}`)}
-                            className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer overflow-hidden flex flex-col h-full"
+                            className="group bg-white rounded-[40px] border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-700 cursor-pointer overflow-hidden flex flex-col h-full active:scale-[0.98]"
                         >
                             <div className="h-64 overflow-hidden relative">
                                 <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -177,15 +178,15 @@ const CaseStudiesPage = () => {
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { caseStudies, language, t, loading } = useData();
+    const { caseStudies, language, loading } = useData();
 
     const study = caseStudies.find(s => 
-        s.id === id || 
+        String(s.id) === id || 
         getSlug(s.title) === id
     );
 
     useLayoutEffect(() => {
-        if (!loading && study && study.id === id) {
+        if (!loading && study && String(study.id) === id) {
             const slug = getSlug(study.title);
             if (slug) navigate(`/case-studies/${slug}`, { replace: true });
         }
@@ -203,167 +204,179 @@ const CaseStudyDetail = () => {
     const features = language === 'bn' && study.features_bn ? study.features_bn : (study.features || []);
 
     return (
-        <div className="min-h-screen pb-24">
+        <div className="container mx-auto px-6 py-24 min-h-screen">
             <SEO 
                 title={`${title} | Case Study | RizQara Tech`} 
                 description={description} 
                 canonical={`https://rizqara.tech/case-studies/${id}`}
             />
             
-            {/* Cover Photo */}
-            <div className="h-[60vh] relative overflow-hidden group">
-                <img src={study.image} alt={title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 mt-16">
-                    <motion.button 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        onClick={() => navigate('/case-studies')} 
-                        className="mb-8 text-white/80 hover:text-white flex items-center gap-2 font-black text-xs uppercase tracking-[0.2em] transition-all"
-                    >
-                        <ArrowRight className="rotate-180" size={16} /> Back to case studies
-                    </motion.button>
-                    <motion.h1 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl md:text-7xl font-black text-white max-w-4xl leading-tight"
-                    >
+            <button onClick={() => navigate('/case-studies')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
+                <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
+                    <ArrowRight className="rotate-180" size={20} />
+                </div>
+                <span className="text-sm uppercase tracking-widest font-bold">{language === 'bn' ? 'কেস স্টাডিজে ফিরে যান' : 'Back to Case Studies'}</span>
+            </button>
+
+            <div className="rounded-[40px] overflow-hidden mb-16 border border-gray-100 shadow-2xl relative group h-[50vh] md:h-[60vh]">
+                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute bottom-12 left-12 right-12">
+                    <span className="px-4 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black uppercase tracking-widest mb-4 inline-block">
+                        {study.category}
+                    </span>
+                    <h1 className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-2xl">
                         {title}
-                    </motion.h1>
+                    </h1>
                 </div>
             </div>
 
-            <div className="container mx-auto px-6 -mt-20 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    {/* Main Content */}
-                    <div className="lg:col-span-2 space-y-12">
-                        {/* Overview */}
-                        <div className="bg-white p-10 md:p-16 rounded-[40px] shadow-2xl border border-gray-100">
-                            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light mb-8 italic">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                <div className="lg:col-span-2">
+                    <div className="space-y-16">
+                        {/* Summary / Overview */}
+                        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <p className="text-2xl md:text-3xl text-gray-600 leading-relaxed font-light italic border-l-4 border-[#500000] pl-8">
                                 "{description}"
                             </p>
-                            
-                            <hr className="mb-12 border-gray-100" />
+                        </section>
 
-                            <div className="space-y-16">
-                                {/* The Problem */}
-                                <section>
-                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
-                                            <Activity size={20} className="text-[#500000]" />
-                                        </div>
-                                        {language === 'bn' ? 'সমস্যা' : 'The Problem'}
-                                    </h2>
-                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
-                                        {problem}
-                                    </div>
-                                </section>
+                        <hr className="border-gray-100" />
 
-                                {/* The Solution */}
-                                <section>
-                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
-                                            <Lightbulb size={20} className="text-[#500000]" />
-                                        </div>
-                                        {language === 'bn' ? 'সমাধান এবং কৌশল' : 'The Solution & Strategy'}
-                                    </h2>
-                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
-                                        {solution}
+                        {/* High-level Sections */}
+                        <div className="grid grid-cols-1 gap-16">
+                            <section>
+                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
+                                        <Activity size={24} className="text-[#500000]" />
                                     </div>
-                                </section>
+                                    {language === 'bn' ? 'প্রধান সমস্যা' : 'The Challenge'}
+                                </h2>
+                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
+                                    {problem}
+                                </div>
+                            </section>
 
-                                {/* The Impact */}
-                                <section>
-                                    <h2 className="text-3xl font-black text-[#500000] mb-6 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-2xl bg-[#500000]/10 flex items-center justify-center shrink-0">
-                                            <Zap size={20} className="text-[#500000]" />
-                                        </div>
-                                        {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'The Business Impact'}
-                                    </h2>
-                                    <div className="text-lg text-gray-600 leading-relaxed font-light whitespace-pre-line">
-                                        {impact}
+                            <section>
+                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
+                                        <Lightbulb size={24} className="text-[#500000]" />
                                     </div>
-                                </section>
-                            </div>
+                                    {language === 'bn' ? 'সমাধান এবং কৌশল' : 'The Solution & Strategy'}
+                                </h2>
+                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
+                                    {solution}
+                                </div>
+                            </section>
+
+                            <section>
+                                <h2 className="text-3xl font-black text-[#500000] mb-8 flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#500000]/5 flex items-center justify-center shrink-0">
+                                        <Zap size={24} className="text-[#500000]" />
+                                    </div>
+                                    {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
+                                </h2>
+                                <div className="text-xl text-gray-600 leading-relaxed font-light whitespace-pre-line prose max-w-none">
+                                    {impact}
+                                </div>
+                            </section>
                         </div>
 
-                        {/* Gallery Showcase */}
+                        {/* Visual Showcase */}
                         {study.gallery && study.gallery.length > 0 && (
-                            <section className="space-y-8">
-                                <h3 className="text-2xl font-black text-[#500000] flex items-center gap-3">
-                                    <ImageIcon size={24} /> Visual Showcase
+                            <section className="pt-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                                <h3 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                                    <ImageIcon size={28} className="text-[#500000]" /> Visual Showcase
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {study.gallery.map((img, i) => (
                                         <motion.div 
                                             key={i}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
                                             viewport={{ once: true }}
-                                            className="group rounded-[32px] overflow-hidden border border-gray-200 shadow-lg aspect-[4/3] relative cursor-zoom-in"
+                                            className="group rounded-[32px] overflow-hidden border border-gray-100 shadow-xl aspect-[16/10] relative cursor-zoom-in"
                                             onClick={() => window.open(img, '_blank')}
                                         >
                                             <img src={img} alt={`Gallery ${i+1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                                                    <Plus size={24} />
+                                                </div>
+                                            </div>
                                         </motion.div>
                                     ))}
                                 </div>
                             </section>
                         )}
                     </div>
+                </div>
 
-                    {/* Sidebar */}
-                    <div className="lg:col-span-1 space-y-8">
-                        {/* Tech Stack & Features */}
-                        <div className="bg-gray-900 p-8 rounded-[40px] text-white shadow-2xl sticky top-32">
-                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-8 border-b border-white/10 pb-4">Key Information</h4>
+                <div className="lg:col-span-1">
+                    <div className="sticky top-32 space-y-8">
+                        {/* Information Card */}
+                        <div className="bg-white border border-gray-100 p-10 rounded-[40px] shadow-2xl space-y-10">
+                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest border-b border-gray-50 pb-6">Case Information</h4>
                             
-                            <div className="space-y-12">
-                                {/* Tech Stack */}
+                            <div className="space-y-8">
                                 <div>
-                                    <h5 className="font-bold text-lg mb-6 flex items-center gap-2">
-                                        <Cpu size={18} className="text-[#500000]" /> Tech Stack
-                                    </h5>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Platform & Tech</p>
                                     <div className="flex flex-wrap gap-2">
                                         {techs.map((t, i) => (
-                                            <span key={i} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold transition-colors hover:bg-white/10">
+                                            <span key={i} className="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black text-[#500000] uppercase tracking-wider">
                                                 {t}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Features */}
                                 {features.length > 0 && (
                                     <div>
-                                        <h5 className="font-bold text-lg mb-6 flex items-center gap-2">
-                                            <Layers size={18} className="text-[#500000]" /> {language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}
-                                        </h5>
-                                        <div className="space-y-4">
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Core Deliverables</p>
+                                        <div className="space-y-3">
                                             {features.map((f, i) => (
-                                                <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 shadow-sm transition-all hover:bg-white/10">
-                                                    <div className="w-6 h-6 rounded-full bg-[#500000] flex items-center justify-center shrink-0">
-                                                        <Check className="text-white" size={14} />
+                                                <div key={i} className="flex items-start gap-3">
+                                                    <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center shrink-0 mt-0.5">
+                                                        <Check className="text-green-600" size={12} strokeWidth={3} />
                                                     </div>
-                                                    <span className="text-white/80 text-sm font-medium">{f}</span>
+                                                    <span className="text-gray-600 text-sm font-medium leading-relaxed">{f}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
-
-                                {/* CTA Card */}
-                                <div className="pt-6 border-t border-white/10">
-                                    <h4 className="text-xl font-bold mb-4">Want similar results?</h4>
-                                    <p className="text-white/50 text-sm mb-8 leading-relaxed">Let's analyze your project and implement a strategy that drives growth.</p>
-                                    <ButtonPremium 
-                                        className="w-full justify-center bg-white text-[#500000] hover:bg-gray-100"
-                                        onClick={() => navigate('/contact')}
-                                    >
-                                        Start Your Journey <ArrowRight size={18} className="ml-2" />
-                                    </ButtonPremium>
-                                </div>
                             </div>
+
+                            <hr className="border-gray-50" />
+
+                            <div className="space-y-6">
+                                <h5 className="text-xl font-black text-gray-900">Ready to replicate this success?</h5>
+                                <p className="text-gray-500 text-sm leading-relaxed">
+                                    We combine technical precision with business strategy to deliver results that matter.
+                                </p>
+                                <ButtonPremium 
+                                    className="w-full justify-center group"
+                                    onClick={() => navigate('/contact')}
+                                >
+                                    Work With Us <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
+                                </ButtonPremium>
+                            </div>
+                        </div>
+
+                        {/* Secondary CTA */}
+                        <div className="bg-[#500000] p-10 rounded-[40px] text-white shadow-2xl relative overflow-hidden group">
+                           <div className="relative z-10">
+                                <h5 className="text-xl font-black mb-4">Free Audit?</h5>
+                                <p className="text-white/60 text-sm mb-6">Let's audit your current systems and suggest immediate improvements.</p>
+                                <button 
+                                    onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
+                                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest hover:gap-4 transition-all"
+                                >
+                                    Book a Call <ArrowRight size={16} />
+                                </button>
+                           </div>
+                           <Activity className="absolute -right-8 -bottom-8 text-white/5 rotate-12 transition-transform group-hover:scale-110 duration-700" size={200} />
                         </div>
                     </div>
                 </div>

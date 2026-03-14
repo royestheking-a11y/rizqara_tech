@@ -48,7 +48,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [projectImage, setProjectImage] = useState('');
     const [blogImage, setBlogImage] = useState('');
     const [caseStudyImage, setCaseStudyImage] = useState('');
-    const [caseStudyGallery, setCaseStudyGallery] = useState<string[]>([]);
 
     // Local state for live preview in Admin
     const [localPromotion, setLocalPromotion] = useState(promotion);
@@ -180,7 +179,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         setProjectImage(item?.image || '');
         setBlogImage(item?.image || '');
         setCaseStudyImage(item?.image || '');
-        setCaseStudyGallery(item?.gallery || []);
         // Service uses projectImage state for convenience if not separate? No, check form.
         setIsModalOpen(true);
     };
