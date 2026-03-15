@@ -11,6 +11,7 @@ export const translations = {
     contact: "Contact",
     admin: "Admin",
     projects: "Projects",
+    careers: "Careers",
     
     // Hero
     heroTitle: "Building Digital Empires",
@@ -70,6 +71,7 @@ export const translations = {
     contact: "যোগাযোগ",
     admin: "অ্যাডমিন",
     projects: "প্রকল্পসমূহ",
+    careers: "ক্যারিয়ার",
     
     // Hero
     heroTitle: "ডিজিটাল সাম্রাজ্য নির্মাণ",

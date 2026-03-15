@@ -31,7 +31,7 @@ import {
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton
 } from './components/premium/UIComponents';
-import { BlogPage, VideosPage, TeamPage, BlogDetail, TeamSection } from './components/pages/ExtraPages';
+import { BlogPage, VideosPage, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
@@ -1543,6 +1543,7 @@ const MainContent = () => {
         else if (page === 'Blog') navigate('/blog');
         else if (page === 'Build') navigate('/build');
         else if (page === 'CaseStudies') navigate('/case-studies');
+        else if (page === 'Careers') navigate('/careers');
         else if (page === 'Admin') navigate('/admin');
         else if (page === 'Contact') navigate('/contact');
         else if (page === 'About') navigate('/about');
@@ -1618,6 +1619,15 @@ const MainContent = () => {
                     <Route path="/team" element={<TeamPage />} />
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
+
+                    <Route path="/careers" element={<>
+                        <SEO 
+                            title="Careers | Join RizQara Tech | Software Jobs in Bangladesh" 
+                            description="Apply for software engineering, design, and marketing roles at RizQara Tech. Build the future with the best software company in Bangladesh."
+                            canonical="https://rizqara.tech/careers"
+                        />
+                        <CareersPage />
+                    </>} />
 
                     <Route path="/case-studies" element={<CaseStudiesPage />} />
                     <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
