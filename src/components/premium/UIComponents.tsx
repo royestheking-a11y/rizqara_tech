@@ -1009,7 +1009,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "SEO & Digital Marketing",
                 "Cloud Infrastructure"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767679597/rizqara/why_choose_us/end_to_end.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682126/rizqara/why_choose_us/end_to_end.png"
         },
         "performance": {
             title: language === 'bn' ? 'পারফরম্যান্স, স্কেল এবং নিরাপত্তার জন্য তৈরি' : "Built for Performance, Scale & Security",
@@ -1027,7 +1027,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Advanced Security Protocols",
                 "Performance Optimization"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767679598/rizqara/why_choose_us/performance.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682128/rizqara/why_choose_us/performance.png"
         },
         "transparency": {
             title: language === 'bn' ? 'স্বচ্ছ প্রক্রিয়া এবং ডেডিকেটেড টিম' : "Transparent Process & Dedicated Team",
@@ -1045,7 +1045,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Clear Timelines",
                 "No Hidden Costs"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767679600/rizqara/why_choose_us/transparency.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682129/rizqara/why_choose_us/transparency.jpg"
         },
         "partnership": {
             title: language === 'bn' ? 'দীর্ঘমেয়াদী অংশীদারিত্ব, শুধুমাত্র ডেলিভারি নয়' : "Long-Term Partnership, Not Just Delivery",
@@ -1063,7 +1063,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Feature Enhancements",
                 "Business Consultation"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767679601/rizqara/why_choose_us/partnership.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682131/rizqara/why_choose_us/partnership.jpg"
         }
     };
 
@@ -2356,3 +2356,82 @@ export const ContactSkeleton = () => (
         </div>
     </div>
 );
+
+// --- 11. ABOUT HERO ---
+export const AboutHero = () => {
+    const { t, language } = useData();
+    return (
+        <section className="relative pt-32 pb-20 overflow-hidden bg-white">
+            {/* Background Accents */}
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gray-50 to-transparent -z-10" />
+            <div className="absolute top-1/4 -right-20 w-80 h-80 bg-[#500000]/5 blur-[100px] rounded-full -z-10" />
+
+            <div className="container mx-auto px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <motion.div 
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <div className="inline-block px-4 py-2 rounded-full bg-[#500000]/10 border border-[#500000]/20 text-[#500000] text-xs font-black uppercase tracking-[0.2em] mb-8">
+                            {language === 'bn' ? 'আমাদের সম্পর্কে' : 'About RizQara Tech'}
+                        </div>
+                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] mb-8">
+                            {t('aboutHeroTitle')}
+                        </h1>
+                        <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-10 border-l-4 border-[#500000] pl-6 font-medium">
+                            {t('aboutHeroDesc')}
+                        </p>
+                        <div className="flex flex-wrap gap-6 items-center">
+                            <div className="flex -space-x-3">
+                                {[
+                                    { name: 'pritom', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682117/rizqara/team/pritom.jpg' },
+                                    { name: 'sanju', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682119/rizqara/team/sanju.jpg' },
+                                    { name: 'sami', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682121/rizqara/team/sami.jpg' },
+                                    { name: 'rojina', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682123/rizqara/team/rojina.jpg' },
+                                    { name: 'irin', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682124/rizqara/team/irin.jpg' }
+                                ].map(member => (
+                                    <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md">
+                                        <img src={member.url} alt={member.name} className="w-full h-full object-cover" />
+                                    </div>
+                                ))}
+                                <div className="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-[#500000] font-bold text-xs shadow-md">
+                                    +25
+                                </div>
+                            </div>
+                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest">
+                                {language === 'bn' ? 'আমাদের বিশেষজ্ঞ টিম' : 'Our Expert Team'}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="relative"
+                    >
+                        <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3]">
+                            <img 
+                                src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773682129/rizqara/why_choose_us/transparency.jpg" 
+                                alt="RizQara Tech Team" 
+                                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                            <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-white">
+                                <div className="text-sm font-black uppercase tracking-widest mb-1 opacity-80">{t('transparency')}</div>
+                                <div className="text-lg font-bold">{language === 'bn' ? 'উন্নত মানের ফলাফল নিশ্চিত করছি' : 'Ensuring High-Quality Results'}</div>
+                            </div>
+                        </div>
+                        
+                        {/* Decorative elements */}
+                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#500000] rounded-3xl -z-0 opacity-10 animate-pulse" />
+                        <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#00AEEF] rounded-3xl -z-0 opacity-10 animate-pulse" style={{ animationDelay: '1s' }} />
+                    </motion.div>
+                </div>
+            </div>
+        </section>
+    );
+};

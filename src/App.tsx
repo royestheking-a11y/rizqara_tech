@@ -29,7 +29,7 @@ import {
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
-    ServicesSkeleton, ProjectsSkeleton
+    ServicesSkeleton, ProjectsSkeleton, AboutHero
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
@@ -41,15 +41,15 @@ import { FAQSection } from './components/premium/FAQSection';
 export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
 const paymentMethods = [
-    { name: 'Visa', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642634/rizqaratech/payment_methods/Visa-Logo.png' },
-    { name: 'Mastercard', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642636/rizqaratech/payment_methods/mastercard-featured-image-1080x628.jpg' },
-    { name: 'Amex', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642635/rizqaratech/payment_methods/amex.jpg' },
-    { name: 'Payoneer', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642638/rizqaratech/payment_methods/payoneer-logo-payoneer-icon-transparent-free-png.webp' },
-    { name: 'Google Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642631/rizqaratech/payment_methods/GooglePayLogo.width-500.format-webp.webp' },
-    { name: 'Redot Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642639/rizqaratech/payment_methods/redot_pay.png' },
-    { name: 'Bkash', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642630/rizqaratech/payment_methods/Bkash.jpg' },
-    { name: 'Nagad', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642632/rizqaratech/payment_methods/Nagad.jpg', className: 'scale-[0.95]' },
-    { name: 'Rocket', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642633/rizqaratech/payment_methods/Rocket.png', className: 'scale-[1.3] object-cover' },
+    { name: 'Visa', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642634/rizqaratech/payment_methods/Visa-Logo.png', className: 'p-1' },
+    { name: 'Mastercard', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642636/rizqaratech/payment_methods/mastercard-featured-image-1080x628.jpg', className: 'p-1' },
+    { name: 'Amex', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642635/rizqaratech/payment_methods/amex.jpg', className: 'p-1' },
+    { name: 'Payoneer', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642638/rizqaratech/payment_methods/payoneer-logo-payoneer-icon-transparent-free-png.webp', className: 'p-1' },
+    { name: 'Google Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642631/rizqaratech/payment_methods/GooglePayLogo.width-500.format-webp.webp', className: 'p-1' },
+    { name: 'Redot Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642639/rizqaratech/payment_methods/redot_pay.png', className: 'p-1' },
+    { name: 'Bkash', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642630/rizqaratech/payment_methods/Bkash.jpg', className: 'object-cover w-full h-full' },
+    { name: 'Nagad', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642632/rizqaratech/payment_methods/Nagad.jpg', className: 'p-1 object-contain' },
+    { name: 'Rocket', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642633/rizqaratech/payment_methods/Rocket.png', className: 'object-cover w-full h-full scale-105' },
 ];
 
 // --- Premium UI Components (Internal) ---
@@ -455,8 +455,8 @@ const ServiceDetail = () => {
     const process = language === 'bn' ? (service.process_bn || service.process) : service.process;
     const details = language === 'bn' ? (service.details_bn || service.details) : service.details;
 
-    const relatedProjects = (projects as Project[]).filter((p: Project) => 
-        p.category.toLowerCase().includes(service.title.toLowerCase()) || 
+    const relatedProjects = (projects as Project[]).filter((p: Project) =>
+        p.category.toLowerCase().includes(service.title.toLowerCase()) ||
         service.title.toLowerCase().includes(p.category.toLowerCase())
     ).slice(0, 3);
 
@@ -558,8 +558,8 @@ const ServiceDetail = () => {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {(relatedProjects as Project[]).map((project: Project) => (
-                            <div 
-                                key={project.id} 
+                            <div
+                                key={project.id}
                                 className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
                                 onClick={() => {
                                     navigate(`/projects/${getSlug(project.title)}`);
@@ -810,8 +810,8 @@ const ProjectDetail = () => {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {(relatedProjects as Project[]).map((p: Project) => (
-                            <div 
-                                key={p.id} 
+                            <div
+                                key={p.id}
                                 className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
                                 onClick={() => {
                                     navigate(`/projects/${getSlug(p.title)}`);
@@ -962,7 +962,7 @@ const CaseStudyShowcase = () => {
     const desc = language === 'bn' ? (activeStudy.description_bn || activeStudy.description) : activeStudy.description;
 
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section id="case-studies" className="py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
                     <div>
@@ -987,8 +987,8 @@ const CaseStudyShowcase = () => {
                             key={study.id}
                             onClick={() => setActiveTab(idx)}
                             className={`relative px-8 py-5 rounded-2xl transition-all duration-500 flex items-center justify-center min-w-[140px] h-20 group ${activeTab === idx
-                                    ? 'bg-white shadow-2xl ring-1 ring-gray-100'
-                                    : 'bg-gray-50 hover:bg-white hover:shadow-xl'
+                                ? 'bg-white shadow-2xl ring-1 ring-gray-100'
+                                : 'bg-gray-50 hover:bg-white hover:shadow-xl'
                                 }`}
                         >
                             <img
@@ -1405,7 +1405,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                 </h4>
                                 <div className="flex flex-wrap gap-3 max-w-xs">
                                     {paymentMethods.map((method: any, i) => (
-                                        <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm p-1 flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
+                                        <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
                                             <img
                                                 src={method.src}
                                                 alt={method.name}
@@ -1420,10 +1420,20 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         <div>
                             <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('company')}</h3>
                             <ul className="space-y-3 text-sm text-gray-600">
-                                {['Home', 'About', 'Careers', 'Contact'].map(item => (
-                                    <li key={item} onClick={() => onNavigate(item)} className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group">
-                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
-                                        {t(item.toLowerCase() as any) || item}
+                                {[
+                                    { key: 'home', path: '/' },
+                                    { key: 'about', path: '/about' },
+                                    { key: 'careers', path: '/careers' },
+                                    { key: 'contact', path: '/contact' }
+                                ].map(item => (
+                                    <li key={item.key}>
+                                        <Link
+                                            to={item.path}
+                                            className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
+                                        >
+                                            <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
+                                            {t(item.key as any)}
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -1457,12 +1467,22 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{language === 'bn' ? 'সমাধান' : 'Solutions'}</h3>
+                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('solutions')}</h3>
                             <ul className="space-y-3 text-sm text-gray-600">
-                                {['Services', 'Projects', 'Case Studies', 'Team'].map(item => (
-                                    <li key={item} onClick={() => onNavigate(item)} className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group">
-                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
-                                        {t(item.toLowerCase() as any) || item}
+                                {[
+                                    { key: 'services', path: '/services' },
+                                    { key: 'projects', path: '/projects' },
+                                    { key: 'caseStudies', path: '/case-studies' },
+                                    { key: 'team', path: '/team' }
+                                ].map(item => (
+                                    <li key={item.key}>
+                                        <Link
+                                            to={item.path}
+                                            className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
+                                        >
+                                            <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
+                                            {t(item.key as any)}
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>
@@ -1812,16 +1832,17 @@ const MainContent = () => {
         else if (page === 'ProjectDetail' && id) navigate(`/projects/${id}`);
         else if (page === 'FeatureDetail' && id) navigate(`/feature/${id}`);
         else if (page === 'BlogDetail' && id) navigate(`/blog/${id}`);
-        else if (page === 'Services') navigate('/services');
-        else if (page === 'Projects') navigate('/projects');
-        else if (page === 'Packages') navigate('/packages');
-        else if (page === 'Blog') navigate('/blog');
-        else if (page === 'Build') navigate('/build');
-        else if (page === 'CaseStudies') navigate('/case-studies');
-        else if (page === 'Careers') navigate('/careers');
-        else if (page === 'Admin') navigate('/admin');
-        else if (page === 'Contact') navigate('/contact');
-        else if (page === 'About') navigate('/about');
+        else if (page === 'Services' || page === 'services') navigate('/services');
+        else if (page === 'Projects' || page === 'projects') navigate('/projects');
+        else if (page === 'Packages' || page === 'packages') navigate('/packages');
+        else if (page === 'Blog' || page === 'blog') navigate('/blog');
+        else if (page === 'Build' || page === 'build') navigate('/build');
+        else if (page === 'CaseStudies' || page === 'Case Studies' || page === 'caseStudies') navigate('/case-studies');
+        else if (page === 'Careers' || page === 'careers') navigate('/careers');
+        else if (page === 'Admin' || page === 'admin') navigate('/admin');
+        else if (page === 'Contact' || page === 'contact') navigate('/contact');
+        else if (page === 'About' || page === 'about') navigate('/about');
+        else if (page === 'Home' || page === 'home') navigate('/');
         else navigate(`/${page.toLowerCase()}`);
     };
 
@@ -1886,7 +1907,8 @@ const MainContent = () => {
                             {loading ? (
                                 <AboutSkeleton />
                             ) : (
-                                <div className="container mx-auto px-6 py-32">
+                                <div className="">
+                                    <AboutHero />
                                     <JourneyRoadmap />
                                     <div className="mt-32">
                                         <SectionTitle title={t('meetOurTeam')} center />
