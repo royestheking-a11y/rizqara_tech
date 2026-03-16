@@ -6,7 +6,7 @@ import {
     ArrowRight, Star,
     Linkedin, Instagram, Facebook,
     Shield, Zap, MessageSquare, Briefcase,
-    Server,
+    Server, ShieldCheck,
     Lock, User, ExternalLink, Share2, Search,
     Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
@@ -15,7 +15,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation,
 
 // Imports
 import { Toaster, toast } from 'sonner';
-import { DataProvider, useData } from './context/DataContext';
+import { DataProvider, useData, Project } from './context/DataContext';
 import { AdminDashboard } from './components/AdminDashboard';
 
 import { SEO } from './components/SEO';
@@ -31,20 +31,38 @@ import {
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton
 } from './components/premium/UIComponents';
-import { BlogPage, VideosPage, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
+import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
 import { FAQSection } from './components/premium/FAQSection';
 
 // --- Utils ---
-const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
+const paymentMethods = [
+    { name: 'Visa', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642634/rizqaratech/payment_methods/Visa-Logo.png' },
+    { name: 'Mastercard', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642636/rizqaratech/payment_methods/mastercard-featured-image-1080x628.jpg' },
+    { name: 'Amex', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642635/rizqaratech/payment_methods/amex.jpg' },
+    { name: 'Payoneer', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642638/rizqaratech/payment_methods/payoneer-logo-payoneer-icon-transparent-free-png.webp' },
+    { name: 'Google Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642631/rizqaratech/payment_methods/GooglePayLogo.width-500.format-webp.webp' },
+    { name: 'Redot Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642639/rizqaratech/payment_methods/redot_pay.png' },
+    { name: 'Bkash', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642630/rizqaratech/payment_methods/Bkash.jpg' },
+    { name: 'Nagad', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642632/rizqaratech/payment_methods/Nagad.jpg', className: 'scale-[0.95]' },
+    { name: 'Rocket', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642633/rizqaratech/payment_methods/Rocket.png', className: 'scale-[1.3] object-cover' },
+];
 
 // --- Premium UI Components (Internal) ---
 
 const XLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
         <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+);
+
+const MediumLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+        <path d="M13.54 12a6.8 6.8 0 11-6.77-6.82A6.77 6.77 0 0113.54 12zM20.96 12c0 3.54-1.51 6.41-3.38 6.41S14.2 15.54 14.2 12s1.51-6.41 3.38-6.41 3.38 2.87 3.38 6.41zM24 12c0 3.17-.53 5.75-1.19 5.75s-1.19-2.58-1.19-5.75.53-5.75 1.19-5.75S24 8.83 24 12z" />
     </svg>
 );
 
@@ -122,15 +140,15 @@ const CaseStudiesPage = () => {
 
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
-            <SEO 
-                title={`${t ? t('caseStudies') : 'Case Studies'} | RizQara Tech`} 
+            <SEO
+                title={`${t ? t('caseStudies') : 'Case Studies'} | RizQara Tech`}
                 description="Explore our in-depth case studies and success stories."
                 canonical="https://rizqara.tech/case-studies"
             />
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-                <SectionTitle 
-                    title={t ? t('caseStudies') : 'Case Studies'} 
-                    subtitle={language === 'bn' ? 'আমাদের সাফল্যের গল্প এবং শিল্প প্রভাব।' : 'Our success stories and industry impact.'} 
+                <SectionTitle
+                    title={t ? t('caseStudies') : 'Case Studies'}
+                    subtitle={language === 'bn' ? 'আমাদের সাফল্যের গল্প এবং শিল্প প্রভাব।' : 'Our success stories and industry impact.'}
                 />
             </div>
 
@@ -180,8 +198,8 @@ const CaseStudyDetail = () => {
     const navigate = useNavigate();
     const { caseStudies, language, t, loading } = useData();
 
-    const study = caseStudies.find(s => 
-        String(s.id) === id || 
+    const study = caseStudies.find(s =>
+        String(s.id) === id ||
         getSlug(s.title) === id
     );
 
@@ -233,12 +251,12 @@ const CaseStudyDetail = () => {
 
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
-            <SEO 
-                title={`${title} | Case Study | RizQara Tech`} 
-                description={description} 
+            <SEO
+                title={`${title} | Case Study | RizQara Tech`}
+                description={description}
                 canonical={`https://rizqara.tech/case-studies/${id}`}
             />
-            
+
             <button onClick={() => navigate('/case-studies')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
                     <ArrowRight className="rotate-180" size={20} />
@@ -355,7 +373,7 @@ const CaseStudyDetail = () => {
                         {/* Summary Card */}
                         <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm space-y-6">
                             <h4 className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-4">Case Summary</h4>
-                            
+
                             <div>
                                 <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Category</p>
                                 <p className="text-gray-900 font-bold">{study.category}</p>
@@ -391,7 +409,7 @@ const CaseStudyDetail = () => {
                             <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#500000]/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                             <h4 className="text-xl font-bold text-white mb-3 relative z-10">Expert Advice?</h4>
                             <p className="text-white/60 text-sm mb-8 leading-relaxed relative z-10">Get a 30-minute consultation with our lead technical architect to discuss your vision.</p>
-                            <button 
+                            <button
                                 onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
                                 className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-[#500000] px-6 py-3 rounded-xl hover:bg-[#500000] hover:text-white transition-all shadow-xl active:scale-95 group/btn"
                             >
@@ -408,10 +426,10 @@ const CaseStudyDetail = () => {
 const ServiceDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { services, language, t, loading } = useData();
+    const { services, projects, language, t, loading } = useData();
 
-    const service = services.find(s => 
-        s.id === id || 
+    const service = services.find(s =>
+        s.id === id ||
         getSlug(s.title) === id
     );
 
@@ -437,13 +455,31 @@ const ServiceDetail = () => {
     const process = language === 'bn' ? (service.process_bn || service.process) : service.process;
     const details = language === 'bn' ? (service.details_bn || service.details) : service.details;
 
+    const relatedProjects = (projects as Project[]).filter((p: Project) => 
+        p.category.toLowerCase().includes(service.title.toLowerCase()) || 
+        service.title.toLowerCase().includes(p.category.toLowerCase())
+    ).slice(0, 3);
+
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": title,
+        "description": description,
+        "provider": {
+            "@type": "Organization",
+            "name": "RizQara Tech",
+            "url": "https://rizqara.tech"
+        }
+    };
+
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
-            <SEO 
-                title={`${title} | RizQara Tech`} 
-                description={description} 
+            <SEO
+                title={`${title} | RizQara Tech`}
+                description={description}
                 keywords={`${title}, software company Bangladesh, ${title} service Dhaka, best ${title} company`}
                 canonical={`https://rizqara.tech/services/${id}`}
+                schema={schema}
             />
             <button onClick={() => navigate('/services')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
@@ -513,6 +549,42 @@ const ServiceDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Related Projects - Proof of Work Backlinking */}
+            {relatedProjects.length > 0 && (
+                <div className="mt-24 pt-24 border-t border-gray-100">
+                    <h3 className="text-3xl font-black text-[#500000] mb-12 uppercase tracking-tight">
+                        {language === 'bn' ? 'সম্পর্কিত প্রকল্পসমূহ' : 'Recent Work in this Category'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {(relatedProjects as Project[]).map((project: Project) => (
+                            <div 
+                                key={project.id} 
+                                className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
+                                onClick={() => {
+                                    navigate(`/projects/${getSlug(project.title)}`);
+                                    window.scrollTo(0, 0);
+                                }}
+                            >
+                                <div className="aspect-video overflow-hidden relative">
+                                    <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div className="absolute top-4 left-4">
+                                        <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[10px] font-bold text-[#500000] uppercase rounded-full shadow-sm">
+                                            {language === 'bn' ? (project.category_bn || project.category) : project.category}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#500000] transition-colors mb-2">
+                                        {language === 'bn' ? (project.title_bn || project.title) : project.title}
+                                    </h4>
+                                    <p className="text-gray-500 text-sm line-clamp-2">{language === 'bn' ? (project.description_bn || project.description) : project.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -521,9 +593,9 @@ const ProjectDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { projects, language, t, loading } = useData();
-    
-    const project = projects.find(p => 
-        String(p.id) === id || 
+
+    const project = projects.find(p =>
+        String(p.id) === id ||
         getSlug(p.title) === id
     );
 
@@ -581,12 +653,28 @@ const ProjectDetail = () => {
         }
     };
 
+    const relatedProjects = (projects as Project[]).filter((p: Project) => p.id !== project.id && p.category === project.category).slice(0, 3);
+
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": title,
+        "description": description,
+        "image": project.image,
+        "author": {
+            "@type": "Organization",
+            "name": "RizQara Tech"
+        }
+    };
+
     return (
         <div className="container mx-auto px-6 py-24 min-h-screen">
-            <SEO 
-                title={`${title} | RizQara Tech`} 
-                description={description} 
+            <SEO
+                title={`${title} | RizQara Tech`}
+                description={description}
                 canonical={`https://rizqara.tech/projects/${id}`}
+                schema={schema}
+                image={project.image}
             />
             <button onClick={() => navigate('/projects')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
                 <div className="p-2 rounded-full bg-gray-100 group-hover:bg-gray-200 mr-4 transition-colors">
@@ -675,7 +763,7 @@ const ProjectDetail = () => {
                 <div className="lg:col-span-1 space-y-8">
                     <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm space-y-6 sticky top-32">
                         <h4 className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-4">Project Information</h4>
-                        
+
                         <div>
                             <p className="text-xs font-black text-[#500000]/40 uppercase tracking-widest mb-1">Category</p>
                             <p className="text-gray-900 font-bold">{category}</p>
@@ -713,6 +801,36 @@ const ProjectDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Related Projects - Cross Linking */}
+            {relatedProjects.length > 0 && (
+                <div className="mt-24 pt-24 border-t border-gray-100">
+                    <h3 className="text-3xl font-black text-[#500000] mb-12 uppercase tracking-tight">
+                        {language === 'bn' ? 'অনুরূপ প্রকল্প' : 'Similar Projects'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {(relatedProjects as Project[]).map((p: Project) => (
+                            <div 
+                                key={p.id} 
+                                className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
+                                onClick={() => {
+                                    navigate(`/projects/${getSlug(p.title)}`);
+                                    window.scrollTo(0, 0);
+                                }}
+                            >
+                                <div className="aspect-video overflow-hidden">
+                                    <img src={p.image} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                </div>
+                                <div className="p-6">
+                                    <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#500000] transition-colors">
+                                        {language === 'bn' ? (p.title_bn || p.title) : p.title}
+                                    </h4>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -831,6 +949,111 @@ const Navbar = () => {
 
 // --- Home Page Components ---
 
+const CaseStudyShowcase = () => {
+    const { caseStudies, language, t } = useData();
+    const [activeTab, setActiveTab] = useState(0);
+    const navigate = useNavigate();
+
+    if (!caseStudies || caseStudies.length === 0) return null;
+
+    const activeStudy = caseStudies[activeTab] || caseStudies[0];
+    const title = language === 'bn' ? (activeStudy.title_bn || activeStudy.title) : activeStudy.title;
+    const category = language === 'bn' ? (activeStudy.category_bn || activeStudy.category) : activeStudy.category;
+    const desc = language === 'bn' ? (activeStudy.description_bn || activeStudy.description) : activeStudy.description;
+
+    return (
+        <section className="py-24 bg-white overflow-hidden">
+            <div className="container mx-auto px-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+                    <div>
+                        <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{t ? t('caseStudies') : 'Case Studies'}</h2>
+                        <p className="text-gray-500 max-w-xl">
+                            {language === 'bn' ? 'আমাদের অত্যন্ত উদ্ভাবনী সমাধানগুলি কীভাবে ব্যবসাগুলিকে রূপান্তরিত করেছে তা দেখুন।' : 'Check out our case studies that show how innovative solutions transformed businesses.'}
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => navigate('/case-studies')}
+                        className="px-6 py-3 font-bold rounded-full transition-all text-sm shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap"
+                        style={{ backgroundColor: '#500000', color: '#ffffff' }}
+                    >
+                        {language === 'bn' ? 'সবগুলো কেস স্টাডি দেখুন' : 'See all Case Studies'}
+                    </button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex flex-wrap gap-4 mb-16 border-b border-gray-100 pb-10">
+                    {caseStudies.slice(0, 6).map((study, idx) => (
+                        <button
+                            key={study.id}
+                            onClick={() => setActiveTab(idx)}
+                            className={`relative px-8 py-5 rounded-2xl transition-all duration-500 flex items-center justify-center min-w-[140px] h-20 group ${activeTab === idx
+                                    ? 'bg-white shadow-2xl ring-1 ring-gray-100'
+                                    : 'bg-gray-50 hover:bg-white hover:shadow-xl'
+                                }`}
+                        >
+                            <img
+                                src={study.image}
+                                alt={study.title}
+                                className={`h-8 object-contain transition-all duration-500 ${activeTab === idx ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}
+                            />
+                            {activeTab === idx && (
+                                <motion.div
+                                    layoutId="activeTabUnderline"
+                                    className="absolute -bottom-10 left-0 right-0 h-1.5 bg-[#00AEEF] rounded-full"
+                                />
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Content Area */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pb-12">
+                    <motion.div
+                        key={activeStudy.id + 'img'}
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="relative rounded-[40px] overflow-hidden shadow-2xl aspect-[1.1/1]"
+                    >
+                        <img
+                            src={activeStudy.image}
+                            alt={title}
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    </motion.div>
+
+                    <motion.div
+                        key={activeStudy.id + 'content'}
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                        className="flex flex-col h-full"
+                    >
+                        <div className="mb-6 text-[#00AEEF] font-black text-sm tracking-[0.2em] uppercase">
+                            {category}
+                        </div>
+                        <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-8 leading-[1.1]">
+                            {title}
+                        </h3>
+                        <p className="text-gray-600 text-lg md:text-xl font-medium mb-10 leading-relaxed max-w-2xl">
+                            {desc}
+                        </p>
+
+                        <div
+                            onClick={() => navigate(`/case-studies/${getSlug(activeStudy.title)}`)}
+                            className="flex items-center text-[#fbb03b] hover:text-[#f7931e] font-black text-lg gap-3 cursor-pointer group w-fit transition-all"
+                        >
+                            <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Case Study'}</span>
+                            <ArrowRight size={20} className="translate-x-0 group-hover:translate-x-2 transition-transform duration-300" />
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
     const { services, projects, loading, language, t, addMessage } = useData();
@@ -879,7 +1102,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 <h2 className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</h2>
                 <AutoScrollCarousel items={
                     partners.map((partner, i) => (
-                        <div key={i} className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[140px]">
+                        <div key={i} className="flex items-center gap-3 opacity-100 transition-opacity px-6 duration-500 shrink-0 min-w-[140px]">
                             <div className="h-10 w-auto flex items-center justify-center">
                                 {partner.logo}
                             </div>
@@ -1021,7 +1244,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                             )}
                                         </div>
                                     </div>
-                                    
+
                                     <div className="h-[80px] mb-4 shrink-0 overflow-hidden">
                                         <p className="text-gray-500 text-sm font-medium leading-relaxed">
                                             {(language === 'bn' ? project.description_bn : project.description)?.slice(0, 140)}...
@@ -1038,6 +1261,9 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     })}
                 </Carousel>
             </section>
+
+            {/* 7. CASE STUDIES SHOWCASE */}
+            <CaseStudyShowcase />
 
             {/* 7. WHY RIZQARA (Redesigned) */}
             <section className="container mx-auto px-6">
@@ -1089,16 +1315,16 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                         <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
-                            <StatsCounter value={28 + projects.length} label={language === 'bn' ? "প্রকল্প বিতরণ" : "Projects Delivered"} />
+                            <StatsCounter value={120 + projects.length} label={language === 'bn' ? "প্রকল্প বিতরণ" : "Projects Delivered"} />
                         </div>
                         <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
-                            <StatsCounter value={98} label={language === 'bn' ? "গ্রাহক সন্তুষ্টি" : "Client Satisfaction"} suffix="%" />
+                            <StatsCounter value={100} label={language === 'bn' ? "গ্রাহক সন্তুষ্টি" : "Client Satisfaction"} suffix="%" />
                         </div>
                         <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
-                            <StatsCounter value={4} label={language === 'bn' ? "দেশ সেবা করা হয়েছে" : "Countries Served"} suffix="+" />
+                            <StatsCounter value={10} label={language === 'bn' ? "দেশ সেবা করা হয়েছে" : "Countries Served"} suffix="+" />
                         </div>
                         <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
-                            <StatsCounter value={2} label={language === 'bn' ? "বছরের শ্রেষ্ঠত্ব" : "Years Excellence"} suffix="+" />
+                            <StatsCounter value={5} label={language === 'bn' ? "বছরের শ্রেষ্ঠত্ব" : "Years Excellence"} suffix="+" />
                         </div>
                     </div>
                 </div>
@@ -1163,12 +1389,31 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     { Icon: XLogo, link: 'https://x.com/Rizqaratech' },
                                     { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
                                     { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
-                                    { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' }
+                                    { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
+                                    { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' }
                                 ].map(({ Icon, link }, i) => (
                                     <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
                                         <Icon size={18} className="group-hover:scale-110 transition-transform" />
                                     </a>
                                 ))}
+                            </div>
+
+                            <div className="mt-8 border-t border-gray-100 pt-8">
+                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <Shield size={14} />
+                                    {language === 'bn' ? "নিরাপদ পেমেন্ট পদ্ধতি" : "Secure Payment Methods"}
+                                </h4>
+                                <div className="flex flex-wrap gap-3 max-w-xs">
+                                    {paymentMethods.map((method: any, i) => (
+                                        <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm p-1 flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
+                                            <img
+                                                src={method.src}
+                                                alt={method.name}
+                                                className={`max-h-full max-w-full transition-all duration-300 ${method.className || 'object-contain'}`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
@@ -1182,18 +1427,48 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                     </li>
                                 ))}
                             </ul>
+                            <div className="mt-8 border-t border-gray-100 pt-8">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <ShieldCheck size={16} className="text-[#500000]" />
+                                    <h4 className="text-sm font-bold text-gray-900">{language === 'bn' ? 'স্বীকৃত:' : 'Recognized by:'}</h4>
+                                </div>
+                                <div
+                                    className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative"
+                                    style={{ backgroundColor: '#500000' }}
+                                >
+                                    <div className="flex flex-col h-full justify-between relative z-10">
+                                        <div className="flex justify-between items-start">
+                                            <span className="text-[4px] font-black text-white tracking-[0.05em] uppercase leading-none opacity-80">Reviewed on</span>
+                                            <div className="flex gap-0.5">
+                                                {[1, 2, 3, 4, 5].map((_, i) => (
+                                                    <Star key={i} size={14} fill="#FFD700" stroke="#FFD700" />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-center flex-1 py-0.5">
+                                            <img src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png" alt="Clutch" className="h-12 w-auto object-contain brightness-0 invert" />
+                                        </div>
+
+                                        <div className="text-[5px] font-black text-white tracking-[0.05em] uppercase text-right leading-none opacity-80">10 REVIEWS</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
                             <h3 className="text-gray-900 font-bold mb-6 text-lg">{language === 'bn' ? 'সমাধান' : 'Solutions'}</h3>
                             <ul className="space-y-3 text-sm text-gray-600">
-                                {['Services', 'Projects', 'Team'].map(item => (
+                                {['Services', 'Projects', 'Case Studies', 'Team'].map(item => (
                                     <li key={item} onClick={() => onNavigate(item)} className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group">
                                         <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
                                         {t(item.toLowerCase() as any) || item}
                                     </li>
                                 ))}
                             </ul>
+                            <div className="mt-8 border-t border-gray-100 pt-8 hidden lg:block opacity-0 pointer-events-none">
+                                <div className="h-40"></div>
+                            </div>
                         </div>
 
                         <div>
@@ -1585,6 +1860,11 @@ const MainContent = () => {
                     <Route path="/packages" element={<div className="container mx-auto px-6 pt-32 pb-32"><SectionTitle title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"} /><PricingDetailed onNavigate={onNavigate} /></div>} />
                     <Route path="/contact" element={
                         <div className="pt-20 pb-32 container mx-auto px-6">
+                            <SEO
+                                title="Contact Us | RizQara Tech - Software & AI Solutions"
+                                description="Get in touch with RizQara Tech for custom software development, AI solutions, web apps, and digital transformation services in Bangladesh."
+                                canonical="https://rizqara.tech/contact"
+                            />
                             {loading ? (
                                 <ContactSkeleton />
                             ) : (
@@ -1621,8 +1901,8 @@ const MainContent = () => {
                     <Route path="/blog/:id" element={<BlogDetail />} />
 
                     <Route path="/careers" element={<>
-                        <SEO 
-                            title="Careers | Join RizQara Tech | Software Jobs in Bangladesh" 
+                        <SEO
+                            title="Careers | Join RizQara Tech | Software Jobs in Bangladesh"
                             description="Apply for software engineering, design, and marketing roles at RizQara Tech. Build the future with the best software company in Bangladesh."
                             canonical="https://rizqara.tech/careers"
                         />
@@ -1632,6 +1912,7 @@ const MainContent = () => {
                     <Route path="/case-studies" element={<CaseStudiesPage />} />
                     <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
                     <Route path="/videos" element={<VideosPage onNavigate={onNavigate} />} />
+                    <Route path="/videos/:id" element={<VideoDetail />} />
                     <Route path="/build" element={<BuildPage onNavigate={onNavigate} initialConfig={buildConfig} />} />
                     <Route path="/feature/:id" element={<FeatureDetailWrapper />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />

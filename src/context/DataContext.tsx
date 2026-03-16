@@ -47,6 +47,7 @@ export type Review = {
   company: string;
   content: string;
   content_bn?: string;
+  image?: string;
   rating: number;
 };
 
@@ -90,6 +91,9 @@ export type Video = {
   thumbnail: string;
   url: string;
   category: 'Demo' | 'Ad' | 'Showcase';
+  category_bn?: string;
+  description?: string;
+  description_bn?: string;
   comments: VideoComment[];
 };
 

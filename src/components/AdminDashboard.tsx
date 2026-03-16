@@ -999,6 +999,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Category" name="category" defaultValue={editingItem?.category} required />
                                     <AdminInput label="Category (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ক্যাটাগরি" />
 
+                                    <AdminTextArea label="Video Description" name="description" defaultValue={editingItem?.description} placeholder="Video details..." />
+                                    <AdminTextArea label="Video Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বিস্তারিত..." />
+
                                     <div className="mb-4">
                                         <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Link</label>
                                         <input

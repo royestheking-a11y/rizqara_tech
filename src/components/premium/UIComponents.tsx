@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getProxiedImage } from '../../utils/imageProxy';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
@@ -10,6 +11,7 @@ import {
     MessageCircle, Bot, Loader, Activity, PlayCircle, MessageSquare
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
+import { getSlug } from '../../App';
 
 import { toast } from "sonner";
 
@@ -794,7 +796,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
 type LatestVideosProps = { onNavigate?: (page: string, id?: string) => void };
 export const LatestVideos: React.FC<LatestVideosProps> = () => {
     const { videos, language } = useData();
-    const [selectedVideo, setSelectedVideo] = useState<any>(null);
+    const navigate = useNavigate();
 
     if (!videos.length) return null;
 
@@ -807,7 +809,7 @@ export const LatestVideos: React.FC<LatestVideosProps> = () => {
                         <div
                             key={video.id}
                             className="group relative rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm cursor-pointer hover:shadow-lg transition-all"
-                            onClick={() => setSelectedVideo(video)}
+                            onClick={() => navigate(`/videos/${video.id}`)}
                         >
                             <div className="aspect-video relative">
                                 {/* Use YouTube Thumbnail if available, else fallback to stored thumbnail */}
@@ -837,11 +839,7 @@ export const LatestVideos: React.FC<LatestVideosProps> = () => {
                 })}
             </div>
 
-            <AnimatePresence>
-                {selectedVideo && (
-                    <VideoModal video={selectedVideo} onClose={() => setSelectedVideo(null)} />
-                )}
-            </AnimatePresence>
+            {/* Modal removed as we now use dedicated VideoDetail page */}
         </>
     );
 };
@@ -853,12 +851,12 @@ export const LatestBlogs = ({ onNavigate }: any) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {blogs.slice(0, 2).map((blog) => {
+            {blogs.slice(0, 4).map((blog) => {
                 const title = language === 'bn' ? (blog.title_bn || blog.title) : blog.title;
                 const excerpt = language === 'bn' ? (blog.excerpt_bn || blog.excerpt) : blog.excerpt;
 
                 return (
-                    <div key={blog.id} onClick={() => onNavigate('BlogDetail', blog.id)} className="flex gap-6 items-start group cursor-pointer bg-white p-4 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
+                    <div key={blog.id} onClick={() => onNavigate('BlogDetail', getSlug(blog.title))} className="flex gap-6 items-start group cursor-pointer bg-white p-4 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
                         <img src={blog.image} alt={title} className="w-32 h-32 rounded-xl object-cover shadow-sm" />
                         <div>
                             <div className="text-xs text-white bg-[#500000] inline-block px-2 py-0.5 rounded-md font-bold mb-2 shadow-sm">{blog.date}</div>
@@ -898,10 +896,15 @@ export const TestimonialSlider = () => {
                     <div className="mb-8 text-[#500000]">
                         {[1, 2, 3, 4, 5].map(s => <Star key={s} size={24} className="inline-block fill-current" />)}
                     </div>
-                    <p className="text-2xl md:text-3xl font-light text-gray-800 italic mb-8 leading-relaxed">"{language === 'bn' ? (reviews[index]?.content_bn || reviews[index]?.content) : reviews[index]?.content}"</p>
-                    <div>
+                    <p className="text-2xl md:text-3xl font-light text-gray-800 italic mb-10 leading-relaxed">"{language === 'bn' ? (reviews[index]?.content_bn || reviews[index]?.content) : reviews[index]?.content}"</p>
+                    <div className="flex flex-col items-center">
+                        {reviews[index]?.image && (
+                            <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-2 border-[#500000]/10 shadow-md">
+                                <img src={reviews[index].image} alt={reviews[index].name} className="w-full h-full object-cover" />
+                            </div>
+                        )}
                         <h4 className="text-gray-900 font-bold text-lg">{language === 'bn' ? (reviews[index]?.name_bn || reviews[index]?.name) : reviews[index]?.name}</h4>
-                        <p className="text-gray-500 text-sm">{language === 'bn' ? (reviews[index]?.role_bn || reviews[index]?.role) : reviews[index]?.role}, {reviews[index]?.company}</p>
+                        <p className="text-gray-500 text-sm font-medium">{language === 'bn' ? (reviews[index]?.role_bn || reviews[index]?.role) : reviews[index]?.role}, {reviews[index]?.company}</p>
                     </div>
                 </motion.div>
             </AnimatePresence>

@@ -8,6 +8,7 @@ type SEOProps = {
     canonical?: string;
     image?: string;
     type?: string;
+    schema?: object;
 };
 
 export const SEO: React.FC<SEOProps> = ({
@@ -16,9 +17,27 @@ export const SEO: React.FC<SEOProps> = ({
     keywords,
     canonical,
     image = 'https://rizqara.tech/og-image.png',
-    type = 'website'
+    type = 'website',
+    schema
 }) => {
     const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`; // Auto-append brand if missing
+    
+    // Default Organization Schema
+    const defaultSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "RizQara Tech",
+        "url": "https://rizqara.tech",
+        "logo": "https://rizqara.tech/logo.png",
+        "sameAs": [
+            "https://facebook.com/rizqaratech",
+            "https://twitter.com/rizqaratech",
+            "https://instagram.com/rizqaratech",
+            "https://linkedin.com/company/rizqaratech",
+            "https://medium.com/@rizqaratech"
+        ]
+    };
+
     return (
         <Helmet>
             {/* Primary Meta Tags */}
@@ -39,6 +58,11 @@ export const SEO: React.FC<SEOProps> = ({
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content={image} />
+
+            {/* Structured Data */}
+            <script type="application/ld+json">
+                {JSON.stringify(schema || defaultSchema)}
+            </script>
         </Helmet>
     );
 };
