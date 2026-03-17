@@ -164,6 +164,13 @@ const PromotionSchema = new mongoose.Schema({
     description_bn: String
 }, { timestamps: true });
 
+const NoticeSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    text: { type: String, required: true },
+    text_bn: { type: String, required: true },
+    isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
 module.exports = {
     Service: mongoose.model('Service', ServiceSchema),
     Project: mongoose.model('Project', ProjectSchema),
@@ -176,5 +183,6 @@ module.exports = {
     Message: mongoose.model('Message', MessageSchema),
     CareerApplication: mongoose.model('CareerApplication', CareerApplicationSchema),
     CaseStudy: mongoose.model('CaseStudy', CaseStudySchema),
-    Promotion: mongoose.model('Promotion', PromotionSchema)
+    Promotion: mongoose.model('Promotion', PromotionSchema),
+    Notice: mongoose.model('Notice', NoticeSchema)
 };

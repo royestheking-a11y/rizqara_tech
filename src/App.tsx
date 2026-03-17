@@ -36,6 +36,7 @@ import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
 import { FAQSection } from './components/premium/FAQSection';
+import { NoticeBar } from './components/premium/NoticeBar';
 
 // --- Utils ---
 export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
@@ -1370,6 +1371,8 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 <SectionTitle title={t('contact')} />
                 <ContactFormWithMap />
             </section>
+
+            <NoticeBar />
 
             {/* 16. FULL FOOTER */}
             <footer className="bg-gray-50 text-gray-900 pt-24 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">

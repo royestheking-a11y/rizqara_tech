@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
-const { Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy } = require('./models/Schemas');
+const { Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy, Notice } = require('./models/Schemas');
 
 // Cloudinary Config
 cloudinary.config({
@@ -28,7 +28,8 @@ const models = {
     messages: Message,
     promotion: Promotion,
     careerApplications: CareerApplication,
-    caseStudies: CaseStudy
+    caseStudies: CaseStudy,
+    notice: Notice
 };
 
 const translate = require('translation-google');

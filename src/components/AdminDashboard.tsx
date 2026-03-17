@@ -6,7 +6,7 @@ import {
     LayoutDashboard, Briefcase, Users, MessageSquare,
     Plus, Trash2, Edit2, Save, X, RotateCcw,
     FileText, PlayCircle, Image, Settings, LogOut,
-    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Check
+    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Check, Bell
 } from 'lucide-react';
 import { ImageUploader } from './admin/ImageUploader';
 import { UserInteractionAnalytics } from './admin/UserInteractionAnalytics';
@@ -33,7 +33,7 @@ const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, updateData, resetData, language, deleteData, fetchAdminData } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, updateData, resetData, language, deleteData, fetchAdminData } = useData();
 
     React.useEffect(() => {
         fetchAdminData();
@@ -41,7 +41,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy'>('service');
+    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [carouselImage, setCarouselImage] = useState('');
@@ -73,6 +73,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'carousel') await deleteData('carousel', id);
         if (type === 'buildOption') await deleteData('buildOptions', id);
         if (type === 'caseStudy') await deleteData('caseStudies', id);
+        if (type === 'notice') await deleteData('notice', id);
         // Message and Application handling might be different in UI (check tabs)
         // Note: AdminDashboard usually handles main content. Messages might be handled in "messages" tab
     };
@@ -149,6 +150,21 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
         if (modalType === 'carousel' && carouselImage) data.image = carouselImage;
         if (modalType === 'blog' && blogImage) data.image = blogImage;
+
+        if (modalType === 'notice') {
+            const newItem = {
+                id: editingItem ? editingItem.id : generateId(),
+                ...data,
+                isActive: data.isActive === 'on' || data.isActive === true
+            };
+            const updatedNotices = editingItem 
+                ? notices.map((n: any) => n.id === editingItem.id ? newItem : n) 
+                : [...notices, newItem];
+            updateData('notice', updatedNotices);
+            setIsModalOpen(false);
+            setEditingItem(null);
+            return;
+        }
 
         const newItem = {
             id: editingItem ? editingItem.id : generateId(),
@@ -344,6 +360,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         { id: 'jobs', icon: Users, label: language === 'bn' ? 'ক্যারিয়ার' : 'Careers (Posts)' },
         { id: 'applications', icon: FileDown, label: language === 'bn' ? 'আবেদন' : 'Applications' },
         { id: 'videos', icon: PlayCircle, label: language === 'bn' ? 'ভিডিও' : 'Videos' },
+        { id: 'notice', icon: Bell, label: language === 'bn' ? 'নোটিশ' : 'Notice' },
     ];
 
     return (
@@ -587,6 +604,23 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             </div>
                         </div>
                     )}
+
+                    {activeTab === 'notice' && renderList(language === 'bn' ? 'ওয়েবসাইট নোটিশ' : 'Website Notices', notices, 'notice', (item) => (
+                        <div className="flex items-center gap-6">
+                            <div className={`p-3 rounded-xl ${item.isActive ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                                <Bell size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-800">{item.text}</h3>
+                                <p className="text-sm text-gray-500 mt-0.5">{item.text_bn}</p>
+                                <div className="mt-2 flex items-center gap-2">
+                                    <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider ${item.isActive ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                                        {item.isActive ? 'Active' : 'Inactive'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
 
                     {activeTab === 'buildOption' && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -1072,6 +1106,21 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     </AdminSelect>
                                     <AdminInput label="Label" name="label" defaultValue={editingItem?.label} placeholder="e.g. Web App or E-commerce Project" required />
                                     <AdminInput label="Value" name="value" defaultValue={editingItem?.value} type="number" step="0.1" placeholder="Price or Multiplier" required />
+                                </>}
+
+                                {modalType === 'notice' && <>
+                                    <AdminTextArea label="Notice Text (English)" name="text" defaultValue={editingItem?.text} required />
+                                    <AdminTextArea label="Notice Text (Bengali)" name="text_bn" defaultValue={editingItem?.text_bn} required />
+                                    <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 mt-4">
+                                        <input 
+                                            type="checkbox" 
+                                            name="isActive" 
+                                            id="isActive"
+                                            defaultChecked={editingItem?.isActive}
+                                            className="w-5 h-5 accent-[#500000]"
+                                        />
+                                        <label htmlFor="isActive" className="text-sm font-bold text-gray-700">Display Notice on Website</label>
+                                    </div>
                                 </>}
                             </form>
                         </div>

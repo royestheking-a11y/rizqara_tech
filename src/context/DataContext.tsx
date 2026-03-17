@@ -172,6 +172,13 @@ export type Promotion = {
   description_bn?: string;
 };
 
+export type Notice = {
+  id: string;
+  text: string;
+  text_bn: string;
+  isActive: boolean;
+};
+
 export type DataContextType = {
   services: Service[];
   projects: Project[];
@@ -185,6 +192,7 @@ export type DataContextType = {
   careerApplications: CareerApplication[];
   caseStudies: CaseStudy[];
   promotion: Promotion;
+  notices: Notice[];
   language: Language;
   setLanguage: (lang: Language) => void;
   updateData: (key: string, data: any) => void;
@@ -216,6 +224,8 @@ const INITIAL_PROMOTION: Promotion = {
   description_bn: 'আপনার প্রথম এন্টারপ্রাইজ সমাধানে প্রিমিয়াম ছাড় পান।'
 };
 
+const INITIAL_NOTICES: Notice[] = [];
+
 // --- Context ---
 
 const DataContext = createContext<DataContextType>({} as DataContextType);
@@ -235,6 +245,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
+  const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
   const [language, setLanguage] = useState<Language>('en');
   const [loading, setLoading] = useState(true);
 
@@ -289,11 +300,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchData = async () => {
       // Phase 1: Critical Data (Required to show the main page)
       try {
-        const [servicesRes, projectsRes, carouselRes, promotionRes] = await Promise.all([
+        const [servicesRes, projectsRes, carouselRes, promotionRes, noticeRes] = await Promise.all([
           fetchWithRetry(`${API_URL}/services`),
           fetchWithRetry(`${API_URL}/projects`),
           fetchWithRetry(`${API_URL}/carousel`),
-          fetchWithRetry(`${API_URL}/promotion`)
+          fetchWithRetry(`${API_URL}/promotion`),
+          fetchWithRetry(`${API_URL}/notice`)
         ]);
 
         if (servicesRes.ok) setServices(await servicesRes.json());
@@ -302,6 +314,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (promotionRes.ok) {
           const promoData = await promotionRes.json();
           setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
+        }
+        // @ts-ignore
+        if (noticeRes && noticeRes.ok) {
+          setNotices(await noticeRes.json());
         }
 
         // We can show the site now!
@@ -386,6 +402,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'careerApplications') setCareerApplications(data);
     if (key === 'caseStudies') setCaseStudies(data);
     if (key === 'promotion') setPromotion(data);
+    if (key === 'notice') setNotices(data);
 
     // API Sync (Bulk PUT)
     try {
@@ -422,6 +439,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'messages') setMessages(prev => prev.filter(item => item.id !== id));
     if (key === 'careerApplications') setCareerApplications(prev => prev.filter(item => item.id !== id));
     if (key === 'caseStudies') setCaseStudies(prev => prev.filter(item => item.id !== id));
+    if (key === 'notice') setNotices(prev => prev.filter(item => item.id !== id));
 
     // API Call
     try {
@@ -513,7 +531,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );
