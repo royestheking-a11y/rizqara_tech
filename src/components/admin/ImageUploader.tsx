@@ -16,7 +16,7 @@ interface ImageUploaderProps {
     onUploadEnd?: () => void;
 }
 
-export const ImageUploader = ({ label = "Image", name = "image", defaultValue = "", onImageChange, aspectRatio = 16 / 9, onUploadStart, onUploadEnd }: ImageUploaderProps) => {
+export const ImageUploader = ({ label = "Image", name = "image", defaultValue = "", onImageChange, aspectRatio, onUploadStart, onUploadEnd }: ImageUploaderProps) => {
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -131,8 +131,8 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
             {!isEditorOpen ? (
                 <div className="space-y-4">
                     {previewUrl ? (
-                        <div className="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-                            <img src={previewUrl} alt="Preview" className="w-full h-48 object-cover" />
+                        <div className="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex justify-center items-center h-48">
+                            <img src={previewUrl} alt="Preview" className="max-w-full max-h-full object-contain" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                     <button
                                         onClick={() => { setImageSrc(previewUrl); setIsEditorOpen(true); }}
@@ -199,7 +199,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                             crop={crop}
                             zoom={zoom}
                             rotation={rotation}
-                            aspect={aspectRatio}
+                            aspect={aspectRatio || undefined}
                             onCropChange={setCrop}
                             onCropComplete={onCropComplete}
                             onZoomChange={setZoom}

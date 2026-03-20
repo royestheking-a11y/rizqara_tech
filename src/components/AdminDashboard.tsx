@@ -845,7 +845,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onImageChange={(url) => setProjectImage(url)}
                                         onUploadStart={() => setUploadingCount(p => p + 1)}
                                         onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                        aspectRatio={16 / 9}
                                     />
 
 
@@ -857,7 +856,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                             onImageChange={() => { }}
                                             onUploadStart={() => setUploadingCount(p => p + 1)}
                                             onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                            aspectRatio={16 / 9}
                                         />
                                         <ImageUploader
                                             label="Gallery 2"
@@ -866,7 +864,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                             onImageChange={() => { }}
                                             onUploadStart={() => setUploadingCount(p => p + 1)}
                                             onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                            aspectRatio={16 / 9}
                                         />
                                         <ImageUploader
                                             label="Gallery 3"
@@ -875,7 +872,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                             onImageChange={() => { }}
                                             onUploadStart={() => setUploadingCount(p => p + 1)}
                                             onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                            aspectRatio={16 / 9}
                                         />
                                     </div>
 
@@ -901,7 +897,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onImageChange={(url) => setCaseStudyImage(url)}
                                         onUploadStart={() => setUploadingCount(p => p + 1)}
                                         onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                        aspectRatio={16 / 9}
                                     />
 
                                     <AdminTextArea label="Short Summary" name="description" defaultValue={editingItem?.description} required />
@@ -929,7 +924,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 onImageChange={() => { }}
                                                 onUploadStart={() => setUploadingCount(p => p + 1)}
                                                 onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                                aspectRatio={16 / 9}
                                             />
                                             <ImageUploader
                                                 label="Image 2"
@@ -938,7 +932,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 onImageChange={() => { }}
                                                 onUploadStart={() => setUploadingCount(p => p + 1)}
                                                 onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                                aspectRatio={16 / 9}
                                             />
                                             <ImageUploader
                                                 label="Image 3"
@@ -947,7 +940,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 onImageChange={() => { }}
                                                 onUploadStart={() => setUploadingCount(p => p + 1)}
                                                 onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                                aspectRatio={16 / 9}
                                             />
                                             <ImageUploader
                                                 label="Image 4"
@@ -956,7 +948,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 onImageChange={() => { }}
                                                 onUploadStart={() => setUploadingCount(p => p + 1)}
                                                 onUploadEnd={() => setUploadingCount(p => p - 1)}
-                                                aspectRatio={16 / 9}
                                             />
                                         </div>
                                     </div>

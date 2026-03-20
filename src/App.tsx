@@ -265,8 +265,8 @@ const CaseStudyDetail = () => {
                 <span className="text-sm uppercase tracking-widest font-bold">{t('back')}</span>
             </button>
 
-            <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl">
-                <img src={study.image} alt={title} className="w-full h-[50vh] object-cover" />
+            <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
+                <img src={study.image} alt={title} className="max-w-full max-h-full object-contain" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -287,7 +287,7 @@ const CaseStudyDetail = () => {
                                 <Activity className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'প্রধান সমস্যা' : 'The Challenge'}
                             </h3>
-                            <div className="p-8 bg-gray-50 rounded-2xl border border-gray-100 text-lg text-gray-700 leading-relaxed shadow-sm">
+                            <div className="p-8 bg-gray-50 rounded-2xl border border-gray-100 text-lg text-gray-700 leading-relaxed shadow-sm whitespace-pre-line">
                                 {problem}
                             </div>
                         </div>
@@ -298,7 +298,7 @@ const CaseStudyDetail = () => {
                                 <Cpu className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'সমাধান এবং কৌশল' : 'Our Solution'}
                             </h3>
-                            <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-md text-lg text-gray-700 leading-relaxed">
+                            <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-md text-lg text-gray-700 leading-relaxed whitespace-pre-line">
                                 {solution}
                             </div>
                         </div>
@@ -309,7 +309,7 @@ const CaseStudyDetail = () => {
                                 <Zap className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
                             </h3>
-                            <div className="p-8 bg-[#500000]/5 rounded-2xl border border-[#500000]/10 text-lg text-gray-700 leading-relaxed shadow-sm">
+                            <div className="p-8 bg-[#500000]/5 rounded-2xl border border-[#500000]/10 text-lg text-gray-700 leading-relaxed shadow-sm whitespace-pre-line">
                                 {impact}
                             </div>
                         </div>
@@ -353,14 +353,14 @@ const CaseStudyDetail = () => {
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {study.gallery.map((img: string, i: number) => (
-                                        <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative aspect-[16/9] cursor-zoom-in">
+                                        <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative h-80 bg-gray-50 flex justify-center items-center cursor-zoom-in">
                                             <img
                                                 src={img}
                                                 alt={`Gallery ${i + 1}`}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                                 onClick={() => window.open(img, '_blank')}
                                             />
-                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />
                                         </div>
                                     ))}
                                 </div>
@@ -519,20 +519,20 @@ const ServiceDetail = () => {
 
                 <div className="space-y-6">
                     {/* Main Featured Image */}
-                    <div className="h-80 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-md">
-                        <img src={demoImages[0]} alt="Service Demo" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
+                    <div className="h-80 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-md flex justify-center items-center">
+                        <img src={demoImages[0]} alt="Service Demo" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors pointer-events-none" />
                     </div>
 
                     {/* Smaller Grid */}
                     {demoImages.length > 1 && (
                         <div className="grid grid-cols-2 gap-6">
-                            <div className={`h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm ${!demoImages[2] ? 'col-span-2' : ''}`}>
-                                <img src={demoImages[1]} alt="Service Details" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div className={`h-40 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm flex justify-center items-center ${!demoImages[2] ? 'col-span-2' : ''}`}>
+                                <img src={demoImages[1]} alt="Service Details" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
                             </div>
                             {demoImages[2] && (
-                                <div className="h-40 bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm">
-                                    <img src={demoImages[2]} alt="Tech Stack" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="h-40 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm flex justify-center items-center">
+                                    <img src={demoImages[2]} alt="Tech Stack" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
                                 </div>
                             )}
                         </div>
@@ -684,8 +684,8 @@ const ProjectDetail = () => {
                 <span className="text-sm uppercase tracking-widest font-bold">{t('back')}</span>
             </button>
 
-            <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl">
-                <img src={project.image} alt={title} className="w-full h-[50vh] object-cover" />
+            <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
+                <img src={project.image} alt={title} className="max-w-full max-h-full object-contain" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -746,14 +746,14 @@ const ProjectDetail = () => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {project.gallery.map((img, i) => (
-                                    <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-sm relative aspect-[16/9] cursor-zoom-in">
+                                    <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-sm relative h-80 bg-gray-50 flex justify-center items-center cursor-zoom-in">
                                         <img
                                             src={img}
                                             alt={`Gallery ${i + 1}`}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                             onClick={() => window.open(img, '_blank')}
                                         />
-                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />
                                     </div>
                                 ))}
                             </div>
@@ -1852,7 +1852,7 @@ const MainContent = () => {
     const showNavbar = !location.pathname.startsWith('/admin');
 
     return (
-        <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-[#500000] selection:text-white overflow-x-hidden relative">
+        <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-[#500000] selection:text-white overflow-x-hidden relative scroll-smooth">
             <AmbientBackground />
 
             {showNavbar && <Navbar />}

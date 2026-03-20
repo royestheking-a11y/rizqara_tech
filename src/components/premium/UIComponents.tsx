@@ -2420,15 +2420,11 @@ export const AboutHero = () => {
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                            <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-white">
+                            <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white">
                                 <div className="text-sm font-black uppercase tracking-widest mb-1 opacity-80">{t('transparency')}</div>
                                 <div className="text-lg font-bold">{language === 'bn' ? 'উন্নত মানের ফলাফল নিশ্চিত করছি' : 'Ensuring High-Quality Results'}</div>
                             </div>
                         </div>
-                        
-                        {/* Decorative elements */}
-                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#500000] rounded-3xl -z-0 opacity-10 animate-pulse" />
-                        <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#00AEEF] rounded-3xl -z-0 opacity-10 animate-pulse" style={{ animationDelay: '1s' }} />
                     </motion.div>
                 </div>
             </div>
