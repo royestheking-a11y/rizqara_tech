@@ -8,7 +8,7 @@ import {
     Shield, Zap, MessageSquare, Briefcase,
     Server, ShieldCheck,
     Lock, User, ExternalLink, Share2, Search,
-    Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
+    TrendingUp, Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
@@ -29,7 +29,7 @@ import {
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
-    ServicesSkeleton, ProjectsSkeleton, AboutHero
+    ServicesSkeleton, ProjectsSkeleton, AboutHero, ThemeMusicPlayer
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
@@ -181,6 +181,20 @@ const CaseStudiesPage = () => {
                             <div className="p-8 flex flex-col flex-grow">
                                 <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#500000] transition-colors">{title}</h3>
                                 <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-grow">{desc}</p>
+                                
+                                {study.growthBefore && study.growthAfter && (
+                                    <div className="flex gap-3 mb-6">
+                                        <div className="flex-1 bg-gray-50 rounded-2xl p-4 border border-gray-100 group/item">
+                                            <div className="text-[8px] font-black uppercase text-gray-400 mb-1 tracking-widest">{language === 'bn' ? 'আগে' : 'Before'}</div>
+                                            <div className="text-sm font-black text-gray-300 group-hover/item:text-gray-400 transition-colors">{study.growthBefore}</div>
+                                        </div>
+                                        <div className="flex-1 bg-[#500000]/5 rounded-2xl p-4 border border-[#500000]/10 group/item">
+                                            <div className="text-[8px] font-black uppercase text-[#500000]/60 mb-1 tracking-widest">{language === 'bn' ? 'পরে' : 'After'}</div>
+                                            <div className="text-sm font-black text-[#500000]">{study.growthAfter}</div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="flex items-center text-[#500000] font-bold text-sm gap-2">
                                     <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Case Study'}</span>
                                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -279,6 +293,50 @@ const CaseStudyDetail = () => {
                     <p className="text-xl text-gray-600 leading-relaxed mb-12 font-light whitespace-pre-line">
                         {description}
                     </p>
+
+                    {study.growthBefore && study.growthAfter && (
+                        <div className="flex gap-6 mb-16">
+                            <motion.div 
+                                whileHover={{ scale: 1.02, y: -5 }}
+                                className="flex-1 bg-white border border-gray-100 rounded-[32px] p-8 relative overflow-hidden group shadow-2xl shadow-black/5 transition-all duration-300"
+                            >
+                                <div className="absolute -right-10 -bottom-10 opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 duration-1000 text-gray-900 z-0 pointer-events-none font-bold">
+                                    <Activity size={180} strokeWidth={1} />
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-4">
+                                        {language === 'bn' ? 'শুরুর অবস্থা' : 'Initial Status'}
+                                    </div>
+                                    <div className="text-5xl font-black text-gray-900">
+                                        {study.growthBefore}
+                                    </div>
+                                    <div className="mt-4 text-sm font-bold text-gray-400 uppercase tracking-widest opacity-60">
+                                        {language === 'bn' ? 'বেসলাইন মেট্রিক্স' : 'Baseline Metrics'}
+                                    </div>
+                                </div>
+                            </motion.div>
+                            <motion.div 
+                                whileHover={{ scale: 1.02, y: -5 }}
+                                className="flex-1 bg-gradient-to-br from-[#500000] to-[#1a0000] rounded-[32px] p-8 relative overflow-hidden group shadow-2xl shadow-red-900/30 border border-white/10 transition-all duration-300"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                <div className="absolute -right-10 -bottom-10 opacity-10 rotate-12 transition-transform group-hover:scale-110 duration-1000 text-white z-0 pointer-events-none">
+                                    <TrendingUp size={180} strokeWidth={1} />
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="text-xs font-black uppercase tracking-[0.2em] text-white/50 mb-4">
+                                        {language === 'bn' ? 'রিজকারা টেক প্রয়োগের পর' : 'Post Implementation'}
+                                    </div>
+                                    <div className="text-5xl font-black text-white">
+                                        {study.growthAfter}
+                                    </div>
+                                    <div className="mt-4 text-sm font-bold text-white/80 uppercase tracking-widest flex items-center gap-2">
+                                        <Check size={16} className="text-white" /> {language === 'bn' ? 'প্রমাণিত বৃদ্ধি' : 'Proven Growth'}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
 
                     <div className="pb-24">
                         {/* Problem Section */}
@@ -1041,6 +1099,44 @@ const CaseStudyShowcase = () => {
                             {desc}
                         </p>
 
+                        {activeStudy.growthBefore && activeStudy.growthAfter && (
+                            <div className="flex gap-4 mb-10">
+                                <motion.div 
+                                    whileHover={{ y: -5, scale: 1.02 }}
+                                    className="flex-1 bg-white border border-gray-100 rounded-3xl p-6 relative overflow-hidden group shadow-xl shadow-gray-200/50 transition-all duration-300"
+                                >
+                                    <div className="absolute -right-8 -bottom-8 opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 duration-700 text-gray-900 z-0 pointer-events-none font-bold">
+                                        <Activity size={140} strokeWidth={1} />
+                                    </div>
+                                    <div className="relative z-10">
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">
+                                            {language === 'bn' ? 'আগে বৃদ্ধি' : 'Growth Before'}
+                                        </div>
+                                        <div className="text-3xl font-black text-gray-900">
+                                            {activeStudy.growthBefore}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                                <motion.div 
+                                    whileHover={{ y: -5, scale: 1.02 }}
+                                    className="flex-1 bg-gradient-to-br from-[#500000] to-[#2a0000] border border-white/10 rounded-3xl p-6 relative overflow-hidden group shadow-2xl shadow-red-900/30 transition-all duration-300"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <div className="absolute -right-8 -bottom-8 opacity-10 rotate-12 transition-transform group-hover:scale-110 duration-700 text-white z-0 pointer-events-none">
+                                        <TrendingUp size={140} strokeWidth={1} />
+                                    </div>
+                                    <div className="relative z-10">
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">
+                                            {language === 'bn' ? 'আমাদের কাজের পরে' : 'After Our Work'}
+                                        </div>
+                                        <div className="text-3xl font-black text-white">
+                                            {activeStudy.growthAfter}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        )}
+
                         <div
                             onClick={() => navigate(`/case-studies/${getSlug(activeStudy.title)}`)}
                             className="flex items-center text-[#fbb03b] hover:text-[#f7931e] font-black text-lg gap-3 cursor-pointer group w-fit transition-all"
@@ -1055,9 +1151,182 @@ const CaseStudyShowcase = () => {
     );
 };
 
+// --- Footer ---
+
+const Footer = () => {
+    const { language, t, addMessage } = useData();
+    const navigate = useNavigate();
+
+    return (
+        <footer className="bg-gray-50 text-gray-900 pt-24 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
+
+            <div className="container mx-auto px-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+                    <div className="lg:col-span-2">
+                        <div className="flex items-center gap-3 mb-6">
+                            <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
+                        </div>
+                        <p className="text-gray-600 text-sm leading-relaxed mb-8 max-w-sm">
+                            {language === 'bn' ? "রিজকারা টেক একটি প্রিমিয়ার সফটওয়্যার ডেভেলপমেন্ট এজেন্সি যা এন্টারপ্রাইজ-গ্রেড সমাধান প্রদান করে।" : "Rizqara Tech is a premier software development company delivering enterprise-grade solutions."}
+                        </p>
+                        <div className="flex gap-4">
+                            {[
+                                { Icon: XLogo, link: 'https://x.com/Rizqaratech' },
+                                { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
+                                { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
+                                { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
+                                { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' }
+                            ].map(({ Icon, link }, i) => (
+                                <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
+                                    <Icon size={18} className="group-hover:scale-110 transition-transform" />
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 border-t border-gray-100 pt-8">
+                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <Shield size={14} />
+                                {language === 'bn' ? "নিরাপদ পেমেন্ট পদ্ধতি" : "Secure Payment Methods"}
+                            </h4>
+                            <div className="flex flex-wrap gap-3 max-w-xs">
+                                {paymentMethods.map((method: any, i) => (
+                                    <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
+                                        <img
+                                            src={method.src}
+                                            alt={method.name}
+                                            className={`max-h-full max-w-full transition-all duration-300 ${method.className || 'object-contain'}`}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('company')}</h3>
+                        <ul className="space-y-3 text-sm text-gray-600">
+                            {[
+                                { key: 'home', path: '/' },
+                                { key: 'about', path: '/about' },
+                                { key: 'careers', path: '/careers' },
+                                { key: 'contact', path: '/contact' }
+                            ].map(item => (
+                                <li key={item.key}>
+                                    <Link
+                                        to={item.path}
+                                        className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
+                                    >
+                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
+                                        {t(item.key as any)}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-8 border-t border-gray-100 pt-8">
+                            <div className="flex items-center gap-2 mb-6">
+                                <ShieldCheck size={16} className="text-[#500000]" />
+                                <h4 className="text-sm font-bold text-gray-900">{language === 'bn' ? 'স্বীকৃত:' : 'Recognized by:'}</h4>
+                            </div>
+                            <div
+                                className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative"
+                                style={{ backgroundColor: '#500000' }}
+                            >
+                                <div className="flex flex-col h-full justify-between relative z-10">
+                                    <div className="flex justify-between items-start">
+                                        <span className="text-[4px] font-black text-white tracking-[0.05em] uppercase leading-none opacity-80">Reviewed on</span>
+                                        <div className="flex gap-0.5">
+                                            {[1, 2, 3, 4, 5].map((_, i) => (
+                                                <Star key={i} size={14} fill="#FFD700" stroke="#FFD700" />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-center flex-1 py-0.5">
+                                        <img src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png" alt="Clutch" className="h-12 w-auto object-contain brightness-0 invert" />
+                                    </div>
+
+                                    <div className="text-[5px] font-black text-white tracking-[0.05em] uppercase text-right leading-none opacity-80">10 REVIEWS</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('solutions')}</h3>
+                        <ul className="space-y-3 text-sm text-gray-600">
+                            {[
+                                { key: 'services', path: '/services' },
+                                { key: 'projects', path: '/projects' },
+                                { key: 'caseStudies', path: '/case-studies' },
+                                { key: 'team', path: '/team' }
+                            ].map(item => (
+                                <li key={item.key}>
+                                    <Link
+                                        to={item.path}
+                                        className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
+                                    >
+                                        <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
+                                        {t(item.key as any)}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-8 border-t border-gray-100 pt-8 hidden lg:block opacity-0 pointer-events-none">
+                            <div className="h-40"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('newsletter')}</h3>
+                        <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            const form = e.target as HTMLFormElement;
+                            const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+                            try {
+                                // @ts-ignore
+                                await window.emailjs?.send(
+                                    (import.meta as any).env.VITE_EMAILJS_SERVICE_ID,
+                                    (import.meta as any).env.VITE_EMAILJS_SUBSCRIBE_TEMPLATE_ID,
+                                    { email }
+                                );
+                                addMessage({
+                                    name: 'Subscriber',
+                                    email: email,
+                                    subject: 'New Newsletter Subscriber',
+                                    message: 'User subscribed to newsletter',
+                                    type: 'Contact'
+                                });
+                                toast.success('Subscribed successfully!');
+                                form.reset();
+                            } catch (err) {
+                                console.error(err);
+                                toast.error('Failed to subscribe.');
+                            }
+                        }} className="flex flex-col gap-3">
+                            <input name="email" type="email" placeholder="Enter your email" required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000]" />
+                            <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div className="border-t border-gray-200 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                    <p>© {new Date().getFullYear()} Rizqara Tech. All rights reserved.</p>
+                    <div className="flex gap-6 mt-4 md:mt-0">
+                        <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
+                        <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
+                        <span onClick={() => navigate('/terms-of-service')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+};
+
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
-    const { services, projects, loading, language, t, addMessage } = useData();
+    const { services, projects, loading, language, t } = useData();
 
     if (loading) {
         return <HomeSkeleton />;
@@ -1374,171 +1643,6 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             <NoticeBar />
 
-            {/* 16. FULL FOOTER */}
-            <footer className="bg-gray-50 text-gray-900 pt-24 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
-
-                <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-                        <div className="lg:col-span-2">
-                            <div className="flex items-center gap-3 mb-6">
-                                <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
-                            </div>
-                            <p className="text-gray-600 text-sm leading-relaxed mb-8 max-w-sm">
-                                {language === 'bn' ? "রিজকারা টেক একটি প্রিমিয়ার সফটওয়্যার ডেভেলপমেন্ট এজেন্সি যা এন্টারপ্রাইজ-গ্রেড সমাধান প্রদান করে।" : "Rizqara Tech is a premier software development company delivering enterprise-grade solutions."}
-                            </p>
-                            <div className="flex gap-4">
-                                {[
-                                    { Icon: XLogo, link: 'https://x.com/Rizqaratech' },
-                                    { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
-                                    { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
-                                    { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
-                                    { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' }
-                                ].map(({ Icon, link }, i) => (
-                                    <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
-                                        <Icon size={18} className="group-hover:scale-110 transition-transform" />
-                                    </a>
-                                ))}
-                            </div>
-
-                            <div className="mt-8 border-t border-gray-100 pt-8">
-                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <Shield size={14} />
-                                    {language === 'bn' ? "নিরাপদ পেমেন্ট পদ্ধতি" : "Secure Payment Methods"}
-                                </h4>
-                                <div className="flex flex-wrap gap-3 max-w-xs">
-                                    {paymentMethods.map((method: any, i) => (
-                                        <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
-                                            <img
-                                                src={method.src}
-                                                alt={method.name}
-                                                className={`max-h-full max-w-full transition-all duration-300 ${method.className || 'object-contain'}`}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('company')}</h3>
-                            <ul className="space-y-3 text-sm text-gray-600">
-                                {[
-                                    { key: 'home', path: '/' },
-                                    { key: 'about', path: '/about' },
-                                    { key: 'careers', path: '/careers' },
-                                    { key: 'contact', path: '/contact' }
-                                ].map(item => (
-                                    <li key={item.key}>
-                                        <Link
-                                            to={item.path}
-                                            className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
-                                        >
-                                            <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
-                                            {t(item.key as any)}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="mt-8 border-t border-gray-100 pt-8">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <ShieldCheck size={16} className="text-[#500000]" />
-                                    <h4 className="text-sm font-bold text-gray-900">{language === 'bn' ? 'স্বীকৃত:' : 'Recognized by:'}</h4>
-                                </div>
-                                <div
-                                    className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative"
-                                    style={{ backgroundColor: '#500000' }}
-                                >
-                                    <div className="flex flex-col h-full justify-between relative z-10">
-                                        <div className="flex justify-between items-start">
-                                            <span className="text-[4px] font-black text-white tracking-[0.05em] uppercase leading-none opacity-80">Reviewed on</span>
-                                            <div className="flex gap-0.5">
-                                                {[1, 2, 3, 4, 5].map((_, i) => (
-                                                    <Star key={i} size={14} fill="#FFD700" stroke="#FFD700" />
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center justify-center flex-1 py-0.5">
-                                            <img src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png" alt="Clutch" className="h-12 w-auto object-contain brightness-0 invert" />
-                                        </div>
-
-                                        <div className="text-[5px] font-black text-white tracking-[0.05em] uppercase text-right leading-none opacity-80">10 REVIEWS</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('solutions')}</h3>
-                            <ul className="space-y-3 text-sm text-gray-600">
-                                {[
-                                    { key: 'services', path: '/services' },
-                                    { key: 'projects', path: '/projects' },
-                                    { key: 'caseStudies', path: '/case-studies' },
-                                    { key: 'team', path: '/team' }
-                                ].map(item => (
-                                    <li key={item.key}>
-                                        <Link
-                                            to={item.path}
-                                            className="hover:text-[#500000] cursor-pointer transition-colors flex items-center gap-2 group w-full"
-                                        >
-                                            <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#500000]" />
-                                            {t(item.key as any)}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="mt-8 border-t border-gray-100 pt-8 hidden lg:block opacity-0 pointer-events-none">
-                                <div className="h-40"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('newsletter')}</h3>
-                            <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
-                            <form onSubmit={async (e) => {
-                                e.preventDefault();
-                                const form = e.target as HTMLFormElement;
-                                const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-                                try {
-                                    // @ts-ignore
-                                    await window.emailjs?.send(
-                                        (import.meta as any).env.VITE_EMAILJS_SERVICE_ID,
-                                        (import.meta as any).env.VITE_EMAILJS_SUBSCRIBE_TEMPLATE_ID,
-                                        { email }
-                                    );
-                                    addMessage({
-                                        name: 'Subscriber',
-                                        email: email,
-                                        subject: 'New Newsletter Subscriber',
-                                        message: 'User subscribed to newsletter',
-                                        type: 'Contact'
-                                    });
-                                    toast.success('Subscribed successfully!');
-                                    form.reset();
-                                } catch (err) {
-                                    console.error(err);
-                                    toast.error('Failed to subscribe.');
-                                }
-                            }} className="flex flex-col gap-3">
-                                <input name="email" type="email" placeholder="Enter your email" required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000]" />
-                                <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div className="border-t border-gray-200 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                        <p>© {new Date().getFullYear()} Rizqara Tech. All rights reserved.</p>
-                        <div className="flex gap-6 mt-4 md:mt-0">
-                            <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
-                            <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
-                            <span onClick={() => navigate('/terms-of-service')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</span>
-                            <span onClick={() => navigate('/admin')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };
@@ -1912,6 +2016,7 @@ const MainContent = () => {
                             ) : (
                                 <div className="">
                                     <AboutHero />
+                                    <ThemeMusicPlayer />
                                     <JourneyRoadmap />
                                     <div className="mt-32">
                                         <SectionTitle title={t('meetOurTeam')} center />
@@ -1961,6 +2066,8 @@ const MainContent = () => {
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>
+
+            {!location.pathname.startsWith('/admin') && <Footer />}
 
             <RizqAIBot />
             {!location.pathname.startsWith('/admin') && <PromotionOverlay />}

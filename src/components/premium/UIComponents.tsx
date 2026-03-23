@@ -8,7 +8,8 @@ import {
     Rocket, Star, Crown,
     Layout, Monitor, Clock,
     Settings, Sliders, Play, User, Send, MapPin, Phone, Mail,
-    MessageCircle, Bot, Loader, Activity, PlayCircle, MessageSquare
+    MessageCircle, Bot, Loader, Activity, PlayCircle, MessageSquare,
+    Music, Pause, Volume2
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { getSlug } from '../../App';
@@ -2428,6 +2429,74 @@ export const AboutHero = () => {
                     </motion.div>
                 </div>
             </div>
+        </section>
+    );
+};
+
+// --- 12. THEME MUSIC PLAYER ---
+export const ThemeMusicPlayer = () => {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const { language } = useData();
+
+    const togglePlay = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+    return (
+        <section className="py-12 bg-gray-50/50">
+            <div className="container mx-auto px-6 text-left">
+                <div className="max-w-xl mx-auto bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg relative overflow-hidden transition-all duration-500 ${isPlaying ? 'bg-[#500000] scale-110' : 'bg-gray-200 text-gray-400'}`}>
+                            {isPlaying ? (
+                                <Music size={24} className="animate-bounce" />
+                            ) : (
+                                <Play size={24} />
+                            )}
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900 text-sm md:text-base">{language === 'bn' ? 'রিজকারা টেক থিম সং' : 'RizQara Tech Theme Song'}</h3>
+                            <div className="flex items-center gap-2">
+                                {isPlaying && <Volume2 size={12} className="text-[#500000] animate-pulse" />}
+                                <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest font-bold">
+                                    {isPlaying ? (language === 'bn' ? 'এখন বাজছে' : 'Now Playing') : (language === 'bn' ? 'আমাদের সঙ্গীত শুনুন' : "Listen to our vibe")}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={togglePlay}
+                        className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-md group ${isPlaying ? 'bg-[#500000] text-white hover:bg-[#3a0000] ring-4 ring-[#500000]/10' : 'bg-gray-100 text-gray-900 hover:bg-[#500000] hover:text-white'}`}
+                    >
+                        {isPlaying ? (
+                            <Pause size={28} fill="currentColor" />
+                        ) : (
+                            <Play size={28} className="ml-1" fill="currentColor" />
+                        )}
+                    </button>
+
+                    <audio
+                        ref={audioRef}
+                        src="/rizqara theme song.mp3"
+                        onEnded={() => setIsPlaying(false)}
+                    />
+                </div>
+            </div>
+            <style>{`
+                @keyframes music-bar {
+                    0%, 100% { transform: scaleY(0.5); }
+                    50% { transform: scaleY(1); }
+                }
+            `}</style>
         </section>
     );
 };

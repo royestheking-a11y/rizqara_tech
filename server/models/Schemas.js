@@ -150,7 +150,9 @@ const CaseStudySchema = new mongoose.Schema({
     features: [String],
     features_bn: [String],
     tech: [String],
-    gallery: [String]
+    gallery: [String],
+    growthBefore: String,
+    growthAfter: String
 }, { timestamps: true });
 
 const PromotionSchema = new mongoose.Schema({

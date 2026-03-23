@@ -126,6 +126,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             if (data.gallery_3) gallery.push(data.gallery_3);
             if (data.gallery_4) gallery.push(data.gallery_4);
             if (gallery.length > 0) data.gallery = gallery;
+            
+            // Handle Growth Before/After
+            if (data.growthBefore) data.growthBefore = data.growthBefore;
+            if (data.growthAfter) data.growthAfter = data.growthAfter;
 
             // Delete temp fields
             delete data.gallery_1;
@@ -949,6 +953,14 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 onUploadStart={() => setUploadingCount(p => p + 1)}
                                                 onUploadEnd={() => setUploadingCount(p => p - 1)}
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-gray-100 mt-4">
+                                        <h4 className="font-bold text-gray-800 mb-4">Business Growth Metrics</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <AdminInput label="Growth Before (e.g. 12% Monthly)" name="growthBefore" defaultValue={editingItem?.growthBefore} placeholder="12% Monthly" />
+                                            <AdminInput label="Growth After (e.g. 85% Monthly)" name="growthAfter" defaultValue={editingItem?.growthAfter} placeholder="85% Monthly" />
                                         </div>
                                     </div>
 

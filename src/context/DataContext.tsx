@@ -160,6 +160,8 @@ export type CaseStudy = {
   features_bn?: string[];
   tech: string[];
   gallery?: string[];
+  growthBefore?: string; // e.g. "12% Monthly"
+  growthAfter?: string;  // e.g. "85% Monthly"
 };
 
 export type Promotion = {
