@@ -6,21 +6,21 @@ export const techStack = [
     },
     {
         name: "Adobe XD",
-        logo: <img src="https://cdn.simpleicons.org/adobexd/470137" alt="Adobe XD" className="h-full w-auto" />
+        logo: <img src="https://skillicons.dev/icons?i=xd" alt="Adobe XD" className="h-full w-auto" />
     },
     {
         name: "Illustrator",
-        logo: <img src="https://cdn.simpleicons.org/adobeillustrator/FF9A00" alt="Illustrator" className="h-full w-auto" />
+        logo: <img src="https://skillicons.dev/icons?i=ai" alt="Illustrator" className="h-full w-auto" />
     },
     {
         name: "Photoshop",
-        logo: <img src="https://cdn.simpleicons.org/adobephotoshop/31A8FF" alt="Photoshop" className="h-full w-auto" />
+        logo: <img src="https://skillicons.dev/icons?i=ps" alt="Photoshop" className="h-full w-auto" />
     },
 
     // --- DEV ---
     {
         name: "VS Code",
-        logo: <img src="https://cdn.simpleicons.org/visualstudiocode/007ACC" alt="VS Code" className="h-full w-auto" />
+        logo: <img src="https://skillicons.dev/icons?i=vscode" alt="VS Code" className="h-full w-auto" />
     },
     {
         name: "React",
@@ -80,7 +80,7 @@ export const techStack = [
     },
     {
         name: "AWS",
-        logo: <img src="https://cdn.simpleicons.org/amazonaws/232F3E" alt="AWS" className="h-full w-auto" />
+        logo: <img src="https://skillicons.dev/icons?i=aws" alt="AWS" className="h-full w-auto" />
     },
     {
         name: "Render",
@@ -98,11 +98,11 @@ export const techStack = [
     // --- AI ---
     {
         name: "OpenAI",
-        logo: <img src="https://cdn.simpleicons.org/openai/412991" alt="OpenAI" className="h-full w-auto" />
+        logo: <img src="https://api.svgl.app/svg/openai.svg" alt="OpenAI" className="h-full w-auto" />
     },
     {
         name: "ChatGPT",
-        logo: <img src="https://cdn.simpleicons.org/openai/00A67E" alt="ChatGPT" className="h-full w-auto" />
+        logo: <img src="https://api.svgl.app/svg/chatgpt.svg" alt="ChatGPT" className="h-full w-auto" />
     },
     {
         name: "LangChain",
@@ -110,7 +110,7 @@ export const techStack = [
     },
     {
         name: "Gemini",
-        logo: <img src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642641/rizqaratech/tech_stack/google_gemini_logo.png" alt="Gemini" className="h-full w-auto" />
+        logo: <img src="https://api.svgl.app/svg/google-gemini.svg" alt="Gemini" className="h-full w-auto" />
     },
     {
         name: "Claude",
