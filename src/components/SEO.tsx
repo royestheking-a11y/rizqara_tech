@@ -20,7 +20,8 @@ export const SEO: React.FC<SEOProps> = ({
     type = 'website',
     schema
 }) => {
-    const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`; // Auto-append brand if missing
+    // Optimization: More concise brand tagline
+    const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`;
     
     // Default Organization Schema
     const defaultSchema = {
@@ -30,10 +31,11 @@ export const SEO: React.FC<SEOProps> = ({
         "url": "https://rizqara.tech",
         "logo": "https://rizqara.tech/logo.png",
         "sameAs": [
-            "https://facebook.com/rizqaratech",
+            "https://facebook.com/rizqaratechology/",
             "https://twitter.com/rizqaratech",
             "https://instagram.com/rizqaratech",
-            "https://linkedin.com/company/rizqaratech",
+            "https://linkedin.com/company/rizqara-tech",
+            "https://www.youtube.com/@rizqaratech", // Added YouTube
             "https://medium.com/@rizqaratech"
         ]
     };
@@ -45,6 +47,9 @@ export const SEO: React.FC<SEOProps> = ({
             <meta name="description" content={description} />
             {keywords && <meta name="keywords" content={keywords} />}
             {canonical && <link rel="canonical" href={canonical} />}
+            
+            {/* Self-referencing Hreflang for SEO */}
+            <link rel="alternate" hrefLang="en" href={canonical || "https://rizqara.tech/"} />
 
             {/* Open Graph / Facebook */}
             <meta property="og:type" content={type} />

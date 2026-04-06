@@ -4,7 +4,7 @@ import {
     Menu, X, ChevronRight, Check,
     Code2, Palette, Globe, Smartphone, BarChart, Layout,
     ArrowRight, Star,
-    Linkedin, Instagram, Facebook,
+    Linkedin, Instagram, Facebook, Youtube,
     Shield, Zap, MessageSquare, Briefcase,
     Server, ShieldCheck,
     Lock, User, ExternalLink, Share2, Search,
@@ -170,7 +170,7 @@ const CaseStudiesPage = () => {
                             className="group bg-white rounded-[40px] border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-700 cursor-pointer overflow-hidden flex flex-col h-full active:scale-[0.98]"
                         >
                             <div className="h-64 overflow-hidden relative">
-                                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="absolute top-4 left-4">
                                     <span className="px-3 py-1 bg-white/95 backdrop-blur rounded-full text-[10px] font-black uppercase tracking-widest text-[#500000] shadow-sm">
@@ -280,7 +280,7 @@ const CaseStudyDetail = () => {
             </button>
 
             <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
-                <img src={study.image} alt={title} className="max-w-full max-h-full object-contain" />
+                <img src={study.image} alt={title} className="max-w-full max-h-full object-contain" loading="lazy" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -339,12 +339,11 @@ const CaseStudyDetail = () => {
                     )}
 
                     <div className="pb-24">
-                        {/* Problem Section */}
                         <div className="mb-40">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
                                 <Activity className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'প্রধান সমস্যা' : 'The Challenge'}
-                            </h3>
+                            </h2>
                             <div className="p-8 bg-gray-50 rounded-2xl border border-gray-100 text-lg text-gray-700 leading-relaxed shadow-sm whitespace-pre-line">
                                 {problem}
                             </div>
@@ -352,10 +351,10 @@ const CaseStudyDetail = () => {
 
                         {/* Solution Section */}
                         <div className="pt-20 mb-40">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
                                 <Cpu className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'সমাধান এবং কৌশল' : 'Our Solution'}
-                            </h3>
+                            </h2>
                             <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-md text-lg text-gray-700 leading-relaxed whitespace-pre-line">
                                 {solution}
                             </div>
@@ -363,10 +362,10 @@ const CaseStudyDetail = () => {
 
                         {/* Impact Section */}
                         <div className="pt-20 mb-40">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
                                 <Zap className="text-[#500000]" size={24} />
                                 {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
-                            </h3>
+                            </h2>
                             <div className="p-8 bg-[#500000]/5 rounded-2xl border border-[#500000]/10 text-lg text-gray-700 leading-relaxed shadow-sm whitespace-pre-line">
                                 {impact}
                             </div>
@@ -417,6 +416,7 @@ const CaseStudyDetail = () => {
                                                 alt={`Gallery ${i + 1}`}
                                                 className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                                 onClick={() => window.open(img, '_blank')}
+                                                loading="lazy"
                                             />
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />
                                         </div>
@@ -556,7 +556,7 @@ const ServiceDetail = () => {
 
                     <div className="space-y-8">
                         <div className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><Briefcase size={20} className="text-white bg-[#500000] rounded-full p-0.5" /> Capabilities</h3>
+                            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><Briefcase size={20} className="text-white bg-[#500000] rounded-full p-0.5" /> Capabilities</h2>
                             <ul className="space-y-3 text-gray-600">
                                 {(capabilities || [details]).map((cap, i) => (
                                     <li key={i} className="flex items-start gap-2"><Check size={16} className="text-green-600 mt-1 shrink-0" /> {cap}</li>
@@ -565,7 +565,7 @@ const ServiceDetail = () => {
                         </div>
 
                         <div className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><Zap size={20} className="text-white bg-[#500000] rounded-full p-0.5" /> Our Process</h3>
+                            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><Zap size={20} className="text-white bg-[#500000] rounded-full p-0.5" /> Our Process</h2>
                             <ul className="space-y-3 text-gray-600">
                                 {(process || ["Discovery", "Design", "Development", "Deployment"]).map((step, i) => (
                                     <li key={i} className="flex items-start gap-2"><Check size={16} className="text-green-600 mt-1 shrink-0" /> {step}</li>
@@ -578,7 +578,7 @@ const ServiceDetail = () => {
                 <div className="space-y-6">
                     {/* Main Featured Image */}
                     <div className="h-80 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-md flex justify-center items-center">
-                        <img src={demoImages[0]} alt="Service Demo" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
+                        <img src={demoImages[0]} alt="Service Demo" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors pointer-events-none" />
                     </div>
 
@@ -586,11 +586,11 @@ const ServiceDetail = () => {
                     {demoImages.length > 1 && (
                         <div className="grid grid-cols-2 gap-6">
                             <div className={`h-40 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm flex justify-center items-center ${!demoImages[2] ? 'col-span-2' : ''}`}>
-                                <img src={demoImages[1]} alt="Service Details" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
+                                <img src={demoImages[1]} alt="Service Details" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                             </div>
                             {demoImages[2] && (
                                 <div className="h-40 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-sm flex justify-center items-center">
-                                    <img src={demoImages[2]} alt="Tech Stack" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
+                                    <img src={demoImages[2]} alt="Tech Stack" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                                 </div>
                             )}
                         </div>
@@ -626,7 +626,7 @@ const ServiceDetail = () => {
                                 }}
                             >
                                 <div className="aspect-video overflow-hidden relative">
-                                    <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                                     <div className="absolute top-4 left-4">
                                         <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[10px] font-bold text-[#500000] uppercase rounded-full shadow-sm">
                                             {language === 'bn' ? (project.category_bn || project.category) : project.category}
@@ -743,7 +743,7 @@ const ProjectDetail = () => {
             </button>
 
             <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
-                <img src={project.image} alt={title} className="max-w-full max-h-full object-contain" />
+                <img src={project.image} alt={title} className="max-w-full max-h-full object-contain" loading="lazy" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -770,7 +770,7 @@ const ProjectDetail = () => {
 
                     {Array.isArray(project.features) && project.features.length > 0 && (
                         <div className="mb-16">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}</h3>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'মূল বৈশিষ্ট্য' : 'Key Features'}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {(language === 'bn' && project.features_bn && project.features_bn.length > 0 ? project.features_bn : (project.features || [])).map((feature: string, i: number) => (
                                     <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
@@ -786,7 +786,7 @@ const ProjectDetail = () => {
 
                     {Array.isArray(project.tech) && project.tech.length > 0 && (
                         <div className="mb-16">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'ব্যবহৃত প্রযুক্তি' : 'Technologies Used'}</h3>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6">{language === 'bn' ? 'ব্যবহৃত প্রযুক্তি' : 'Technologies Used'}</h2>
                             <div className="flex flex-wrap gap-3">
                                 {project.tech.map((t: string, i: number) => (
                                     <div key={i} className="px-6 py-3 rounded-2xl bg-gray-50 border border-gray-100 text-[#500000] font-black text-xs uppercase tracking-widest shadow-sm transition-all hover:bg-white hover:shadow-md">
@@ -810,6 +810,7 @@ const ProjectDetail = () => {
                                             alt={`Gallery ${i + 1}`}
                                             className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                             onClick={() => window.open(img, '_blank')}
+                                            loading="lazy"
                                         />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />
                                     </div>
@@ -878,7 +879,7 @@ const ProjectDetail = () => {
                                 }}
                             >
                                 <div className="aspect-video overflow-hidden">
-                                    <img src={p.image} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <img src={p.image} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                                 </div>
                                 <div className="p-6">
                                     <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#500000] transition-colors">
@@ -1176,6 +1177,7 @@ const Footer = () => {
                                 { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
                                 { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
                                 { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
+                                { Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' },
                                 { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' }
                             ].map(({ Icon, link }, i) => (
                                 <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
@@ -1355,9 +1357,9 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 1. HERO CAROUSEL */}
             <SEO
-                title="RizQara Tech | Best Software & AI Solutions Company in Bangladesh"
-                description="RizQara Tech: The best software company in Bangladesh. Premium web development, AI solutions, mobile apps, and UI/UX design engineered for performance."
-                keywords="RizQara Tech, Rizq, Rizq Tech, Rizq Ara, software company Bangladesh, software development company in Dhaka, best software company in Bangladesh, AI software solutions BD, mobile app development Bangladesh"
+                title="RizQara Tech | Premium Software & AI Solutions in BD"
+                description="RizQara Tech: The best software & AI company in Bangladesh. Premium web, mobile apps, and UI/UX design engineered for global performance."
+                keywords="RizQara Tech, software company Bangladesh, best software company in Bangladesh, AI solutions BD, web development Dhaka"
                 canonical="https://rizqara.tech/"
             />
             <HeroCarousel onNavigate={onNavigate} />
@@ -1542,6 +1544,47 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     subtitle={language === 'bn' ? "আমরা আপনার ব্যবসার জন্য সর্বোত্তম সমাধান প্রদান করি।" : "We deliver tailored excellence to drive your business forward."}
                 />
                 <PremiumComparison onNavigate={onNavigate} />
+            </section>
+
+            {/* 7.5. OUR METHODOLOGY (Content Expansion) */}
+            <section className="container mx-auto px-6 py-24 bg-white">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 className="text-4xl font-black text-[#500000] mb-8 uppercase tracking-tight">
+                            {language === 'bn' ? 'আমাদের কার্যপদ্ধতি' : 'Our Engineering Methodology'}
+                        </h2>
+                        <div className="space-y-6 text-gray-600 leading-relaxed text-lg font-light">
+                            <p>
+                                {language === 'bn' 
+                                    ? 'রিজকারা টেকে, আমরা কেবল কোড করি না; আমরা সমাধান তৈরি করি যা ব্যবসার বৃদ্ধিতে সহায়তা করে। আমাদের পদ্ধতিটি চটপটে উন্নয়ন (Agile Development) এবং ব্যবহারকারী-কেন্দ্রিক ডিজাইনের (User-Centric Design) উপর ভিত্তি করে তৈরি।' 
+                                    : 'At RizQara Tech, we don’t just write code; we engineer solutions that drive business outcomes. Our methodology is rooted in Agile principles, combines cutting-edge AI integration with human-centric design, and ensures every line of code serves a strategic purpose.'}
+                            </p>
+                            <p>
+                                {language === 'bn'
+                                    ? 'আমাদের প্রতিটি প্রজেক্ট গভীর গবেষণার মাধ্যমে শুরু হয়, যেখানে আমরা আপনার ব্যবসার লক্ষ্য এবং চ্যালেঞ্জগুলো বোঝার চেষ্টা করি। এরপর আমরা একটি প্রোটোটাইপ তৈরি করি এবং ধাপে ধাপে পূর্ণাঙ্গ সফটওয়্যার ডেভেলপ করি।'
+                                    : 'From discovery and strategic planning to rapid prototyping and cross-platform deployment, our end-to-end delivery pipeline is designed for speed, security, and scalability. We leverage the latest tech stacks to ensure your digital products are future-proof.'}
+                            </p>
+                        </div>
+                        <div className="mt-10 grid grid-cols-2 gap-6">
+                            <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                <h3 className="font-bold text-gray-900 mb-2">{language === 'bn' ? 'কাস্টম সলিউশন' : 'Custom Solutions'}</h3>
+                                <p className="text-sm text-gray-500">{language === 'bn' ? 'প্রতিটি ব্যবসার জন্য অনন্য ডিজিটাল অভিজ্ঞতা।' : 'Unique digital experiences tailored for every business niche.'}</p>
+                            </div>
+                            <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                <h3 className="font-bold text-gray-900 mb-2">{language === 'bn' ? 'এআই ইন্টিগ্রেশন' : 'AI-Native Approach'}</h3>
+                                <p className="text-sm text-gray-500">{language === 'bn' ? 'আধুনিক কৃত্রিম বুদ্ধিমত্তার মাধ্যমে অটোমেশন।' : 'Integrating smart automation to optimize operational workflows.'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="relative rounded-[40px] overflow-hidden shadow-2xl border-8 border-gray-50">
+                        <img 
+                            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" 
+                            alt="Our Methodology" 
+                            className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#500000]/20 to-transparent"></div>
+                    </div>
+                </div>
             </section>
 
             {/* 8. NEW: VIDEOS SECTION */}

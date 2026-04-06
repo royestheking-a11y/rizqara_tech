@@ -858,7 +858,7 @@ export const LatestBlogs = ({ onNavigate }: any) => {
 
                 return (
                     <div key={blog.id} onClick={() => onNavigate('BlogDetail', getSlug(blog.title))} className="flex gap-6 items-start group cursor-pointer bg-white p-4 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
-                        <img src={blog.image} alt={title} className="w-32 h-32 rounded-xl object-cover shadow-sm" />
+                        <img src={blog.image} alt={title} className="w-32 h-32 rounded-xl object-cover shadow-sm" loading="lazy" />
                         <div>
                             <div className="text-xs text-white bg-[#500000] inline-block px-2 py-0.5 rounded-md font-bold mb-2 shadow-sm">{blog.date}</div>
                             <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#500000] leading-tight transition-colors">{title}</h3>
@@ -901,7 +901,7 @@ export const TestimonialSlider = () => {
                     <div className="flex flex-col items-center">
                         {reviews[index]?.image && (
                             <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-2 border-[#500000]/10 shadow-md">
-                                <img src={reviews[index].image} alt={reviews[index].name} className="w-full h-full object-cover" />
+                                <img src={reviews[index].image} alt={reviews[index].name} className="w-full h-full object-cover" loading="lazy" />
                             </div>
                         )}
                         <h4 className="text-gray-900 font-bold text-lg">{language === 'bn' ? (reviews[index]?.name_bn || reviews[index]?.name) : reviews[index]?.name}</h4>
@@ -1111,7 +1111,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative h-full min-h-[600px] rounded-[3rem] overflow-hidden border border-gray-200 shadow-2xl group">
-                    <img src={data.image} alt={data.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                    <img src={data.image} alt={data.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                     <div className="absolute bottom-0 left-0 p-12">
@@ -1498,7 +1498,7 @@ export const BuildPage = ({ onNavigate, initialConfig }: { onNavigate: (page: st
 
                         {relevantProject ? (
                             <>
-                                <img src={relevantProject.image} alt="Preview" className="w-full h-full object-cover transition-all duration-700 hover:scale-105" />
+                                <img src={relevantProject.image} alt="Preview" className="w-full h-full object-cover transition-all duration-700 hover:scale-105" loading="lazy" />
 
                                 {/* Bottom Info Panel */}
                                 <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur-xl border border-gray-200 rounded-2xl flex flex-col md:flex-row gap-6 items-center justify-between shadow-lg">
@@ -2371,7 +2371,7 @@ export const AboutHero = () => {
                                     { name: 'arzu', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457390/rizqara/team/arzu_v2.jpg' }
                                 ].map(member => (
                                     <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md">
-                                        <img src={member.url} alt={member.name} className="w-full h-full object-cover" />
+                                        <img src={member.url} alt={member.name} className="w-full h-full object-cover" loading="lazy" />
                                     </div>
                                 ))}
                                 <div className="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-[#500000] font-bold text-xs shadow-md">
