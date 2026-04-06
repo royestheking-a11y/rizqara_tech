@@ -2368,7 +2368,7 @@ export const AboutHero = () => {
                                     { name: 'sanju', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg' },
                                     { name: 'sami', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg' },
                                     { name: 'rojina', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457387/rizqara/team/rojina_v2.jpg' },
-                                    { name: 'irin', url: '/irin.jpg' }
+                                    { name: 'arzu', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457390/rizqara/team/arzu_v2.jpg' }
                                 ].map(member => (
                                     <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md">
                                         <img src={member.url} alt={member.name} className="w-full h-full object-cover" />
@@ -2397,10 +2397,10 @@ export const AboutHero = () => {
                                 alt="RizQara Tech Team" 
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                            <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white">
-                                <div className="text-sm font-black uppercase tracking-widest mb-1 opacity-80">{t('transparency')}</div>
-                                <div className="text-lg font-bold">{language === 'bn' ? 'উন্নত মানের ফলাফল নিশ্চিত করছি' : 'Ensuring High-Quality Results'}</div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                            <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 p-4 md:p-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl text-white shadow-2xl transition-all duration-300">
+                                <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-2 opacity-70">{t('transparency')}</div>
+                                <div className="text-sm md:text-xl font-black leading-tight">{language === 'bn' ? 'উন্নত মানের ফলাফল নিশ্চিত করছি' : 'Ensuring High-Quality Results'}</div>
                             </div>
                         </div>
                     </motion.div>

@@ -462,14 +462,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...msg
     };
 
-    // Create via POST for efficiency, or use updateData fallback
-    const updated = [newMessage, ...messages];
-    setMessages(updated);
+    // Optimistic local update
+    setMessages(prev => [newMessage, ...prev]);
 
-    // Using generic updateData for consistency with "bulk" behavior expected by current implementation
-    // Ideally: await fetch(`${API_URL}/messages`, { method: 'POST', body: JSON.stringify(newMessage) });
-    // But updateData handles the state sync.
-    updateData('messages', updated);
+    // SAFE Individual POST (Append only)
+    try {
+      const response = await fetch(`${API_URL}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMessage),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Server Error');
+      }
+    } catch (error: any) {
+      console.error('Failed to send message:', error);
+      toast.error('Failed to send message officially, but it was stored in your session.');
+    }
   };
 
   const addCareerApplication = async (app: Omit<CareerApplication, 'id' | 'date' | 'status'>) => {
@@ -479,18 +490,26 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       status: 'Pending',
       ...app
     };
-    const updated = [newApp, ...careerApplications];
-    setCareerApplications(updated);
-    // Note: careerApplications route needs to be added to server if not present in initial list! 
-    // Wait, previous schemas had 10 items. careerApplications wasn't one of them?
-    // Checking schemas...
-    // Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion.
-    // CareerApplication is missing from Schemas!
-    // I need to add it.
 
-    // For now, just update local state to avoid crashing, but it won't persist to DB unless I add schema.
-    // I will add schema in next step.
-    updateData('careerApplications', updated, true);
+    // Optimistic local update
+    setCareerApplications(prev => [newApp, ...prev]);
+
+    // SAFE Individual POST (Append only)
+    try {
+      const response = await fetch(`${API_URL}/careerApplications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newApp),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Server Error');
+      }
+    } catch (error: any) {
+      console.error('Failed to submit application:', error);
+      toast.error('Failed to submit application officially, but it was stored in your session.');
+    }
   };
 
   const deleteMessage = (id: string) => {
