@@ -337,7 +337,7 @@ export const CareersPage: React.FC<{ onNavigate?: (page: string, id?: string) =>
     return (
         <div className="container mx-auto px-6 py-32">
             <PageHeader
-                title={language === 'bn' ? 'টিমে যোগ দিন' : "Join the Team"}
+                title={language === 'bn' ? 'টিমে যোগ দিন' : "Join Our Team"}
                 subtitle={language === 'bn' ? 'আমরা ভবিষ্যৎ গড়তে আমাদের সাহায্য করার জন্য উৎসাহী ব্যক্তিদের খুঁজছি।' : "We are looking for passionate individuals to help us build the future."}
             />
 
@@ -626,20 +626,20 @@ export const TeamSection = () => {
         {
             role: "Executive Leadership",
             members: [
-                { name: "Pritom Sarker", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png", bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
+                { name: "Pritom Sarker", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457382/rizqara/team/pritom_v2.jpg", bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
             ]
         },
         {
             role: "Management",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "অপারেশন ম্যানেজার" : "Operations Manager", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." }
+                { name: "Sanju Monowara", position: language === 'bn' ? "অপারেশন ম্যানেজার" : "Operations Manager", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." }
             ]
         },
         {
             role: "Engineering & Design",
             members: [
-                { name: "Pritom Sarker", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
-                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718534/Gemini_Generated_Image_sypwsnsypwsnsypw_bajvm8.png" },
+                { name: "Safayat Hossen Alif", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
+                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg" },
                 { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716768/Gemini_Generated_Image_zdffldzdffldzdff_okx6rf.png" },
                 { name: "Aurangzeb Sunny", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
                 { name: "Nasim Hoseini", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
@@ -648,8 +648,8 @@ export const TeamSection = () => {
         {
             role: "Growth & Marketing",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718157/Gemini_Generated_Image_hvtfh4hvtfh4hvtf_dg2s3o.png" },
-                { name: "Arzu Hasanova", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
+                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "/sanju.jpg" },
+                { name: "Arzu Hasanova", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457390/rizqara/team/arzu_v2.jpg" }
             ]
         }
     ];

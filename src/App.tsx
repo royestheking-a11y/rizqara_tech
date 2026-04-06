@@ -29,7 +29,7 @@ import {
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
-    ServicesSkeleton, ProjectsSkeleton, AboutHero, ThemeMusicPlayer
+    ServicesSkeleton, ProjectsSkeleton, AboutHero
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
@@ -48,9 +48,9 @@ const paymentMethods = [
     { name: 'Payoneer', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642638/rizqaratech/payment_methods/payoneer-logo-payoneer-icon-transparent-free-png.webp', className: 'p-1' },
     { name: 'Google Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642631/rizqaratech/payment_methods/GooglePayLogo.width-500.format-webp.webp', className: 'p-1' },
     { name: 'Redot Pay', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642639/rizqaratech/payment_methods/redot_pay.png', className: 'p-1' },
-    { name: 'Bkash', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642630/rizqaratech/payment_methods/Bkash.jpg', className: 'object-cover w-full h-full' },
-    { name: 'Nagad', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642632/rizqaratech/payment_methods/Nagad.jpg', className: 'p-1 object-contain' },
-    { name: 'Rocket', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642633/rizqaratech/payment_methods/Rocket.png', className: 'object-cover w-full h-full scale-105' },
+    { name: 'Bkash', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642630/rizqaratech/payment_methods/Bkash.jpg', className: 'p-1.5 object-contain' },
+    { name: 'Nagad', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642632/rizqaratech/payment_methods/Nagad.jpg', className: 'p-3 object-contain' },
+    { name: 'Rocket', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642633/rizqaratech/payment_methods/Rocket.png', className: 'object-cover w-full h-full' },
 ];
 
 // --- Premium UI Components (Internal) ---
@@ -1612,7 +1612,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 </div>
                 <AutoScrollCarousel items={
                     techStack.map((tech, i) => (
-                        <div key={i} className="flex flex-col items-center gap-3 opacity-60 hover:opacity-100 transition-opacity px-6 grayscale hover:grayscale-0 duration-500 shrink-0 min-w-[100px] group cursor-pointer" title={tech.name}>
+                        <div key={i} className="flex flex-col items-center gap-3 transition-opacity px-6 duration-500 shrink-0 min-w-[100px] group cursor-pointer" title={tech.name}>
                             <div className="h-12 w-auto flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
                                 {tech.logo}
                             </div>
@@ -2015,8 +2015,7 @@ const MainContent = () => {
                                 <AboutSkeleton />
                             ) : (
                                 <div className="">
-                                    <AboutHero />
-                                    <ThemeMusicPlayer />
+                                     <AboutHero />
                                     <JourneyRoadmap />
                                     <div className="mt-32">
                                         <SectionTitle title={t('meetOurTeam')} center />

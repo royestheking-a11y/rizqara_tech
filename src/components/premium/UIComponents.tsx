@@ -1010,7 +1010,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "SEO & Digital Marketing",
                 "Cloud Infrastructure"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682126/rizqara/why_choose_us/end_to_end.png"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457371/rizqara/why_choose_us/end_to_end_v2.png"
         },
         "performance": {
             title: language === 'bn' ? 'পারফরম্যান্স, স্কেল এবং নিরাপত্তার জন্য তৈরি' : "Built for Performance, Scale & Security",
@@ -1028,7 +1028,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Advanced Security Protocols",
                 "Performance Optimization"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682128/rizqara/why_choose_us/performance.png"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457373/rizqara/why_choose_us/performance_v2.png"
         },
         "transparency": {
             title: language === 'bn' ? 'স্বচ্ছ প্রক্রিয়া এবং ডেডিকেটেড টিম' : "Transparent Process & Dedicated Team",
@@ -1046,7 +1046,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Clear Timelines",
                 "No Hidden Costs"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682129/rizqara/why_choose_us/transparency.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457374/rizqara/why_choose_us/transparency_v2.png"
         },
         "partnership": {
             title: language === 'bn' ? 'দীর্ঘমেয়াদী অংশীদারিত্ব, শুধুমাত্র ডেলিভারি নয়' : "Long-Term Partnership, Not Just Delivery",
@@ -1064,7 +1064,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Feature Enhancements",
                 "Business Consultation"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1773682131/rizqara/why_choose_us/partnership.jpg"
+            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457376/rizqara/why_choose_us/partnership_v2.png"
         }
     };
 
@@ -1783,23 +1783,23 @@ export const ContactFormWithMap = () => {
 // --- RizqAI Chatbot ---
 export const RizqAIBot = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { language, services, jobs, projects } = useData();
-    const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link', actionLink?: string, actionLabel?: string }[]>([
+    const { language, services, projects, reviews, caseStudies, addMessage } = useData();
+    const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link' | 'summary', actionLink?: string, actionLabel?: string }[]>([
         { id: 1, text: language === 'bn' ? 'হ্যালো! আমি RizqAI। আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?' : "Hello! I'm RizqAI. How can I help you build your digital product today?", sender: 'bot', type: 'text' }
     ]);
     const [inputText, setInputText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
-    const [chatState, setChatState] = useState<'idle' | 'collecting_requirements'>('idle');
-    const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Local Team Data
-    const teamData = [
-        { name: "Ahmed Rizq", role: "Chairman", bio: "Visionary leader with 20+ years in tech innovation." },
-        { name: "Sarah Chen", role: "CEO", bio: "Driving global strategy and operational excellence." },
-        { name: "Michael Ross", role: "Operations Manager", bio: "Ensuring seamless delivery across all projects." },
-        { name: "David Kim", role: "Lead Developer", bio: "Expert in full-stack architecture." },
-        { name: "Elena Rodriguez", role: "Senior UI/UX Designer", bio: "Crafting intuitive and beautiful user experiences." }
-    ];
+    // Lead Generation State Machine
+    const [chatState, setChatState] = useState<'idle' | 'collecting_name' | 'collecting_email' | 'collecting_phone' | 'collecting_reqs' | 'complete'>('idle');
+    const [leadData, setLeadData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        requirements: ''
+    });
+
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1809,147 +1809,106 @@ export const RizqAIBot = () => {
         if (isOpen) {
             scrollToBottom();
         }
-    }, [messages, isOpen]);
+    }, [messages, isOpen, isTyping]);
 
     const simulateAIResponse = (userText: string) => {
         setIsTyping(true);
         setTimeout(() => {
-            // Default Fallback (Updated dynamically below)
-            let reply = language === 'bn'
-                ? "আমি দুঃখিত, আমি ঠিক বুঝতে পারছি না। আপনি কি নির্দিষ্ট কিছু খুঁজছেন? আপনি আমাদের সাথে সরাসরি WhatsApp-এ কথা বলতে পারেন।"
-                : "I didn't quite catch that. Could you ask about our services, team, or projects? Or chat with us on WhatsApp.";
-            let type: 'text' | 'button' | 'link' = 'text';
+            const lowerText = userText.toLowerCase();
+            let reply = "";
+            let type: 'text' | 'button' | 'link' | 'summary' = 'text';
             let actionLink = '';
             let actionLabel = '';
 
-            const lowerText = userText.toLowerCase();
-
-            // --- 0. PRIORITY: ACTIVE CONVERSATION FLOW ---
-            if (chatState === 'collecting_requirements') {
+            // 1. LEAD COLLECTION FLOW
+            if (chatState === 'collecting_name') {
+                setLeadData(prev => ({ ...prev, name: userText }));
                 reply = language === 'bn'
-                    ? "ধন্যবাদ! আপনার প্রয়োজনীয়তা নোট করা হয়েছে। একটি বিস্তারিত কোট পেতে আমাদের টিমের সাথে এই তথ্যগুলি WhatsApp-এ শেয়ার করুন।"
-                    : "Thanks! I've noted your requirements. Based on this, I recommend discussing the details directly with our team on WhatsApp for a custom quote.";
-                type = 'button';
-                actionLabel = "Continue to WhatsApp";
-                actionLink = "https://wa.link/bx60tv";
-                setChatState('idle'); // Reset state
+                    ? `দারুণ, ${userText}! আপনার ইমেল ঠিকানাটি কী হবে যাতে আমরা আপনাকে প্রপোজাল পাঠাতে পারি?`
+                    : `Great to meet you, ${userText}! What is your email address so we can send you a formal proposal?`;
+                setChatState('collecting_email');
             }
-
-            // --- 1. NEW INQUIRY: LEAD QUALIFICATION ---
-            else if (lowerText.match(/\b(need|want|make|build|create|looking for)\b/) && lowerText.match(/\b(website|app|software|solution|system)\b/)) {
+            else if (chatState === 'collecting_email') {
+                setLeadData(prev => ({ ...prev, email: userText }));
                 reply = language === 'bn'
-                    ? "দারুণ! আমরা আপনাকে সাহায্য করতে পারি। দয়া করে আমাদের জানান:\n১. আপনি কি ধরণের ওয়েবসাইট/অ্যাপ চাচ্ছেন?\n২. আপনার বাজেট কত?\n৩. আপনার সময়সীমা কতদিন?"
-                    : "That's great! We specialize in building custom solutions. To help you better, could you please tell me:\n\n1. What type of website/app/software do you need?\n2. What is your estimated budget?\n3. What is your expected timeline?";
-                setChatState('collecting_requirements');
+                    ? "ধন্যবাদ। আমাদের টিম আপনার সাথে যোগাযোগের জন্য একটি ফোন নম্বর দিলে ভালো হয়।"
+                    : "Perfect. Could you also provide your phone number so our specialist can call you?";
+                setChatState('collecting_phone');
             }
-
-            // --- 2. ENHANCED GREETINGS ---
-            else if (lowerText.match(/\b(hello|hi|hey|greetings|start|good morning|whatsup|sup|howdy)\b/)) {
-                const greetings = [
-                    "Hello! Welcome to RizQara Tech. I'm here to help you build your next big digital product.",
-                    "Hi there! Great to see you. How can I assist you with your software needs today?",
-                    "Hey! I'm RizqAI. Whether it's AI, Web, or Mobile, I can guide you. What's on your mind?"
-                ];
-                reply = language === 'bn' ? "হ্যালো! আপনাকে কিভাবে সাহায্য করতে পারি?" : greetings[Math.floor(Math.random() * greetings.length)];
-            }
-            else if (lowerText.match(/\b(how are you|how r u|how are things)\b/)) {
-                reply = "I'm just a bot, but I'm functioning perfectly! Ready to help you grow your business.";
-            }
-            else if (lowerText.match(/\b(who are you|what are you)\b/)) {
-                reply = "I am RizqAI, your intelligent virtual assistant. I know all about our services, projects, and team!";
-            }
-
-            // --- 2. DYNAMIC KNOWLEDGE BASE (Services & Projects) ---
-
-            // A. Check Services (Detailed Line-by-Line)
-            else if (lowerText.match(/\b(service|offer|do|provide)\b/) && !lowerText.match(/\b(how|what|which)\b/)) {
-                // General Service Inquiry
-                const serviceNames = services.map(s => s.title).join('\n• ');
+            else if (chatState === 'collecting_phone') {
+                setLeadData(prev => ({ ...prev, phone: userText }));
                 reply = language === 'bn'
-                    ? `আমরা নিম্নলিখিত পরিষেবাগুলি প্রদান করি:\n• ${serviceNames}\n\nআপনি কোন পরিষেবা সম্পর্কে বিস্তারিত জানতে চান?`
-                    : `We offer a wide range of premium services:\n• ${serviceNames}\n\nAsk me about any specific service (e.g., 'Web Development') for details!`;
+                    ? "চমৎকার! শেষ প্রশ্ন—আপনি কি ধরণের ওয়েবসাইট বা অ্যাপ্লিকেশন চাচ্ছেন? (যেমন: ই-কমার্স, ল্যান্ডিং পেজ, সিআরএম ইত্যাদি)"
+                    : "Almost there! Last question—what type of website or application do you need? (e.g., E-commerce, Landing page, Dashboard, etc.)";
+                setChatState('collecting_reqs');
             }
+            else if (chatState === 'collecting_reqs') {
+                setLeadData(prev => ({ ...prev, requirements: userText }));
+                reply = language === 'bn'
+                    ? "সব তথ্যের জন্য ধন্যবাদ! আমি আপনার জন্য সবকিছু প্রস্তুত করেছি। আমাদের প্রথমবার সেবা গ্রহণকারী হিসেবে আপনি ২০% ডিসকাউন্ট পাচ্ছেন! আপনি কি তথ্যগুলো ইমেইল করবেন নাকি সরাসরি WhatsApp-এ কথা বলবেন?"
+                    : "Thanks for all the details! I've prepared your inquiry. As a first-time client, you're eligible for a 20% DISCOUNT! Would you like to submit this or chat on WhatsApp immediately?";
+                setChatState('complete');
+                type = 'summary';
+            }
+            // 2. INTENT & KNOWLEDGE BASE
             else {
-                // Specific Service Search
-                const foundService = services.find(s => lowerText.includes(s.title.toLowerCase()) || (s.title_bn && lowerText.includes(s.title_bn.toLowerCase())));
-
-                if (foundService) {
-                    const title = language === 'bn' ? (foundService.title_bn || foundService.title) : foundService.title;
-                    const desc = language === 'bn' ? (foundService.description_bn || foundService.description) : foundService.description;
-                    // Format detailed response
+                if (lowerText.match(/\b(hi|hello|hey|greetings|start|hola|হ্যালো|হাই)\b/)) {
                     reply = language === 'bn'
-                        ? `**${title}**\n\n${desc}\n\nবিস্তারিত জানতে আমাদের 'সেবাসমূহ' পেজটি ভিজিট করুন।`
-                        : `**${title}**\n\n${desc}\n\nWe provide end-to-end solutions in this domain. Would you like to see our portfolio?`;
-                    type = 'link';
-                    actionLabel = "View Service";
-                    actionLink = `/services/${foundService.id}`;
+                        ? "হ্যালো! RizqAI-এ স্বাগতম। আপনি কি আপনার ব্যবসার জন্য একটি ওয়েবসাইট বা অ্যাপ তৈরির কথা ভাবছেন? আমি আপনাকে সাহায্য করতে পারি।"
+                        : "Hello! Welcome to RizQara Tech. Are you thinking about building a website or app for your business? I'm here to guide you.";
                 }
-
-                // B. Check Projects
+                else if (lowerText.match(/\b(need|want|make|build|create|looking for|চাই|দরকার)\b/) && lowerText.match(/\b(website|app|software|solution|system|ওয়েবসাইট|অ্যাপ|সফটওয়্যার)\b/)) {
+                    reply = language === 'bn'
+                        ? "অবশ্যই! আমরা আপনার জন্য সেরা ডিজিটাল সমাধান তৈরি করতে পারি। এবং সুখবর হলো—প্রথম অর্ডারে আপনি ২০% ছাড় পাবেন! শুরু করার জন্য, আপনার নাম কি?"
+                        : "Absolutely! We can build top-tier digital solutions for you. Plus, good news—you get 20% OFF on your first project! To get started, may I know your name?";
+                    setChatState('collecting_name');
+                }
+                else if (lowerText.includes('review') || lowerText.includes('testimonial') || lowerText.includes('মন্তব্য') || lowerText.includes('গ্রাহক')) {
+                    const topReviews = reviews.slice(0, 3).map(r => `• ${r.name}: "${r.content.substring(0, 50)}..."`).join('\n');
+                    reply = language === 'bn'
+                        ? `আমাদের গ্রাহকরা আমাদের ভালোবাসেন! এখানে কিছু রিভিউ আছে:\n\n${topReviews}\n\nবিস্তারিত আমাদের 'রিভিউ' সেকশনে দেখুন।`
+                        : `Our clients love us! Here are some testimonials:\n\n${topReviews}\n\nCheck out more in our Reviews section!`;
+                }
+                else if (lowerText.includes('project') || lowerText.includes('work') || lowerText.includes('portfolio') || lowerText.includes('কাজ') || lowerText.includes('প্রকল্প')) {
+                    const recentProjects = projects.slice(0, 3).map(p => `• ${p.title} (${p.category})`).join('\n');
+                    reply = language === 'bn'
+                        ? `আমরা অনেকগুলো সফল প্রকল্প সম্পন্ন করেছি:\n\n${recentProjects}\n\nআপনি কি আমাদের পোর্টফোলিও দেখতে চান?`
+                        : `We have delivered many high-impact projects:\n\n${recentProjects}\n\nWould you like to see our full portfolio?`;
+                    type = 'link';
+                    actionLabel = "View Projects";
+                    actionLink = "/projects";
+                }
+                else if (lowerText.includes('case study') || lowerText.includes('success') || lowerText.includes('গল্প')) {
+                    const topCases = caseStudies.slice(0, 2).map(c => `• ${c.title}: ${c.impact}`).join('\n');
+                    reply = language === 'bn'
+                        ? `আমাদের কেস স্টাডিগুলো দেখুন যেখানে আমরা বাস্তব সমস্যার সমাধান দিয়েছি:\n\n${topCases}`
+                        : `Check out our case studies to see how we solve real business problems:\n\n${topCases}`;
+                    type = 'link';
+                    actionLabel = "Case Studies";
+                    actionLink = "/case-studies";
+                }
+                else if (lowerText.match(/\b(how are you|how r u|কেমন আছেন)\b/)) {
+                    reply = language === 'bn' ? "আমি খুব ভালো আছি! আপনার ব্যবসার প্রবৃদ্ধি নিশ্চিত করতে আমি প্রস্তুত।" : "I'm doing great and ready to help you scale your business!";
+                }
                 else {
-                    const foundProject = projects.find(p => lowerText.includes(p.title.toLowerCase()) || (p.title_bn && lowerText.includes(p.title_bn.toLowerCase())));
-
-                    if (foundProject) {
-                        const title = language === 'bn' ? (foundProject.title_bn || foundProject.title) : foundProject.title;
-                        const cat = language === 'bn' ? (foundProject.category_bn || foundProject.category) : foundProject.category;
+                    // Specific Service Search fallback
+                    const foundService = services.find(s => lowerText.includes(s.title.toLowerCase()) || (s.title_bn && lowerText.includes(s.title_bn.toLowerCase())));
+                    if (foundService) {
+                        reply = language === 'bn' ? foundService.description_bn || foundService.description : foundService.description;
+                        type = 'link';
+                        actionLabel = "View Service";
+                        actionLink = `/services/${foundService.id}`;
+                    } else {
                         reply = language === 'bn'
-                            ? `হ্যাঁ, **${title}** আমাদের অন্যতম সেরা প্রকল্প (${cat})। আপনি কি এটি দেখতে চান?`
-                            : `Yes! **${title}** is one of our featured ${cat} projects. Would you like to see the case study?`;
-                        type = 'link';
-                        actionLabel = "View Project";
-                        actionLink = `/projects/${foundProject.id}`;
-
-                    }
-
-                    // C. General Topics (Pricing, Team, Careers)
-                    else if (lowerText.match(/\b(price|cost|package|rate|money)\b/)) {
-                        reply = language === 'bn'
-                            ? "আমাদের বিভিন্ন প্যাকেজ আছে। বিস্তারিত দেখতে 'প্যাকেজ' পেজ ভিজিট করুন।"
-                            : "We have flexible pricing models. Check out our packages page for details.";
-                        type = 'link';
-                        actionLabel = "View Packages";
-                        actionLink = "/packages";
-                    }
-                    else if (lowerText.match(/\b(team|ceo|founder|developer|designer|who)\b/)) {
-                        const foundMember = teamData.find(m => lowerText.includes(m.name.toLowerCase()) || lowerText.includes(m.role.toLowerCase()));
-                        if (foundMember) {
-                            reply = `${foundMember.name} is our ${foundMember.role}. ${foundMember.bio}`;
-                        } else {
-                            reply = language === 'bn'
-                                ? "আমাদের একটি বিশ্বমানের বিশেষজ্ঞ দল আছে। আপনি কি নির্দিষ্ট কারো সম্পর্কে জানতে চান?"
-                                : "We have a world-class team of experts! You can ask about our CEO, Developers, or Designers.";
-                        }
-                        type = 'link';
-                        actionLabel = "Meet Team";
-                        actionLink = "/team";
-                    }
-                    else if (lowerText.match(/\b(job|career|hiring|work|vacancy)\b/)) {
-                        if (jobs.length > 0) {
-                            reply = language === 'bn' ? "আমরা নিয়োগ দিচ্ছি! আমাদের ক্যারিয়ার পেজ দেখুন।" : "Yes, we are hiring! Check out our Careers page.";
-                            actionLabel = "View Openings";
-                        } else {
-                            reply = language === 'bn' ? "এই মুহূর্তে আমাদের কোনো নিয়োগ বিজ্ঞপ্তি নেই।" : "We don't have open positions right now, but feel free to send us your CV.";
-                            actionLabel = "Careers";
-                        }
-                        type = 'link';
-                        actionLink = "/careers";
-                    }
-                    // --- 3. SMART FALLBACK (WHATSAPP) ---
-                    else {
-                        // Fallback for unknown queries
-                        reply = language === 'bn'
-                            ? "দুঃখিত, আমি এই মুহূর্তে এই তথ্যটি জানি না। তবে আমাদের এইচআর বা সাপোর্ট টিম আপনাকে সাহায্য করতে পারে। সরাসরি WhatsApp-এ যোগাযোগ করুন।"
-                            : "I apologize, I don't have that specific information right now. However, our HR and Support team can answer you immediately on WhatsApp!";
-                        type = 'button';
-                        actionLabel = "Chat on WhatsApp";
-                        actionLink = "https://wa.link/bx60tv";
+                            ? "আমি আপনার কথা ঠিক বুঝতে পারছি না। আপনি কি আমাদের সার্ভিস, প্রোজেক্ট বা রিভিউ সম্পর্কে জানতে চান? অথবা ২০% ডিসকাউন্টের জন্য একটি ওয়েবসাইট/অ্যাপ তৈরির কথা বলতে পারেন।"
+                            : "I'm not sure I understood. Would you like to know about our services, projects, or reviews? Or you can start a new project to get 20% OFF!";
                     }
                 }
             }
 
             setMessages(prev => [...prev, { id: Date.now(), text: reply, sender: 'bot', type, actionLink, actionLabel }]);
             setIsTyping(false);
-        }, 1200); // Slightly faster response
+        }, 1000);
     };
 
     const handleSend = (e: React.FormEvent) => {
@@ -1959,11 +1918,29 @@ export const RizqAIBot = () => {
         const userMsg = inputText.trim();
         setMessages(prev => [...prev, { id: Date.now(), text: userMsg, sender: 'user' }]);
         setInputText('');
-
         simulateAIResponse(userMsg);
     };
 
-    // Force Refresh: RizqAIBot Update
+    const handleFinalSubmit = () => {
+        addMessage({
+            name: leadData.name,
+            email: leadData.email,
+            subject: 'New Lead from RizqAI',
+            message: `Requirements: ${leadData.requirements}\nPhone: ${leadData.phone}\nOffer: 20% Discount Candidate`,
+            type: 'Order'
+        });
+        setMessages(prev => [...prev, {
+            id: Date.now(),
+            text: language === 'bn' ? "অসাধারণ! আপনার তথ্য আমাদের কাছে পৌঁছেছে। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।" : "Awesome! Your details have been submitted. Our team will contact you shortly.",
+            sender: 'bot'
+        }]);
+        setChatState('idle');
+    };
+
+    const whatsappLink = `https://wa.me/8801948485878?text=${encodeURIComponent(
+        `Hello RizQara Tech,\n\nI am ${leadData.name}.\nI need: ${leadData.requirements}\nEmail: ${leadData.email}\nPhone: ${leadData.phone}\n(Contacting via RizqAI Bot - 20% Discount Inquiry)`
+    )}`;
+
     return (
         <div className="fixed bottom-6 right-6 z-[9999]">
             <AnimatePresence>
@@ -2011,25 +1988,29 @@ export const RizqAIBot = () => {
                                             : 'bg-white text-gray-700 rounded-bl-none border border-gray-100'
                                             }`}
                                     >
-                                        {msg.text}
+                                        <div className="whitespace-pre-line">{msg.text}</div>
                                     </div>
 
-                                    {/* Action Buttons/Links with Fixed Styling */}
-                                    {msg.type === 'button' && msg.actionLink && (
-                                        <div className="mt-4 w-full flex flex-col items-start">
-                                            <a
-                                                href={msg.actionLink}
+                                    {/* Action Buttons/Links */}
+                                    {msg.type === 'summary' && (
+                                        <div className="mt-4 w-full space-y-3">
+                                            <button 
+                                                onClick={handleFinalSubmit}
+                                                className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#3a0000] transition-all shadow-md group"
+                                            >
+                                                <Check size={18} /> {language === 'bn' ? 'তথ্য জমা দিন' : 'Submit Details'}
+                                            </button>
+                                            <a 
+                                                href={whatsappLink}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="group relative flex items-center gap-2.5 px-6 py-3 rounded-full text-white font-bold text-[15px] shadow-[0_8px_20px_rgba(37,211,102,0.3)] hover:shadow-[0_10px_25px_rgba(37,211,102,0.5)] hover:-translate-y-0.5 transition-all w-fit overflow-hidden"
-                                                style={{ background: 'linear-gradient(135deg, #25D366 0%, #075E54 100%)' }}
+                                                className="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all shadow-md"
                                             >
-                                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                                <MessageCircle size={22} fill="white" className="relative z-10 drop-shadow-sm" />
-                                                <span className="relative z-10 tracking-wide font-medium">{msg.actionLabel}</span>
+                                                <MessageCircle size={18} fill="white" /> {language === 'bn' ? 'WhatsApp-এ যোগাযোগ করুন' : 'Chat on WhatsApp'}
                                             </a>
                                         </div>
                                     )}
+
                                     {msg.type === 'link' && msg.actionLink && (
                                         <div className="mt-2">
                                             <a href={msg.actionLink} className="text-xs font-bold text-[#500000] hover:underline flex items-center gap-1 group">
@@ -2078,20 +2059,16 @@ export const RizqAIBot = () => {
                 )}
             </AnimatePresence>
 
-            {/* Floating Trigger Button - Persistent Bot Icon (No Big X) */}
+            {/* Floating Trigger Button */}
             <div
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-14 h-14 bg-[#500000] text-white rounded-full flex items-center justify-center cursor-pointer z-50 relative"
             >
-
-                {/* Always show Bot/Sparkle icon primarily. If open, maybe just a subtle animation or different icon state implies toggle, avoiding the 'big cross' complaint. */}
                 {isOpen ? (
                     <MessageSquare size={24} />
                 ) : (
                     <Bot size={28} />
                 )}
-
-
             </div>
         </div>
     );
@@ -2387,11 +2364,11 @@ export const AboutHero = () => {
                         <div className="flex flex-wrap gap-6 items-center">
                             <div className="flex -space-x-3">
                                 {[
-                                    { name: 'pritom', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682117/rizqara/team/pritom.jpg' },
-                                    { name: 'sanju', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682119/rizqara/team/sanju.jpg' },
-                                    { name: 'sami', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682121/rizqara/team/sami.jpg' },
-                                    { name: 'rojina', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682123/rizqara/team/rojina.jpg' },
-                                    { name: 'irin', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773682124/rizqara/team/irin.jpg' }
+                                    { name: 'pritom', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457382/rizqara/team/pritom_v2.jpg' },
+                                    { name: 'sanju', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg' },
+                                    { name: 'sami', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg' },
+                                    { name: 'rojina', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457387/rizqara/team/rojina_v2.jpg' },
+                                    { name: 'irin', url: '/irin.jpg' }
                                 ].map(member => (
                                     <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md">
                                         <img src={member.url} alt={member.name} className="w-full h-full object-cover" />
@@ -2416,7 +2393,7 @@ export const AboutHero = () => {
                     >
                         <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3]">
                             <img 
-                                src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773682129/rizqara/why_choose_us/transparency.jpg" 
+                                src="https://res.cloudinary.com/dhutfywg2/image/upload/v1775457379/rizqara/about_us/about_us_hero.png" 
                                 alt="RizQara Tech Team" 
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />

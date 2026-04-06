@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { SEO } from './SEO';
+import { Download } from 'lucide-react';
 
 export const PrivacyPolicy = () => {
   const { language } = useData();
@@ -17,8 +18,20 @@ export const PrivacyPolicy = () => {
         canonical="https://rizqara.tech/privacy-policy"
       />
       <div className="container mx-auto px-6 max-w-4xl">
-        <h1 className="text-4xl font-black text-[#500000] mb-8">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</h1>
-        <p className="text-gray-500 mb-12">{language === 'bn' ? 'সর্বশেষ আপডেট: ৪ জানুয়ারী, ২০২৬' : 'Last Updated: January 4, 2026'}</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div>
+            <h1 className="text-4xl font-black text-[#500000] mb-4">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</h1>
+            <p className="text-gray-500">{language === 'bn' ? 'সর্বশেষ আপডেট: ৪ জানুয়ারী, ২০২৬' : 'Last Updated: January 4, 2026'}</p>
+          </div>
+          <a 
+            href="/rizqara_privacy_policy.pdf" 
+            download 
+            className="flex items-center gap-2 bg-white border border-gray-200 px-6 py-3 rounded-2xl text-[#500000] font-bold hover:bg-gray-50 transition-all shadow-sm group"
+          >
+            <Download size={18} className="group-hover:scale-110 transition-transform" />
+            {language === 'bn' ? 'পিডিএফ ডাউনলোড করুন' : 'Download PDF'}
+          </a>
+        </div>
 
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 space-y-8">
           <section>
@@ -116,8 +129,20 @@ export const TermsOfService = () => {
         canonical="https://rizqara.tech/terms-of-service"
       />
       <div className="container mx-auto px-6 max-w-4xl">
-        <h1 className="text-4xl font-black text-[#500000] mb-8">{language === 'bn' ? 'সেবার শর্তাবলী' : 'Terms of Service'}</h1>
-        <p className="text-gray-500 mb-12">{language === 'bn' ? 'সর্বশেষ আপডেট: ৪ জানুয়ারী, ২০২৬' : 'Last Updated: January 4, 2026'}</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div>
+            <h1 className="text-4xl font-black text-[#500000] mb-4">{language === 'bn' ? 'সেবার শর্তাবলী' : 'Terms of Service'}</h1>
+            <p className="text-gray-500">{language === 'bn' ? 'সর্বশেষ আপডেট: ৪ জানুয়ারী, ২০২৬' : 'Last Updated: January 4, 2026'}</p>
+          </div>
+          <a 
+            href="/rizqara_terms_of_service.pdf" 
+            download 
+            className="flex items-center gap-2 bg-white border border-gray-200 px-6 py-3 rounded-2xl text-[#500000] font-bold hover:bg-gray-50 transition-all shadow-sm group"
+          >
+            <Download size={18} className="group-hover:scale-110 transition-transform" />
+            {language === 'bn' ? 'পিডিএফ ডাউনলোড করুন' : 'Download PDF'}
+          </a>
+        </div>
 
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 space-y-8">
           <section>
@@ -176,6 +201,25 @@ export const TermsOfService = () => {
               {language === 'bn'
                 ? 'এই শর্তাবলী রিজকারা টেক যে এখতিয়ারে নিবন্ধিত সেই এখতিয়ারের আইন অনুসারে পরিচালিত এবং ব্যাখ্যা করা হবে।'
                 : 'These Terms shall be governed and construed in accordance with the laws of the jurisdiction in which Rizqara Tech is registered, without regard to its conflict of law provisions.'}
+            </p>
+          </section>
+
+          <section className="pt-8 border-t border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+              <h2 className="text-xl font-bold text-[#500000]">{language === 'bn' ? '৭. ফেরত নীতি' : '7. Refund Policy'}</h2>
+              <a 
+                href="/rizqara_refund_policy.pdf" 
+                download 
+                className="flex items-center gap-2 bg-[#500000]/5 px-4 py-2 rounded-xl text-[#500000] font-bold hover:bg-[#500000]/10 transition-all text-sm group"
+              >
+                <Download size={16} className="group-hover:scale-110 transition-transform" />
+                {language === 'bn' ? 'ফেরত নীতি ডাউনলোড করুন' : 'Download Refund Policy'}
+              </a>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              {language === 'bn'
+                ? 'আমাদের পরিষেবার জন্য অর্থ ফেরতের অনুরোধগুলি প্রতিটি প্রকল্পের জন্য সম্পাদিত নির্দিষ্ট চুক্তির (MSA/SOW) শর্তাবলী অনুসারে পরিচালিত হবে। সাধারণত, সম্পাদিত কাজ বা বরাদ্দকৃত সংস্থানগুলির জন্য অর্থ ফেরতযোগ্য নয়। বিস্তারিত জানার জন্য দয়া করে সম্পূর্ণ ফেরত নীতি ডকুমেন্ট ডাউনলোড করুন।'
+                : 'Refund requests for our services shall be governed in accordance with the terms specified in the individual contract (MSA/SOW) executed for each project. Generally, payments for work already performed or resources allocated are non-refundable. Please download the full Refund Policy document for detailed terms.'}
             </p>
           </section>
         </div>
