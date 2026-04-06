@@ -97,20 +97,8 @@ export const techStack = [
 
     // --- AI ---
     {
-        name: "OpenAI",
-        logo: <img src="https://api.svgl.app/svg/openai.svg" alt="OpenAI" className="h-full w-auto" />
-    },
-    {
-        name: "ChatGPT",
-        logo: <img src="https://api.svgl.app/svg/chatgpt.svg" alt="ChatGPT" className="h-full w-auto" />
-    },
-    {
         name: "LangChain",
         logo: <img src="https://cdn.simpleicons.org/langchain/173334" alt="LangChain" className="h-full w-auto" />
-    },
-    {
-        name: "Gemini",
-        logo: <img src="https://api.svgl.app/svg/google-gemini.svg" alt="Gemini" className="h-full w-auto" />
     },
     {
         name: "Claude",
