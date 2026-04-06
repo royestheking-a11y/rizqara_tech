@@ -4,7 +4,7 @@ import {
     Menu, X, ChevronRight, Check,
     Code2, Palette, Globe, Smartphone, BarChart, Layout,
     ArrowRight, Star,
-    Linkedin, Instagram, Facebook,
+    Linkedin, Instagram, Facebook, Youtube,
     Shield, Zap, MessageSquare, Briefcase,
     Server, ShieldCheck,
     Lock, User, ExternalLink, Share2, Search,
@@ -1176,7 +1176,8 @@ const Footer = () => {
                                 { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
                                 { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
                                 { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
-                                { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' }
+                                { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' },
+                                { Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' }
                             ].map(({ Icon, link }, i) => (
                                 <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
                                     <Icon size={18} className="group-hover:scale-110 transition-transform" />

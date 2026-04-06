@@ -34,7 +34,8 @@ export const SEO: React.FC<SEOProps> = ({
             "https://twitter.com/rizqaratech",
             "https://instagram.com/rizqaratech",
             "https://linkedin.com/company/rizqaratech",
-            "https://medium.com/@rizqaratech"
+            "https://medium.com/@rizqaratech",
+            "https://www.youtube.com/@rizqaratech"
         ]
     };
 
