@@ -620,7 +620,7 @@ export const TeamSection = () => {
         {
             role: "Chairman",
             members: [
-                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767718113/Gemini_Generated_Image_qbpg2xqbpg2xqbpg_okkcne.png", bio: language === 'bn' ? "টেক উদ্ভাবনে ২০+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 2+ years in tech innovation." }
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "/aurangzeb.jpeg", bio: language === 'bn' ? "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 5+ years in tech innovation." }
             ]
         },
         {
@@ -632,24 +632,24 @@ export const TeamSection = () => {
         {
             role: "Management",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "অপারেশন ম্যানেজার" : "Operations Manager", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." }
+                { name: "Sanju Monowara", position: language === 'bn' ? "ম্যানেজমেন্ট হেড" : "Management Head", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." },
+                { name: "Afrin Rahman Omi", position: language === 'bn' ? "জেনারেল ম্যানেজার" : "General Manager", image: "/afrin.jpg", bio: language === 'bn' ? "অপারেশন পরিচালনা এবং প্রাতিষ্ঠানিক সাফল্য নিশ্চিত করছেন।" : "Overseeing operations and ensuring organizational success." }
             ]
         },
         {
             role: "Engineering & Design",
             members: [
-                { name: "Safayat Hossen Alif", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
-                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg" },
-                { name: "Taskia Newaz", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716768/Gemini_Generated_Image_zdffldzdffldzdff_okx6rf.png" },
-                { name: "Aurangzeb Sunny", position: language === 'bn' ? "ফুল স্ট্যাক ডেভেলপার" : "Full Stack Developer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716477/Gemini_Generated_Image_wrbntkwrbntkwrbn_svz3i2.png" },
-                { name: "Nasim Hoseini", position: language === 'bn' ? "ফ্রন্টএন্ড স্পেশালিস্ট" : "Frontend Specialist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1767716567/Gemini_Generated_Image_x510wsx510wsx510_nlimxp.png" }
+                { name: "Safayat Hossen Alif", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "/alif.jpeg", bio: language === 'bn' ? "শক্তিশালী এবং স্কেলেবল সফটওয়্যার সলিউশন তৈরি করছেন।" : "Architecting robust and scalable software solutions." },
+                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg", bio: language === 'bn' ? "সহজ এবং দৃষ্টিনন্দন ইউজার এক্সপেরিয়েন্স তৈরি করছেন।" : "Crafting intuitive and aesthetically pleasing user experiences." },
+                { name: "Tamzid Islam Rafat", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "/Rafat.jpeg", bio: language === 'bn' ? "সৃজনশীল ভিজ্যুয়াল স্টোরিটেলিংয়ের মাধ্যমে আইডিয়ায় প্রাণ দিচ্ছেন।" : "Bringing ideas to life through creative visual storytelling." }
             ]
         },
         {
             role: "Growth & Marketing",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "ডিজিটাল মার্কেটিং হেড" : "Digital Marketing Head", image: "/sanju.jpg" },
-                { name: "Arzu Hasanova", position: language === 'bn' ? "কন্টেন্ট স্ট্র্যাটেজিস্ট" : "Content Strategist", image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457390/rizqara/team/arzu_v2.jpg" }
+                { name: "GM Moshiur", position: language === 'bn' ? "মার্কেটিং হেড" : "Marketing Head", image: "/gm mosiur.jpeg", bio: language === 'bn' ? "ব্র্যান্ডের বৃদ্ধি এবং উপস্থিতি বাড়াতে মার্কেটিং স্ট্র্যাটেজি পরিচালনা করছেন।" : "Leading marketing strategies to drive brand growth and presence." },
+                { name: "Mafuz Ahmed", position: language === 'bn' ? "কন্টেন্ট রাইটার" : "Content Writer", image: "/mafuz.jpeg", bio: language === 'bn' ? "দর্শকদের আকৃষ্ট এবং অনুপ্রাণিত করতে চমৎকার কনটেন্ট তৈরি করছেন।" : "Creating compelling narratives to engage and inspire audiences." },
+                { name: "Sourob Hawlader", position: language === 'bn' ? "ডিজিটাল মার্কেটার" : "Digital Marketer", image: "/sourob.jpeg", bio: language === 'bn' ? "সর্বোচ্চ রিচ পেতে ডেটা-নির্ভর ডিজিটাল ক্যাম্পেইন পরিচালনা করছেন।" : "Executing data-driven digital campaigns for maximum reach." }
             ]
         }
     ];
@@ -669,7 +669,7 @@ export const TeamSection = () => {
                     className="group relative w-full max-w-[320px]"
                 >
                     <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-6 border border-gray-200 bg-gray-100 relative shadow-md">
-                        <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" />
+                        <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <div className="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform">
