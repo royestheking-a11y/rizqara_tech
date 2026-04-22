@@ -2364,11 +2364,11 @@ export const AboutHero = () => {
                         <div className="flex flex-wrap gap-6 items-center">
                             <div className="flex -space-x-3">
                                 {[
+                                    { name: 'aurangzeb', url: '/aurangzeb.jpeg' },
                                     { name: 'pritom', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457382/rizqara/team/pritom_v2.jpg' },
                                     { name: 'sanju', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457384/rizqara/team/sanju_v2.jpg' },
                                     { name: 'sami', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457386/rizqara/team/sami_v2.jpg' },
-                                    { name: 'rojina', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457387/rizqara/team/rojina_v2.jpg' },
-                                    { name: 'arzu', url: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1775457390/rizqara/team/arzu_v2.jpg' }
+                                    { name: 'afrin', url: '/afrin.jpg' }
                                 ].map(member => (
                                     <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md">
                                         <img src={member.url} alt={member.name} className="w-full h-full object-cover" />
