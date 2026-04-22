@@ -32,6 +32,7 @@ import {
     ServicesSkeleton, ProjectsSkeleton, AboutHero
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
+import { Vision2030Page } from './components/pages/Vision2030Page';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
@@ -1164,8 +1165,18 @@ const Footer = () => {
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     <div className="lg:col-span-2">
-                        <div className="flex items-center gap-3 mb-6">
+                        <div className="flex items-center gap-4 mb-6 flex-wrap">
                             <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
+                            <Link
+                                to="/vision-2030"
+                                className="relative px-3 py-1 rounded-full overflow-hidden group border border-[#500000]/20 inline-flex items-center justify-center shadow-sm bg-white/50 hover:bg-white transition-colors"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-[#500000]/5 to-red-500/5 group-hover:from-[#500000]/10 group-hover:to-red-500/10 transition-colors"></div>
+                                <span className="relative z-10 text-[#500000] font-black text-[10px] uppercase tracking-[0.1em] flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                    Vision 2030
+                                </span>
+                            </Link>
                         </div>
                         <p className="text-gray-600 text-sm leading-relaxed mb-8 max-w-sm">
                             {language === 'bn' ? "রিজকারা টেক একটি প্রিমিয়ার সফটওয়্যার ডেভেলপমেন্ট এজেন্সি যা এন্টারপ্রাইজ-গ্রেড সমাধান প্রদান করে।" : "Rizqara Tech is a premier software development company delivering enterprise-grade solutions."}
@@ -1965,6 +1976,7 @@ const MainContent = () => {
             <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
                     <Route path="/" element={<Home setBuildConfig={setBuildConfig} />} />
+                    <Route path="/vision-2030" element={<Vision2030Page />} />
 
                     <Route path="/services" element={<>
                         <SEO
