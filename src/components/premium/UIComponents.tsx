@@ -2391,9 +2391,9 @@ export const AboutHero = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="relative"
                     >
-                        <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3]">
+                        <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3] max-w-lg lg:ml-auto">
                             <img 
-                                src="https://res.cloudinary.com/dhutfywg2/image/upload/v1775457379/rizqara/about_us/about_us_hero.png" 
+                                src="/aboutus.png" 
                                 alt="RizQara Tech Team" 
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
