@@ -1010,7 +1010,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "SEO & Digital Marketing",
                 "Cloud Infrastructure"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457371/rizqara/why_choose_us/end_to_end_v2.png"
+            image: "/End to end .jpg"
         },
         "performance": {
             title: language === 'bn' ? 'পারফরম্যান্স, স্কেল এবং নিরাপত্তার জন্য তৈরি' : "Built for Performance, Scale & Security",
@@ -1028,7 +1028,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Advanced Security Protocols",
                 "Performance Optimization"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457373/rizqara/why_choose_us/performance_v2.png"
+            image: "/build for performance.jpg"
         },
         "transparency": {
             title: language === 'bn' ? 'স্বচ্ছ প্রক্রিয়া এবং ডেডিকেটেড টিম' : "Transparent Process & Dedicated Team",
@@ -1064,7 +1064,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
                 "Feature Enhancements",
                 "Business Consultation"
             ],
-            image: "https://res.cloudinary.com/dhutfywg2/image/upload/v1775457376/rizqara/why_choose_us/partnership_v2.png"
+            image: "/longterm partner.jpg"
         }
     };
 
@@ -2364,15 +2364,15 @@ export const AboutHero = () => {
                         <div className="flex flex-wrap gap-6 items-center">
                             <div className="flex -space-x-3">
                                 {[
-                                    { name: 'aurangzeb', url: '/sunny.png' },
+                                    { name: 'aurangzeb', url: '/sunny.jpg' },
                                     { name: 'pritom', url: '/pritom.jpg' },
-                                    { name: 'sanju', url: '/sanju.png' },
-                                    { name: 'sami', url: '/samii.png' },
-                                    { name: 'taskia', url: '/taskia.png' },
-                                    { name: 'afrin', url: '/afrin.png' }
+                                    { name: 'sanju', url: '/sanju.jpg' },
+                                    { name: 'sami', url: '/samii.jpg' },
+                                    { name: 'taskia', url: '/taskia.jpg' },
+                                    { name: 'afrin', url: '/afrin.jpg' }
                                 ].map(member => (
                                     <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md group/avatar">
-                                        <img src={member.url} alt={member.name} className="w-full h-full object-cover grayscale group-hover/avatar:grayscale-0 transition-all duration-500" />
+                                        <img src={member.url} alt={member.name} loading="lazy" className="w-full h-full object-cover grayscale group-hover/avatar:grayscale-0 transition-all duration-500" />
                                     </div>
                                 ))}
                                 <div className="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-[#500000] font-bold text-xs shadow-md">
@@ -2394,8 +2394,9 @@ export const AboutHero = () => {
                     >
                         <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3] max-w-lg lg:ml-auto">
                             <img 
-                                src="/aboutus.png" 
+                                src="/aboutus.jpg" 
                                 alt="RizQara Tech Team" 
+                                loading="lazy"
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
