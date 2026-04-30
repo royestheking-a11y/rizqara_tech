@@ -618,9 +618,9 @@ export const TeamSection = () => {
 
     const team: { role: string; members: TeamMember[] }[] = [
         {
-            role: "Chairman",
+            role: "Founder",
             members: [
-                { name: "Aurangzeb Sunny", position: language === 'bn' ? "চেয়ারম্যান" : "Chairman", image: "/sunny.jpg", bio: language === 'bn' ? "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 5+ years in tech innovation." }
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "প্রতিষ্ঠাতা" : "Founder", image: "/aurangzebsunny.png", bio: language === 'bn' ? "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 5+ years in tech innovation." }
             ]
         },
         {

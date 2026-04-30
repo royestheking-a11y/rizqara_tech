@@ -2364,7 +2364,7 @@ export const AboutHero = () => {
                         <div className="flex flex-wrap gap-6 items-center">
                             <div className="flex -space-x-3">
                                 {[
-                                    { name: 'aurangzeb', url: '/sunny.jpg' },
+                                    { name: 'aurangzeb', url: '/aurangzebsunny.png' },
                                     { name: 'pritom', url: '/pritom.jpg' },
                                     { name: 'sanju', url: '/sanju.jpg' },
                                     { name: 'sami', url: '/samii.jpg' },
