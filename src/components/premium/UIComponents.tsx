@@ -2394,8 +2394,8 @@ export const AboutHero = () => {
                     >
                         <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3] max-w-lg lg:ml-auto">
                             <img 
-                                src="/aboutus.jpg" 
-                                alt="RizQara Tech Team" 
+                                src="/meeting.png" 
+                                alt="RizQara Tech Team Meeting" 
                                 loading="lazy"
                                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
