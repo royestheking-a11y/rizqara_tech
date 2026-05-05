@@ -30,7 +30,7 @@ import {
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton, AboutHero,
-    getYoutubeId, SectionTitle, XLogo, MediumLogo
+    SectionTitle, XLogo, MediumLogo
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { Vision2030Page } from './components/pages/Vision2030Page';
