@@ -109,12 +109,14 @@ export const Footer = () => {
                         <h4 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Newsletter</h4>
                         <p className="text-gray-500 text-sm mb-6">Stay updated with our latest insights and tech news.</p>
                         <div className="relative">
+                            <label htmlFor="newsletter-email" className="sr-only">Newsletter Email</label>
                             <input 
+                                id="newsletter-email"
                                 type="email" 
                                 placeholder="Enter email" 
                                 className="w-full bg-gray-50 border border-gray-100 rounded-full py-4 pl-6 pr-14 text-sm focus:outline-none focus:border-[#500000] transition-all"
                             />
-                            <button className="absolute right-2 top-2 w-10 h-10 bg-[#500000] text-white rounded-full flex items-center justify-center hover:bg-[#3a0000] transition-all" aria-label="Subscribe">
+                            <button className="absolute right-2 top-2 w-10 h-10 bg-[#500000] text-white rounded-full flex items-center justify-center hover:bg-[#3a0000] transition-all" aria-label="Subscribe to newsletter">
                                 <ArrowRight size={18} />
                             </button>
                         </div>

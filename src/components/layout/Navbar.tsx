@@ -110,6 +110,7 @@ export const Navbar = () => {
                     <button
                         onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
                         className="px-4 py-2 rounded-full border border-gray-200 text-xs font-black uppercase tracking-widest hover:bg-[#500000] hover:text-white transition-all shadow-sm active:scale-95"
+                        aria-label={language === 'en' ? 'Switch to Bengali' : 'Switch to English'}
                     >
                         {language === 'en' ? 'বাংলা' : 'EN'}
                     </button>
@@ -117,6 +118,7 @@ export const Navbar = () => {
                     <button
                         onClick={() => handleNavigate('/contact')}
                         className="px-8 py-3 bg-[#500000] text-white rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-[0_10px_20px_rgba(80,0,0,0.2)] hover:shadow-[0_15px_30px_rgba(80,0,0,0.3)] hover:-translate-y-1 transition-all active:scale-95"
+                        aria-label="Get Started with RizQara Tech"
                     >
                         {t('getStarted')}
                     </button>
@@ -148,7 +150,11 @@ export const Navbar = () => {
                                 </div>
                                 <span className="text-xl font-black tracking-tighter text-gray-900">RIZQARA<span className="text-[#500000]">TECH</span></span>
                             </div>
-                            <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-gray-900">
+                            <button 
+                                onClick={() => setMobileMenuOpen(false)} 
+                                className="p-2 text-gray-900"
+                                aria-label="Close mobile menu"
+                            >
                                 <X size={28} />
                             </button>
                         </div>

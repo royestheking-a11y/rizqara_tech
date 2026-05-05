@@ -6,6 +6,7 @@ import { useData, Project } from '../../context/DataContext';
 import { SEO } from '../SEO';
 import { DetailSkeleton, ButtonPremium } from '../premium/UIComponents';
 import { getSlug } from '../../App';
+import { getProxiedImage } from '../../utils/imageProxy';
 import { toast } from 'sonner';
 
 const ProjectDetailPage = () => {
@@ -76,7 +77,12 @@ const ProjectDetailPage = () => {
             </button>
 
             <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
-                <img src={project.image} alt={title} className="max-w-full max-h-full object-contain" />
+                <img 
+                    src={getProxiedImage(project.image, 800)} 
+                    alt={title} 
+                    className="max-w-full max-h-full object-contain" 
+                    loading="eager"
+                />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">

@@ -6,6 +6,7 @@ import { useData } from '../../context/DataContext';
 import { SEO } from '../SEO';
 import { DetailSkeleton, ButtonPremium } from '../premium/UIComponents';
 import { getSlug } from '../../App';
+import { getProxiedImage } from '../../utils/imageProxy';
 import { toast } from 'sonner';
 
 const CaseStudyDetailPage = () => {
@@ -80,7 +81,12 @@ const CaseStudyDetailPage = () => {
             </button>
 
             <div className="rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-2xl bg-gray-50 flex justify-center items-center min-h-[300px] max-h-[70vh]">
-                <img src={study.image} alt={title} className="max-w-full max-h-full object-contain" />
+                <img 
+                    src={getProxiedImage(study.image, 800)} 
+                    alt={title} 
+                    className="max-w-full max-h-full object-contain" 
+                    loading="eager"
+                />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -207,9 +213,10 @@ const CaseStudyDetailPage = () => {
                                     {study.gallery.map((img: string, i: number) => (
                                         <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative h-80 bg-gray-50 flex justify-center items-center cursor-zoom-in">
                                             <img
-                                                src={img}
+                                                src={getProxiedImage(img, 400)}
                                                 alt={`Gallery ${i + 1}`}
                                                 className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                                                loading="lazy"
                                                 onClick={() => window.open(img, '_blank')}
                                             />
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />

@@ -70,6 +70,7 @@ export const ButtonPremium = ({ children, onClick, className = "", variant = "pr
         <button
             onClick={onClick}
             className={`${baseStyles} ${(variants as any)[variant]} ${className}`}
+            aria-label={props['aria-label']}
             {...props}
         >
             {children}
@@ -749,7 +750,11 @@ export const PricingDetailed: React.FC<PricingDetailedProps> = ({ onNavigate }) 
                             </li>
                         ))}
                     </ul>
-                    <button onClick={() => onNavigate('Contact')} className={`w-full py-3 rounded-xl font-bold transition-all text-sm uppercase tracking-wider shadow-md ${pkg.popular ? 'bg-[#500000] text-white hover:bg-[#3a0000]' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}>
+                    <button 
+                        onClick={() => onNavigate('Contact')} 
+                        className={`w-full py-3 rounded-xl font-bold transition-all text-sm uppercase tracking-wider shadow-md ${pkg.popular ? 'bg-[#500000] text-white hover:bg-[#3a0000]' : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}`}
+                        aria-label={`Get Started with ${pkg.name} package`}
+                    >
                         {language === 'bn' ? 'শুরু করুন' : 'Get Started'}
                     </button>
                 </div>

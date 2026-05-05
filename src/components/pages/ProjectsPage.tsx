@@ -5,6 +5,7 @@ import { Search, X, ArrowRight } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { SEO } from '../SEO';
 import { getSlug } from '../../App';
+import { getProxiedImage } from '../../utils/imageProxy';
 import { SectionTitle } from '../premium/UIComponents';
 
 export const ProjectsPage = () => {
@@ -118,7 +119,12 @@ export const ProjectsPage = () => {
                                     className="group cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 >
                                     <div className="aspect-video relative overflow-hidden">
-                                        <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
+                                        <img 
+                                            src={getProxiedImage(p.image, 400)} 
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                            alt={title} 
+                                            loading="lazy"
+                                        />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                     </div>
                                     <div className="p-6 flex flex-col h-[260px]">

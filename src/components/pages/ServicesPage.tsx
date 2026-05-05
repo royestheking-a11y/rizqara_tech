@@ -4,6 +4,7 @@ import { Globe, Layout, Palette, Code2, Smartphone, BarChart, Lightbulb, Cpu, Me
 import { useData } from '../../context/DataContext';
 import { SEO } from '../SEO';
 import { getSlug } from '../../App';
+import { getProxiedImage } from '../../utils/imageProxy';
 import { SectionTitle } from '../premium/UIComponents';
 
 export const ServicesPage = () => {
@@ -30,7 +31,12 @@ export const ServicesPage = () => {
                     return (
                         <div key={s.id} onClick={() => navigate(`/services/${getSlug(s.title)}`)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                             <div className="h-48 overflow-hidden relative shrink-0">
-                                <img src={s.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                <img 
+                                    src={getProxiedImage(s.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop", 400)} 
+                                    alt={title} 
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                    loading="lazy"
+                                />
                                 <div className="absolute top-4 left-4 w-12 h-12 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center text-[#500000] shadow-sm">
                                     <Icon size={24} />
                                 </div>

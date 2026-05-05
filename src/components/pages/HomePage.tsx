@@ -62,7 +62,7 @@ const CaseStudyShowcase = () => {
                                 }`}
                         >
                             <img
-                                src={study.image}
+                                src={getProxiedImage(study.image, 200)}
                                 alt={study.title}
                                 className={`h-8 object-contain transition-all duration-500 ${activeTab === idx ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}
                             />
@@ -85,9 +85,10 @@ const CaseStudyShowcase = () => {
                         className="relative rounded-[40px] overflow-hidden shadow-2xl aspect-[1.1/1]"
                     >
                         <img
-                            src={activeStudy.image}
+                            src={getProxiedImage(activeStudy.image, 800)}
                             alt={title}
                             className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                            loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                     </motion.div>
@@ -214,7 +215,13 @@ const HomePage = ({ setBuildConfig }: { setBuildConfig: any }) => {
             <section className="container mx-auto px-6">
                 <div className="flex justify-between items-end mb-12">
                     <SectionTitle title={t('ourServices')} subtitle={language === 'bn' ? 'ব্যাপক ডিজিটাল সমাধান।' : 'Comprehensive digital solutions.'} />
-                    <button onClick={() => onNavigate('Services')} className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold mb-16">{t('readMore')} <ArrowRight size={16} /></button>
+                    <button 
+                        onClick={() => onNavigate('Services')} 
+                        className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold mb-16"
+                        aria-label="View all services"
+                    >
+                        {t('readMore')} <ArrowRight size={16} />
+                    </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {services.slice(0, 6).map((service) => {
@@ -225,9 +232,10 @@ const HomePage = ({ setBuildConfig }: { setBuildConfig: any }) => {
                             <div key={service.id} onClick={() => onNavigate('ServiceDetail', getSlug(service.title))} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
                                 <div className="h-48 overflow-hidden relative shrink-0">
                                     <img
-                                        src={service.image}
+                                        src={getProxiedImage(service.image, 400)}
                                         alt={title}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        loading="lazy"
                                     />
                                 </div>
                                 <div className="p-8 flex flex-col flex-grow">
@@ -260,7 +268,12 @@ const HomePage = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                 data-title={title.toLowerCase()}
                             >
                                 <div className="h-64 relative overflow-hidden">
-                                    <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                    <img 
+                                        src={getProxiedImage(project.image, 400)} 
+                                        alt={title} 
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                        loading="lazy"
+                                    />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
                                 <div className="p-8 flex flex-col h-[300px] overflow-hidden bg-white">
@@ -275,6 +288,7 @@ const HomePage = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                                     onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
                                                     className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm shrink-0"
                                                     title="View Live"
+                                                    aria-label={`View live site for ${title}`}
                                                 >
                                                     <ExternalLink size={18} />
                                                 </button>
