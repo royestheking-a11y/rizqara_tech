@@ -9,7 +9,7 @@ import {
     Layout, Monitor, Clock,
     Settings, Sliders, Play, User, Send, MapPin, Phone, Mail,
     MessageCircle, Bot, Loader, Activity, PlayCircle, MessageSquare,
-    Music, Pause, Volume2
+    Music, Pause, Volume2, Share2, ExternalLink
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { getSlug } from '../../App';
@@ -18,6 +18,85 @@ import { toast } from "sonner";
 
 // --- UTILS ---
 // const formatCurrency = (amount: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
+
+export const DetailSkeleton = () => (
+    <div className="container mx-auto px-6 py-24 min-h-screen">
+        <div className="mb-12 animate-pulse w-32 h-6 bg-gray-200 rounded-full"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+            <div>
+                <div className="h-16 md:h-24 bg-gray-200 rounded-2xl w-full mb-8 animate-pulse"></div>
+                <div className="h-16 md:h-24 bg-gray-200 rounded-2xl w-3/4 mb-12 animate-pulse"></div>
+                <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+                </div>
+            </div>
+            <div className="aspect-video bg-gray-200 rounded-3xl animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 rounded-3xl animate-pulse"></div>
+        </div>
+    </div>
+);
+
+// --- LOGOS ---
+
+export const XLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+);
+
+export const MediumLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+        <path d="M13.54 12a6.8 6.8 0 11-6.77-6.82A6.77 6.77 0 0113.54 12zM20.96 12c0 3.54-1.51 6.41-3.38 6.41S14.2 15.54 14.2 12s1.51-6.41 3.38-6.41 3.38 2.87 3.38 6.41zM24 12c0 3.17-.53 5.75-1.19 5.75s-1.19-2.58-1.19-5.75.53-5.75 1.19-5.75S24 8.83 24 12z" />
+    </svg>
+);
+
+// --- SHARED UI COMPONENTS ---
+
+export const ButtonPremium = ({ children, onClick, className = "", variant = "primary", ...props }: any) => {
+    const baseStyles = "px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all duration-500 flex items-center gap-3 active:scale-95";
+    const variants = {
+        primary: "bg-[#500000] text-white hover:bg-[#3a0000] shadow-[0_10px_30px_rgba(80,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(80,0,0,0.4)]",
+        outline: "bg-transparent border-2 border-[#500000] text-[#500000] hover:bg-[#500000] hover:text-white",
+        glass: "bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
+    };
+
+    return (
+        <button
+            onClick={onClick}
+            className={`${baseStyles} ${(variants as any)[variant]} ${className}`}
+            {...props}
+        >
+            {children}
+        </button>
+    );
+};
+
+export const SectionTitle = ({ title, subtitle, center = false, light = false }: { title: string, subtitle?: string, center?: boolean, light?: boolean }) => (
+    <div className={`mb-16 ${center ? 'text-center' : 'text-left'}`}>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-4"
+        >
+            <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${light ? 'text-white' : 'text-gray-900'} leading-none`}>
+                {title}
+            </h2>
+            {subtitle && (
+                <p className={`text-lg md:text-xl font-medium max-w-2xl ${light ? 'text-white/60' : 'text-gray-500'} ${center ? 'mx-auto' : ''}`}>
+                    {subtitle}
+                </p>
+            )}
+            <div className={`h-1.5 w-24 bg-[#500000] rounded-full ${center ? 'mx-auto' : ''}`} />
+        </motion.div>
+    </div>
+);
 
 // --- 1. CAROUSEL (Generic) ---
 export const Carousel = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
