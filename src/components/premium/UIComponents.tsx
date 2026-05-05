@@ -32,8 +32,8 @@ export const MediumLogo = ({ size = 24, className = "" }: { size?: number, class
     </svg>
 );
 
-export const SectionTitle = ({ title, subtitle, center = false }: { title: string, subtitle?: string, center?: boolean }) => (
-    <div className={`mb-16 ${center ? 'text-center' : ''}`}>
+export const SectionTitle = ({ title, subtitle, center = false, className = "mb-16" }: { title: string, subtitle?: string, center?: boolean, className?: string }) => (
+    <div className={`${className} ${center ? 'text-center' : ''}`}>
         <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export const SectionTitle = ({ title, subtitle, center = false }: { title: strin
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                className="text-lg text-gray-600 max-w-2xl mx-auto font-light leading-relaxed"
+                className={`text-lg text-gray-600 max-w-2xl font-light leading-relaxed ${center ? 'mx-auto' : ''}`}
             >
                 {subtitle}
             </motion.p>

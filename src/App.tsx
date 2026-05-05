@@ -1406,10 +1406,19 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             {/* 6. REAL PROJECTS PREVIEW (Carousel) */}
             <section className="w-full py-24 bg-gray-50 border-y border-gray-200">
                 <div className="container mx-auto px-6 mb-12">
-                    <SectionTitle
-                        title={t('ourProjects')}
-                        subtitle={language === 'bn' ? "আমাদের সাম্প্রতিক কাজ এবং সাফল্যের গল্প দেখুন।" : "Explore our latest work and success stories delivering impact."}
-                    />
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <SectionTitle
+                            title={t('ourProjects')}
+                            subtitle={language === 'bn' ? "আমাদের সাম্প্রতিক কাজ এবং সাফল্যের গল্প দেখুন।" : "Explore our latest work and success stories delivering impact."}
+                        />
+                        <button
+                            onClick={() => onNavigate('Projects')}
+                            className="px-6 py-3 font-bold rounded-full transition-all text-sm shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap mb-16"
+                            style={{ backgroundColor: '#500000', color: '#ffffff' }}
+                        >
+                            {language === 'bn' ? 'সবগুলো প্রজেক্ট দেখুন' : 'See all Projects'}
+                        </button>
+                    </div>
 
                     {/* Homepage Project Search */}
                     <div className="relative max-w-md md:max-w-6xl mx-auto -mt-8 mb-8 z-10">
