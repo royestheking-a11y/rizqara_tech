@@ -228,6 +228,18 @@ const INITIAL_PROMOTION: Promotion = {
 
 const INITIAL_NOTICES: Notice[] = [];
 
+const DEFAULT_BUILD_OPTIONS: BuildOption[] = [
+  { id: '1', category: 'type', label: 'Web Application', label_bn: 'ওয়েব অ্যাপ্লিকেশন', value: 1000 },
+  { id: '2', category: 'type', label: 'Mobile App', label_bn: 'মোবাইল অ্যাপ', value: 1500 },
+  { id: '3', category: 'type', label: 'E-Commerce', label_bn: 'ই-কমার্স', value: 1200 },
+  { id: '4', category: 'feature', label: 'Standard', label_bn: 'সাধারণ', value: 0 },
+  { id: '5', category: 'feature', label: 'Premium', label_bn: 'প্রিমিয়াম', value: 500 },
+  { id: '6', category: 'feature', label: 'Enterprise', label_bn: 'এন্টারপ্রাইজ', value: 1000 },
+  { id: '7', category: 'time', label: '1 Month', label_bn: '১ মাস', value: 1 },
+  { id: '8', category: 'time', label: '2 Months', label_bn: '২ মাস', value: 0.9 },
+  { id: '9', category: 'time', label: '3+ Months', label_bn: '৩+ মাস', value: 0.8 },
+];
+
 // --- Context ---
 
 const DataContext = createContext<DataContextType>({} as DataContextType);
@@ -242,7 +254,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [jobs, setJobs] = useState<Job[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [carouselSlides, setCarouselSlides] = useState<CarouselSlide[]>([]);
-  const [buildOptions, setBuildOptions] = useState<BuildOption[]>([]);
+  const [buildOptions, setBuildOptions] = useState<BuildOption[]>(DEFAULT_BUILD_OPTIONS);
   const [messages, setMessages] = useState<Message[]>([]);
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
@@ -302,12 +314,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchData = async () => {
       // Phase 1: Critical Data (Required to show the main page)
       try {
-        const [servicesRes, projectsRes, carouselRes, promotionRes, noticeRes] = await Promise.all([
+        const [servicesRes, projectsRes, carouselRes, promotionRes, noticeRes, buildOptionsRes] = await Promise.all([
           fetchWithRetry(`${API_URL}/services`),
           fetchWithRetry(`${API_URL}/projects`),
           fetchWithRetry(`${API_URL}/carousel`),
           fetchWithRetry(`${API_URL}/promotion`),
-          fetchWithRetry(`${API_URL}/notice`)
+          fetchWithRetry(`${API_URL}/notice`),
+          fetchWithRetry(`${API_URL}/buildOptions`)
         ]);
 
         if (servicesRes.ok) setServices(await servicesRes.json());
@@ -317,9 +330,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const promoData = await promotionRes.json();
           setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
         }
-        // @ts-ignore
         if (noticeRes && noticeRes.ok) {
           setNotices(await noticeRes.json());
+        }
+        if (buildOptionsRes && buildOptionsRes.ok) {
+          setBuildOptions(await buildOptionsRes.json());
         }
 
         // We can show the site now!
@@ -331,12 +346,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Phase 2: Secondary Data (Background load)
       try {
-        const [reviewsRes, blogsRes, jobsRes, videosRes, buildOptionsRes, caseStudiesRes] = await Promise.all([
+        const [reviewsRes, blogsRes, jobsRes, videosRes, caseStudiesRes] = await Promise.all([
           fetchWithTimeout(`${API_URL}/reviews`),
           fetchWithTimeout(`${API_URL}/blogs`),
           fetchWithTimeout(`${API_URL}/jobs`),
           fetchWithTimeout(`${API_URL}/videos`),
-          fetchWithTimeout(`${API_URL}/buildOptions`),
           fetchWithTimeout(`${API_URL}/caseStudies`)
         ]);
 
@@ -344,7 +358,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (blogsRes.ok) setBlogs(await blogsRes.json());
         if (jobsRes.ok) setJobs(await jobsRes.json());
         if (videosRes.ok) setVideos(await videosRes.json());
-        if (buildOptionsRes.ok) setBuildOptions(await buildOptionsRes.json());
         if (caseStudiesRes.ok) setCaseStudies(await caseStudiesRes.json());
       } catch (error) {
         console.error('Phase 2 fetch failed:', error);

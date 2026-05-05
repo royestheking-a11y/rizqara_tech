@@ -1353,7 +1353,7 @@ export const BuildPreviewTeaser = ({ onNavigate, setBuildConfig }: any) => {
         onNavigate('Build');
     };
 
-    if (!buildOptions.length) return null;
+
 
     return (
         <section className="container mx-auto px-6 -mt-20 relative z-20 mb-32">
