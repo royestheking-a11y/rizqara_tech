@@ -12,6 +12,7 @@ export const translations = {
     admin: "Admin",
     projects: "Projects",
     careers: "Careers",
+    blog: "Blog",
     
     // Hero
     heroTitle: "Building Digital Empires",
@@ -77,6 +78,7 @@ export const translations = {
     admin: "অ্যাডমিন",
     projects: "প্রকল্পসমূহ",
     careers: "ক্যারিয়ার",
+    blog: "ব্লগ",
     
     // Hero
     heroTitle: "ডিজিটাল সাম্রাজ্য নির্মাণ",
