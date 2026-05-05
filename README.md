@@ -1,3 +1,7 @@
+Source: https://raw.githubusercontent.com/royestheking-a11y/rizqara_tech/main/README.md
+
+---
+
 # RizQara Tech - Enterprise Software & AI Solutions
 
 RizQara Tech is a premier software development agency delivering enterprise-grade Web Applications, AI Solutions, and Mobile Apps. This repository contains the source code for the official website and client platform.
@@ -79,3 +83,5 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 ## 📄 License
 
 This project is proprietary software of RizQara Tech. All rights reserved.
+
+<!-- Achievement tracking: YOLO -->
