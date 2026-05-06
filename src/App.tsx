@@ -30,7 +30,7 @@ import {
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton, AboutHero,
-    SectionTitle, XLogo, MediumLogo
+    SectionTitle, XLogo, MediumLogo, WhatsAppLogo
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import { Vision2030Page } from './components/pages/Vision2030Page';
@@ -1286,6 +1286,18 @@ const Footer = () => {
                             <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
                         </form>
                     </div>
+                </div>
+
+                <div className="flex justify-center mb-16">
+                     <a 
+                        href="https://wa.me/message/CSYKXUISDAIVI1" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-4 px-12 py-5 bg-[#25D366] text-white rounded-2xl font-black text-lg hover:bg-[#128C7E] transition-all shadow-[0_20px_40px_rgba(37,211,102,0.3)] hover:shadow-[0_25px_50px_rgba(37,211,102,0.4)] transform hover:-translate-y-1 active:translate-y-0 group max-w-md w-full"
+                    >
+                        <WhatsAppLogo size={28} />
+                        {language === 'bn' ? 'আমাদের মার্কেটিং টিমের সাথে কথা বলুন' : 'Connect with Marketing Team'}
+                    </a>
                 </div>
 
                 <div className="border-t border-gray-200 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">

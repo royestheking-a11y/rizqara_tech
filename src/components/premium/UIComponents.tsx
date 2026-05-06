@@ -8,7 +8,7 @@ import {
     Rocket, Star, Crown,
     Layout, Monitor, Clock,
     Settings, Sliders, Play, User, Send, MapPin, Phone, Mail,
-    MessageCircle, Bot, Loader, Activity, PlayCircle, MessageSquare,
+    Bot, Loader, Activity, PlayCircle, MessageSquare,
     Music, Pause, Volume2
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
@@ -29,6 +29,12 @@ export const XLogo = ({ size = 24, className = "" }: { size?: number, className?
 export const MediumLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
         <path d="M13.54 12a6.8 6.8 0 11-6.77-6.82A6.77 6.77 0 0113.54 12zM20.96 12c0 3.54-1.51 6.41-3.38 6.41S14.2 15.54 14.2 12s1.51-6.41 3.38-6.41 3.38 2.87 3.38 6.41zM24 12c0 3.17-.53 5.75-1.19 5.75s-1.19-2.58-1.19-5.75.53-5.75 1.19-5.75S24 8.83 24 12z" />
+    </svg>
+);
+
+export const WhatsAppLogo = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
     </svg>
 );
 
@@ -1691,6 +1697,16 @@ export const ContactFormWithMap = () => {
                             </div>
                         </a>
 
+                        <a href="https://wa.me/message/CSYKXUISDAIVI1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#25D366]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
+                            <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all duration-300">
+                                <WhatsAppLogo size={24} />
+                            </div>
+                            <div>
+                                <h5 className="font-bold text-gray-900 text-xs uppercase tracking-widest mb-1 opacity-60 group-hover:opacity-100 transition-opacity">{language === 'bn' ? 'হোয়াটসঅ্যাপ' : 'WhatsApp'}</h5>
+                                <p className="text-lg font-medium text-gray-800 group-hover:text-[#25D366] transition-colors">{language === 'bn' ? 'সরাসরি চ্যাট করুন' : 'Chat with us live'}</p>
+                            </div>
+                        </a>
+
                         <a href="mailto:rizqaratech@gmail.com" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
                             <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300">
                                 <Mail size={24} />
@@ -1820,7 +1836,7 @@ export const ContactFormWithMap = () => {
 export const RizqAIBot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { language, services, projects, reviews, caseStudies, addMessage } = useData();
-    const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link' | 'summary', actionLink?: string, actionLabel?: string }[]>([
+    const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link' | 'summary' | 'whatsapp_btn', actionLink?: string, actionLabel?: string }[]>([
         { id: 1, text: language === 'bn' ? 'হ্যালো! আমি RizqAI। আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?' : "Hello! I'm RizqAI. How can I help you build your digital product today?", sender: 'bot', type: 'text' }
     ]);
     const [inputText, setInputText] = useState('');
@@ -1852,7 +1868,7 @@ export const RizqAIBot = () => {
         setTimeout(() => {
             const lowerText = userText.toLowerCase();
             let reply = "";
-            let type: 'text' | 'button' | 'link' | 'summary' = 'text';
+            let type: 'text' | 'button' | 'link' | 'summary' | 'whatsapp_btn' = 'text';
             let actionLink = '';
             let actionLabel = '';
 
@@ -1888,7 +1904,13 @@ export const RizqAIBot = () => {
             }
             // 2. INTENT & KNOWLEDGE BASE
             else {
-                if (lowerText.match(/\b(hi|hello|hey|greetings|start|hola|হ্যালো|হাই)\b/)) {
+                if (lowerText.match(/\b(whatsapp|wa\.me|হোয়াটসঅ্যাপ)\b/)) {
+                    reply = language === 'bn' 
+                        ? "সরাসরি আমাদের মার্কেটিং টিমের সাথে WhatsApp-এ যোগাযোগ করুন আরও বিস্তারিত জানতে।" 
+                        : "Direct connect with WhatsApp our marketing team for more details.";
+                    type = 'whatsapp_btn';
+                }
+                else if (lowerText.match(/\b(hi|hello|hey|greetings|start|hola|হ্যালো|হাই)\b/)) {
                     reply = language === 'bn'
                         ? "হ্যালো! RizqAI-এ স্বাগতম। আপনি কি আপনার ব্যবসার জন্য একটি ওয়েবসাইট বা অ্যাপ তৈরির কথা ভাবছেন? আমি আপনাকে সাহায্য করতে পারি।"
                         : "Hello! Welcome to RizQara Tech. Are you thinking about building a website or app for your business? I'm here to guide you.";
@@ -1973,9 +1995,7 @@ export const RizqAIBot = () => {
         setChatState('idle');
     };
 
-    const whatsappLink = `https://wa.me/8801948485878?text=${encodeURIComponent(
-        `Hello RizQara Tech,\n\nI am ${leadData.name}.\nI need: ${leadData.requirements}\nEmail: ${leadData.email}\nPhone: ${leadData.phone}\n(Contacting via RizqAI Bot - 20% Discount Inquiry)`
-    )}`;
+    const whatsappLink = `https://wa.me/message/CSYKXUISDAIVI1`;
 
     return (
         <div className="fixed bottom-6 right-6 z-[9999]">
@@ -2025,6 +2045,20 @@ export const RizqAIBot = () => {
                                             }`}
                                     >
                                         <div className="whitespace-pre-line">{msg.text}</div>
+                                        
+                                        {msg.type === 'whatsapp_btn' && (
+                                            <div className="mt-4 w-full">
+                                                <a 
+                                                    href="https://wa.me/message/CSYKXUISDAIVI1"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-full bg-[#25D366] text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all shadow-md active:scale-95"
+                                                    style={{ backgroundColor: '#25D366' }}
+                                                >
+                                                    <WhatsAppLogo size={18} /> {language === 'bn' ? 'সরাসরি WhatsApp-এ কথা বলুন' : 'Direct Connect on WhatsApp'}
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Action Buttons/Links */}
@@ -2041,8 +2075,9 @@ export const RizqAIBot = () => {
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all shadow-md"
+                                                style={{ backgroundColor: '#25D366' }}
                                             >
-                                                <MessageCircle size={18} fill="white" /> {language === 'bn' ? 'WhatsApp-এ যোগাযোগ করুন' : 'Chat on WhatsApp'}
+                                                <WhatsAppLogo size={18} /> {language === 'bn' ? 'WhatsApp-এ যোগাযোগ করুন' : 'Chat on WhatsApp'}
                                             </a>
                                         </div>
                                     )}
