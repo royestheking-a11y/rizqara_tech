@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useData, BlogPost } from '../../context/DataContext';
 
-import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play, Share2, MessageCircle, Send } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, PlayCircle, X, Upload, Check, FileText, Linkedin, Twitter, Mail, MessageSquare, Play, Share2, MessageCircle, Send, User, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -608,11 +608,13 @@ export const VideosPage: React.FC<{ onNavigate?: (page: string, id?: string) => 
 
 export const TeamSection = () => {
     const { language } = useData();
+    const SHOW_TEAM_IMAGES = false;
 
     type TeamMember = {
         name: string;
         position: string;
         image: string;
+        gender: 'male' | 'female';
         bio?: string;
     };
 
@@ -620,37 +622,37 @@ export const TeamSection = () => {
         {
             role: "Founder",
             members: [
-                { name: "Aurangzeb Sunny", position: language === 'bn' ? "প্রতিষ্ঠাতা" : "Founder", image: "/aurangzebsunny.png", bio: language === 'bn' ? "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 5+ years in tech innovation." }
+                { name: "Aurangzeb Sunny", position: language === 'bn' ? "প্রতিষ্ঠাতা" : "Founder", image: "/aurangzebsunny.png", gender: 'male', bio: language === 'bn' ? "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।" : "Visionary leader with 5+ years in tech innovation." }
             ]
         },
         {
             role: "Executive Leadership",
             members: [
-                { name: "Pritom Sarker", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "/pritom.jpg", bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
+                { name: "Pritom Sarker", position: language === 'bn' ? "প্রধান নির্বাহী কর্মকর্তা" : "Chief Executive Officer", image: "/pritom.jpg", gender: 'male', bio: language === 'bn' ? "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।" : "Driving global strategy and operational excellence." }
             ]
         },
         {
             role: "Management",
             members: [
-                { name: "Sanju Monowara", position: language === 'bn' ? "ম্যানেজমেন্ট হেড" : "Management Head", image: "/sanju.jpg", bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." },
-                { name: "Afrin Rahman Omi", position: language === 'bn' ? "জেনারেল ম্যানেজার" : "General Manager", image: "/afrin.jpg", bio: language === 'bn' ? "অপারেশন পরিচালনা এবং প্রাতিষ্ঠানিক সাফল্য নিশ্চিত করছেন।" : "Overseeing operations and ensuring organizational success." }
+                { name: "Sanju Monowara", position: language === 'bn' ? "ম্যানেজমেন্ট হেড" : "Management Head", image: "/sanju.jpg", gender: 'female', bio: language === 'bn' ? "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।" : "Ensuring seamless delivery across all projects." },
+                { name: "Afrin Rahman Omi", position: language === 'bn' ? "জেনারেল ম্যানেজার" : "General Manager", image: "/afrin.jpg", gender: 'female', bio: language === 'bn' ? "অপারেশন পরিচালনা এবং প্রাতিষ্ঠানিক সাফল্য নিশ্চিত করছেন।" : "Overseeing operations and ensuring organizational success." }
             ]
         },
         {
             role: "Engineering & Design",
             members: [
-                { name: "Safayat Hossen Alif", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "/alif.jpg", bio: language === 'bn' ? "শক্তিশালী এবং স্্যালবাল সফটওয়্যার সলিউশন তৈরি করছেন।" : "Architecting robust and scalable software solutions." },
-                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "/samii.jpg", bio: language === 'bn' ? "সহজ এবং দৃষ্টিনন্দন ইউজার এক্সপেরিয়েন্স তৈরি করছেন।" : "Crafting intuitive and aesthetically pleasing user experiences." },
-                { name: "Taskia Newaz", position: language === 'bn' ? "সিনিয়র গ্রাফিক্স ডিজাইনার" : "Senior Graphics Designer", image: "/taskia.jpg", bio: language === 'bn' ? "সৃজনশীল ভিজ্যুয়াল এবং ব্র্যান্ডিংয়ে বিশেষজ্ঞ।" : "Specializing in creative visuals and branding." },
-                { name: "Tamzid Islam Rafat", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "/rafat.jpg", bio: language === 'bn' ? "সৃজনশীল ভিজ্যুয়াল স্টোরিটেলিংয়ের মাধ্যমে আইডিয়ায় প্রাণ দিচ্ছেন।" : "Bringing ideas to life through creative visual storytelling." }
+                { name: "Safayat Hossen Alif", position: language === 'bn' ? "লিড ডেভেলপার" : "Lead Developer", image: "/alif.jpg", gender: 'male', bio: language === 'bn' ? "শক্তিশালী এবং স্্যালবাল সফটওয়্যার সলিউশন তৈরি করছেন।" : "Architecting robust and scalable software solutions." },
+                { name: "Muhammad Sami", position: language === 'bn' ? "সিনিয়র ইউআই/ইউএক্স ডিজাইনার" : "Senior UI/UX Designer", image: "/samii.jpg", gender: 'male', bio: language === 'bn' ? "সহজ এবং দৃষ্টিননন্দ ইউজার এক্সপেরিয়েন্স তৈরি করছেন।" : "Crafting intuitive and aesthetically pleasing user experiences." },
+                { name: "Taskia Newaz", position: language === 'bn' ? "সিনিয়র গ্রাফিক্স ডিজাইনার" : "Senior Graphics Designer", image: "/taskia.jpg", gender: 'female', bio: language === 'bn' ? "সৃজনশীল ভিজ্যুয়াল এবং ব্র্যান্ডিংয়ে বিশেষজ্ঞ।" : "Specializing in creative visuals and branding." },
+                { name: "Tamzid Islam Rafat", position: language === 'bn' ? "গ্রাফিক্স ডিজাইনার" : "Graphics Designer", image: "/rafat.jpg", gender: 'male', bio: language === 'bn' ? "সৃজনশীল ভিজ্যুয়াল স্টোরিটেলিংয়ের মাধ্যমে আইডিয়ায় প্রাণ দিচ্ছেন।" : "Bringing ideas to life through creative visual storytelling." }
             ]
         },
         {
             role: "Growth & Marketing",
             members: [
-                { name: "GM Moshiur", position: language === 'bn' ? "মার্কেটিং হেড" : "Marketing Head", image: "/gm mosiur.jpeg", bio: language === 'bn' ? "ব্র্যান্ডের বৃদ্ধি এবং উপস্থিতি বাড়াতে মার্কেটিং স্ট্র্যাটেজি পরিচালনা করছেন।" : "Leading marketing strategies to drive brand growth and presence." },
-                { name: "Mafuz Ahmed", position: language === 'bn' ? "কন্টেন্ট রাইটার" : "Content Writer", image: "/mahfuz.jpg", bio: language === 'bn' ? "দর্শকদের আকৃষ্ট এবং অনুপ্রাণিত করতে চমৎকার কনটেন্ট তৈরি করছেন।" : "Creating compelling narratives to engage and inspire audiences." },
-                { name: "Sourob Hawlader", position: language === 'bn' ? "ডিজিটাল মার্কেটার" : "Digital Marketer", image: "/sourob.jpg", bio: language === 'bn' ? "সর্বোচ্চ রিচ পেতে ডেটা-নির্ভর ডিজিটাল ক্যাম্পেইন পরিচালনা করছেন।" : "Executing data-driven digital campaigns for maximum reach." }
+                { name: "GM Moshiur", position: language === 'bn' ? "মার্কেটিং হেড" : "Marketing Head", image: "/gm mosiur.jpeg", gender: 'male', bio: language === 'bn' ? "ব্র্যান্ডের বৃদ্ধি এবং উপস্থিতি বাড়াতে মার্কেটিং স্ট্র্যাটেজি পরিচালনা করছেন।" : "Leading marketing strategies to drive brand growth and presence." },
+                { name: "Mafuz Ahmed", position: language === 'bn' ? "কন্টেন্ট রাইটার" : "Content Writer", image: "/mahfuz.jpg", gender: 'male', bio: language === 'bn' ? "দর্শকদের আকৃষ্ট এবং অনুপ্রাণিত করতে চমৎকার কনটেন্ট তৈরি করছেন।" : "Creating compelling narratives to engage and inspire audiences." },
+                { name: "Sourob Hawlader", position: language === 'bn' ? "ডিজিটাল মার্কেটার" : "Digital Marketer", image: "/sourob.jpg", gender: 'male', bio: language === 'bn' ? "সর্বোচ্চ রিচ পেতে ডেটা-নির্ভর ডিজিটাল ক্যাম্পেইন পরিচালনা করছেন।" : "Executing data-driven digital campaigns for maximum reach." }
             ]
         }
     ];
@@ -670,7 +672,18 @@ export const TeamSection = () => {
                     className="group relative w-full max-w-[320px]"
                 >
                     <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-6 border border-gray-200 bg-gray-100 relative shadow-md">
-                        <img src={member.image} alt={member.name} loading="lazy" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
+                        {SHOW_TEAM_IMAGES ? (
+                            <img src={member.image} alt={member.name} loading="lazy" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#500000]/5 to-white relative group-hover:bg-[#500000]/10 transition-colors duration-500">
+                                <div className="absolute inset-0 opacity-[0.03] pattern-grid-lg"></div>
+                                {member.gender === 'female' ? (
+                                    <UserRound size={120} strokeWidth={1} className="text-[#500000]/20 group-hover:text-[#500000]/30 transition-all duration-500 transform group-hover:scale-110" />
+                                ) : (
+                                    <User size={120} strokeWidth={1} className="text-[#500000]/20 group-hover:text-[#500000]/30 transition-all duration-500 transform group-hover:scale-110" />
+                                )}
+                            </div>
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <div className="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform">
