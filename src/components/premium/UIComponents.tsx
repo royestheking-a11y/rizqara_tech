@@ -1207,31 +1207,20 @@ const DEFAULT_SLIDES = [
 ];
 
 export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
-    const { carouselSlides, language } = useData();
-    // Use Default Slides initially to prevent loading spinner (Instant Show)
+    const { carouselSlides, language, loading } = useData();
+    // Use Default Slides initially to prevent loading spinner (Instant Show) if not strictly loading
     const slides = (carouselSlides && carouselSlides.length > 0) ? carouselSlides : DEFAULT_SLIDES;
 
-    const [current, setCurrent] = useState(0);
-
-    /* 
-       Optimized Auto-Play:
-       - Uses refs to avoid closure staleness
-       - Clears interval on unmount
-    */
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrent(prev => (prev + 1) % slides.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, [slides.length]);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     // Preload images for instant transition
     useEffect(() => {
+        if (loading) return;
         slides.forEach(slide => {
             const img = new Image();
             img.src = getProxiedImage(slide.image);
         });
-    }, [slides]);
+    }, [slides, loading]);
 
     const handleCtaClick = (action: string) => {
         if (action.includes('Project') || action.includes('প্রকল্প')) onNavigate('Projects');
@@ -1242,75 +1231,118 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
         else onNavigate('Contact');
     };
 
+    if (loading) {
+        return (
+            <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
+                <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
+                    {[1, 2, 3].map((i) => (
+                        <div 
+                            key={i}
+                            className="relative overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-800 animate-pulse border border-gray-300 dark:border-gray-700"
+                            style={{ flex: "1 1 0%" }}
+                        >
+                            {/* Skeleton for vertical title */}
+                            <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+                                <div className="w-4 md:w-6 h-32 md:h-48 bg-gray-300 dark:bg-gray-700 rounded-full opacity-50" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+    }
+
     if (!slides.length) return null;
 
-    const currentSlide = slides[current];
-    const title = language === 'bn' ? (currentSlide?.title_bn || currentSlide?.title) : currentSlide?.title;
-    const subtitle = language === 'bn' ? (currentSlide?.subtitle_bn || currentSlide?.subtitle) : currentSlide?.subtitle;
-    const cta = language === 'bn' ? (currentSlide?.cta_bn || currentSlide?.cta || 'Contact Now') : (currentSlide?.cta || 'Contact Now');
-
     return (
-        <section className="container mx-auto px-4 md:px-6 pt-32 pb-12"> {/* Added pt-32 to clear fixed navbar */}
-            <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-900 group border border-gray-200">
-                {/* Fixed Aspect Ratio Container */}
-                <div className="relative w-full h-[500px] md:h-[600px] lg:h-[650px]">
+        <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
+            <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
+                {slides.map((slide, idx) => {
+                    const isActive = hoveredIndex === idx;
+                    // When nothing is hovered, give them equal space
+                    const isAnyHovered = hoveredIndex !== null;
 
-                    {/* Images */}
-                    {slides.map((slide, idx) => (
+                    const title = language === 'bn' ? (slide.title_bn || slide.title) : slide.title;
+                    const subtitle = language === 'bn' ? (slide.subtitle_bn || slide.subtitle) : slide.subtitle;
+                    const cta = language === 'bn' ? (slide.cta_bn || slide.cta || 'Contact Now') : (slide.cta || 'Contact Now');
+
+                    return (
                         <div
                             key={slide.id || idx}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${current === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                            onMouseEnter={() => setHoveredIndex(idx)}
+                            onMouseLeave={() => setHoveredIndex(null)}
+                            className="relative overflow-hidden rounded-xl cursor-pointer group flex-shrink-0 bg-gray-900 border border-gray-200 shadow-2xl"
+                            style={{
+                                flex: isActive ? "8 1 0%" : isAnyHovered ? "1 1 0%" : "2 1 0%",
+                                transition: "flex 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
+                            }}
+                            onClick={() => {
+                                // On mobile, tapping makes it active. If already active, maybe do nothing or trigger CTA
+                                if (!isAnyHovered) setHoveredIndex(idx);
+                            }}
                         >
                             <img
                                 src={getProxiedImage(slide.image)}
-                                alt={slide.title}
+                                alt={title}
                                 loading={idx === 0 ? "eager" : "lazy"}
-                                className="w-full h-full object-cover"
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out"
+                                style={{
+                                    transform: isActive ? "scale(1.05)" : "scale(1)",
+                                    filter: isActive ? "brightness(0.9) grayscale(0%)" : "brightness(0.5) grayscale(60%)",
+                                    transition: "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
+                                }}
                             />
-                            {/* Stronger Gradient Overlay for Text Readability */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent opacity-60" />
-                        </div>
-                    ))}
-
-                    {/* Content Layer */}
-                    <div className="absolute inset-0 z-20 flex flex-col justify-end md:justify-center p-8 md:p-16 lg:p-24 pb-16 md:pb-16 text-left pointer-events-none">
-                        <div className="max-w-3xl pointer-events-auto">
-                            <span className="inline-block px-3 py-1 bg-[#500000]/90 backdrop-blur-md border border-[#500000] rounded-full text-white text-xs font-bold uppercase tracking-widest mb-4 shadow-lg">
-                                Rizqara Tech
-                            </span>
-
-                            {/* Text Transition */}
-                            <div className="transition-all duration-500 ease-out transform translate-y-0 opacity-100">
-                                <h1 key={`t-${current}`} className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight animate-in fade-in slide-in-from-bottom-4 duration-500 drop-shadow-lg">
+                            
+                            {/* Vertical Title (when not hovered/collapsed) */}
+                            <div 
+                                className={`absolute inset-0 flex flex-col justify-end p-4 md:p-8 transition-opacity duration-500 ${isActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                            >
+                                <p
+                                    style={{
+                                        writingMode: "vertical-rl",
+                                        textOrientation: "mixed",
+                                        transform: "rotate(180deg)",
+                                    }}
+                                    className="whitespace-nowrap font-black text-white/90 uppercase tracking-widest text-xs md:text-base drop-shadow-md"
+                                >
                                     {title}
-                                </h1>
-                                <p key={`s-${current}`} className="text-lg md:text-xl text-white/90 mb-8 max-w-xl font-light leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-500 delay-100 drop-shadow-md">
-                                    {subtitle}
                                 </p>
                             </div>
 
-                            <button
-                                onClick={() => handleCtaClick(currentSlide.cta || 'Contact Now')}
-                                className="bg-[#500000] text-white px-8 py-4 rounded-full font-bold text-base md:text-lg hover:bg-[#3a0000] transition-all flex items-center gap-2 shadow-[0_10px_20px_rgba(80,0,0,0.4)] hover:-translate-y-1 active:translate-y-0 border border-white/10"
+                            {/* Expanded Content (when hovered/active) */}
+                            <div 
+                                className={`absolute inset-0 z-20 flex flex-col justify-end p-6 md:p-12 pb-12 md:pb-16 transition-all duration-700 ease-out ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}
+                                style={{
+                                    background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)",
+                                }}
                             >
-                                {cta}
-                            </button>
-                        </div>
-                    </div>
+                                <div className="w-12 h-[2px] bg-[#500000] mb-6" />
+                                
+                                <span className="inline-block px-3 py-1 bg-[#500000]/90 backdrop-blur-md border border-[#500000] rounded-full text-white text-[10px] md:text-xs font-bold uppercase tracking-widest mb-4 shadow-lg w-max">
+                                    Rizqara Tech
+                                </span>
 
-                    {/* Indicators */}
-                    <div className="absolute bottom-6 md:bottom-10 right-6 md:right-10 z-30 flex gap-2">
-                        {slides.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setCurrent(idx)}
-                                className={`h-2 rounded-full transition-all duration-300 ${current === idx ? 'w-8 bg-[#500000]' : 'w-2 bg-white/50 hover:bg-white/80'}`}
-                                aria-label={`Go to slide ${idx + 1}`}
-                            />
-                        ))}
-                    </div>
-                </div>
+                                <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-4 leading-tight drop-shadow-lg whitespace-normal">
+                                    {title}
+                                </h2>
+                                
+                                <p className="text-sm md:text-lg text-white/90 mb-8 max-w-xl font-light leading-relaxed drop-shadow-md hidden md:block whitespace-normal">
+                                    {subtitle}
+                                </p>
+
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCtaClick(slide.cta || 'Contact Now');
+                                    }}
+                                    className="bg-[#500000] text-white px-6 py-3 md:px-8 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-[#3a0000] transition-all flex items-center justify-center gap-2 shadow-[0_10px_20px_rgba(80,0,0,0.4)] hover:-translate-y-1 active:translate-y-0 border border-white/10 w-max pointer-events-auto"
+                                >
+                                    {cta}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </section>
     );
@@ -2152,17 +2184,21 @@ const Skeleton = ({ className }: { className: string }) => (
 );
 
 export const HeroSkeleton = () => (
-    <div className="relative w-full h-[60vh] md:h-[85vh] bg-gray-100 overflow-hidden">
-        <div className="container mx-auto px-6 h-full flex flex-col justify-center">
-            <Skeleton className="w-24 h-6 mb-8" />
-            <Skeleton className="w-full max-w-2xl h-16 md:h-24 mb-6" />
-            <Skeleton className="w-full max-w-xl h-20 mb-10" />
-            <div className="flex gap-4">
-                <Skeleton className="w-40 h-14 rounded-full" />
-                <Skeleton className="w-40 h-14 rounded-full" />
-            </div>
+    <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
+        <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
+            {[1, 2, 3].map((i) => (
+                <div 
+                    key={i}
+                    className="relative overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-800 animate-pulse border border-gray-300 dark:border-gray-700"
+                    style={{ flex: "1 1 0%" }}
+                >
+                    <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+                        <div className="w-4 md:w-6 h-32 md:h-48 bg-gray-300 dark:bg-gray-700 rounded-full opacity-50" />
+                    </div>
+                </div>
+            ))}
         </div>
-    </div>
+    </section>
 );
 
 export const ServicesSkeleton = () => (
