@@ -39,6 +39,7 @@ import { PromotionOverlay } from './components/premium/PromotionOverlay';
 import { CookieConsent } from './components/premium/CookieConsent';
 import { FAQSection } from './components/premium/FAQSection';
 import { NoticeBar } from './components/premium/NoticeBar';
+import { TopCompaniesSEOPage } from './components/pages/TopCompaniesSEOPage';
 
 // --- Utils ---
 export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
@@ -1187,7 +1188,8 @@ const Footer = () => {
                                 { key: 'home', path: '/' },
                                 { key: 'about', path: '/about' },
                                 { key: 'careers', path: '/careers' },
-                                { key: 'contact', path: '/contact' }
+                                { key: 'contact', path: '/contact' },
+                                { key: 'Top 20 IT Firms', path: '/blog/top-software-companies-in-bangladesh' }
                             ].map(item => (
                                 <li key={item.key}>
                                     <Link
@@ -2027,6 +2029,7 @@ const MainContent = () => {
                     <Route path="/team" element={<TeamPage />} />
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
+                    <Route path="/blog/top-software-companies-in-bangladesh" element={<TopCompaniesSEOPage />} />
 
                     <Route path="/careers" element={<>
                         <SEO
