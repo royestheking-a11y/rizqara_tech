@@ -22,7 +22,7 @@ import { SEO } from './components/SEO';
 import { partners } from './data/partners';
 import { techStack } from './data/techStack';
 import {
-    Carousel, AutoScrollCarousel, StatsCounter,
+    AutoScrollCarousel, StatsCounter, TiltCard,
     JourneyRoadmap,
     HeroCarousel, BuildPreviewTeaser, BuildPage,
     PricingDetailed, LatestVideos, LatestBlogs,
@@ -1435,14 +1435,15 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                     </div>
 
                     {/* Homepage Project Search */}
-                    <div className="relative max-w-md md:max-w-6xl mx-auto -mt-8 mb-8 z-10">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <div className="relative w-full max-w-2xl mx-auto -mt-8 mb-12 z-10">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                             <Search size={18} />
                         </div>
                         <input
                             type="text"
                             placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search featured projects...'}
-                            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all text-gray-900"
+                            className="w-full pr-6 py-4 bg-white border border-gray-200 rounded-full shadow-md focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all text-gray-900 text-lg"
+                            style={{ paddingLeft: '3.5rem' }}
                             onChange={(e) => {
                                 // Simple local filter for the carousel
                                 const q = e.target.value.toLowerCase();
@@ -1480,56 +1481,62 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                    I'll modify the top of App to add `const [homeProjectSearch, setHomeProjectSearch] = useState("");`
                    and use it here.
                 */}
-                <Carousel className="pl-6 md:pl-[max(2rem,calc((100vw-1400px)/2+2rem))]">
-                    {projects.map(project => {
-                        const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
-                        const category = language === 'bn' ? (project.category_bn || project.category) : project.category;
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {projects.slice(0, 8).map((project, idx) => {
+                            const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
+                            const category = language === 'bn' ? (project.category_bn || project.category) : project.category;
+                            
+                            // Make the first card span 2 cols on very large screens for a dynamic look
+                            const isFeatured = idx === 0 || idx === 3;
 
-                        return (
-                            <div
-                                key={project.id}
-                                onClick={() => onNavigate('ProjectDetail', project.id)}
-                                className="w-[85vw] md:w-[400px] h-[556px] shrink-0 group relative cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
-                                data-title={title.toLowerCase()}
-                            >
-                                <div className="h-64 relative overflow-hidden">
-                                    <img src={project.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
-                                </div>
-                                <div className="p-8 flex flex-col h-[300px] overflow-hidden bg-white">
-                                    <div className="h-[88px] mb-4 shrink-0">
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex-1 pr-6">
-                                                <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                                <h3 className="text-xl font-bold text-[#500000] leading-tight line-clamp-2 pt-2">{title}</h3>
-                                            </div>
+                            return (
+                                <TiltCard 
+                                    key={project.id}
+                                    className={`w-full group cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${isFeatured ? 'lg:col-span-2' : ''}`}
+                                    data-title={title.toLowerCase()}
+                                >
+                                    <div onClick={() => onNavigate('ProjectDetail', project.id)} className="h-[400px] md:h-[450px] relative flex flex-col justify-end">
+                                        {/* Full Card Image Background */}
+                                        <img src={project.image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        
+                                        {/* Gradient Overlays for Text Readability */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                        
+                                        {/* Content on Top of Image */}
+                                        <div className="relative z-10 p-8 flex flex-col justify-end h-full">
+                                            {/* Link Button (Top Right) */}
                                             {project.link && (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                    className="p-3 bg-gray-50 text-[#500000] rounded-full hover:bg-[#500000] hover:text-white transition-all shadow-sm shrink-0"
+                                                    className="absolute top-6 right-6 p-3 bg-white/10 backdrop-blur-md text-white rounded-full hover:bg-[#500000] transition-all shadow-lg border border-white/20"
                                                     title="View Live"
                                                 >
                                                     <ExternalLink size={18} />
                                                 </button>
                                             )}
+
+                                            <div className="mt-auto transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                                <div className="inline-flex px-3 py-1 mb-3 bg-[#500000]/80 backdrop-blur-sm border border-white/10 rounded-full text-[10px] md:text-xs font-bold text-white uppercase tracking-widest shadow-lg">
+                                                    {category}
+                                                </div>
+                                                
+                                                <h3 className="font-black text-white leading-tight drop-shadow-lg mb-2 text-xl md:text-2xl">
+                                                    {title}
+                                                </h3>
+
+                                                <div className="flex items-center text-white/90 font-bold text-sm hover:gap-3 gap-2 transition-all mt-4">
+                                                    <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Project'}</span>
+                                                    <ArrowRight size={16} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div className="h-[80px] mb-4 shrink-0 overflow-hidden">
-                                        <p className="text-gray-500 text-sm font-medium leading-relaxed">
-                                            {(language === 'bn' ? project.description_bn : project.description)?.slice(0, 140)}...
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-auto flex items-center text-[#500000] font-bold text-sm hover:gap-3 gap-2 transition-all shrink-0">
-                                        <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
-                                        <ArrowRight size={16} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </Carousel>
+                                </TiltCard>
+                            )
+                        })}
+                    </div>
+                </div>
             </section>
 
             {/* 7. CASE STUDIES SHOWCASE */}

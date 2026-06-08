@@ -62,6 +62,52 @@ export const SectionTitle = ({ title, subtitle, center = false, className = "mb-
 );
 
 // --- 1. CAROUSEL (Generic) ---
+export const TiltCard = ({ children, className = "", ...props }: { children: React.ReactNode, className?: string } & React.HTMLAttributes<HTMLDivElement>) => {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [style, setStyle] = useState({});
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
+        
+        setStyle({
+            transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+            transition: "none"
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setStyle({
+            transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
+            transition: "transform 0.5s ease"
+        });
+    };
+
+    return (
+        <div
+            ref={cardRef}
+            className={`will-change-transform ${className}`}
+            style={{ ...style, transformStyle: 'preserve-3d' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => setStyle(prev => ({ ...prev, transition: "transform 0.1s ease" }))}
+            {...props}
+        >
+            <div style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d', width: '100%', height: '100%' }}>
+                {children}
+            </div>
+        </div>
+    );
+};
+
 export const Carousel = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
     return (
         <div className={`flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory scrollbar-hide ${className}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -1211,7 +1257,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
     // Use Default Slides initially to prevent loading spinner (Instant Show) if not strictly loading
     const slides = (carouselSlides && carouselSlides.length > 0) ? carouselSlides : DEFAULT_SLIDES;
 
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(0);
 
     // Preload images for instant transition
     useEffect(() => {
@@ -1239,7 +1285,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                         <div 
                             key={i}
                             className="relative overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-800 animate-pulse border border-gray-300 dark:border-gray-700"
-                            style={{ flex: "1 1 0%" }}
+                            style={{ flex: i === 1 ? "8 1 0%" : "1 1 0%" }}
                         >
                             {/* Skeleton for vertical title */}
                             <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
@@ -1259,8 +1305,10 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
             <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
                 {slides.map((slide, idx) => {
                     const isActive = hoveredIndex === idx;
-                    // When nothing is hovered, give them equal space
-                    const isAnyHovered = hoveredIndex !== null;
+                    // When nothing is hovered, default back to 0 or stay as equal? Let's keep the one that was hovered as active.
+                    // But if mouse leaves the whole container, it should revert to 0 or stay on the last hovered?
+                    // Currently onMouseLeave sets to null. Let's set it back to 0 when mouse leaves.
+
 
                     const title = language === 'bn' ? (slide.title_bn || slide.title) : slide.title;
                     const subtitle = language === 'bn' ? (slide.subtitle_bn || slide.subtitle) : slide.subtitle;
@@ -1270,15 +1318,15 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                         <div
                             key={slide.id || idx}
                             onMouseEnter={() => setHoveredIndex(idx)}
-                            onMouseLeave={() => setHoveredIndex(null)}
+                            onMouseLeave={() => setHoveredIndex(0)}
                             className="relative overflow-hidden rounded-xl cursor-pointer group flex-shrink-0 bg-gray-900 border border-gray-200 shadow-2xl"
                             style={{
-                                flex: isActive ? "8 1 0%" : isAnyHovered ? "1 1 0%" : "2 1 0%",
+                                flex: isActive ? "8 1 0%" : "1 1 0%",
                                 transition: "flex 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
                             }}
                             onClick={() => {
-                                // On mobile, tapping makes it active. If already active, maybe do nothing or trigger CTA
-                                if (!isAnyHovered) setHoveredIndex(idx);
+                                // On mobile, tapping makes it active. Clicking again does not trigger link, they must click the actual button.
+                                if (!isActive) setHoveredIndex(idx);
                             }}
                         >
                             <img
@@ -1318,9 +1366,11 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                             >
                                 <div className="w-12 h-[2px] bg-[#500000] mb-6" />
                                 
-                                <span className="inline-block px-3 py-1 bg-[#500000]/90 backdrop-blur-md border border-[#500000] rounded-full text-white text-[10px] md:text-xs font-bold uppercase tracking-widest mb-4 shadow-lg w-max">
-                                    Rizqara Tech
-                                </span>
+                                <div className="flex mb-4">
+                                    <div className="inline-flex px-4 py-1.5 bg-[#500000]/90 backdrop-blur-md border border-[#500000] rounded-full text-white text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg">
+                                        Rizqara Tech
+                                    </div>
+                                </div>
 
                                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-4 leading-tight drop-shadow-lg whitespace-normal">
                                     {title}
@@ -2186,17 +2236,30 @@ const Skeleton = ({ className }: { className: string }) => (
 export const HeroSkeleton = () => (
     <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
         <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
-            {[1, 2, 3].map((i) => (
-                <div 
-                    key={i}
-                    className="relative overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-800 animate-pulse border border-gray-300 dark:border-gray-700"
-                    style={{ flex: "1 1 0%" }}
-                >
-                    <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
-                        <div className="w-4 md:w-6 h-32 md:h-48 bg-gray-300 dark:bg-gray-700 rounded-full opacity-50" />
+            {[1, 2, 3].map((i) => {
+                const isActive = i === 1;
+                return (
+                    <div 
+                        key={i}
+                        className="relative overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-800 animate-pulse border border-gray-300 dark:border-gray-700"
+                        style={{ flex: isActive ? "8 1 0%" : "1 1 0%" }}
+                    >
+                        {isActive ? (
+                            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 pb-12 md:pb-16">
+                                <div className="w-12 h-[2px] bg-gray-400 dark:bg-gray-600 mb-6" />
+                                <div className="w-24 h-6 bg-gray-300 dark:bg-gray-700 rounded-full mb-4 opacity-70" />
+                                <div className="w-3/4 h-10 md:h-12 bg-gray-300 dark:bg-gray-700 rounded-xl mb-4 opacity-70" />
+                                <div className="w-1/2 h-4 md:h-6 bg-gray-300 dark:bg-gray-700 rounded-lg mb-8 opacity-50" />
+                                <div className="w-40 h-12 bg-gray-400 dark:bg-gray-600 rounded-full opacity-60" />
+                            </div>
+                        ) : (
+                            <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8">
+                                <div className="w-4 md:w-6 h-32 md:h-48 bg-gray-300 dark:bg-gray-700 rounded-full opacity-50" />
+                            </div>
+                        )}
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     </section>
 );
@@ -2501,10 +2564,10 @@ export const AboutHero = () => {
                     >
                         <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3] max-w-lg lg:ml-auto">
                             <img 
-                                src="/meeting.png" 
-                                alt="RizQara Tech Team Meeting" 
+                                src="/rizqaratechlogo.png" 
+                                alt="RizQara Tech Logo" 
                                 loading="lazy"
-                                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                                className="w-full h-full object-contain bg-white p-8 transition-transform duration-700 hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                             <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 p-4 md:p-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl text-white shadow-2xl transition-all duration-300">

@@ -63,7 +63,7 @@ export const translations = {
     freeAudit: "Schedule a Call",
     
     // About Hero
-    aboutHeroTitle: "Founded in 2024, RizQara Tech is a modern software company helping businesses transform ideas into powerful digital products.",
+    aboutHeroTitle: "Founded in 2023, RizQara Tech is a modern software company helping businesses transform ideas into powerful digital products.",
     aboutHeroDesc: "Clients work with a dedicated team of designers, developers, and project managers. Clear timelines, visible progress, honest communication, and structured workflows — no guessing, no chaos, no surprises.",
     transparency: "Transparency",
   },
@@ -129,7 +129,7 @@ export const translations = {
     freeAudit: "কল নির্ধারণ করুন",
     
     // About Hero
-    aboutHeroTitle: "২০২৪ সালে প্রতিষ্ঠিত, রিজকারা টেক একটি আধুনিক সফটওয়্যার কোম্পানি যা ব্যবসায়িক ধারণাগুলোকে শক্তিশালী ডিজিটাল প্রোডাক্টে রূপান্তর করতে সাহায্য করছে।",
+    aboutHeroTitle: "২০২৩ সালে প্রতিষ্ঠিত, রিজকারা টেক একটি আধুনিক সফটওয়্যার কোম্পানি যা ব্যবসায়িক ধারণাগুলোকে শক্তিশালী ডিজিটাল প্রোডাক্টে রূপান্তর করতে সাহায্য করছে।",
     aboutHeroDesc: "ক্লায়েন্টরা ডিজাইনার, ডেভেলপার এবং প্রজেক্ট ম্যানেজারদের একটি ডেডিকেটেড টিমের সাথে কাজ করে। পরিষ্কার টাইমলাইন, দৃশ্যমান অগ্রগতি, সৎ যোগাযোগ এবং কাঠামোগত কর্মপ্রবাহ — কোন অনুমান নেই, কোন বিশৃঙ্খলা নেই, কোন চমক নেই।",
     transparency: "স্বচ্ছতা",
   }
