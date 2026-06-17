@@ -8,7 +8,8 @@ import {
     Shield, Zap, MessageSquare, Briefcase,
     Server, ShieldCheck,
     Lock, User, ExternalLink, Share2, Search,
-    TrendingUp, Lightbulb, Cpu, Activity, Layers, Image as ImageIcon
+    TrendingUp, Lightbulb, Cpu, Activity, Layers, Image as ImageIcon,
+    FileSignature, Scale, Building2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
@@ -30,9 +31,10 @@ import {
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton, AboutHero,
-    SectionTitle, XLogo, MediumLogo, WhatsAppLogo
+    SectionTitle, XLogo, MediumLogo, WhatsAppLogo, GoogleTranslate
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
+import FounderPage from './components/pages/FounderPage';
 import { Vision2030Page } from './components/pages/Vision2030Page';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
 import { PromotionOverlay } from './components/premium/PromotionOverlay';
@@ -867,7 +869,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
-    const { language, setLanguage, t } = useData();
+    const { t } = useData();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -887,10 +889,6 @@ const Navbar = () => {
     const isActive = (path: string) => {
         if (path === '/' && location.pathname !== '/') return false;
         return location.pathname.startsWith(path);
-    };
-
-    const toggleLanguage = () => {
-        setLanguage(language === 'en' ? 'bn' : 'en');
     };
 
     return (
@@ -914,26 +912,14 @@ const Navbar = () => {
 
                 <div className="hidden lg:flex items-center gap-4">
                     <button
-                        onClick={toggleLanguage}
-                        className="px-4 py-2 bg-gray-100 text-[#500000] rounded-full font-bold text-xs hover:bg-gray-200 transition-colors uppercase border border-gray-200"
-                    >
-                        {language === 'en' ? 'BN' : 'EN'}
-                    </button>
-                    <button
                         onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
-                        className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] items-center gap-2"
+                        className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
                     >
                         {t('freeAudit')}
                     </button>
                 </div>
 
                 <div className="lg:hidden flex items-center gap-4">
-                    <button
-                        onClick={toggleLanguage}
-                        className="px-3 py-2 bg-gray-100 text-[#500000] rounded-full font-bold text-xs hover:bg-gray-200 transition-colors uppercase border border-gray-200"
-                    >
-                        {language === 'en' ? 'BN' : 'EN'}
-                    </button>
                     <div className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </div>
@@ -1161,6 +1147,13 @@ const Footer = () => {
                                 </a>
                             ))}
                         </div>
+                        <div className="mt-6 flex items-center gap-2 text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-100 shadow-sm inline-flex w-fit">
+                            <Building2 size={14} className="text-[#500000]" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase">
+                                {language === 'bn' ? 'নিবন্ধিত কোম্পানি' : 'Registered Company'}
+                            </span>
+                        </div>
+
 
                         <div className="mt-8 border-t border-gray-100 pt-8">
                             <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -1177,6 +1170,15 @@ const Footer = () => {
                                         />
                                     </div>
                                 ))}
+                            </div>
+                            <div className="mt-8 border-t border-gray-100 pt-8">
+                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <Globe size={14} />
+                                    {language === 'bn' ? "ভাষা নির্বাচন করুন" : "Select Language"}
+                                </h4>
+                                <div className="inline-block">
+                                    <GoogleTranslate />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1207,8 +1209,11 @@ const Footer = () => {
                                 <ShieldCheck size={16} className="text-[#500000]" />
                                 <h4 className="text-sm font-bold text-gray-900">{language === 'bn' ? 'স্বীকৃত:' : 'Recognized by:'}</h4>
                             </div>
-                            <div
-                                className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative"
+                            <a
+                                href="https://clutch.co/profile/rizqara-tech"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative block"
                                 style={{ backgroundColor: '#500000' }}
                             >
                                 <div className="flex flex-col h-full justify-between relative z-10">
@@ -1227,7 +1232,7 @@ const Footer = () => {
 
                                     <div className="text-[5px] font-black text-white tracking-[0.05em] uppercase text-right leading-none opacity-80">10 REVIEWS</div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
 
@@ -1370,6 +1375,57 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         </div>
                     ))
                 } />
+            </section>
+
+
+
+
+            {/* NEW: 3.7. OUR PROCESS */}
+            <section className="w-full py-24 bg-white mt-16">
+                <div className="container mx-auto px-6">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <SectionTitle title={t('ourProcess')} subtitle={t('processSubtitle')} center />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                        {[
+                            { 
+                                step: '01', 
+                                title: language==='bn'?'ডিফাইন এবং আর্কিটেক্ট':'Define & Architect', 
+                                desc: language==='bn'?'লক্ষ্য নির্ধারণ করুন, সিস্টেম ম্যাপ করুন এবং স্কেলেবল কোডের ভিত্তি স্থাপন করুন।':'Define goals, map systems, and set the foundation for scalable code.' 
+                            },
+                            { 
+                                step: '02', 
+                                title: language==='bn'?'বিল্ড এবং ডেভেলপ':'Build & Develop', 
+                                desc: language==='bn'?'নিখুঁত UI এবং শক্তিশালী API-এর সাথে পরিষ্কার, মডুলার কোড লিখুন।':'Write clean, modular code with seamless UI and robust APIs.' 
+                            },
+                            { 
+                                step: '03', 
+                                title: language==='bn'?'ডিপ্লয় এবং সাপোর্ট':'Deploy & Support', 
+                                desc: language==='bn'?'প্রোডাক্ট দ্রুত এবং নির্ভরযোগ্য রাখতে ডিপ্লয়, মনিটর এবং অপ্টিমাইজ করুন।':'Deploy, monitor, and optimize to keep products fast and reliable.' 
+                            },
+                        ].map((item, idx) => (
+                            <div key={idx} className="bg-[#500000] rounded-3xl p-8 md:p-10 relative overflow-hidden flex flex-col justify-end min-h-[360px] shadow-2xl hover:-translate-y-2 transition-transform duration-500 group">
+                                <div style={{ fontSize: '12rem', lineHeight: 0.8 }} className="absolute -top-4 -left-4 font-black text-white opacity-10 group-hover:opacity-20 transition-opacity tracking-tighter select-none pointer-events-none">
+                                    {item.step}
+                                </div>
+                                <div className="relative z-10 mt-auto pt-32">
+                                    <h4 className="text-2xl font-bold text-white mb-4">{item.title}</h4>
+                                    <p className="text-white/80 leading-relaxed text-sm md:text-base">{item.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                        
+                        {/* Bottom CTA Bar */}
+                        <div className="col-span-1 md:col-span-3 mt-4 border-2 border-[#500000]/10 bg-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                            <p className="text-[#500000] text-lg font-bold mb-4 md:mb-0">
+                                {language === 'bn' ? 'বিশেষজ্ঞ কোড দিয়ে নির্ভরযোগ্য, ব্যবহারকারী-কেন্দ্রিক পণ্য তৈরি করুন।' : 'Build reliable, user-focused products with expert code.'}
+                            </p>
+                            <button onClick={() => onNavigate('Contact')} className="bg-[#500000] text-white px-8 py-3 rounded-full font-bold hover:bg-[#6a0000] transition-colors whitespace-nowrap shadow-lg">
+                                {language === 'bn' ? 'কল বুক করুন' : 'Book a call'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             {/* 4. SERVICES */}
@@ -1541,6 +1597,36 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
             {/* 7. CASE STUDIES SHOWCASE */}
             <CaseStudyShowcase />
+
+            {/* NEW: 3.6. TRUST & GUARANTEE */}
+            <section className="container mx-auto px-6 mt-32">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <SectionTitle title={t('trustGuarantee')} subtitle={t('trustSubtitle')} center />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                        <div className="w-16 h-16 bg-red-50 text-[#500000] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <FileSignature size={32} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('nda')}</h3>
+                        <p className="text-gray-600 leading-relaxed">{t('ndaDesc')}</p>
+                    </div>
+                    <div className="bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                        <div className="w-16 h-16 bg-red-50 text-[#500000] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Scale size={32} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('milestones')}</h3>
+                        <p className="text-gray-600 leading-relaxed">{t('milestonesDesc')}</p>
+                    </div>
+                    <div className="bg-[#500000] rounded-3xl p-8 shadow-2xl transition-all duration-300 group hover:-translate-y-2 text-white">
+                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <Code2 size={32} />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-4">{t('customCode')}</h3>
+                        <p className="text-white/80 leading-relaxed">{t('customCodeDesc')}</p>
+                    </div>
+                </div>
+            </section>
 
             {/* 7. WHY RIZQARA (Redesigned) */}
             <section className="container mx-auto px-6">
@@ -2024,6 +2110,16 @@ const MainContent = () => {
                             ) : (
                                 <div className="">
                                      <AboutHero />
+                                     
+                                     {/* Founder Link Banner */}
+                                     <div className="container mx-auto px-6 pt-32 pb-16 text-center max-w-4xl border-b border-gray-100 mb-16">
+                                         <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 tracking-tight">Built by a Visionary</h3>
+                                         <p className="text-xl text-gray-500 font-light mb-8 leading-relaxed">RizQara Tech wasn't just built on code; it was built on a singular vision to change a million lives. Discover the story, the struggle, and the relentless drive behind our founder.</p>
+                                         <Link to="/founder" className="inline-flex items-center gap-3 px-8 py-4 bg-[#500000] text-white font-black rounded-full hover:bg-red-900 transition-colors shadow-xl shadow-red-900/20 text-sm tracking-widest uppercase">
+                                             Meet Aurangzeb Sunny <span className="font-bold text-lg leading-none">&rarr;</span>
+                                         </Link>
+                                     </div>
+
                                     <JourneyRoadmap />
                                     <div className="mt-32">
                                         <SectionTitle title={t('meetOurTeam')} center />
@@ -2033,6 +2129,7 @@ const MainContent = () => {
                             )}
                         </div>
                     </>} />
+                    <Route path="/founder" element={<FounderPage />} />
                     <Route path="/team" element={<TeamPage />} />
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
