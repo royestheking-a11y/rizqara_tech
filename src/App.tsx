@@ -31,7 +31,7 @@ import {
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
     ServicesSkeleton, ProjectsSkeleton, AboutHero,
-    SectionTitle, XLogo, MediumLogo, WhatsAppLogo, GoogleTranslate
+    SectionTitle, XLogo, MediumLogo, WhatsAppLogo
 } from './components/premium/UIComponents';
 import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
 import FounderPage from './components/pages/FounderPage';
@@ -1171,15 +1171,7 @@ const Footer = () => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="mt-8 border-t border-gray-100 pt-8">
-                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <Globe size={14} />
-                                    {language === 'bn' ? "ভাষা নির্বাচন করুন" : "Select Language"}
-                                </h4>
-                                <div className="inline-block">
-                                    <GoogleTranslate />
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 
