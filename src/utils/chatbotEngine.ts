@@ -1,4 +1,4 @@
-import { Service, Project, CaseStudy, Review, BlogPost, Job, DataContextType } from '../context/DataContext';
+import { DataContextType } from '../context/DataContext';
 
 export type ChatbotState = 'idle' | 'collecting_name' | 'collecting_email' | 'collecting_phone' | 'collecting_reqs' | 'complete';
 
@@ -41,7 +41,7 @@ export class RizqAIEngine {
         });
     }
 
-    public processMessage(userText: string, currentState: ChatbotState, leadData: any): BotResponse {
+    public processMessage(userText: string, currentState: ChatbotState): BotResponse {
         const lowerText = userText.toLowerCase();
         const isBn = this.language === 'bn' || this.isBengali(lowerText);
         

@@ -42,6 +42,7 @@ import { CookieConsent } from './components/premium/CookieConsent';
 import { FAQSection } from './components/premium/FAQSection';
 import { NoticeBar } from './components/premium/NoticeBar';
 import { TopCompaniesSEOPage } from './components/pages/TopCompaniesSEOPage';
+import { RegisteredCompanyPage } from './components/pages/RegisteredCompanyPage';
 
 // --- Utils ---
 export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
@@ -1172,12 +1173,12 @@ const Footer = () => {
                                 </a>
                             ))}
                         </div>
-                        <div className="mt-6 flex items-center gap-2 text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-100 shadow-sm inline-flex w-fit">
-                            <Building2 size={14} className="text-[#500000]" />
-                            <span className="text-[11px] font-bold tracking-widest uppercase">
+                        <Link to="/registered-company" className="mt-6 flex items-center gap-1.5 text-gray-500 bg-white px-2.5 py-1 rounded-full border border-gray-100 shadow-sm hover:border-[#500000]/30 hover:text-[#500000] transition-colors inline-flex w-fit group">
+                            <Building2 size={12} className="text-[#500000] group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-bold tracking-wider uppercase mt-0.5">
                                 {language === 'bn' ? 'নিবন্ধিত কোম্পানি' : 'Registered Company'}
                             </span>
-                        </div>
+                        </Link>
 
 
                         <div className="mt-8 border-t border-gray-100 pt-8">
@@ -2089,6 +2090,7 @@ const MainContent = () => {
                 <Routes>
                     <Route path="/" element={<Home setBuildConfig={setBuildConfig} />} />
                     <Route path="/vision-2030" element={<Vision2030Page />} />
+                    <Route path="/registered-company" element={<RegisteredCompanyPage />} />
 
                     <Route path="/services" element={<>
                         <SEO

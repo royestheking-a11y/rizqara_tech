@@ -1961,7 +1961,7 @@ export const RizqAIBot = () => {
             if (chatState === 'collecting_reqs') updatedLeadData.requirements = userText;
             setLeadData(updatedLeadData);
 
-            const response = engine.processMessage(userText, chatState, updatedLeadData);
+            const response = engine.processMessage(userText, chatState);
             
             if (response.newState) {
                 setChatState(response.newState);
