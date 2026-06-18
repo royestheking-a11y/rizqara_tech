@@ -929,28 +929,51 @@ const Navbar = () => {
             <AnimatePresence>
                 {mobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: '100vh' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-white fixed top-[80px] left-0 right-0 border-t border-gray-100 overflow-hidden"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="lg:hidden bg-[#500000] fixed top-[80px] left-0 right-0 h-[calc(100vh-80px)] overflow-y-auto"
                     >
-                        <div className="flex flex-col p-8 gap-6 h-full items-center pt-24">
+                        <div className="flex flex-col p-8 gap-6 h-full pt-12 pb-24 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+
                             {links.map((link, i) => (
                                 <motion.div
                                     key={link.name}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: i * 0.1 }}
+                                    className="w-full border-b border-white/10 pb-4"
                                 >
                                     <Link
                                         to={link.path}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="text-3xl font-bold text-gray-800 hover:text-[#500000] hover:bg-gray-50 px-6 py-2 rounded-full transition-all duration-300"
+                                        className="text-2xl font-black tracking-tight text-white/90 hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center justify-between"
                                     >
-                                        {link.name}
+                                        <span>{link.name}</span>
+                                        <ChevronRight size={20} className="text-white/30" />
                                     </Link>
                                 </motion.div>
                             ))}
+                            
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: links.length * 0.1 }}
+                                className="mt-8 w-full z-10"
+                            >
+                                <button
+                                    onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank');
+                                    }}
+                                    className="w-full px-6 py-4 bg-white text-[#500000] rounded-2xl font-black text-lg hover:bg-gray-100 transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 group"
+                                >
+                                    {t('freeAudit')}
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </motion.div>
                         </div>
                     </motion.div>
                 )}
