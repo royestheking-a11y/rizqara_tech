@@ -914,7 +914,6 @@ const Navbar = () => {
                 </div>
 
                 <div className="hidden lg:flex items-center gap-4">
-                    <GoogleTranslate />
                     <button
                         onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
                         className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
@@ -924,7 +923,6 @@ const Navbar = () => {
                 </div>
 
                 <div className="lg:hidden flex items-center gap-4">
-                    <GoogleTranslate />
                     <div className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </div>
@@ -1136,7 +1134,7 @@ const CaseStudyShowcase = () => {
 // --- Footer ---
 
 const Footer = () => {
-    const { language, setLanguage, t, addMessage } = useData();
+    const { language, t, addMessage } = useData();
     const navigate = useNavigate();
 
     return (
