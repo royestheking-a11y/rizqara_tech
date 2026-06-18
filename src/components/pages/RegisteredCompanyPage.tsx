@@ -79,7 +79,7 @@ export const RegisteredCompanyPage = () => {
                         className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight"
                     >
                         {language === 'bn' ? 'Rizqara Tech ' : 'Rizqara Tech '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#500000] to-red-600">
+                        <span className="text-[#500000]">
                             {language === 'bn' ? 'নিবন্ধিত কোম্পানি' : 'Registered Company'}
                         </span>
                     </motion.h1>

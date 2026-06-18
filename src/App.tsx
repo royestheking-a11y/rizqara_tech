@@ -1173,9 +1173,9 @@ const Footer = () => {
                                 </a>
                             ))}
                         </div>
-                        <Link to="/registered-company" className="mt-6 flex items-center gap-1.5 text-gray-500 bg-white px-2.5 py-1 rounded-full border border-gray-100 shadow-sm hover:border-[#500000]/30 hover:text-[#500000] transition-colors inline-flex w-fit group">
-                            <Building2 size={12} className="text-[#500000] group-hover:scale-110 transition-transform" />
-                            <span className="text-[10px] font-bold tracking-wider uppercase mt-0.5">
+                        <Link to="/registered-company" className="mt-8 flex items-center gap-2 text-gray-500 hover:text-[#500000] transition-colors inline-flex w-fit group">
+                            <Building2 size={16} className="text-[#500000] group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-semibold tracking-wide">
                                 {language === 'bn' ? 'নিবন্ধিত কোম্পানি' : 'Registered Company'}
                             </span>
                         </Link>
