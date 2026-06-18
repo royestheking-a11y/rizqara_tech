@@ -869,7 +869,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
-    const { t, language, setLanguage } = useData();
+    const { t } = useData();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -1130,7 +1130,7 @@ const CaseStudyShowcase = () => {
 // --- Footer ---
 
 const Footer = () => {
-    const { language, t, addMessage } = useData();
+    const { language, setLanguage, t, addMessage } = useData();
     const navigate = useNavigate();
 
     return (
