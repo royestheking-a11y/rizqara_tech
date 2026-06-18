@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { getSlug } from '../../App';
+import { RizqAIEngine, ChatbotState } from '../../utils/chatbotEngine';
 
 import { toast } from "sonner";
 
@@ -1917,7 +1918,9 @@ export const ContactFormWithMap = () => {
 // --- RizqAI Chatbot ---
 export const RizqAIBot = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { language, services, projects, reviews, caseStudies, addMessage } = useData();
+    const dataContext = useData();
+    const { language, addMessage } = dataContext;
+    
     const [messages, setMessages] = useState<{ id: number, text: string, sender: 'user' | 'bot', type?: 'text' | 'button' | 'link' | 'summary' | 'whatsapp_btn', actionLink?: string, actionLabel?: string }[]>([
         { id: 1, text: language === 'bn' ? 'হ্যালো! আমি RizqAI। আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?' : "Hello! I'm RizqAI. How can I help you build your digital product today?", sender: 'bot', type: 'text' }
     ]);
@@ -1925,7 +1928,7 @@ export const RizqAIBot = () => {
     const [isTyping, setIsTyping] = useState(false);
 
     // Lead Generation State Machine
-    const [chatState, setChatState] = useState<'idle' | 'collecting_name' | 'collecting_email' | 'collecting_phone' | 'collecting_reqs' | 'complete'>('idle');
+    const [chatState, setChatState] = useState<ChatbotState>('idle');
     const [leadData, setLeadData] = useState({
         name: '',
         email: '',
@@ -1948,105 +1951,31 @@ export const RizqAIBot = () => {
     const simulateAIResponse = (userText: string) => {
         setIsTyping(true);
         setTimeout(() => {
-            const lowerText = userText.toLowerCase();
-            let reply = "";
-            let type: 'text' | 'button' | 'link' | 'summary' | 'whatsapp_btn' = 'text';
-            let actionLink = '';
-            let actionLabel = '';
+            const engine = new RizqAIEngine(dataContext);
+            
+            // Save state data manually since engine is stateless
+            let updatedLeadData = { ...leadData };
+            if (chatState === 'collecting_name') updatedLeadData.name = userText;
+            if (chatState === 'collecting_email') updatedLeadData.email = userText;
+            if (chatState === 'collecting_phone') updatedLeadData.phone = userText;
+            if (chatState === 'collecting_reqs') updatedLeadData.requirements = userText;
+            setLeadData(updatedLeadData);
 
-            // 1. LEAD COLLECTION FLOW
-            if (chatState === 'collecting_name') {
-                setLeadData(prev => ({ ...prev, name: userText }));
-                reply = language === 'bn'
-                    ? `দারুণ, ${userText}! আপনার ইমেল ঠিকানাটি কী হবে যাতে আমরা আপনাকে প্রপোজাল পাঠাতে পারি?`
-                    : `Great to meet you, ${userText}! What is your email address so we can send you a formal proposal?`;
-                setChatState('collecting_email');
-            }
-            else if (chatState === 'collecting_email') {
-                setLeadData(prev => ({ ...prev, email: userText }));
-                reply = language === 'bn'
-                    ? "ধন্যবাদ। আমাদের টিম আপনার সাথে যোগাযোগের জন্য একটি ফোন নম্বর দিলে ভালো হয়।"
-                    : "Perfect. Could you also provide your phone number so our specialist can call you?";
-                setChatState('collecting_phone');
-            }
-            else if (chatState === 'collecting_phone') {
-                setLeadData(prev => ({ ...prev, phone: userText }));
-                reply = language === 'bn'
-                    ? "চমৎকার! শেষ প্রশ্ন—আপনি কি ধরণের ওয়েবসাইট বা অ্যাপ্লিকেশন চাচ্ছেন? (যেমন: ই-কমার্স, ল্যান্ডিং পেজ, সিআরএম ইত্যাদি)"
-                    : "Almost there! Last question—what type of website or application do you need? (e.g., E-commerce, Landing page, Dashboard, etc.)";
-                setChatState('collecting_reqs');
-            }
-            else if (chatState === 'collecting_reqs') {
-                setLeadData(prev => ({ ...prev, requirements: userText }));
-                reply = language === 'bn'
-                    ? "সব তথ্যের জন্য ধন্যবাদ! আমি আপনার জন্য সবকিছু প্রস্তুত করেছি। আমাদের প্রথমবার সেবা গ্রহণকারী হিসেবে আপনি ২০% ডিসকাউন্ট পাচ্ছেন! আপনি কি তথ্যগুলো ইমেইল করবেন নাকি সরাসরি WhatsApp-এ কথা বলবেন?"
-                    : "Thanks for all the details! I've prepared your inquiry. As a first-time client, you're eligible for a 20% DISCOUNT! Would you like to submit this or chat on WhatsApp immediately?";
-                setChatState('complete');
-                type = 'summary';
-            }
-            // 2. INTENT & KNOWLEDGE BASE
-            else {
-                if (lowerText.match(/\b(whatsapp|wa\.me|হোয়াটসঅ্যাপ)\b/)) {
-                    reply = language === 'bn' 
-                        ? "সরাসরি আমাদের মার্কেটিং টিমের সাথে WhatsApp-এ যোগাযোগ করুন আরও বিস্তারিত জানতে।" 
-                        : "Direct connect with WhatsApp our marketing team for more details.";
-                    type = 'whatsapp_btn';
-                }
-                else if (lowerText.match(/\b(hi|hello|hey|greetings|start|hola|হ্যালো|হাই)\b/)) {
-                    reply = language === 'bn'
-                        ? "হ্যালো! RizqAI-এ স্বাগতম। আপনি কি আপনার ব্যবসার জন্য একটি ওয়েবসাইট বা অ্যাপ তৈরির কথা ভাবছেন? আমি আপনাকে সাহায্য করতে পারি।"
-                        : "Hello! Welcome to RizQara Tech. Are you thinking about building a website or app for your business? I'm here to guide you.";
-                }
-                else if (lowerText.match(/\b(need|want|make|build|create|looking for|চাই|দরকার)\b/) && lowerText.match(/\b(website|app|software|solution|system|ওয়েবসাইট|অ্যাপ|সফটওয়্যার)\b/)) {
-                    reply = language === 'bn'
-                        ? "অবশ্যই! আমরা আপনার জন্য সেরা ডিজিটাল সমাধান তৈরি করতে পারি। এবং সুখবর হলো—প্রথম অর্ডারে আপনি ২০% ছাড় পাবেন! শুরু করার জন্য, আপনার নাম কি?"
-                        : "Absolutely! We can build top-tier digital solutions for you. Plus, good news—you get 20% OFF on your first project! To get started, may I know your name?";
-                    setChatState('collecting_name');
-                }
-                else if (lowerText.includes('review') || lowerText.includes('testimonial') || lowerText.includes('মন্তব্য') || lowerText.includes('গ্রাহক')) {
-                    const topReviews = reviews.slice(0, 3).map(r => `• ${r.name}: "${r.content.substring(0, 50)}..."`).join('\n');
-                    reply = language === 'bn'
-                        ? `আমাদের গ্রাহকরা আমাদের ভালোবাসেন! এখানে কিছু রিভিউ আছে:\n\n${topReviews}\n\nবিস্তারিত আমাদের 'রিভিউ' সেকশনে দেখুন।`
-                        : `Our clients love us! Here are some testimonials:\n\n${topReviews}\n\nCheck out more in our Reviews section!`;
-                }
-                else if (lowerText.includes('project') || lowerText.includes('work') || lowerText.includes('portfolio') || lowerText.includes('কাজ') || lowerText.includes('প্রকল্প')) {
-                    const recentProjects = projects.slice(0, 3).map(p => `• ${p.title} (${p.category})`).join('\n');
-                    reply = language === 'bn'
-                        ? `আমরা অনেকগুলো সফল প্রকল্প সম্পন্ন করেছি:\n\n${recentProjects}\n\nআপনি কি আমাদের পোর্টফোলিও দেখতে চান?`
-                        : `We have delivered many high-impact projects:\n\n${recentProjects}\n\nWould you like to see our full portfolio?`;
-                    type = 'link';
-                    actionLabel = "View Projects";
-                    actionLink = "/projects";
-                }
-                else if (lowerText.includes('case study') || lowerText.includes('success') || lowerText.includes('গল্প')) {
-                    const topCases = caseStudies.slice(0, 2).map(c => `• ${c.title}: ${c.impact}`).join('\n');
-                    reply = language === 'bn'
-                        ? `আমাদের কেস স্টাডিগুলো দেখুন যেখানে আমরা বাস্তব সমস্যার সমাধান দিয়েছি:\n\n${topCases}`
-                        : `Check out our case studies to see how we solve real business problems:\n\n${topCases}`;
-                    type = 'link';
-                    actionLabel = "Case Studies";
-                    actionLink = "/case-studies";
-                }
-                else if (lowerText.match(/\b(how are you|how r u|কেমন আছেন)\b/)) {
-                    reply = language === 'bn' ? "আমি খুব ভালো আছি! আপনার ব্যবসার প্রবৃদ্ধি নিশ্চিত করতে আমি প্রস্তুত।" : "I'm doing great and ready to help you scale your business!";
-                }
-                else {
-                    // Specific Service Search fallback
-                    const foundService = services.find(s => lowerText.includes(s.title.toLowerCase()) || (s.title_bn && lowerText.includes(s.title_bn.toLowerCase())));
-                    if (foundService) {
-                        reply = language === 'bn' ? foundService.description_bn || foundService.description : foundService.description;
-                        type = 'link';
-                        actionLabel = "View Service";
-                        actionLink = `/services/${foundService.id}`;
-                    } else {
-                        reply = language === 'bn'
-                            ? "আমি আপনার কথা ঠিক বুঝতে পারছি না। আপনি কি আমাদের সার্ভিস, প্রোজেক্ট বা রিভিউ সম্পর্কে জানতে চান? অথবা ২০% ডিসকাউন্টের জন্য একটি ওয়েবসাইট/অ্যাপ তৈরির কথা বলতে পারেন।"
-                            : "I'm not sure I understood. Would you like to know about our services, projects, or reviews? Or you can start a new project to get 20% OFF!";
-                    }
-                }
+            const response = engine.processMessage(userText, chatState, updatedLeadData);
+            
+            if (response.newState) {
+                setChatState(response.newState);
             }
 
-            setMessages(prev => [...prev, { id: Date.now(), text: reply, sender: 'bot', type, actionLink, actionLabel }]);
+            setMessages(prev => [...prev, { 
+                id: Date.now(), 
+                text: response.text, 
+                sender: 'bot', 
+                type: response.type || 'text', 
+                actionLink: response.actionLink, 
+                actionLabel: response.actionLabel 
+            }]);
+            
             setIsTyping(false);
         }, 1000);
     };
@@ -2066,12 +1995,12 @@ export const RizqAIBot = () => {
             name: leadData.name,
             email: leadData.email,
             subject: 'New Lead from RizqAI',
-            message: `Requirements: ${leadData.requirements}\nPhone: ${leadData.phone}\nOffer: 20% Discount Candidate`,
+            message: `Requirements: ${leadData.requirements}\nPhone: ${leadData.phone}\nOffer: 20% Discount VIP Lead`,
             type: 'Order'
         });
         setMessages(prev => [...prev, {
             id: Date.now(),
-            text: language === 'bn' ? "অসাধারণ! আপনার তথ্য আমাদের কাছে পৌঁছেছে। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।" : "Awesome! Your details have been submitted. Our team will contact you shortly.",
+            text: language === 'bn' ? "অসাধারণ! আপনার তথ্য আমাদের কাছে পৌঁছেছে। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।" : "Awesome! Your details have been submitted. Our elite team will contact you shortly.",
             sender: 'bot'
         }]);
         setChatState('idle');
@@ -2099,7 +2028,7 @@ export const RizqAIBot = () => {
                                 <div>
                                     <span className="font-bold text-gray-900 text-lg block leading-none">RizqAI</span>
                                     <span className="text-xs text-green-500 font-medium flex items-center gap-1 mt-1">
-                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Always Active
+                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Hybrid Engine Active
                                     </span>
                                 </div>
                             </div>
@@ -2173,7 +2102,7 @@ export const RizqAIBot = () => {
                                     )}
 
                                     <span className="text-[10px] text-gray-300 mt-1 px-1 font-medium">
-                                        {msg.sender === 'bot' ? 'AI Assistant' : 'You'}
+                                        {msg.sender === 'bot' ? 'Hybrid AI' : 'You'}
                                     </span>
                                 </motion.div>
                             ))}
