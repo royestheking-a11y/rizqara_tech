@@ -932,11 +932,11 @@ const Navbar = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="lg:hidden bg-[#500000] fixed top-[80px] left-0 right-0 h-[calc(100vh-80px)] overflow-y-auto"
+                        className="lg:hidden bg-white fixed top-[80px] left-0 right-0 bottom-0 overflow-y-auto"
                     >
-                        <div className="flex flex-col p-8 gap-6 h-full pt-12 pb-24 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+                        <div className="flex flex-col p-8 gap-4 h-full pt-8 pb-32 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 
                             {links.map((link, i) => (
                                 <motion.div
@@ -944,15 +944,15 @@ const Navbar = () => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="w-full border-b border-white/10 pb-4"
+                                    className="w-full border-b border-[#500000]/10"
                                 >
                                     <Link
                                         to={link.path}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="text-2xl font-black tracking-tight text-white/90 hover:text-white hover:translate-x-2 transition-all duration-300 flex items-center justify-between"
+                                        className="text-2xl font-black tracking-tight text-[#500000] hover:text-[#500000] hover:translate-x-2 transition-all duration-300 flex items-center justify-between py-4"
                                     >
                                         <span>{link.name}</span>
-                                        <ChevronRight size={20} className="text-white/30" />
+                                        <ChevronRight size={20} className="text-[#500000]/30" />
                                     </Link>
                                 </motion.div>
                             ))}
@@ -968,7 +968,7 @@ const Navbar = () => {
                                         setMobileMenuOpen(false);
                                         window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank');
                                     }}
-                                    className="w-full px-6 py-4 bg-white text-[#500000] rounded-2xl font-black text-lg hover:bg-gray-100 transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 group"
+                                    className="w-full px-6 py-4 bg-[#500000] text-white rounded-2xl font-black text-lg hover:bg-[#3a0000] transition-all shadow-[0_8px_30px_rgba(80,0,0,0.2)] flex items-center justify-center gap-3 group"
                                 >
                                     {t('freeAudit')}
                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
