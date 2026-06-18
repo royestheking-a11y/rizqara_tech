@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, MapPin, Building2, Globe, FileText, CheckCircle2, Clock } from 'lucide-react';
 import { useData } from '../../context/DataContext';
