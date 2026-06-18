@@ -932,7 +932,7 @@ const Navbar = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="lg:hidden bg-white fixed top-[80px] left-0 right-0 bottom-0 overflow-y-auto"
+                        className="lg:hidden bg-white fixed top-[80px] left-0 right-0 h-[calc(100dvh-80px)] overflow-y-auto"
                     >
                         <div className="flex flex-col p-8 gap-4 h-full pt-8 pb-32 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
