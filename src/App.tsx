@@ -1443,11 +1443,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         ))}
                         
                         {/* Bottom CTA Bar */}
-                        <div className="col-span-1 md:col-span-3 mt-4 border-2 border-[#500000]/10 bg-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-sm hover:shadow-md transition-shadow">
-                            <p className="text-[#500000] text-lg font-bold mb-4 md:mb-0">
+                        <div className="col-span-1 md:col-span-3 mt-4 border-2 border-[#500000]/10 bg-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-sm hover:shadow-md transition-shadow gap-4">
+                            <p className="text-[#500000] text-lg font-bold flex-1 text-center md:text-left">
                                 {language === 'bn' ? 'বিশেষজ্ঞ কোড দিয়ে নির্ভরযোগ্য, ব্যবহারকারী-কেন্দ্রিক পণ্য তৈরি করুন।' : 'Build reliable, user-focused products with expert code.'}
                             </p>
-                            <button onClick={() => onNavigate('Contact')} className="bg-[#500000] text-white px-8 py-3 rounded-full font-bold hover:bg-[#6a0000] transition-colors whitespace-nowrap shadow-lg">
+                            <button onClick={() => onNavigate('Contact')} className="bg-[#500000] text-white px-8 py-3 rounded-full font-bold hover:bg-[#6a0000] transition-colors shadow-lg shrink-0 text-center w-full md:w-auto break-words">
                                 {language === 'bn' ? 'কল বুক করুন' : 'Book a call'}
                             </button>
                         </div>
