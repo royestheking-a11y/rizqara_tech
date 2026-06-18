@@ -892,7 +892,8 @@ const Navbar = () => {
     };
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm' : 'bg-white/80 backdrop-blur-md border-b border-gray-50'}`}>
+        <>
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm' : 'bg-white/80 backdrop-blur-md border-b border-gray-50'}`}>
             <div className="container mx-auto px-6 flex justify-between items-center">
                 <Link to="/" className="text-2xl font-black tracking-tighter cursor-pointer flex items-center gap-2 text-[#500000]">
                     <span>RIZQARA TECH</span>
@@ -925,6 +926,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
+            </nav>
 
             <AnimatePresence>
                 {mobileMenuOpen && (
@@ -932,9 +934,9 @@ const Navbar = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="lg:hidden bg-white fixed top-[80px] left-0 right-0 h-[calc(100dvh-80px)] overflow-y-auto"
+                        className="lg:hidden bg-white fixed inset-0 z-40 overflow-y-auto"
                     >
-                        <div className="flex flex-col p-8 gap-4 h-full pt-8 pb-32 relative overflow-hidden">
+                        <div className="flex flex-col p-8 gap-4 min-h-full pt-28 pb-32 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 
@@ -961,7 +963,7 @@ const Navbar = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: links.length * 0.1 }}
-                                className="mt-8 w-full z-10"
+                                className="mt-8 w-full z-10 flex-grow flex flex-col justify-end"
                             >
                                 <button
                                     onClick={() => {
@@ -978,7 +980,7 @@ const Navbar = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </>
     );
 };
 
