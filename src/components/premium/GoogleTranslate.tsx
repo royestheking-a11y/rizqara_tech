@@ -40,7 +40,7 @@ export const GoogleTranslate = () => {
         }
 
         // Generate unique ID for this instance
-        const id = \`google_translate_element_\${Math.random().toString(36).substring(7)}\`;
+        const id = `google_translate_element_${Math.random().toString(36).substring(7)}`;
         if (containerRef.current) {
             containerRef.current.id = id;
         }
