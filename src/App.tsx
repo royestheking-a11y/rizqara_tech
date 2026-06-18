@@ -869,7 +869,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
-    const { t } = useData();
+    const { t, language, setLanguage } = useData();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -912,6 +912,13 @@ const Navbar = () => {
 
                 <div className="hidden lg:flex items-center gap-4">
                     <button
+                        onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-sm font-bold text-gray-700 hover:border-[#500000] hover:text-[#500000] transition-colors bg-white shadow-sm"
+                    >
+                        <Globe size={16} />
+                        {language === 'en' ? 'BN' : 'EN'}
+                    </button>
+                    <button
                         onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
                         className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
                     >
@@ -919,7 +926,13 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                <div className="lg:hidden flex items-center gap-4">
+                <div className="lg:hidden flex items-center gap-3">
+                    <button
+                        onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')}
+                        className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-sm font-bold text-gray-700 hover:border-[#500000] hover:text-[#500000] transition-colors bg-white shadow-sm"
+                    >
+                        {language === 'en' ? 'BN' : 'EN'}
+                    </button>
                     <div className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </div>
