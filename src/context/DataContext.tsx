@@ -181,6 +181,20 @@ export type Notice = {
   isActive: boolean;
 };
 
+export type GalleryItem = {
+  id: string;
+  title: string;
+  title_bn?: string;
+  image: string;
+  date: string;
+  category: string;
+  category_bn?: string;
+  location?: string;
+  location_bn?: string;
+  description?: string;
+  description_bn?: string;
+};
+
 export type DataContextType = {
   services: Service[];
   projects: Project[];
@@ -195,6 +209,7 @@ export type DataContextType = {
   caseStudies: CaseStudy[];
   promotion: Promotion;
   notices: Notice[];
+  galleryItems: GalleryItem[];
   language: Language;
   setLanguage: (lang: Language) => void;
   updateData: (key: string, data: any) => void;
@@ -240,6 +255,61 @@ const DEFAULT_BUILD_OPTIONS: BuildOption[] = [
   { id: '9', category: 'time', label: '3+ Months', label_bn: '৩+ মাস', value: 0.8 },
 ];
 
+export const MOCK_GALLERY: GalleryItem[] = [
+  {
+    id: 'gal-1',
+    title: 'Annual Tech Summit 2026',
+    title_bn: 'বার্ষিক টেক সামিট ২০২৬',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
+    date: '2026-05-15',
+    category: 'Event',
+    category_bn: 'ইভেন্ট',
+    location: 'Dhaka HQ, Bangladesh',
+    location_bn: 'ঢাকা হেডকোয়ার্টার, বাংলাদেশ',
+    description: 'Capturing our team synergy, drive for innovation, and the shared milestones that power the next chapter of RizQara Tech.',
+    description_bn: 'আমাদের দলীয় সমন্বয়, উদ্ভাবনী স্পৃহা এবং রিজকারা টেকের পরবর্তী অধ্যায়কে এগিয়ে নিয়ে যাওয়ার যৌথ মাইলফলক।'
+  },
+  {
+    id: 'gal-2',
+    title: 'Team Building Workshop',
+    title_bn: 'টিম বিল্ডিং কর্মশালা',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
+    date: '2026-06-01',
+    category: 'Workshop',
+    category_bn: 'কর্মশালা',
+    location: 'Dhaka HQ, Bangladesh',
+    location_bn: 'ঢাকা হেডকোয়ার্টার, বাংলাদেশ',
+    description: 'This moment reflects our shared passion for technology, collaborative problem solving, and building memorable milestones together.',
+    description_bn: 'এই মুহূর্তটি আমাদের টিমের ক্রমাগত সাধনা, সৃজনশীলতা এবং শ্রেষ্ঠত্ব অর্জনের প্রতিশ্রুতির প্রতীক।'
+  },
+  {
+    id: 'gal-3',
+    title: 'New Office Setup',
+    title_bn: 'নতুন অফিস সেটআপ',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
+    date: '2026-06-10',
+    category: 'Culture',
+    category_bn: 'সংস্কৃতি',
+    location: 'Banani Studio, Dhaka',
+    location_bn: 'বনানী স্টুডিও, ঢাকা',
+    description: 'Designing our dynamic innovation studio to foster creative engineering, cross-functional collaboration, and high-performance development.',
+    description_bn: 'সৃজনশীল ইঞ্জিনিয়ারিং এবং উচ্চমানের সফটওয়্যার উদ্ভাবন উৎসাহিত করতে আমাদের আধুনিক ওয়ার্কস্পেস।'
+  },
+  {
+    id: 'gal-4',
+    title: 'Code Hackathon Winners',
+    title_bn: 'কোড হ্যাকাথন বিজয়ীরা',
+    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
+    date: '2026-06-15',
+    category: 'Achievement',
+    category_bn: 'কৃতিত্ব',
+    location: 'Tech Hub Auditorium, Dhaka',
+    location_bn: 'টেক হাব অডিটোরিয়াম, ঢাকা',
+    description: 'Celebrating 48 hours of rapid prototyping, cutting-edge AI product development, and the relentless engineering excellence of our tech leads.',
+    description_bn: '৪৮ ঘণ্টার অবিরাম উদ্ভাবন, এআই প্ল্যাটফর্ম তৈরি এবং আমাদের তরুণ ডেভেলপারদের অসাধারণ সাফল্যের উদযাপন।'
+  }
+];
+
 // --- Context ---
 
 const DataContext = createContext<DataContextType>({} as DataContextType);
@@ -260,6 +330,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(MOCK_GALLERY);
   const [language, setLanguage] = useState<Language>('en');
   const [loading, setLoading] = useState(true);
 
@@ -346,12 +417,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Phase 2: Secondary Data (Background load)
       try {
-        const [reviewsRes, blogsRes, jobsRes, videosRes, caseStudiesRes] = await Promise.all([
+        const [reviewsRes, blogsRes, jobsRes, videosRes, caseStudiesRes, galleryRes] = await Promise.all([
           fetchWithTimeout(`${API_URL}/reviews`),
           fetchWithTimeout(`${API_URL}/blogs`),
           fetchWithTimeout(`${API_URL}/jobs`),
           fetchWithTimeout(`${API_URL}/videos`),
-          fetchWithTimeout(`${API_URL}/caseStudies`)
+          fetchWithTimeout(`${API_URL}/caseStudies`),
+          fetchWithTimeout(`${API_URL}/galleryItems`)
         ]);
 
         if (reviewsRes.ok) setReviews(await reviewsRes.json());
@@ -359,6 +431,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (jobsRes.ok) setJobs(await jobsRes.json());
         if (videosRes.ok) setVideos(await videosRes.json());
         if (caseStudiesRes.ok) setCaseStudies(await caseStudiesRes.json());
+        if (galleryRes.ok) setGalleryItems(await galleryRes.json());
       } catch (error) {
         console.error('Phase 2 fetch failed:', error);
       }
@@ -418,6 +491,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'caseStudies') setCaseStudies(data);
     if (key === 'promotion') setPromotion(data);
     if (key === 'notice') setNotices(data);
+    if (key === 'galleryItems') setGalleryItems(data);
 
     // API Sync (Bulk PUT)
     try {
@@ -455,6 +529,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (key === 'careerApplications') setCareerApplications(prev => prev.filter(item => item.id !== id));
     if (key === 'caseStudies') setCaseStudies(prev => prev.filter(item => item.id !== id));
     if (key === 'notice') setNotices(prev => prev.filter(item => item.id !== id));
+    if (key === 'galleryItems') setGalleryItems(prev => prev.filter(item => item.id !== id));
 
     // API Call
     try {
@@ -565,7 +640,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );

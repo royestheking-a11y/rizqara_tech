@@ -33,7 +33,7 @@ const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, updateData, resetData, language, deleteData, fetchAdminData } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, updateData, resetData, language, deleteData, fetchAdminData } = useData();
 
     React.useEffect(() => {
         fetchAdminData();
@@ -41,13 +41,14 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice'>('service');
+    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice' | 'galleryItem'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [carouselImage, setCarouselImage] = useState('');
     const [projectImage, setProjectImage] = useState('');
     const [blogImage, setBlogImage] = useState('');
     const [caseStudyImage, setCaseStudyImage] = useState('');
+    const [galleryImage, setGalleryImage] = useState('');
     const [uploadingCount, setUploadingCount] = useState(0);
     const isUploadingImage = uploadingCount > 0;
 
@@ -74,6 +75,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'buildOption') await deleteData('buildOptions', id);
         if (type === 'caseStudy') await deleteData('caseStudies', id);
         if (type === 'notice') await deleteData('notice', id);
+        if (type === 'galleryItem') await deleteData('galleryItems', id);
         // Message and Application handling might be different in UI (check tabs)
         // Note: AdminDashboard usually handles main content. Messages might be handled in "messages" tab
     };
@@ -154,6 +156,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
         if (modalType === 'carousel' && carouselImage) data.image = carouselImage;
         if (modalType === 'blog' && blogImage) data.image = blogImage;
+        if (modalType === 'galleryItem' && galleryImage) data.image = galleryImage;
 
         if (modalType === 'notice') {
             const newItem = {
@@ -186,6 +189,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'carousel') updateData('carousel', editingItem ? carouselSlides.map(c => c.id === editingItem.id ? newItem : c) : [...carouselSlides, newItem]);
         if (modalType === 'buildOption') updateData('buildOptions', editingItem ? buildOptions.map(b => b.id === editingItem.id ? newItem : b) : [...buildOptions, newItem]);
         if (modalType === 'caseStudy') updateData('caseStudies', editingItem ? caseStudies.map(c => c.id === editingItem.id ? newItem : c) : [...caseStudies, newItem]);
+        if (modalType === 'galleryItem') updateData('galleryItems', editingItem ? galleryItems.map(g => g.id === editingItem.id ? newItem : g) : [...galleryItems, newItem]);
 
         setIsModalOpen(false);
         setEditingItem(null);
@@ -201,6 +205,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         setProjectImage(item?.image || '');
         setBlogImage(item?.image || '');
         setCaseStudyImage(item?.image || '');
+        setGalleryImage(item?.image || '');
         // Service uses projectImage state for convenience if not separate? No, check form.
         setIsModalOpen(true);
     };
@@ -365,6 +370,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         { id: 'applications', icon: FileDown, label: language === 'bn' ? 'আবেদন' : 'Applications' },
         { id: 'videos', icon: PlayCircle, label: language === 'bn' ? 'ভিডিও' : 'Videos' },
         { id: 'notice', icon: Bell, label: language === 'bn' ? 'নোটিশ' : 'Notice' },
+        { id: 'gallery', icon: Image, label: language === 'bn' ? 'গ্যালারি' : 'Gallery' },
     ];
 
     return (
@@ -622,6 +628,25 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         {item.isActive ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {activeTab === 'gallery' && renderList(language === 'bn' ? 'গ্যালারি' : 'Gallery', galleryItems, 'galleryItem', (item) => (
+                        <div className="flex items-center gap-6">
+                            {item.image && (
+                                <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-xl shadow-sm border border-gray-100 shrink-0" />
+                            )}
+                            <div>
+                                <h3 className="font-bold text-gray-800 text-lg">{item.title}</h3>
+                                <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
+                                    <span className="px-2 py-0.5 bg-red-50 text-[#500000] rounded-md font-bold">{item.category}</span>
+                                    {item.location && <span className="text-gray-600 font-medium">• {item.location}</span>}
+                                    {item.date && <span>• {item.date}</span>}
+                                </div>
+                                {item.description && (
+                                    <p className="text-xs text-gray-500 mt-1 line-clamp-1 max-w-lg">{item.description}</p>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -1098,6 +1123,33 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         <option value="View Blogs">View Blogs</option>
                                     </AdminSelect>
                                     <AdminInput label="Button Label (Bengali)" name="cta_bn" defaultValue={editingItem?.cta_bn} placeholder="উদাহরণ: আমাদের সাথে কথা বলুন" />
+                                </>}
+
+                                {modalType === 'galleryItem' && <>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <AdminInput name="title" label="Title" defaultValue={editingItem?.title} required />
+                                        <AdminInput name="title_bn" label="Title (Bengali)" defaultValue={editingItem?.title_bn} />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <AdminInput name="category" label="Category" defaultValue={editingItem?.category} required />
+                                        <AdminInput name="category_bn" label="Category (Bengali)" defaultValue={editingItem?.category_bn} />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <AdminInput name="location" label="Location" defaultValue={editingItem?.location || 'Dhaka HQ, Bangladesh'} placeholder="e.g. Dhaka HQ, Bangladesh" />
+                                        <AdminInput name="location_bn" label="Location (Bengali)" defaultValue={editingItem?.location_bn} placeholder="বাংলা লোকেশন (যেমন: ঢাকা হেডকোয়ার্টার)" />
+                                    </div>
+                                    <AdminInput name="date" type="date" label="Date" defaultValue={editingItem?.date || new Date().toISOString().split('T')[0]} required />
+                                    <AdminTextArea name="description" label="Story / Description" defaultValue={editingItem?.description} placeholder="Describe this moment, event, or milestone..." />
+                                    <AdminTextArea name="description_bn" label="Story / Description (Bengali)" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা বা গল্প..." />
+                                    <div className="mt-4">
+                                        <ImageUploader 
+                                            label="Gallery Image (Required)"
+                                            defaultValue={editingItem?.image} 
+                                            onImageChange={(url: string) => setGalleryImage(url)}
+                                            onUploadStart={() => setUploadingCount(prev => prev + 1)}
+                                            onUploadEnd={() => setUploadingCount(prev => Math.max(0, prev - 1))}
+                                        />
+                                    </div>
                                 </>}
 
                                 {modalType === 'buildOption' && <>

@@ -18,6 +18,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation,
 import { Toaster, toast } from 'sonner';
 import { DataProvider, useData, Project } from './context/DataContext';
 import { AdminDashboard } from './components/AdminDashboard';
+import { GalleryPage } from './components/pages/GalleryPage';
 
 import { SEO } from './components/SEO';
 import { partners } from './data/partners';
@@ -871,7 +872,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const location = useLocation();
-    const { t } = useData();
+    const { t, language } = useData();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -885,6 +886,7 @@ const Navbar = () => {
         { name: t('services'), path: '/services' },
         { name: t('projects'), path: '/projects' },
         { name: t('caseStudies'), path: '/case-studies' },
+        { name: language === 'bn' ? 'গ্যালারি' : 'Gallery', path: '/gallery' },
         { name: t('contact'), path: '/contact' }
     ];
 
@@ -1138,29 +1140,55 @@ const Footer = () => {
     const navigate = useNavigate();
 
     return (
-        <footer className="bg-gray-50 text-gray-900 pt-24 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
+        <footer className="bg-gray-50 text-gray-900 pt-20 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
 
             <div className="container mx-auto px-6">
+                {/* CTA Banner */}
+                <div className="mb-16">
+                    <div className="bg-gradient-to-r from-[#500000] to-[#3a0000] rounded-2xl p-8 md:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full pointer-events-none" />
+                        <div>
+                            <span className="text-red-200 text-xs font-black uppercase tracking-widest block mb-2">
+                                {language === 'bn' ? 'রিজকারা টেক-এর সাথে কাজ করুন' : 'READY TO BUILD SOMETHING GREAT?'}
+                            </span>
+                            <h3 className="text-2xl md:text-3xl font-black tracking-tight">
+                                {language === 'bn' ? 'আজই আপনার প্রজেক্ট শুরু করুন' : "Let's build your next big idea together"}
+                            </h3>
+                        </div>
+                        <a
+                            href="https://wa.me/message/CSYKXUISDAIVI1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-shrink-0 flex items-center justify-center gap-3 px-8 py-4 text-white rounded-xl font-black text-sm transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                            style={{ backgroundColor: '#25D366' }}
+                        >
+                            <WhatsAppLogo size={22} className="text-white" />
+                            {language === 'bn' ? 'মার্কেটিং টিমের সাথে কথা বলুন' : 'Connect with Marketing Team'}
+                        </a>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     <div className="lg:col-span-2">
                         <div className="flex items-center gap-4 mb-6 flex-wrap">
                             <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
                             <Link
                                 to="/vision-2030"
-                                className="relative px-3 py-1 rounded-full overflow-hidden group border border-[#500000]/20 inline-flex items-center justify-center shadow-sm bg-white/50 hover:bg-white transition-colors"
+                                className="relative px-3 py-1 rounded-full overflow-hidden group border border-[#500000]/20 inline-flex items-center justify-center shadow-sm bg-white hover:bg-red-50/50 transition-colors"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#500000]/5 to-red-500/5 group-hover:from-[#500000]/10 group-hover:to-red-500/10 transition-colors"></div>
                                 <span className="relative z-10 text-[#500000] font-black text-[10px] uppercase tracking-[0.1em] flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                                     Vision 2030
                                 </span>
                             </Link>
                         </div>
-                        <p className="text-gray-600 text-sm leading-relaxed mb-8 max-w-sm">
+                        <p className="text-gray-600 text-sm leading-relaxed mb-6 max-w-sm">
                             {language === 'bn' ? "রিজকারা টেক একটি প্রিমিয়ার সফটওয়্যার ডেভেলপমেন্ট এজেন্সি যা এন্টারপ্রাইজ-গ্রেড সমাধান প্রদান করে।" : "Rizqara Tech is a premier software development company delivering enterprise-grade solutions."}
                         </p>
-                        <div className="flex gap-4">
+                        
+                        {/* Social Icons */}
+                        <div className="flex gap-4 flex-wrap items-center">
                             {[
                                 { Icon: XLogo, link: 'https://x.com/Rizqaratech' },
                                 { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
@@ -1169,37 +1197,47 @@ const Footer = () => {
                                 { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' },
                                 { Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' }
                             ].map(({ Icon, link }, i) => (
-                                <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white transition-colors cursor-pointer group shadow-sm flex items-center justify-center">
+                                <a
+                                    key={i}
+                                    href={link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-3 bg-white border border-gray-200 rounded-full text-gray-500 hover:bg-[#500000] hover:text-white hover:border-[#500000] transition-colors cursor-pointer group shadow-sm flex items-center justify-center"
+                                >
                                     <Icon size={18} className="group-hover:scale-110 transition-transform" />
                                 </a>
                             ))}
                         </div>
-                        <Link to="/registered-company" className="mt-8 flex items-center gap-2 text-gray-500 hover:text-[#500000] transition-colors inline-flex w-fit group">
+
+                        <Link to="/registered-company" className="mt-6 flex items-center gap-2 text-gray-600 hover:text-[#500000] transition-colors inline-flex w-fit group">
                             <Building2 size={16} className="text-[#500000] group-hover:scale-110 transition-transform" />
                             <span className="text-sm font-semibold tracking-wide">
                                 {language === 'bn' ? 'নিবন্ধিত কোম্পানি' : 'Registered Company'}
                             </span>
                         </Link>
 
-
-                        <div className="mt-8 border-t border-gray-100 pt-8">
-                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <div className="mt-8 border-t border-gray-200 pt-6">
+                            <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-3 flex items-center gap-2">
                                 <Shield size={14} />
                                 {language === 'bn' ? "নিরাপদ পেমেন্ট পদ্ধতি" : "Secure Payment Methods"}
                             </h4>
                             <div className="flex flex-wrap gap-3 max-w-xs">
                                 {paymentMethods.map((method: any, i) => (
-                                    <div key={i} className="h-10 w-16 bg-white border border-gray-100 rounded-sm flex items-center justify-center hover:border-[#500000]/20 transition-colors shadow-sm overflow-hidden group">
+                                    <div
+                                        key={i}
+                                        className="h-10 w-16 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:border-[#500000]/40 hover:shadow-md transition-all shadow-sm overflow-hidden p-1.5"
+                                    >
                                         <img
                                             src={method.src}
                                             alt={method.name}
-                                            className={`max-h-full max-w-full transition-all duration-300 ${method.className || 'object-contain'}`}
+                                            className={`max-h-full max-w-full ${method.className || 'object-contain'}`}
                                         />
                                     </div>
                                 ))}
                             </div>
-                            <div className="mt-8 border-t border-gray-100 pt-8">
-                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-4 flex items-center gap-2">
+
+                            <div className="mt-6">
+                                <h4 className="text-xs font-black text-[#500000] uppercase tracking-widest mb-2 flex items-center gap-2">
                                     <Globe size={14} />
                                     {language === 'bn' ? "ভাষা নির্বাচন করুন" : "Select Language"}
                                 </h4>
@@ -1210,8 +1248,9 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    <div>
-                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('company')}</h3>
+                    {/* Company Column */}
+                    <div className="self-start">
+                        <h3 className="text-gray-900 font-bold mb-6 text-base uppercase tracking-wider">{t('company')}</h3>
                         <ul className="space-y-3 text-sm text-gray-600">
                             {[
                                 { key: 'home', path: '/' },
@@ -1231,40 +1270,11 @@ const Footer = () => {
                                 </li>
                             ))}
                         </ul>
-                        <div className="mt-8 border-t border-gray-100 pt-8">
-                            <div className="flex items-center gap-2 mb-6">
-                                <ShieldCheck size={16} className="text-[#500000]" />
-                                <h4 className="text-sm font-bold text-gray-900">{language === 'bn' ? 'স্বীকৃত:' : 'Recognized by:'}</h4>
-                            </div>
-                            <a
-                                href="https://clutch.co/profile/rizqara-tech"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="rounded-xl p-3 shadow-2xl border border-white/10 w-[160px] h-[85px] group hover:scale-[1.05] transition-transform duration-300 overflow-hidden relative block"
-                                style={{ backgroundColor: '#500000' }}
-                            >
-                                <div className="flex flex-col h-full justify-between relative z-10">
-                                    <div className="flex justify-between items-start">
-                                        <span className="text-[4px] font-black text-white tracking-[0.05em] uppercase leading-none opacity-80">Reviewed on</span>
-                                        <div className="flex gap-0.5">
-                                            {[1, 2, 3, 4, 5].map((_, i) => (
-                                                <Star key={i} size={14} fill="#FFD700" stroke="#FFD700" />
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-center flex-1 py-0.5">
-                                        <img src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png" alt="Clutch" className="h-12 w-auto object-contain brightness-0 invert" />
-                                    </div>
-
-                                    <div className="text-[5px] font-black text-white tracking-[0.05em] uppercase text-right leading-none opacity-80">10 REVIEWS</div>
-                                </div>
-                            </a>
-                        </div>
                     </div>
 
-                    <div>
-                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('solutions')}</h3>
+                    {/* Solutions Column */}
+                    <div className="self-start">
+                        <h3 className="text-gray-900 font-bold mb-6 text-base uppercase tracking-wider">{t('solutions')}</h3>
                         <ul className="space-y-3 text-sm text-gray-600">
                             {[
                                 { key: 'services', path: '/services' },
@@ -1283,13 +1293,107 @@ const Footer = () => {
                                 </li>
                             ))}
                         </ul>
-                        <div className="mt-8 border-t border-gray-100 pt-8 hidden lg:block opacity-0 pointer-events-none">
-                            <div className="h-40"></div>
+
+                        {/* Recognized & Certified — sits under Solutions, flowing naturally */}
+                        <div className="mt-8 pt-6 border-t border-gray-200">
+                            <div className="flex items-center gap-1.5 mb-4">
+                                <ShieldCheck size={13} className="text-[#500000]" />
+                                <span className="text-[10px] font-black text-[#500000] uppercase tracking-widest">
+                                    {language === 'bn' ? 'স্বীকৃত ও প্রত্যয়িত' : 'Recognized & Certified'}
+                                </span>
+                            </div>
+
+                            {/* Clutch + 3 cert badges in one row, all same height */}
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+
+                                {/* Clutch – maroon card */}
+                                <a
+                                    href="https://clutch.co/profile/rizqara-tech"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                        width: '120px', minWidth: '120px', height: '68px',
+                                        flexShrink: 0, textDecoration: 'none',
+                                        background: '#500000', borderRadius: '12px',
+                                        display: 'flex', flexDirection: 'column',
+                                        justifyContent: 'space-between',
+                                        padding: '8px 10px',
+                                        boxShadow: '0 2px 8px rgba(80,0,0,0.18)',
+                                        transition: 'transform 0.2s, box-shadow 0.2s'
+                                    }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span style={{ fontSize: '6px', fontWeight: 700, color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Reviewed on</span>
+                                        <div style={{ display: 'flex', gap: '1px' }}>
+                                            {[1,2,3,4,5].map((_,i) => <Star key={i} size={7} fill="#FFD700" stroke="#FFD700" />)}
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <img
+                                            src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png"
+                                            alt="Clutch"
+                                            style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+                                        />
+                                    </div>
+                                    <div style={{ fontSize: '7px', fontWeight: 900, color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', textAlign: 'right', letterSpacing: '0.05em' }}>10 Reviews</div>
+                                </a>
+
+                                {/* GDPR */}
+                                <div
+                                    style={{
+                                        width: '68px', minWidth: '68px', height: '68px',
+                                        flexShrink: 0, background: '#fff',
+                                        border: '1px solid #e5e7eb', borderRadius: '12px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        padding: '6px',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                                        cursor: 'default'
+                                    }}
+                                    title="GDPR Compliant"
+                                >
+                                    <img src="/gdpr-2.webp" alt="GDPR" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                                </div>
+
+                                {/* ISO 27001 */}
+                                <div
+                                    style={{
+                                        width: '68px', minWidth: '68px', height: '68px',
+                                        flexShrink: 0, background: '#fff',
+                                        border: '1px solid #e5e7eb', borderRadius: '12px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        padding: '6px',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                                        cursor: 'default'
+                                    }}
+                                    title="ISO 27001 Certified"
+                                >
+                                    <img src="/iso2-2.webp" alt="ISO 27001" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                                </div>
+
+                                {/* ISO 9001 */}
+                                <div
+                                    style={{
+                                        width: '68px', minWidth: '68px', height: '68px',
+                                        flexShrink: 0, background: '#fff',
+                                        border: '1px solid #e5e7eb', borderRadius: '12px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        padding: '6px',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                                        cursor: 'default'
+                                    }}
+                                    title="ISO 9001 Certified"
+                                >
+                                    <img src="/iso9001-2.webp" alt="ISO 9001" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <h3 className="text-gray-900 font-bold mb-6 text-lg">{t('newsletter')}</h3>
+                    <div className="lg:col-span-1">
+                        <h3 className="text-gray-900 font-bold mb-6 text-base uppercase tracking-wider">{t('newsletter')}</h3>
                         <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
                         <form onSubmit={async (e) => {
                             e.preventDefault();
@@ -1316,26 +1420,14 @@ const Footer = () => {
                                 toast.error('Failed to subscribe.');
                             }
                         }} className="flex flex-col gap-3">
-                            <input name="email" type="email" placeholder="Enter your email" required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000]" />
-                            <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
+                            <input name="email" type="email" placeholder={language === 'bn' ? "আপনার ইমেইল দিন" : "Enter your email"} required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000] transition-colors" />
+                            <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-md hover:shadow-lg">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
                         </form>
                     </div>
                 </div>
 
-                <div className="flex justify-center mb-16">
-                     <a 
-                        href="https://wa.me/message/CSYKXUISDAIVI1" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-4 px-12 py-5 bg-[#25D366] text-white rounded-2xl font-black text-lg hover:bg-[#128C7E] transition-all shadow-[0_20px_40px_rgba(37,211,102,0.3)] hover:shadow-[0_25px_50px_rgba(37,211,102,0.4)] transform hover:-translate-y-1 active:translate-y-0 group max-w-md w-full"
-                    >
-                        <WhatsAppLogo size={28} />
-                        {language === 'bn' ? 'আমাদের মার্কেটিং টিমের সাথে কথা বলুন' : 'Connect with Marketing Team'}
-                    </a>
-                </div>
-
-                <div className="border-t border-gray-200 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                    <p>© {new Date().getFullYear()} Rizqara Tech. All rights reserved.</p>
+                <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                    <p>© {new Date().getFullYear()} <span className="font-semibold text-gray-700">Rizqara Tech</span>. All rights reserved.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
                         <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
                         <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
@@ -1346,7 +1438,6 @@ const Footer = () => {
         </footer>
     );
 };
-
 const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
     const navigate = useNavigate();
     const { services, projects, loading, language, t } = useData();
@@ -1756,7 +1847,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             <FAQSection />
 
             {/* 15. CONTACT + MAP (Real Map) */}
-            <section className="container mx-auto px-6" id="contact-section">
+            <section className="container mx-auto px-6 mb-32" id="contact-section">
                 <SectionTitle title={t('contact')} />
                 <ContactFormWithMap />
             </section>
@@ -2065,6 +2156,7 @@ const MainContent = () => {
         else if (page === 'Blog' || page === 'blog') navigate('/blog');
         else if (page === 'Build' || page === 'build') navigate('/build');
         else if (page === 'CaseStudies' || page === 'Case Studies' || page === 'caseStudies') navigate('/case-studies');
+        else if (page === 'Gallery' || page === 'gallery') navigate('/gallery');
         else if (page === 'Careers' || page === 'careers') navigate('/careers');
         else if (page === 'Admin' || page === 'admin') navigate('/admin');
         else if (page === 'Contact' || page === 'contact') navigate('/contact');
@@ -2180,6 +2272,14 @@ const MainContent = () => {
                     <Route path="/feature/:id" element={<FeatureDetailWrapper />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/terms-of-service" element={<TermsOfService />} />
+                    <Route path="/gallery" element={<>
+                        <SEO 
+                            title="Gallery | RizQara Tech Bangladesh" 
+                            description="Explore our recent activities, team moments, and events in our gallery." 
+                            canonical="https://rizqara.tech/gallery"
+                        />
+                        <GalleryPage />
+                    </>} />
 
                     <Route path="/admin" element={
                         isAuthenticated ?

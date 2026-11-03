@@ -173,6 +173,20 @@ const NoticeSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
+const GalleryItemSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
+    title_bn: String,
+    image: { type: String, required: true },
+    date: { type: String, required: true },
+    category: { type: String, required: true },
+    category_bn: String,
+    location: String,
+    location_bn: String,
+    description: String,
+    description_bn: String
+}, { timestamps: true });
+
 module.exports = {
     Service: mongoose.model('Service', ServiceSchema),
     Project: mongoose.model('Project', ProjectSchema),
@@ -186,5 +200,6 @@ module.exports = {
     CareerApplication: mongoose.model('CareerApplication', CareerApplicationSchema),
     CaseStudy: mongoose.model('CaseStudy', CaseStudySchema),
     Promotion: mongoose.model('Promotion', PromotionSchema),
-    Notice: mongoose.model('Notice', NoticeSchema)
+    Notice: mongoose.model('Notice', NoticeSchema),
+    GalleryItem: mongoose.model('GalleryItem', GalleryItemSchema)
 };
