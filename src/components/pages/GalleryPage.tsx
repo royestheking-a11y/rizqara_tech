@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
+import { SEO } from '../SEO';
 import { 
     Calendar, X, ZoomIn, Heart, Share2, Check, 
     Sparkles, Tag, Search,
@@ -92,6 +93,15 @@ export const GalleryPage = () => {
 
     return (
         <div className="min-h-screen bg-[#FDFBF9] text-gray-900 pt-28 pb-32 relative">
+            <SEO 
+                title={language === 'bn' ? "লাইফ ও অ্যাক্টিভিটিজ গ্যালারি | রিজকারা টেক" : "Life & Activities Gallery | RizQara Tech"}
+                description={language === 'bn' 
+                    ? "রিজকারা টেকের সাম্প্রতিক ইভেন্ট, কর্মশালা, হ্যাকাথন এবং টিমের প্রাণবন্ত মুহূর্তগুলো এক্সপ্লোর করুন।" 
+                    : "Explore moments from RizQara Tech's recent events, workshops, hackathons, company culture, and team milestones in Dhaka, Bangladesh."}
+                keywords="RizQara Tech gallery, software company events Dhaka, tech summit Bangladesh, team building workshop, software developers life"
+                canonical="https://rizqara.tech/gallery"
+            />
+
             {/* Ambient Background Glows */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[500px] bg-gradient-to-b from-red-50/70 via-rose-50/30 to-transparent pointer-events-none -z-10" />
 
