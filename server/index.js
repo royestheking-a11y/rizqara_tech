@@ -45,8 +45,15 @@ async function start() {
     if (process.env.NODE_ENV === 'production') {
         for (const key of ['MONGODB_URI', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'ALLOWED_ORIGINS']) if (!process.env[key]) throw new Error(`${key} is required in production`);
     }
-    if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
-    else console.warn('MONGODB_URI is missing. Database endpoints will return 503 until configured.');
+    if (process.env.MONGODB_URI) {
+        await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
+        try {
+            const { syncDatabase } = require('./syncDatabase');
+            await syncDatabase();
+        } catch (syncErr) {
+            console.error('Database sync error on startup:', syncErr.message);
+        }
+    } else console.warn('MONGODB_URI is missing. Database endpoints will return 503 until configured.');
     require('./notifications').startNotifications();
     createApp().listen(Number(process.env.PORT) || 5001, () => console.log(`Server running on port ${Number(process.env.PORT) || 5001}`));
 }

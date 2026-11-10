@@ -5,6 +5,7 @@ import { translations, Language } from '../utils/translations';
 import { apiRequest, getCollection } from '../utils/api';
 import catalog from '../../shared/service-catalog.json';
 import initialCaseStudies from '../data/case-studies.json';
+import initialCarouselSlides from '../data/carousel.json';
 
 // --- Types ---
 
@@ -443,7 +444,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [carouselSlides, setCarouselSlides] = useState<CarouselSlide[]>([]);
+  const [carouselSlides, setCarouselSlides] = useState<CarouselSlide[]>(initialCarouselSlides as CarouselSlide[]);
   const [buildOptions, setBuildOptions] = useState<BuildOption[]>(DEFAULT_BUILD_OPTIONS);
   const [messages, setMessages] = useState<Message[]>([]);
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
@@ -459,7 +460,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loadAttempt, setLoadAttempt] = useState(0);
   const snapshots = useRef<Record<string, any[]>>({
     services: initialCatalogServices,
-    caseStudies: initialCaseStudies as CaseStudy[]
+    caseStudies: initialCaseStudies as CaseStudy[],
+    carousel: initialCarouselSlides as CarouselSlide[]
   });
   const pendingWrites = useRef(new Set<string>());
   const setters: Record<string, (data: any) => void> = {
@@ -473,7 +475,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     blogs: setBlogs,
     jobs: setJobs,
     videos: setVideos,
-    carousel: setCarouselSlides,
+    carousel: data => {
+      const items = Array.isArray(data) && data.length > 0 ? data : (initialCarouselSlides as CarouselSlide[]);
+      snapshots.current.carousel = items;
+      setCarouselSlides(items);
+    },
     buildOptions: setBuildOptions,
     messages: setMessages,
     careerApplications: setCareerApplications,

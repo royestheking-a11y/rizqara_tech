@@ -1,3 +1,5 @@
+import { useDialog } from './utils/useDialog';
+import './styles/mobile-navigation.css';
 import { ProjectPathfinder } from './components/studio/ProjectPathfinder';
 import { EditorialSection, TechnologyExperience } from './components/editorial/HomeEditorial';
 import './styles/footer-experience.css';
@@ -8,7 +10,7 @@ import { ServiceCategoryPreview, ServiceCatalogPage } from './components/service
 import { PremiumExperience, EngineeringExperience } from './components/experience/PremiumExperience';
 import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from 'react';
 import {
-    Menu, X, ChevronRight, Check,
+    X, ChevronRight, Check,
     Code2, Globe,
     ArrowRight, Star,
     Linkedin, Instagram, Facebook, Youtube,
@@ -804,7 +806,17 @@ const ProjectDetail = () => {
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const mobileDialog = useDialog(mobileMenuOpen, () => setMobileMenuOpen(false));
+    useEffect(() => {
+        if (!mobileMenuOpen) return;
+        const previous = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const onResize = () => { if (window.innerWidth >= 1024) setMobileMenuOpen(false); };
+        window.addEventListener('resize', onResize);
+        return () => { document.body.style.overflow = previous; window.removeEventListener('resize', onResize); };
+    }, [mobileMenuOpen]);
     const location = useLocation();
+    useEffect(() => { setMobileMenuOpen(false); }, [location.pathname]);
     const { t, language } = useData();
 
     useEffect(() => {
@@ -859,64 +871,23 @@ const Navbar = () => {
                 </div>
 
                 <div className="lg:hidden flex items-center gap-4">
-                    <button type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    <button type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} aria-controls="rq-mobile-navigation" className="rq-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                        <span className="rq-menu-lines" aria-hidden="true"><i/><i/></span>
                     </button>
                 </div>
             </div>
             </nav>
 
             <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="lg:hidden bg-white fixed inset-0 z-40 overflow-y-auto"
-                    >
-                        <div className="flex flex-col p-8 gap-4 min-h-full pt-28 pb-32 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#500000]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-
-                            {links.map((link, i) => (
-                                <motion.div
-                                    key={link.name}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="w-full border-b border-[#500000]/10"
-                                >
-                                    <Link
-                                        to={link.path}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="text-2xl font-black tracking-tight text-[#500000] hover:text-[#500000] hover:translate-x-2 transition-all duration-300 flex items-center justify-between py-4"
-                                    >
-                                        <span>{link.name}</span>
-                                        <ChevronRight size={20} className="text-[#500000]/30" />
-                                    </Link>
-                                </motion.div>
-                            ))}
-                            
-                            <motion.div 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: links.length * 0.1 }}
-                                className="mt-8 w-full z-10 flex-grow flex flex-col justify-end"
-                            >
-                                <button
-                                    onClick={() => {
-                                        setMobileMenuOpen(false);
-                                        window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank');
-                                    }}
-                                    className="w-full px-6 py-4 bg-[#500000] text-white rounded-2xl font-black text-lg hover:bg-[#3a0000] transition-all shadow-[0_8px_30px_rgba(80,0,0,0.2)] flex items-center justify-center gap-3 group"
-                                >
-                                    {t('freeAudit')}
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
-                            </motion.div>
-                        </div>
+                {mobileMenuOpen && <motion.div className="rq-mobile-overlay" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setMobileMenuOpen(false)}>
+                    <motion.div ref={mobileDialog} role="dialog" aria-modal="true" aria-label="Navigation menu" id="rq-mobile-navigation" className="rq-mobile-panel" initial={{opacity:0,y:-12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:.2}} onClick={e=>e.stopPropagation()}>
+                        <header><Link to="/" onClick={()=>setMobileMenuOpen(false)}>RIZQARA TECH</Link><button className="rq-menu-close" aria-label="Close navigation" onClick={()=>setMobileMenuOpen(false)}><X size={20}/></button></header>
+                        <div className="rq-mobile-menu-body"><div className="rq-mobile-caption"><span>{language==='bn'?'এক্সপ্লোর করুন':'EXPLORE RIZQARA'}</span><span>01 — 07</span></div>
+                        <nav aria-label="Mobile navigation">{links.map((link,i)=><Link key={link.path} to={link.path} aria-current={isActive(link.path)?'page':undefined} onClick={()=>setMobileMenuOpen(false)}><span className="rq-mobile-index">0{i+1}</span><span>{link.name}</span><span className="rq-mobile-arrow"><ArrowRight size={17}/></span></Link>)}</nav>
+                        <div className="rq-mobile-contact"><span>{language==='bn'?'নতুন কিছু তৈরি করি':'LET’S MAKE SOMETHING GREAT'}</span><a href="https://cal.com/rizqara-tech-a8z6yt" target="_blank" rel="noopener noreferrer" onClick={()=>setMobileMenuOpen(false)}>{t('freeAudit')}<ArrowRight size={18}/></a><a className="rq-mobile-email" href="mailto:rizqaratech@gmail.com">rizqaratech@gmail.com</a></div>
+                        </div><footer><span>Dhaka · Barisal</span><span>Ideas beyond borders ↗</span></footer>
                     </motion.div>
-                )}
+                </motion.div>}
             </AnimatePresence>
         </>
     );

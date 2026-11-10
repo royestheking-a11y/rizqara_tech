@@ -16,6 +16,7 @@ import {
 import { useData } from '../../context/DataContext';
 import { getSlug } from '../../utils/content';
 import { RizqAIEngine, ChatbotState } from '../../utils/chatbotEngine';
+import defaultCarouselSlides from '../../data/carousel.json';
 
 import { toast } from "sonner";
 
@@ -1199,38 +1200,7 @@ export const FeatureDetail = ({ id, onBack }: { id: string, onBack: () => void }
 // --- Hero Carousel (Box Type & Fast) ---
 
 // --- 8. HERO CAROUSEL ---
-const DEFAULT_SLIDES = [
-    {
-        id: '1',
-        title: "Best Software Company in Bangladesh",
-        title_bn: "বাংলাদেশের সেরা সফটওয়্যার কোম্পানি",
-        subtitle: "Enterprise-grade software solutions tailored for your business success.",
-        subtitle_bn: "আপনার ব্যবসার সাফল্যের জন্য তৈরি এন্টারপ্রাইজ-গ্রেড সফটওয়্যার সমাধান।",
-        image: "/images/services/carousel.png",
-        cta: "Start Project",
-        cta_bn: "প্রকল্প শুরু করুন"
-    },
-    {
-        id: '2',
-        title: "Advanced AI Solutions BD",
-        title_bn: "উন্নত এআই সমাধান বিডি",
-        subtitle: "Leverage artificial intelligence to automate and scale your business.",
-        subtitle_bn: "আপনার ব্যবসা স্বয়ংক্রিয় এবং স্কেল করতে কৃত্রিম বুদ্ধিমত্তা ব্যবহার করুন।",
-        image: "/images/services/carousel.png",
-        cta: "Explore AI",
-        cta_bn: "এআই অন্বেষণ করুন"
-    },
-    {
-        id: '3',
-        title: "Premium Mobile App Development",
-        title_bn: "প্রিমিয়াম মোবাইল অ্যাপ ডেভেলপমেন্ট",
-        subtitle: "Native and cross-platform mobile apps that engage and retain users.",
-        subtitle_bn: "নেটিভ এবং ক্রস-প্ল্যাটফর্ম মোবাইল অ্যাপ যা ব্যবহারকারীদের ধরে রাখে।",
-        image: "/images/services/carousel.png",
-        cta: "View Apps",
-        cta_bn: "অ্যাপস দেখুন"
-    }
-];
+const DEFAULT_SLIDES = defaultCarouselSlides;
 
 export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => void }) => {
     const { carouselSlides, language, loading } = useData();
