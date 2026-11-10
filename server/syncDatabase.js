@@ -134,6 +134,8 @@ async function syncDatabase() {
   if (fs.existsSync(carouselPath)) {
     const slides = JSON.parse(fs.readFileSync(carouselPath, 'utf8'));
     let carouselChanges = 0;
+    const slideIds = slides.map(s => s.id);
+    await Carousel.deleteMany({ id: { $nin: slideIds } });
     for (const slide of slides) {
       const existing = await Carousel.findOne({ id: slide.id }).lean();
       if (!existing) {

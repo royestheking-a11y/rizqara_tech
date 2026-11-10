@@ -5,7 +5,7 @@
     "title_bn": "অসাধারণ কিছু শুরু করুন।",
     "subtitle": "Websites, mobile apps and SaaS — built around your next big idea.",
     "subtitle_bn": "ওয়েবসাইট, মোবাইল অ্যাপ ও সাস — আপনার পরবর্তী বড় ধারণার জন্য।",
-    "image": "/images/hero/launch-v1.webp",
+    "image": "/firstcover.png",
     "cta": "View Projects",
     "cta_bn": "প্রকল্প দেখুন"
   },
@@ -15,7 +15,7 @@
     "title_bn": "পুনরাবৃত্তির কাজ দিন এআইকে।",
     "subtitle": "Connect your tools. Automate the repetitive work. Make room for what matters.",
     "subtitle_bn": "আপনার টুলগুলো সংযুক্ত করুন। সময় বাঁচান, গুরুত্বপূর্ণ কাজে মন দিন।",
-    "image": "/images/hero/automation-v1.webp",
+    "image": "/secondcover.png",
     "cta": "View Services",
     "cta_bn": "সেবাসমূহ দেখুন"
   },
@@ -25,17 +25,7 @@
     "title_bn": "আপনার ব্র্যান্ডকে আলাদা করে তুলুন।",
     "subtitle": "Distinctive design, thoughtful websites and digital marketing with a clear direction.",
     "subtitle_bn": "স্বতন্ত্র ডিজাইন, সুপরিকল্পিত ওয়েবসাইট ও লক্ষ্যভিত্তিক ডিজিটাল মার্কেটিং।",
-    "image": "/images/hero/growth-v1.webp",
-    "cta": "View Services",
-    "cta_bn": "সেবাসমূহ দেখুন"
-  },
-  {
-    "id": "gglh9n01x",
-    "title": "Your spreadsheet needs a holiday.",
-    "title_bn": "আপনার স্প্রেডশিটের ছুটি দরকার।",
-    "subtitle": "Still running everything in 27 tabs? Let’s build a system that does the heavy lifting.",
-    "subtitle_bn": "এখনও ২৭টি ট্যাবে সব কাজ? চলুন, কাজ সহজ করার একটি সিস্টেম বানাই।",
-    "image": "/images/hero/funny-v1.webp",
+    "image": "/thirdcover.png",
     "cta": "Contact Now",
     "cta_bn": "কথা বলুন"
   }
