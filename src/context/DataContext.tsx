@@ -525,7 +525,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const controller = new AbortController();
     let active = true;
     let retryTimer: ReturnType<typeof setTimeout> | null = null;
-    setLoading(true); setSecondaryLoading(true); setLoadErrors([]);
+    
+    // Only show the loading state on the initial mount, never during background retries
+    if (loadAttempt === 0) {
+      setLoading(true);
+      setSecondaryLoading(true);
+    }
+    setLoadErrors([]);
     const currentErrors: string[] = [];
 
     const loadGroup = async (keys: string[], done: () => void) => {
@@ -545,21 +551,34 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const critical = loadGroup(['services', 'projects', 'carousel', 'promotion', 'notice', 'buildOptions'], () => setLoading(false));
     const secondary = loadGroup(['reviews', 'blogs', 'jobs', 'videos', 'caseStudies', 'galleryItems'], () => setSecondaryLoading(false));
-    const timeout = setTimeout(() => controller.abort(), 35000);
+    
+    // Fast dismissal safeguard: never block user for more than 1.5s if server takes time to respond
+    const initialDismissTimer = setTimeout(() => {
+      if (active) {
+        setLoading(false);
+        setSecondaryLoading(false);
+      }
+    }, 1500);
+
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
     controller.signal.addEventListener('abort', () => { if (active) { setLoading(false); setSecondaryLoading(false); } });
     void Promise.all([critical, secondary]).then(() => {
-      // Auto-retry up to 3 times with backoff if a cold-start or temporary network hiccup occurred
-      if (active && currentErrors.length > 0 && loadAttempt < 3) {
+      // Auto-retry in background up to 2 times without ever re-triggering full-screen loading
+      if (active && currentErrors.length > 0 && loadAttempt < 2) {
         retryTimer = setTimeout(() => {
           if (active) setLoadAttempt(v => v + 1);
-        }, 3000);
+        }, 5000);
       }
-    }).finally(() => clearTimeout(timeout));
+    }).finally(() => {
+      clearTimeout(timeout);
+      clearTimeout(initialDismissTimer);
+    });
 
     return () => {
       active = false;
       if (retryTimer) clearTimeout(retryTimer);
+      clearTimeout(initialDismissTimer);
       clearTimeout(timeout);
       controller.abort();
     };

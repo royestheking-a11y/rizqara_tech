@@ -1549,7 +1549,7 @@ const MainContent = () => {
     }, []);
     const location = useLocation();
     const navigate = useNavigate();
-    const { t, language, loading, loadErrors, retryLoad, services } = useData();
+    const { t, language, loading, services } = useData();
 
     // Scroll to top on route change
     useLayoutEffect(() => {
@@ -1589,7 +1589,6 @@ const MainContent = () => {
 
             {location.pathname.startsWith('/admin') && <SEO title="Administrator sign in" description="Private administration area." noIndex />}
             {loading && <div className="rq-brand-loader" role="status" aria-label="Loading website"><div className="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i/><i/><i/></div></div>}
-            {!loading && loadErrors.length > 0 && <div role="status" className="rq-load-notice">{language === 'bn' ? 'কিছু তথ্য আপডেট করা যায়নি।' : 'Some updates are temporarily unavailable.'}<button type="button" onClick={retryLoad}>{language === 'bn' ? 'আবার চেষ্টা করুন' : 'Retry connection'}</button></div>}
             <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
                     <Route path="/" element={<Home />} />
