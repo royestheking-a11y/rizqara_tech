@@ -524,26 +524,45 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const controller = new AbortController();
     let active = true;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
     setLoading(true); setSecondaryLoading(true); setLoadErrors([]);
+    const currentErrors: string[] = [];
+
     const loadGroup = async (keys: string[], done: () => void) => {
       await Promise.allSettled(keys.map(async key => {
         try {
           const data = await getCollection(key, controller.signal);
           if (active) commit(key, data);
         } catch {
-          if (active) setLoadErrors(previous => [...previous, key]);
+          if (active) {
+            currentErrors.push(key);
+            setLoadErrors(previous => [...new Set([...previous, key])]);
+          }
         }
       }));
       if (active) done();
     };
-    // Both groups begin immediately; one failed resource never discards the others.
+
     const critical = loadGroup(['services', 'projects', 'carousel', 'promotion', 'notice', 'buildOptions'], () => setLoading(false));
     const secondary = loadGroup(['reviews', 'blogs', 'jobs', 'videos', 'caseStudies', 'galleryItems'], () => setSecondaryLoading(false));
     const timeout = setTimeout(() => controller.abort(), 35000);
-    // Abort also releases skeletons and exposes a retry control.
+
     controller.signal.addEventListener('abort', () => { if (active) { setLoading(false); setSecondaryLoading(false); } });
-    void Promise.all([critical, secondary]).finally(() => clearTimeout(timeout));
-    return () => { active = false; clearTimeout(timeout); controller.abort(); };
+    void Promise.all([critical, secondary]).then(() => {
+      // Auto-retry up to 3 times with backoff if a cold-start or temporary network hiccup occurred
+      if (active && currentErrors.length > 0 && loadAttempt < 3) {
+        retryTimer = setTimeout(() => {
+          if (active) setLoadAttempt(v => v + 1);
+        }, 3000);
+      }
+    }).finally(() => clearTimeout(timeout));
+
+    return () => {
+      active = false;
+      if (retryTimer) clearTimeout(retryTimer);
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, [loadAttempt]);
   const fetchAdminData = async () => {
     const results = await Promise.allSettled(['messages', 'careerApplications'].map(async key => commit(key, await getCollection(key))));
