@@ -91,6 +91,19 @@ const ButtonPremium = ({ children, onClick, className = "", variant = "primary" 
 
 // --- Skeletons ---
 
+const AdminBootSkeleton = () => (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0e0407] text-white font-sans">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#500000] to-[#7e1735] flex items-center justify-center shadow-2xl shadow-[#500000]/60 mb-5 border border-white/10 animate-pulse">
+            <Shield size={26} className="text-[#fce4ec]" />
+        </div>
+        <div className="text-[10px] font-bold tracking-[0.22em] uppercase text-[#d2869d] mb-1.5">RizQara Tech</div>
+        <div className="text-base font-semibold text-[#fdf2f6] tracking-tight mb-6">Administrator Console</div>
+        <div className="w-32 h-1 bg-white/10 rounded-full overflow-hidden relative">
+            <div className="h-full w-1/2 bg-gradient-to-r from-[#500000] to-[#e89bb1] rounded-full animate-pulse" />
+        </div>
+    </div>
+);
+
 const DetailSkeleton = () => (
     <div className="container mx-auto px-6 py-24 min-h-screen">
         <div className="mb-12 animate-pulse w-32 h-6 bg-gray-200 rounded-full"></div>
@@ -1450,7 +1463,7 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const { t, language } = useData();
+    const { language } = useData();
 
     const [busy, setBusy] = useState(false);
     const handleLogin = async (e: React.FormEvent) => {
@@ -1458,70 +1471,127 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
         if (busy) return;
         setBusy(true);
         try {
-            await apiRequest('auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+            await apiRequest('auth/login', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ email: email.trim(), password: password.trim() }) 
+            });
             setPassword('');
             setIsAuthenticated(true);
+            toast.success(language === 'bn' ? 'সফলভাবে সাইন ইন হয়েছে' : 'Signed in successfully');
         } catch (error) { toast.error(error instanceof Error ? error.message : 'Sign in failed'); }
         finally { setBusy(false); }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 relative bg-gray-100">
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#500000] rounded-full blur-[128px] opacity-10"></div>
+        <div className="min-h-screen flex items-center justify-center p-6 relative bg-[#0e0307] text-[#2b1820] overflow-hidden">
+            {/* Ambient luxury lighting */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-[#500000] to-[#7d1835] rounded-full blur-[140px] opacity-25"></div>
+                <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-[#3a0614] rounded-full blur-[120px] opacity-20"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(14,3,7,0.8)_100%)]"></div>
             </div>
 
-            <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-12 text-center relative z-10 shadow-2xl">
-                <div className="w-20 h-20 bg-[#500000] rounded-2xl mx-auto flex items-center justify-center text-white mb-8 shadow-xl">
-                    <Shield size={40} strokeWidth={2.5} />
+            <div className="w-full max-w-md bg-white/95 backdrop-blur-xl border border-[#ecdde4] rounded-3xl p-8 sm:p-12 relative z-10 shadow-[0_25px_60px_-15px_rgba(80,0,0,0.35)]">
+                {/* Brand Crest */}
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#500000] to-[#7b1735] mx-auto flex items-center justify-center text-white mb-6 shadow-xl shadow-[#500000]/30 border border-white/20">
+                    <Shield size={30} strokeWidth={2.2} className="text-[#fce4ec]" />
                 </div>
-                <h1 className="text-3xl font-black text-gray-900 mb-2">{t('adminPortal')}</h1>
-                <p className="text-gray-500 mb-8 text-sm">{language === 'bn' ? 'শুধুমাত্র অনুমোদিত কর্মীদের জন্য নিরাপদ অ্যাক্সেস।' : 'Secure access for authorized personnel only.'}</p>
+
+                <div className="text-center mb-8">
+                    <span className="block text-[10px] font-bold tracking-[0.22em] uppercase text-[#8c354f] mb-1.5">
+                        RIZQARA / SECURE CONSOLE
+                    </span>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-[#230711] tracking-tight">
+                        {language === 'bn' ? 'প্রশাসক সাইন ইন' : 'Administrator Sign In'}
+                    </h1>
+                    <p className="text-[#7d606d] text-xs mt-2 leading-relaxed">
+                        {language === 'bn' 
+                            ? 'শুধুমাত্র অনুমোদিত কর্মীদের জন্য নিরাপদ ব্যবস্থাপনা অ্যাক্সেস।' 
+                            : 'Sign in with your administrative credentials to manage RizQara Tech.'}
+                    </p>
+                </div>
 
                 <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        <input
-                            type="email"
-                            aria-label="Administrator email" autoComplete="username" required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder={t('email')}
-                            className="w-full bg-gray-50 border border-gray-200 p-4 pl-12 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#500000] transition-all"
-                        />
-                    </div>
-                    <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        <input
-                            aria-label="Administrator password" autoComplete="current-password" required
-                            type={showPassword ? "text" : "password"}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder={t('password')}
-                            className="w-full bg-gray-50 border border-gray-200 p-4 pl-12 pr-12 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#500000] transition-all"
-                        />
-                        <button
-                            type="button"
-                            aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                        >
-                            {showPassword ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                            )}
-                        </button>
+                    <div>
+                        <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-[#846271] mb-1.5 text-left">
+                            {language === 'bn' ? 'ইমেইল ঠিকানা' : 'Official Email'}
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8c6777]" size={16} />
+                            <input
+                                type="email"
+                                aria-label="Administrator email"
+                                autoComplete="username"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="admin@rizqaratech.com"
+                                className="w-full bg-[#faf5f7] border border-[#e5d0db] p-3.5 pl-11 rounded-xl text-[#230711] text-sm placeholder:text-[#b598a5] focus:outline-none focus:border-[#500000] focus:bg-white focus:ring-2 focus:ring-[#500000]/10 transition-all font-medium"
+                            />
+                        </div>
                     </div>
 
-                    <button disabled={busy} className="w-full bg-[#500000] hover:bg-[#3a0000] text-white py-4 rounded-xl font-bold transition-all shadow-lg flex justify-center items-center gap-2 group">
-                        {t('login')} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    <div>
+                        <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-[#846271] mb-1.5 text-left">
+                            {language === 'bn' ? 'পাসওয়ার্ড' : 'Security Password'}
+                        </label>
+                        <div className="relative">
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8c6777]" size={16} />
+                            <input
+                                aria-label="Administrator password"
+                                autoComplete="current-password"
+                                required
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••••••"
+                                className="w-full bg-[#faf5f7] border border-[#e5d0db] p-3.5 pl-11 pr-11 rounded-xl text-[#230711] text-sm placeholder:text-[#b598a5] focus:outline-none focus:border-[#500000] focus:bg-white focus:ring-2 focus:ring-[#500000]/10 transition-all font-medium"
+                            />
+                            <button
+                                type="button"
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8c6777] hover:text-[#500000] transition-colors p-1 cursor-pointer"
+                            >
+                                {showPassword ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={busy}
+                        className="w-full mt-2 bg-gradient-to-r from-[#500000] to-[#781834] hover:from-[#3f0000] hover:to-[#631229] text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-[#500000]/25 hover:shadow-xl flex justify-center items-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                        {busy ? (
+                            <span>{language === 'bn' ? 'যাচাই করা হচ্ছে...' : 'Verifying credentials...'}</span>
+                        ) : (
+                            <>
+                                <span>{language === 'bn' ? 'লগইন করুন' : 'Sign in to Console'}</span>
+                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
                     </button>
                 </form>
 
-                <div className="mt-8 text-xs text-gray-400 uppercase tracking-widest">
-                    Rizqara Tech Secure System
+                <div className="mt-8 pt-6 border-t border-[#ebdce3] flex flex-col items-center gap-3 text-center">
+                    <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#8c6777] uppercase tracking-wider">
+                        <ShieldCheck size={13} className="text-[#500000]" />
+                        <span>256-Bit Encrypted · Strict Origin Guard</span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/')}
+                        className="text-xs font-semibold text-[#7d5e6c] hover:text-[#500000] transition-colors cursor-pointer"
+                    >
+                        ← {language === 'bn' ? 'হোমপেজে ফিরে যান' : 'Return to RizQara Tech'}
+                    </button>
                 </div>
-                <button onClick={() => navigate('/')} className="mt-4 text-gray-400 hover:text-[#500000] underline text-xs">{t('home')}</button>
             </div>
         </div>
     );
@@ -1701,9 +1771,9 @@ const MainContent = () => {
                     </>} />
 
                     <Route path="/admin" element={
-                        checkingSession ? <DetailSkeleton /> : isAuthenticated ?
-                            <div className="bg-[#F5F7FA]">
-                                <Suspense fallback={<DetailSkeleton />}><AdminDashboard onLogout={async () => {
+                        checkingSession ? <AdminBootSkeleton /> : isAuthenticated ?
+                            <div className="bg-[#fcf9fa]">
+                                <Suspense fallback={<AdminBootSkeleton />}><AdminDashboard onLogout={async () => {
                                     try {
                                         await apiRequest('auth/logout', { method: 'POST' });
                                         setIsAuthenticated(false);

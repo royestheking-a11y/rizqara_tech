@@ -75,7 +75,7 @@ async function start() {
     if (!process.env.ADMIN_EMAIL) process.env.ADMIN_EMAIL = 'admin@rizqaratech.com';
     if (!process.env.ALLOWED_ORIGINS) process.env.ALLOWED_ORIGINS = 'https://rizqara.tech,https://www.rizqara.tech,http://localhost:3000';
     if (!process.env.ADMIN_PASSWORD_HASH) {
-        process.env.ADMIN_PASSWORD_HASH = 'cba3a9df5af736fac6064cbd302da2e5:ffddfea05b05909a6e89a37dbef7d91408c316c20193bd657d15628ca9add6d6ec80e365f0495cf866aa33c98173ca35e84d542a5a4705ac25a7c2026f6f1082';
+        process.env.ADMIN_PASSWORD_HASH = 'f2dc0946e897c29a356ca91bdd49daf2:7fa8ce461bbb0b743b55ef75210f88a239c5b06673c214552bac0d882b983674e67e851784ce024efe383dda60dbaf5966e7be0270302d764eb6bb66d6fdc440';
     }
     if (process.env.MONGODB_URI) {
         await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });

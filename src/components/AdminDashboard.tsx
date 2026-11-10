@@ -20,17 +20,17 @@ import { PromotionCard } from './premium/PromotionOverlay';
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
 const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div className={`absolute -right-6 -top-6 p-4 opacity-[0.05] group-hover:opacity-10 transition-opacity ${color} rotate-12`}>
-            <Icon size={120} />
+    <div className="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(80,0,0,0.04)] border border-[#ebdce3] relative overflow-hidden group hover:shadow-[0_16px_32px_-8px_rgba(80,0,0,0.1)] transition-all duration-300 hover:-translate-y-1">
+        <div className={`absolute -right-5 -bottom-5 p-2 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity ${color} rotate-12 pointer-events-none`}>
+            <Icon size={110} />
         </div>
         <div className="relative z-10 flex flex-col h-full justify-between">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${bg} ${color} shadow-inner`}>
-                <Icon size={28} />
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${bg} ${color} border border-black/5 shadow-sm`}>
+                <Icon size={22} />
             </div>
             <div>
-                <h3 className="text-4xl font-black text-gray-800 tracking-tight mb-1">{value}</h3>
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">{label}</p>
+                <h3 className="text-3xl font-extrabold text-[#240813] tracking-tight mb-1">{value}</h3>
+                <p className="text-[11px] font-bold text-[#8c6d7a] uppercase tracking-[0.14em]">{label}</p>
             </div>
         </div>
     </div>
@@ -391,41 +391,74 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F5F7FA] font-sans text-gray-800">
+        <div className="min-h-screen bg-[#fcf9fa] font-sans text-[#240813]">
 
             {/* Top Header */}
-            <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#500000] rounded-lg flex items-center justify-center text-white font-serif font-bold">R</div>
-                    <h1 className="text-xl font-bold text-[#500000]">Rizqara Admin</h1>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="text-sm text-right hidden md:block">
-                        <div className="font-bold text-gray-800">{language === 'bn' ? 'অ্যাডমিন ব্যবহারকারী' : 'Admin User'}</div>
-                        <div className="text-xs text-gray-400">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Super Administrator'}</div>
+            <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#e9dae2] px-6 md:px-8 py-3.5 flex justify-between items-center shadow-[0_2px_12px_rgba(80,0,0,0.03)]">
+                <div className="flex items-center gap-3.5">
+                    <div className="w-9 h-9 bg-gradient-to-br from-[#500000] to-[#781b37] rounded-xl flex items-center justify-center text-white font-serif font-black shadow-md shadow-[#500000]/25">
+                        R
                     </div>
-                    <button aria-label="Sign out" onClick={onLogout} className="p-2 text-gray-400 hover:text-red-600 transition-colors">
-                        <LogOut size={20} />
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-lg font-bold text-[#230711] tracking-tight leading-none">RizQara Tech</h1>
+                            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Live Console
+                            </span>
+                        </div>
+                        <p className="text-[10px] font-semibold tracking-wider uppercase text-[#967484] mt-0.5">Control & Management Portal</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <a
+                        href="/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#500000] bg-[#faf2f5] hover:bg-[#f3e3eb] border border-[#ebdbe3] rounded-lg transition-colors cursor-pointer"
+                    >
+                        <span>{language === 'bn' ? 'ওয়েবসাইট দেখুন' : 'View Live Site'}</span>
+                        <ChevronRight size={13} />
+                    </a>
+                    <div className="h-6 w-px bg-[#ebdbe3] hidden sm:block"></div>
+                    <div className="text-right hidden md:block">
+                        <div className="text-xs font-bold text-[#230711]">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Super Administrator'}</div>
+                        <div className="text-[10px] font-medium text-[#967484]">admin@rizqaratech.com</div>
+                    </div>
+                    <button
+                        aria-label="Sign out"
+                        onClick={onLogout}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-red-700 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-lg transition-colors cursor-pointer"
+                    >
+                        <LogOut size={14} />
+                        <span className="hidden sm:inline">{language === 'bn' ? 'প্রস্থান' : 'Sign out'}</span>
                     </button>
                 </div>
-            </div>
+            </header>
 
             <div className="container mx-auto p-6 max-w-7xl flex flex-col md:flex-row gap-8">
 
                 {/* Sidebar Navigation */}
                 <div className="w-full md:w-64 shrink-0 space-y-2">
-                    <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 sticky top-24">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-sm border border-[#ebdce3] sticky top-20">
+                        <div className="px-3 py-2 text-[10px] font-bold tracking-[0.16em] uppercase text-[#967484]">
+                            Navigation
+                        </div>
                         {navItems.map(tab => (
                             <button
                                 key={tab.id}
                                 onClick={() => { setActiveTab(tab.id); setSearchTerm(''); }}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl mb-1 transition-all ${activeTab === tab.id ? 'bg-[#500000] text-white shadow-lg shadow-red-900/20' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}
+                                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl mb-1 text-sm font-medium transition-all cursor-pointer ${
+                                    activeTab === tab.id
+                                        ? 'bg-gradient-to-r from-[#500000] to-[#751735] text-white shadow-md shadow-[#500000]/20 font-semibold'
+                                        : 'text-[#614552] hover:bg-[#faf3f6] hover:text-[#500000]'
+                                }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <tab.icon size={18} />
-                                    <span className="font-medium">{tab.label}</span>
+                                    <tab.icon size={17} />
+                                    <span>{tab.label}</span>
                                 </div>
-                                {activeTab === tab.id && <ChevronRight size={16} />}
+                                {activeTab === tab.id && <ChevronRight size={15} />}
                             </button>
                         ))}
                     </div>
