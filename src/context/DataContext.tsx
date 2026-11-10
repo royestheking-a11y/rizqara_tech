@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { translations, Language } from '../utils/translations';
 
 import { apiRequest, getCollection } from '../utils/api';
+import catalog from '../../shared/service-catalog.json';
+import initialCaseStudies from '../data/case-studies.json';
 
 // --- Types ---
 
@@ -276,11 +278,132 @@ export type DataContextType = {
   fetchAdminData: () => Promise<void>;
 };
 
-// --- Mock Data (Initial Seed) ---
+// --- Initial Data Generators & Normalizers ---
 
-// --- Mock Data (Initial Seed) --- NO LONGER USED
-// (Constants removed to cleanup unused variable warnings)
+export const legacyServiceMap: Record<string, string> = {
+  'Website Development': 'custom-website-development',
+  'Web App Development': 'web-applications',
+  'UI/UX Design': 'uiux-research-design',
+  'App Development': 'cross-platform-applications',
+  'SEO & Marketing': 'digital-marketing',
+  'AI Chatbot': 'ai-agents-chatbots',
+  'Automation': 'business-workflow-automation',
+  'Analytics': 'business-intelligence-dashboards',
+  'API Platform': 'api-integrations-webhooks',
+  'Brand Identity': 'logo-visual-identity'
+};
 
+export function getInitialCatalogServices(): Service[] {
+  const list: Service[] = [];
+  for (const category of catalog.categories) {
+    for (const offering of category.offerings) {
+      list.push({
+        id: `svc-${offering.key}`,
+        slug: offering.key,
+        title: offering.title,
+        title_bn: offering.title_bn,
+        description: offering.summary,
+        description_bn: offering.summary_bn,
+        details: `${offering.summary} ${category.description}`,
+        details_bn: `${offering.summary_bn} ${category.description_bn}`,
+        icon: category.icon,
+        capabilities: offering.deliverables,
+        capabilities_bn: offering.deliverables,
+        process: catalog.process,
+        process_bn: catalog.process_bn,
+        categoryId: category.id,
+        catalogKey: offering.key,
+        displayOrder: category.order * 100 + offering.order,
+        image: category.image,
+        imageAlt: category.imageAlt,
+        gallery: []
+      });
+    }
+  }
+  return list;
+}
+
+export function mergeServices(baseline: Service[], dbServices: any[]): Service[] {
+  if (!Array.isArray(dbServices) || dbServices.length === 0) return baseline;
+  const catalogMap = new Map<string, Service>();
+  baseline.forEach(s => {
+    if (s.catalogKey) catalogMap.set(s.catalogKey, { ...s });
+  });
+
+  const matchedDbIds = new Set<string>();
+
+  for (const dbService of dbServices) {
+    let matchedKey = dbService.catalogKey;
+    if (!matchedKey && dbService.slug && catalogMap.has(dbService.slug)) {
+      matchedKey = dbService.slug;
+    }
+    if (!matchedKey && dbService.title) {
+      if (legacyServiceMap[dbService.title]) {
+        matchedKey = legacyServiceMap[dbService.title];
+      } else {
+        const found = baseline.find(b => b.title.toLowerCase() === dbService.title.toLowerCase());
+        if (found) matchedKey = found.catalogKey;
+      }
+    }
+
+    if (matchedKey && catalogMap.has(matchedKey)) {
+      const dbId = dbService.id || dbService._id;
+      if (dbId) matchedDbIds.add(String(dbId));
+      const existing = catalogMap.get(matchedKey)!;
+      catalogMap.set(matchedKey, {
+        ...existing,
+        ...dbService,
+        id: dbService.id || existing.id,
+        slug: dbService.slug || existing.slug,
+        title: dbService.title || existing.title,
+        title_bn: dbService.title_bn || existing.title_bn,
+        description: dbService.description || existing.description,
+        description_bn: dbService.description_bn || existing.description_bn,
+        details: dbService.details || existing.details,
+        details_bn: dbService.details_bn || existing.details_bn,
+        categoryId: existing.categoryId,
+        catalogKey: matchedKey,
+        displayOrder: existing.displayOrder,
+        image: dbService.image || existing.image,
+        gallery: Array.isArray(dbService.gallery) && dbService.gallery.length > 0 ? dbService.gallery : existing.gallery,
+        capabilities: Array.isArray(dbService.capabilities) && dbService.capabilities.length > 0 ? dbService.capabilities : existing.capabilities,
+        process: Array.isArray(dbService.process) && dbService.process.length > 0 ? dbService.process : existing.process,
+      });
+    }
+  }
+
+  const specialists: Service[] = [];
+  for (const dbService of dbServices) {
+    const dbId = String(dbService.id || dbService._id);
+    if (!matchedDbIds.has(dbId) && !dbService.catalogKey) {
+      const catId = dbService.categoryId || 
+        (['AI Strategy', 'Generative AI', 'MLOps'].includes(dbService.title) ? 'ai-automation' : 'enterprise-custom-solutions');
+      const category = catalog.categories.find(c => c.id === catId);
+      specialists.push({
+        ...dbService,
+        id: dbId || `spec-${dbService.title?.toLowerCase().replace(/\s+/g, '-')}`,
+        categoryId: catId,
+        image: dbService.image || category?.image || '/images/services/premium/enterprise.webp',
+        displayOrder: 9999
+      });
+    }
+  }
+
+  return [...catalogMap.values(), ...specialists];
+}
+
+export function mergeCaseStudies(baseline: CaseStudy[], dbStudies: any[]): CaseStudy[] {
+  if (!Array.isArray(dbStudies) || dbStudies.length === 0) return baseline;
+  const map = new Map<string, CaseStudy>();
+  baseline.forEach(s => map.set(s.id, { ...s }));
+  for (const dbItem of dbStudies) {
+    if (dbItem.id) {
+      const existing = map.get(dbItem.id);
+      map.set(dbItem.id, existing ? { ...existing, ...dbItem } : dbItem);
+    }
+  }
+  return [...map.values()];
+}
 
 const INITIAL_PROMOTION: Promotion = {
   isActive: false,
@@ -313,7 +436,8 @@ const DataContext = createContext<DataContextType>({} as DataContextType);
 export const useData = () => useContext(DataContext);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [services, setServices] = useState<Service[]>([]);
+  const initialCatalogServices = getInitialCatalogServices();
+  const [services, setServices] = useState<Service[]>(initialCatalogServices);
   const [projects, setProjects] = useState<Project[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -323,23 +447,44 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [buildOptions, setBuildOptions] = useState<BuildOption[]>(DEFAULT_BUILD_OPTIONS);
   const [messages, setMessages] = useState<Message[]>([]);
   const [careerApplications, setCareerApplications] = useState<CareerApplication[]>([]);
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(initialCaseStudies as CaseStudy[]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [language, setLanguage] = useState<Language>('en');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const [secondaryLoading, setSecondaryLoading] = useState(true);
+  const [secondaryLoading, setSecondaryLoading] = useState(false);
   const [loadErrors, setLoadErrors] = useState<string[]>([]);
   const [loadAttempt, setLoadAttempt] = useState(0);
-  const snapshots = useRef<Record<string, any[]>>({});
+  const snapshots = useRef<Record<string, any[]>>({
+    services: initialCatalogServices,
+    caseStudies: initialCaseStudies as CaseStudy[]
+  });
   const pendingWrites = useRef(new Set<string>());
   const setters: Record<string, (data: any) => void> = {
-    services: setServices, projects: setProjects, reviews: setReviews, blogs: setBlogs,
-    jobs: setJobs, videos: setVideos, carousel: setCarouselSlides, buildOptions: setBuildOptions,
-    messages: setMessages, careerApplications: setCareerApplications, caseStudies: setCaseStudies,
-    promotion: data => setPromotion(data[0] || INITIAL_PROMOTION), notice: setNotices, galleryItems: setGalleryItems,
+    services: data => {
+      const merged = mergeServices(initialCatalogServices, data);
+      snapshots.current.services = merged;
+      setServices(merged);
+    },
+    projects: setProjects,
+    reviews: setReviews,
+    blogs: setBlogs,
+    jobs: setJobs,
+    videos: setVideos,
+    carousel: setCarouselSlides,
+    buildOptions: setBuildOptions,
+    messages: setMessages,
+    careerApplications: setCareerApplications,
+    caseStudies: data => {
+      const merged = mergeCaseStudies(initialCaseStudies as CaseStudy[], data);
+      snapshots.current.caseStudies = merged;
+      setCaseStudies(merged);
+    },
+    promotion: data => setPromotion(data[0] || INITIAL_PROMOTION),
+    notice: setNotices,
+    galleryItems: setGalleryItems,
   };
   const commit = (key: string, items: any[]) => { snapshots.current[key] = items; setters[key]?.(items); };
   const retryLoad = () => setLoadAttempt(value => value + 1);

@@ -1577,7 +1577,7 @@ const MainContent = () => {
     }, []);
     const location = useLocation();
     const navigate = useNavigate();
-    const { t, language, loading, loadErrors, retryLoad } = useData();
+    const { t, language, loading, loadErrors, retryLoad, services } = useData();
 
     // Scroll to top on route change
     useLayoutEffect(() => {
@@ -1628,7 +1628,7 @@ const MainContent = () => {
                             description="Our services include web development, UI UX design, AI solutions, mobile apps, SEO, and custom enterprise software."
                             canonical="https://rizqara.tech/services"
                         />
-                        {loading ? <ServicesSkeleton /> : <ServicesPage />}
+                        {loading && !services.length ? <ServicesSkeleton /> : <ServicesPage />}
                     </>} />
                     <Route path="/services/:id" element={<ServiceDetail />} />
 
