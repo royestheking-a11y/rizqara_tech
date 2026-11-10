@@ -8,14 +8,34 @@ const { renderPage } = require('./render');
 mongoose.set('bufferCommands', false);
 function createApp() {
     const app = express();
-    if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+    app.set('trust proxy', 1);
     app.disable('x-powered-by');
     app.use((req, res, next) => {
         res.set({ 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin' }); next();
     });
     app.use(cors({ origin(origin, callback) {
-        const permitted = new Set((process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(x => x.trim()));
-        callback(null, !origin || permitted.has(origin));
+        if (!origin) return callback(null, true);
+        try {
+            const url = new URL(origin);
+            const host = url.hostname.toLowerCase();
+            if (
+                host === 'rizqara.tech' ||
+                host.endsWith('.rizqara.tech') ||
+                host.endsWith('.onrender.com') ||
+                host === 'localhost' ||
+                host === '127.0.0.1'
+            ) {
+                return callback(null, true);
+            }
+        } catch {}
+        const permitted = new Set([
+            'https://rizqara.tech',
+            'https://www.rizqara.tech',
+            'http://localhost:3000',
+            'http://localhost:5001',
+            ...(process.env.ALLOWED_ORIGINS || '').split(',').map(x => x.trim())
+        ]);
+        callback(null, permitted.has(origin));
     }, credentials: true }));
     app.use(express.json({ limit: '256kb' }));
     app.use(express.urlencoded({ extended: false, limit: '256kb' }));
@@ -53,7 +73,7 @@ async function start() {
         console.warn('Please configure these in your Render Environment dashboard for full production functionality.');
     }
     if (!process.env.ADMIN_EMAIL) process.env.ADMIN_EMAIL = 'admin@rizqaratech.com';
-    if (!process.env.ALLOWED_ORIGINS) process.env.ALLOWED_ORIGINS = 'https://rizqara.tech,http://localhost:3000';
+    if (!process.env.ALLOWED_ORIGINS) process.env.ALLOWED_ORIGINS = 'https://rizqara.tech,https://www.rizqara.tech,http://localhost:3000';
     if (!process.env.ADMIN_PASSWORD_HASH) {
         process.env.ADMIN_PASSWORD_HASH = 'cba3a9df5af736fac6064cbd302da2e5:ffddfea05b05909a6e89a37dbef7d91408c316c20193bd657d15628ca9add6d6ec80e365f0495cf866aa33c98173ca35e84d542a5a4705ac25a7c2026f6f1082';
     }

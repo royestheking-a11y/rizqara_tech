@@ -4,13 +4,42 @@ const windows = new Map();
 const cookieName = 'rizqara_session';
 const sessionTTL = 8 * 60 * 60 * 1000;
 function allowedOrigins(req) {
-    return new Set([`${req.protocol}://${req.get('host')}`, ...(process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(x => x.trim())]);
+    const host = req.get('host');
+    const forwardedHost = req.get('x-forwarded-host');
+    const proto = req.get('x-forwarded-proto') || req.protocol;
+    return new Set([
+        `${req.protocol}://${host}`,
+        `${proto}://${host}`,
+        forwardedHost ? `https://${forwardedHost}` : '',
+        forwardedHost ? `http://${forwardedHost}` : '',
+        'https://rizqara.tech',
+        'https://www.rizqara.tech',
+        'http://localhost:3000',
+        'http://localhost:5001',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:5001',
+        ...(process.env.ALLOWED_ORIGINS || '').split(',').map(x => x.trim())
+    ].filter(Boolean));
 }
 function checkOrigin(req, res, next) {
     const origin = req.get('origin');
-    if (origin && !allowedOrigins(req).has(origin)) return res.status(403).json({ error: 'Origin not allowed' });
+    if (!origin) return next();
+    if (allowedOrigins(req).has(origin)) return next();
+    try {
+        const originUrl = new URL(origin);
+        const host = originUrl.hostname.toLowerCase();
+        if (
+            host === 'rizqara.tech' ||
+            host.endsWith('.rizqara.tech') ||
+            host.endsWith('.onrender.com') ||
+            host === 'localhost' ||
+            host === '127.0.0.1'
+        ) {
+            return next();
+        }
+    } catch {}
     if (req.get('sec-fetch-site') === 'cross-site') return res.status(403).json({ error: 'Cross-site requests are not allowed' });
-    next();
+    return res.status(403).json({ error: 'Origin not allowed' });
 }
 function rateLimit(name, limit, interval = 60000) {
     return (req, res, next) => {
