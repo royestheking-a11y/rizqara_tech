@@ -1,0 +1,1102 @@
+[
+  {
+    "id": "concept-aurelia",
+    "slug": "concept-aurelia",
+    "title": "Aurelia \u2014 Personal finance",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/aurelia.svg",
+    "description": "Track spending with clear budgets. An independent mobile app design concept exploring personal finance. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Spending overview",
+      "Savings goals",
+      "Transaction search",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-nourish",
+    "slug": "concept-nourish",
+    "title": "Nourish \u2014 Meal planning",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/nourish.svg",
+    "description": "Plan balanced meals around everyday routines. An independent mobile app design concept exploring meal planning. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Weekly planner",
+      "Grocery lists",
+      "Recipe discovery",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-roamly",
+    "slug": "concept-roamly",
+    "title": "Roamly \u2014 Travel",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/roamly.svg",
+    "description": "Keep every part of a trip in one place. An independent mobile app design concept exploring travel. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Itineraries",
+      "Saved places",
+      "Offline trip notes",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-stride",
+    "slug": "concept-stride",
+    "title": "Stride \u2014 Fitness",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/stride.svg",
+    "description": "Build consistent training habits. An independent mobile app design concept exploring fitness. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Workout plans",
+      "Session tracking",
+      "Progress calendar",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-carepath",
+    "slug": "concept-carepath",
+    "title": "Carepath \u2014 Appointments",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/carepath.svg",
+    "description": "Make clinic scheduling easier. An independent mobile app design concept exploring appointments. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Provider discovery",
+      "Appointment booking",
+      "Visit reminders",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-nestora",
+    "slug": "concept-nestora",
+    "title": "Nestora \u2014 Real estate",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/nestora.svg",
+    "description": "Find a home that fits your lifestyle. An independent mobile app design concept exploring real estate. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Property filters",
+      "Saved homes",
+      "Viewing requests",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-petal",
+    "slug": "concept-petal",
+    "title": "Petal \u2014 Flower delivery",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/petal.svg",
+    "description": "Send thoughtful gifts with confidence. An independent mobile app design concept exploring flower delivery. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Seasonal collections",
+      "Delivery scheduling",
+      "Order tracking",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-readwell",
+    "slug": "concept-readwell",
+    "title": "Readwell \u2014 Reading",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/readwell.svg",
+    "description": "Make space for a daily reading habit. An independent mobile app design concept exploring reading. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Personal library",
+      "Reading goals",
+      "Book notes",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-skillwave",
+    "slug": "concept-skillwave",
+    "title": "Skillwave \u2014 Learning",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/skillwave.svg",
+    "description": "Learn practical skills in focused lessons. An independent mobile app design concept exploring learning. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Course catalog",
+      "Lesson player",
+      "Learning progress",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-parkwise",
+    "slug": "concept-parkwise",
+    "title": "Parkwise \u2014 Parking",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/parkwise.svg",
+    "description": "Find and reserve convenient parking. An independent mobile app design concept exploring parking. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Location search",
+      "Reservation details",
+      "Arrival guidance",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-freshcart",
+    "slug": "concept-freshcart",
+    "title": "Freshcart \u2014 Groceries",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/freshcart.svg",
+    "description": "Bring the weekly shop onto your phone. An independent mobile app design concept exploring groceries. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Product discovery",
+      "Shopping lists",
+      "Delivery slots",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-craftlane",
+    "slug": "concept-craftlane",
+    "title": "Craftlane \u2014 Marketplace",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/craftlane.svg",
+    "description": "Discover independent makers. An independent mobile app design concept exploring marketplace. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Maker profiles",
+      "Product collections",
+      "Order history",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-pulsework",
+    "slug": "concept-pulsework",
+    "title": "Pulsework \u2014 Team productivity",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/pulsework.svg",
+    "description": "Keep a distributed team aligned. An independent mobile app design concept exploring team productivity. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Task boards",
+      "Team updates",
+      "Workload view",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-wanderstay",
+    "slug": "concept-wanderstay",
+    "title": "Wanderstay \u2014 Hospitality",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/wanderstay.svg",
+    "description": "Discover considered places to stay. An independent mobile app design concept exploring hospitality. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Stay discovery",
+      "Room selection",
+      "Booking summary",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-motive",
+    "slug": "concept-motive",
+    "title": "Motive \u2014 Vehicle care",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/motive.svg",
+    "description": "Stay on top of vehicle maintenance. An independent mobile app design concept exploring vehicle care. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Service schedule",
+      "Workshop booking",
+      "Vehicle records",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-bloomday",
+    "slug": "concept-bloomday",
+    "title": "Bloomday \u2014 Journaling",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/bloomday.svg",
+    "description": "Reflect on everyday moments. An independent mobile app design concept exploring journaling. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Daily journal",
+      "Mood history",
+      "Private notes",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-gather",
+    "slug": "concept-gather",
+    "title": "Gather \u2014 Events",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/gather.svg",
+    "description": "Bring people together around shared interests. An independent mobile app design concept exploring events. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Event discovery",
+      "RSVP flow",
+      "Ticket wallet",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-localtable",
+    "slug": "concept-localtable",
+    "title": "Localtable \u2014 Dining",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/localtable.svg",
+    "description": "Find a table for every occasion. An independent mobile app design concept exploring dining. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Restaurant search",
+      "Table reservations",
+      "Saved venues",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-civic",
+    "slug": "concept-civic",
+    "title": "Civic \u2014 Community",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/civic.svg",
+    "description": "Connect neighbours with local activities. An independent mobile app design concept exploring community. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Community feed",
+      "Local groups",
+      "Event calendar",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-parcelio",
+    "slug": "concept-parcelio",
+    "title": "Parcelio \u2014 Delivery",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/parcelio.svg",
+    "description": "Follow packages from pickup to arrival. An independent mobile app design concept exploring delivery. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Shipment tracking",
+      "Pickup requests",
+      "Delivery updates",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-fieldnote",
+    "slug": "concept-fieldnote",
+    "title": "Fieldnote \u2014 Field operations",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/fieldnote.svg",
+    "description": "Give field teams a clearer workflow. An independent mobile app design concept exploring field operations. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Job assignments",
+      "Photo reports",
+      "Offline forms",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-zenith",
+    "slug": "concept-zenith",
+    "title": "Zenith \u2014 Habit building",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/zenith.svg",
+    "description": "Turn intentions into daily routines. An independent mobile app design concept exploring habit building. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Habit planner",
+      "Streak calendar",
+      "Daily check-in",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-tempo",
+    "slug": "concept-tempo",
+    "title": "Tempo \u2014 Music discovery",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/tempo.svg",
+    "description": "Find soundtracks for every moment. An independent mobile app design concept exploring music discovery. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Curated playlists",
+      "Artist discovery",
+      "Saved tracks",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-tutorly",
+    "slug": "concept-tutorly",
+    "title": "Tutorly \u2014 Tutoring",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/tutorly.svg",
+    "description": "Connect learners with specialist tutors. An independent mobile app design concept exploring tutoring. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Tutor profiles",
+      "Session scheduling",
+      "Lesson notes",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-rewear",
+    "slug": "concept-rewear",
+    "title": "Rewear \u2014 Resale",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/rewear.svg",
+    "description": "Give pre-owned fashion a second life. An independent mobile app design concept exploring resale. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Product listings",
+      "Saved searches",
+      "Seller messaging",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-homehelp",
+    "slug": "concept-homehelp",
+    "title": "Homehelp \u2014 Home services",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/homehelp.svg",
+    "description": "Book reliable help for everyday tasks. An independent mobile app design concept exploring home services. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Service catalog",
+      "Booking requests",
+      "Job updates",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-crewpass",
+    "slug": "concept-crewpass",
+    "title": "Crewpass \u2014 Coworking",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/crewpass.svg",
+    "description": "Find a workspace for the way you work. An independent mobile app design concept exploring coworking. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Space discovery",
+      "Desk reservations",
+      "Access details",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-solara",
+    "slug": "concept-solara",
+    "title": "Solara \u2014 Energy monitoring",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/solara.svg",
+    "description": "Understand household energy patterns. An independent mobile app design concept exploring energy monitoring. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Usage dashboard",
+      "Device overview",
+      "Consumption history",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-trailmark",
+    "slug": "concept-trailmark",
+    "title": "Trailmark \u2014 Outdoor exploration",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/trailmark.svg",
+    "description": "Plan your next outdoor adventure. An independent mobile app design concept exploring outdoor exploration. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Trail discovery",
+      "Route bookmarks",
+      "Trip checklist",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-pocketstock",
+    "slug": "concept-pocketstock",
+    "title": "Pocketstock \u2014 Small business",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/concepts/pocketstock.svg",
+    "description": "Manage shop inventory on the go. An independent mobile app design concept exploring small business. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React Native",
+      "TypeScript",
+      "Proposed API integration"
+    ],
+    "features": [
+      "Stock counts",
+      "Low-stock alerts",
+      "Purchase records",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-forma-studio",
+    "slug": "concept-forma-studio",
+    "title": "Forma Studio \u2014 Architecture",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/forma-studio.svg",
+    "description": "Present thoughtful spaces through an editorial portfolio. An independent website design concept exploring architecture. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Project gallery",
+      "Studio story",
+      "Consultation enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-vellum",
+    "slug": "concept-vellum",
+    "title": "Vellum \u2014 Publishing",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/vellum.svg",
+    "description": "Give independent stories a distinctive home. An independent website design concept exploring publishing. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Article collections",
+      "Author profiles",
+      "Reading experience",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-maison-vale",
+    "slug": "concept-maison-vale",
+    "title": "Maison Vale \u2014 Interiors",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/maison-vale.svg",
+    "description": "Showcase furniture through tactile product storytelling. An independent website design concept exploring interiors. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Room collections",
+      "Product details",
+      "Enquiry flow",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-northstar",
+    "slug": "concept-northstar",
+    "title": "Northstar \u2014 Consulting",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/northstar.svg",
+    "description": "Explain complex services with clarity. An independent website design concept exploring consulting. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Service pages",
+      "Insights library",
+      "Discovery booking",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-verdant",
+    "slug": "concept-verdant",
+    "title": "Verdant \u2014 Sustainability",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/verdant.svg",
+    "description": "Communicate environmental initiatives clearly. An independent website design concept exploring sustainability. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Initiative stories",
+      "Resource library",
+      "Partner enquiries",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-arc-systems",
+    "slug": "concept-arc-systems",
+    "title": "Arc Systems \u2014 B2B software",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/arc-systems.svg",
+    "description": "Introduce a connected business platform. An independent website design concept exploring b2b software. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Product tour",
+      "Feature comparison",
+      "Demo request",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-serein",
+    "slug": "concept-serein",
+    "title": "Serein \u2014 Boutique hotel",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/serein.svg",
+    "description": "Create a considered hospitality experience. An independent website design concept exploring boutique hotel. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Room galleries",
+      "Stay information",
+      "Booking enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-atelier-nine",
+    "slug": "concept-atelier-nine",
+    "title": "Atelier Nine \u2014 Creative agency",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/atelier-nine.svg",
+    "description": "Make creative work the centre of the experience. An independent website design concept exploring creative agency. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Case studies",
+      "Capabilities",
+      "Project briefing",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-harvest-house",
+    "slug": "concept-harvest-house",
+    "title": "Harvest House \u2014 Food brand",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/harvest-house.svg",
+    "description": "Connect customers with seasonal produce. An independent website design concept exploring food brand. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Product collections",
+      "Producer stories",
+      "Subscription enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-orbit-academy",
+    "slug": "concept-orbit-academy",
+    "title": "Orbit Academy \u2014 Education",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/orbit-academy.svg",
+    "description": "Help learners discover their next course. An independent website design concept exploring education. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Course explorer",
+      "Instructor profiles",
+      "Application flow",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-luma-dental",
+    "slug": "concept-luma-dental",
+    "title": "Luma Dental \u2014 Clinic",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/luma-dental.svg",
+    "description": "Make practice information easy to find. An independent website design concept exploring clinic. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Treatment guides",
+      "Team profiles",
+      "Appointment request",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-cedar-co",
+    "slug": "concept-cedar-co",
+    "title": "Cedar & Co \u2014 Legal services",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/cedar-co.svg",
+    "description": "Present professional expertise clearly. An independent website design concept exploring legal services. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Practice areas",
+      "Team directory",
+      "Consultation form",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-motionlab",
+    "slug": "concept-motionlab",
+    "title": "Motionlab \u2014 Fitness studio",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/motionlab.svg",
+    "description": "Bring classes and coaches into one experience. An independent website design concept exploring fitness studio. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Class timetable",
+      "Coach profiles",
+      "Membership enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-kinfolk-shop",
+    "slug": "concept-kinfolk-shop",
+    "title": "Kinfolk Shop \u2014 E-commerce",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/kinfolk-shop.svg",
+    "description": "Build an expressive independent storefront. An independent website design concept exploring e-commerce. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Product discovery",
+      "Product variants",
+      "Cart concept",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-gridline",
+    "slug": "concept-gridline",
+    "title": "Gridline \u2014 Engineering",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/gridline.svg",
+    "description": "Explain technical expertise with confidence. An independent website design concept exploring engineering. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Project portfolio",
+      "Engineering services",
+      "Tender enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-everafter",
+    "slug": "concept-everafter",
+    "title": "Everafter \u2014 Wedding planning",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/everafter.svg",
+    "description": "Guide couples from inspiration to enquiry. An independent website design concept exploring wedding planning. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Event galleries",
+      "Planning packages",
+      "Consultation form",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-openlane",
+    "slug": "concept-openlane",
+    "title": "Openlane \u2014 Logistics",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/openlane.svg",
+    "description": "Make complex shipping services understandable. An independent website design concept exploring logistics. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Service coverage",
+      "Shipment enquiry",
+      "Business contact",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-prism-ventures",
+    "slug": "concept-prism-ventures",
+    "title": "Prism Ventures \u2014 Venture studio",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/prism-ventures.svg",
+    "description": "Present a focused investment thesis. An independent website design concept exploring venture studio. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Portfolio profiles",
+      "Studio approach",
+      "Founder application",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-terra-foundation",
+    "slug": "concept-terra-foundation",
+    "title": "Terra Foundation \u2014 Nonprofit",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/terra-foundation.svg",
+    "description": "Connect a mission with meaningful stories. An independent website design concept exploring nonprofit. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Programme pages",
+      "Impact stories",
+      "Volunteer enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  },
+  {
+    "id": "concept-cobalt-cloud",
+    "slug": "concept-cobalt-cloud",
+    "title": "Cobalt Cloud \u2014 Cloud services",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/concepts/cobalt-cloud.svg",
+    "description": "Clarify infrastructure offerings for business buyers. An independent website design concept exploring cloud services. This is a proposed experience, not a delivered client project or a live product.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Responsive CSS"
+    ],
+    "features": [
+      "Solution explorer",
+      "Technical resources",
+      "Sales enquiry",
+      "Concept scope: research assumptions, interface direction, and proposed user flows",
+      "Delivery status: visual concept only; development and user validation are not completed"
+    ],
+    "gallery": []
+  }
+]

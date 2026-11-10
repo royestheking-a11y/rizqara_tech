@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useDialog } from '../../utils/useDialog';
+import { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
@@ -13,9 +14,11 @@ import { toast } from 'sonner';
 export const GalleryPage = () => {
     const { galleryItems, language } = useData();
     const [selectedImage, setSelectedImage] = useState<any>(null);
+    const galleryDialog = useDialog(!!selectedImage, () => setSelectedImage(null));
     const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
     const [sharedId, setSharedId] = useState<string | null>(null);
     const [activeFilter, setActiveFilter] = useState<string>('All');
+    const [favoritesOnly, setFavoritesOnly] = useState(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     // Extract dynamic categories from actual gallery data
@@ -41,9 +44,9 @@ export const GalleryPage = () => {
                 titleBn.includes(query) ||
                 catEn.includes(query) ||
                 catBn.includes(query);
-            return matchesCategory && matchesSearch;
+            return matchesCategory && matchesSearch && (!favoritesOnly || likedItems.has(item.id));
         });
-    }, [galleryItems, activeFilter, searchQuery]);
+    }, [galleryItems, activeFilter, searchQuery, favoritesOnly, likedItems]);
 
     const handleLike = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
@@ -91,8 +94,18 @@ export const GalleryPage = () => {
         setSelectedImage(filteredItems[nextIndex]);
     };
 
+    useEffect(() => {
+        if (!selectedImage) return;
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setSelectedImage(null);
+            if (event.key === 'ArrowRight') navigateModal('next');
+            if (event.key === 'ArrowLeft') navigateModal('prev');
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [selectedImage, filteredItems]);
     return (
-        <div className="min-h-screen bg-[#FDFBF9] text-gray-900 pt-28 pb-32 relative">
+        <div className="rq-gallery min-h-screen bg-[#FDFBF9] text-gray-900 pt-28 pb-32 relative">
             <SEO 
                 title={language === 'bn' ? "লাইফ ও অ্যাক্টিভিটিজ গ্যালারি | রিজকারা টেক" : "Life & Activities Gallery | RizQara Tech"}
                 description={language === 'bn' 
@@ -108,7 +121,7 @@ export const GalleryPage = () => {
             <div className="container mx-auto px-6 max-w-7xl">
                 
                 {/* ── 1. CLEAN HEADER ── */}
-                <div className="relative text-center max-w-5xl mx-auto mb-10 pt-4">
+                <div className="rq-gallery-heading relative text-center max-w-5xl mx-auto mb-10 pt-4">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -177,7 +190,7 @@ export const GalleryPage = () => {
                             className="absolute text-gray-400 pointer-events-none" 
                             style={{ left: 14, top: '50%', transform: 'translateY(-50%)' }}
                         />
-                        <input
+                        <input aria-label="Search gallery"
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -186,7 +199,7 @@ export const GalleryPage = () => {
                             style={{ paddingLeft: '44px', paddingRight: '36px', paddingTop: '10px', paddingBottom: '10px' }}
                         />
                         {searchQuery && (
-                            <button 
+                            <button aria-label="Close"
                                 onClick={() => setSearchQuery('')}
                                 className="absolute text-gray-400 hover:text-gray-600 p-1"
                                 style={{ right: 10, top: '50%', transform: 'translateY(-50%)' }}
@@ -197,6 +210,7 @@ export const GalleryPage = () => {
                     </div>
                 </div>
 
+                <div className="rq-gallery-meta"><span aria-live="polite">{filteredItems.length} moments to explore</span><button aria-pressed={favoritesOnly} onClick={() => setFavoritesOnly(!favoritesOnly)}>{favoritesOnly ? 'Show all moments' : `Your favorites (${likedItems.size})`} ♡</button></div>
                 {/* ── 3. ALL PHOTOS & CARDS (BIG SIZE COVER STYLE) ── */}
                 {filteredItems.length === 0 ? (
                     <motion.div
@@ -214,7 +228,7 @@ export const GalleryPage = () => {
                             {language === 'bn' ? 'অনুগ্রহ করে ভিন্ন কোনো ক্যাটাগরি বা অনুসন্ধানী শব্দ দিয়ে চেষ্টা করুন।' : 'Try selecting another category pill or clearing your search keywords.'}
                         </p>
                         <button
-                            onClick={() => { setActiveFilter('All'); setSearchQuery(''); }}
+                            onClick={() => { setActiveFilter('All'); setSearchQuery(''); setFavoritesOnly(false); }}
                             className="px-6 py-2.5 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors"
                             style={{ backgroundColor: '#500000' }}
                         >
@@ -223,10 +237,10 @@ export const GalleryPage = () => {
                     </motion.div>
                 ) : (
                     <div 
-                        className="w-full"
+                        className="rq-gallery-grid w-full"
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))',
                             gap: '32px'
                         }}
                     >
@@ -242,7 +256,7 @@ export const GalleryPage = () => {
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.4, delay: index * 0.05 }}
                                     className="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-500 group flex flex-col hover:-translate-y-1.5"
-                                    onClick={() => setSelectedImage(item)}
+                                    tabIndex={0} aria-label={`Open ${item.title}`} onKeyDown={e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setSelectedImage(item); } }} onClick={() => setSelectedImage(item)}
                                 >
                                     {/* Big Size Cover Image Area (Aspect 16:10 / 280px minimum height) */}
                                     <div className="relative w-full h-64 sm:h-72 overflow-hidden bg-gray-100 cursor-pointer">
@@ -330,7 +344,7 @@ export const GalleryPage = () => {
                                                     {sharedId === item.id ? <Check size={16} className="text-green-500" /> : <Share2 size={16} />}
                                                 </button>
                                                 <button
-                                                    onClick={() => setSelectedImage(item)}
+                                                    tabIndex={0} aria-label={`Open ${item.title}`} onKeyDown={e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setSelectedImage(item); } }} onClick={() => setSelectedImage(item)}
                                                     className="inline-flex items-center gap-1.5 px-4 py-2 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow"
                                                     style={{ backgroundColor: '#500000' }}
                                                 >
@@ -395,7 +409,7 @@ export const GalleryPage = () => {
                 <AnimatePresence>
                     {selectedImage && (
                         <motion.div
-                            key="gallery-modal"
+                            key="gallery-modal" ref={galleryDialog} role="dialog" aria-modal="true" aria-label="Gallery image viewer"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -403,7 +417,7 @@ export const GalleryPage = () => {
                             onClick={() => setSelectedImage(null)}
                         >
                             {/* Close button */}
-                            <button
+                            <button aria-label="Close"
                                 style={{ position: 'absolute', top: 24, right: 24, zIndex: 10000, padding: 12, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                 onClick={() => setSelectedImage(null)}
                             >
@@ -411,7 +425,7 @@ export const GalleryPage = () => {
                             </button>
 
                             {/* Prev Arrow */}
-                            <button
+                            <button aria-label="Previous"
                                 onClick={(e) => { e.stopPropagation(); navigateModal('prev'); }}
                                 style={{ position: 'absolute', left: 24, top: '50%', transform: 'translateY(-50%)', zIndex: 10000, width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
@@ -419,7 +433,7 @@ export const GalleryPage = () => {
                             </button>
 
                             {/* Next Arrow */}
-                            <button
+                            <button aria-label="Next"
                                 onClick={(e) => { e.stopPropagation(); navigateModal('next'); }}
                                 style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-50%)', zIndex: 10000, width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >

@@ -4,7 +4,7 @@ import { X, Clock, ArrowRight, Gift } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 
-const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+import { getSlug } from '../../utils/content';
 
 interface PromotionCardProps {
     offerRate: string;
@@ -65,7 +65,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
 
             {/* Close Button */}
             {onClose && (
-                <button
+                <button aria-label="Close"
                     onClick={onClose}
                     className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white/80 hover:text-white transition-all duration-300"
                 >
@@ -193,7 +193,7 @@ export const PromotionOverlay = () => {
                                 setIsVisible(false);
                                 const targetService = services.find(s => s.title === promotion.serviceName);
                                 if (targetService) {
-                                    navigate(`/services/${getSlug(targetService.title)}`);
+                                    navigate(`/services/${getSlug(targetService)}`);
                                 } else {
                                     navigate('/contact');
                                 }

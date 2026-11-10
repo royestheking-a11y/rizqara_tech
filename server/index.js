@@ -1,87 +1,54 @@
-const path = require('path');
+const path = require('node:path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Trust Proxy (Required for Render/Heroku to pass correct IPs)
-app.set('trust proxy', 1);
-
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// Database Connection
-mongoose.connect(process.env.MONGODB_URI, {
-    maxPoolSize: 10, // Maintain up to 10 socket connections
-    serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-})
-    .then(() => console.log('MongoDB Connected (Connection Pool: 10)'))
-    .catch(err => console.error('MongoDB Connection Error:', err));
-
-// Global Error Handler to prevent process crashes
-app.use((err, req, res, next) => {
-    console.error('SERVER ERROR:', err.stack);
-    if (!res.headersSent) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-// Routes
-app.use('/api', require('./routes'));
-
-// Serve Static Frontend (Vite Build)
-const distPath = path.join(__dirname, '../dist');
-console.log('Frontend dist path:', distPath);
-app.use(express.static(distPath));
-
-// Health Check Endpoint for Render Keep-Alive
-// Added aliases because /health might be rate-limited by platform
-const healthCheck = (req, res) => res.status(200).send('OK');
-app.get('/health', healthCheck);
-app.get('/ping', healthCheck);
-app.get('/api/health', healthCheck);
-
-// Fallback: Handle client-side routing (SPA)
-app.use((req, res) => {
-    // If it's an API request that reached here, it's a 404 for the API
-    if (req.path.startsWith('/api')) {
-        return res.status(404).json({ error: 'API route not found' });
-    }
-    
-    // Otherwise serve the frontend index.html for any other route
-    const indexPath = path.join(distPath, 'index.html');
-    res.sendFile(indexPath, (err) => {
-        if (err) {
-            console.log('Notice: index.html not found at', indexPath);
-            res.status(200).send('RizQaratech API is running (Frontend not built yet)');
-        }
+const { checkOrigin } = require('./security');
+const { renderPage } = require('./render');
+mongoose.set('bufferCommands', false);
+function createApp() {
+    const app = express();
+    if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+    app.disable('x-powered-by');
+    app.use((req, res, next) => {
+        res.set({ 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin' }); next();
     });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    
-    // --- Render Self-Ping Keep-Alive ---
-    // This keeps the service awake by pinging itself every 10 minutes
-    const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL;
-    if (RENDER_EXTERNAL_URL) {
-        console.log(`Self-ping initialized for: ${RENDER_EXTERNAL_URL}`);
-        setInterval(async () => {
-            try {
-                // We use the external URL to ensure we go through the network stack
-                const response = await fetch(`${RENDER_EXTERNAL_URL}/health`);
-                console.log(`Self-ping status: ${response.status} at ${new Date().toISOString()}`);
-            } catch (err) {
-                console.error('Self-ping failed:', err.message);
-            }
-        }, 10 * 60 * 1000); // 10 minutes
-    } else {
-        console.log('Self-ping skipped: RENDER_EXTERNAL_URL not set (Local Dev)');
+    app.use(cors({ origin(origin, callback) {
+        const permitted = new Set((process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(x => x.trim()));
+        callback(null, !origin || permitted.has(origin));
+    }, credentials: true }));
+    app.use(express.json({ limit: '256kb' }));
+    app.use(express.urlencoded({ extended: false, limit: '256kb' }));
+    app.use('/api', (req, res, next) => ['GET', 'HEAD', 'OPTIONS'].includes(req.method) ? next() : checkOrigin(req, res, next));
+    app.get(['/health', '/ping', '/api/health'], (req, res) => res.json({ alive: true }));
+    app.get('/api/ready', (req, res) => res.status(mongoose.connection.readyState === 1 ? 200 : 503).json({ ready: mongoose.connection.readyState === 1 }));
+    app.use('/api', require('./routes'));
+    app.use('/api', (req, res) => res.status(404).json({ error: 'API route not found' }));
+    const distPath = path.join(__dirname, '../dist');
+    app.use(express.static(distPath, { index: false }));
+    app.use(async (req, res, next) => {
+        if (req.method !== 'GET' || path.extname(req.path)) return res.status(404).send('Not found');
+        try {
+            const page = await renderPage(path.join(distPath, 'index.html'), req.path, mongoose.connection.readyState === 1);
+            res.status(page.status).type('html').send(page.html);
+        } catch (error) { next(error); }
+    });
+    app.use((err, req, res, next) => {
+        if (res.headersSent) return next(err);
+        console.error('Request failed:', err.name);
+        const status = err.status || (err.code === 'LIMIT_FILE_SIZE' ? 413 : err.name === 'ValidationError' || err.name === 'MulterError' ? 400 : err.code === 11000 ? 409 : 500);
+        res.status(status).json({ error: status === 413 ? 'File or request is too large' : status === 400 ? 'Invalid request data' : status === 409 ? 'This record already exists' : 'Unable to complete the request' });
+    });
+    return app;
+}
+async function start() {
+    if (process.env.NODE_ENV === 'production') {
+        for (const key of ['MONGODB_URI', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'ALLOWED_ORIGINS']) if (!process.env[key]) throw new Error(`${key} is required in production`);
     }
-});
+    if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
+    else console.warn('MONGODB_URI is missing. Database endpoints will return 503 until configured.');
+    require('./notifications').startNotifications();
+    createApp().listen(Number(process.env.PORT) || 5001, () => console.log(`Server running on port ${Number(process.env.PORT) || 5001}`));
+}
+if (require.main === module) start().catch(err => { console.error(err.message); process.exitCode = 1; });
+module.exports = { createApp };

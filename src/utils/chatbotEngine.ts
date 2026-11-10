@@ -55,6 +55,7 @@ export class RizqAIEngine {
             };
         }
         if (currentState === 'collecting_email') {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userText.trim())) return {text: isBn ? 'একটি সঠিক ইমেল ঠিকানা লিখুন।' : 'Please enter a valid email address, such as name@example.com.', newState: 'collecting_email'};
             // Very aggressive hook: don't let them bounce
             return {
                 text: isBn
@@ -79,6 +80,11 @@ export class RizqAIEngine {
                 newState: 'complete',
                 type: 'summary'
             };
+        }
+
+        if (currentState === 'idle' && /^(services?|what services do you offer)[?!.]*$/i.test(userText.trim())) {
+            const names = [...new Set(this.data.services.map(item => item.title).filter(Boolean))].slice(0, 7);
+            return {text: (isBn ? 'আমাদের সেবাগুলো দেখুন:\n' : 'Explore our services:\n') + names.map(name => `• ${name}`).join('\n') + (isBn ? '\nআপনার প্রয়োজন সম্পর্কে বলুন।' : '\nTell me what you would like to build, or explore the complete catalog.'), type: 'link', actionLink: '/services', actionLabel: isBn ? 'সব সেবা দেখুন' : 'Explore all services'};
         }
 
         // 2. INTENT MATCHING & KNOWLEDGE GRAPH

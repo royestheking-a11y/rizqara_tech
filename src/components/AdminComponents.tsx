@@ -1,4 +1,4 @@
-import React from 'react';
+import { useId } from 'react';
 import { motion } from 'framer-motion';
 
 // --- Card Component (Light Mode Premium) ---
@@ -28,37 +28,17 @@ export const StatCard = ({ icon: Icon, value, label, colorClass }: any) => (
 );
 
 // --- Inputs ---
-export const AdminInput = (props: any) => (
-  <div className="mb-4">
-    {props.label && <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{props.label}</label>}
-    <input 
-      {...props} 
-      className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all" 
-    />
-  </div>
-);
-
-export const AdminTextArea = (props: any) => (
-  <div className="mb-4">
-    {props.label && <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{props.label}</label>}
-    <textarea 
-      {...props} 
-      className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all min-h-[120px]" 
-    />
-  </div>
-);
-
-export const AdminSelect = (props: any) => (
-  <div className="mb-4">
-    {props.label && <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{props.label}</label>}
-    <select 
-      {...props} 
-      className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all" 
-    >
-      {props.children}
-    </select>
-  </div>
-);
+const AdminField = ({ as: Tag, label, id, ...props }: any) => {
+  const generated = useId();
+  const fieldId = id || generated;
+  return <div className="mb-4">
+    {label && <label htmlFor={fieldId} className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{label}</label>}
+    <Tag {...props} id={fieldId} aria-label={props['aria-label'] || label || props.name} className={`w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all ${Tag === 'textarea' ? 'min-h-[120px]' : ''}`} />
+  </div>;
+};
+export const AdminInput = (props: any) => <AdminField {...props} as="input" />;
+export const AdminTextArea = (props: any) => <AdminField {...props} as="textarea" />;
+export const AdminSelect = (props: any) => <AdminField {...props} as="select" />;
 
 // --- Buttons ---
 export const AdminButton = ({ children, onClick, variant = 'primary', className = "", ...props }: any) => {

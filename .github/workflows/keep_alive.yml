@@ -13,8 +13,8 @@ jobs:
         run: |
           URL="https://rizqaratech-backend.onrender.com"
           echo "Pinging $URL/health..."
-          curl -f "$URL/health" || echo "Health ping failed"
+          curl --fail --show-error --max-time 15 --retry 2 "$URL/health"
           echo "Pinging $URL/ping..."
-          curl -f "$URL/ping" || echo "Ping endpoint failed"
+          curl --fail --show-error --max-time 15 --retry 2 "$URL/ping"
           echo "Pinging $URL/api/health..."
-          curl -f "$URL/api/health" || echo "API health failed"
+          curl --fail --show-error --max-time 15 --retry 2 "$URL/api/health"

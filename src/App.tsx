@@ -1,33 +1,40 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { getProxiedImage } from './utils/imageProxy';
+import { ProjectPathfinder } from './components/studio/ProjectPathfinder';
+import { EditorialSection, TechnologyExperience } from './components/editorial/HomeEditorial';
+import './styles/footer-experience.css';
+import { CaseStudyExperience } from './components/case-studies/CaseStudyExperience';
+import { ConceptDetail } from './components/projects/ConceptDetail';
+import { ProjectShowcase, projectConcepts } from './components/projects/ProjectShowcase';
+import { ServiceCategoryPreview, ServiceCatalogPage } from './components/services/ServiceCatalog';
+import { PremiumExperience, EngineeringExperience } from './components/experience/PremiumExperience';
+import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from 'react';
 import {
     Menu, X, ChevronRight, Check,
-    Code2, Palette, Globe, Smartphone, BarChart, Layout,
+    Code2, Globe,
     ArrowRight, Star,
     Linkedin, Instagram, Facebook, Youtube,
-    Shield, Zap, MessageSquare, Briefcase,
-    Server, ShieldCheck,
-    Lock, User, ExternalLink, Share2, Search,
-    TrendingUp, Lightbulb, Cpu, Activity, Layers, Image as ImageIcon,
+    Shield, Zap, Briefcase,
+    ShieldCheck,
+    Lock, User, ExternalLink, Share2,
+    TrendingUp, Cpu, Activity, Image as ImageIcon,
     FileSignature, Scale, Building2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 
 // Imports
 import { Toaster, toast } from 'sonner';
 import { DataProvider, useData, Project } from './context/DataContext';
-import { AdminDashboard } from './components/AdminDashboard';
+import { apiRequest } from './utils/api';
+const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 import { GalleryPage } from './components/pages/GalleryPage';
 
 import { SEO } from './components/SEO';
 import { partners } from './data/partners';
-import { techStack } from './data/techStack';
 import {
-    AutoScrollCarousel, StatsCounter, TiltCard,
+    AutoScrollCarousel, StatsCounter,
     JourneyRoadmap,
-    HeroCarousel, BuildPreviewTeaser, BuildPage,
-    PricingDetailed, LatestVideos, LatestBlogs,
+    HeroCarousel, BuildPage,
+    PricingDetailed,
     TestimonialSlider, PremiumComparison, ContactFormWithMap,
     RizqAIBot, FeatureDetail, HomeSkeleton,
     AboutSkeleton, ContactSkeleton,
@@ -47,7 +54,8 @@ import { RegisteredCompanyPage } from './components/pages/RegisteredCompanyPage'
 import { GoogleTranslate } from './components/premium/GoogleTranslate';
 
 // --- Utils ---
-export const getSlug = (title: string) => title?.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+import { getSlug, matchesContent } from './utils/content';
+export { getSlug } from './utils/content';
 
 const paymentMethods = [
     { name: 'Visa', src: 'https://res.cloudinary.com/dhutfywg2/image/upload/v1773642634/rizqaratech/payment_methods/Visa-Logo.png', className: 'p-1' },
@@ -105,94 +113,20 @@ const DetailSkeleton = () => (
 
 // --- Detail Components ---
 
-const CaseStudiesPage = () => {
-    const navigate = useNavigate();
-    const { caseStudies, language, t, loading } = useData();
-
-    if (loading) return <ProjectsSkeleton />;
-
-    return (
-        <div className="container mx-auto px-6 py-24 min-h-screen">
-            <SEO
-                title={`${t ? t('caseStudies') : 'Case Studies'} | RizQara Tech`}
-                description="Explore our in-depth case studies and success stories."
-                canonical="https://rizqara.tech/case-studies"
-            />
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-                <SectionTitle
-                    title={t ? t('caseStudies') : 'Case Studies'}
-                    subtitle={language === 'bn' ? 'আমাদের সাফল্যের গল্প এবং শিল্প প্রভাব।' : 'Our success stories and industry impact.'}
-                />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {caseStudies.map((study, idx) => {
-                    const title = language === 'bn' ? (study.title_bn || study.title) : study.title;
-                    const category = language === 'bn' ? (study.category_bn || study.category) : study.category;
-                    const desc = language === 'bn' ? (study.description_bn || study.description) : study.description;
-
-                    return (
-                        <motion.div
-                            key={study.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1, duration: 0.6 }}
-                            onClick={() => navigate(`/case-studies/${getSlug(study.title)}`)}
-                            className="group bg-white rounded-[40px] border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-700 cursor-pointer overflow-hidden flex flex-col h-full active:scale-[0.98]"
-                        >
-                            <div className="h-64 overflow-hidden relative">
-                                <img src={study.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="absolute top-4 left-4">
-                                    <span className="px-3 py-1 bg-white/95 backdrop-blur rounded-full text-[10px] font-black uppercase tracking-widest text-[#500000] shadow-sm">
-                                        {category}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="p-8 flex flex-col flex-grow">
-                                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#500000] transition-colors">{title}</h3>
-                                <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-grow">{desc}</p>
-                                
-                                {study.growthBefore && study.growthAfter && (
-                                    <div className="flex gap-3 mb-6">
-                                        <div className="flex-1 bg-gray-50 rounded-2xl p-4 border border-gray-100 group/item">
-                                            <div className="text-[8px] font-black uppercase text-gray-400 mb-1 tracking-widest">{language === 'bn' ? 'আগে' : 'Before'}</div>
-                                            <div className="text-sm font-black text-gray-300 group-hover/item:text-gray-400 transition-colors">{study.growthBefore}</div>
-                                        </div>
-                                        <div className="flex-1 bg-[#500000]/5 rounded-2xl p-4 border border-[#500000]/10 group/item">
-                                            <div className="text-[8px] font-black uppercase text-[#500000]/60 mb-1 tracking-widest">{language === 'bn' ? 'পরে' : 'After'}</div>
-                                            <div className="text-sm font-black text-[#500000]">{study.growthAfter}</div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="flex items-center text-[#500000] font-bold text-sm gap-2">
-                                    <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Case Study'}</span>
-                                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                </div>
-                            </div>
-                        </motion.div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
+const CaseStudiesPage = () => <CaseStudyExperience page />;
 
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { caseStudies, language, t, loading } = useData();
+    const { caseStudies, language, t, secondaryLoading: loading } = useData();
 
     const study = caseStudies.find(s =>
-        String(s.id) === id ||
-        getSlug(s.title) === id
+        matchesContent(s, id)
     );
 
     useLayoutEffect(() => {
         if (!loading && study && String(study.id) === id) {
-            const slug = getSlug(study.title);
+            const slug = getSlug(study);
             if (slug) navigate(`/case-studies/${slug}`, { replace: true });
         }
     }, [id, study, loading, navigate]);
@@ -460,14 +394,13 @@ const ServiceDetail = () => {
     const { services, projects, language, t, loading } = useData();
 
     const service = services.find(s =>
-        s.id === id ||
-        getSlug(s.title) === id
+        matchesContent(s, id)
     );
 
     // Redirect to slug if currently using number ID
     useLayoutEffect(() => {
         if (!loading && service && service.id === id) {
-            const slug = getSlug(service.title);
+            const slug = getSlug(service);
             if (slug) navigate(`/services/${slug}`, { replace: true });
         }
     }, [id, service, loading, navigate]);
@@ -550,7 +483,7 @@ const ServiceDetail = () => {
                 <div className="space-y-6">
                     {/* Main Featured Image */}
                     <div className="h-80 bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden relative group shadow-md flex justify-center items-center">
-                        <img src={demoImages[0]} alt="Service Demo" className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
+                        <img src={demoImages[0]} alt={service.imageAlt || title} className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors pointer-events-none" />
                     </div>
 
@@ -589,11 +522,11 @@ const ServiceDetail = () => {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {(relatedProjects as Project[]).map((project: Project) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                                 key={project.id}
                                 className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
                                 onClick={() => {
-                                    navigate(`/projects/${getSlug(project.title)}`);
+                                    navigate(`/projects/${getSlug(project)}`);
                                     window.scrollTo(0, 0);
                                 }}
                             >
@@ -625,22 +558,22 @@ const ProjectDetail = () => {
     const navigate = useNavigate();
     const { projects, language, t, loading } = useData();
 
-    const project = projects.find(p =>
-        String(p.id) === id ||
-        getSlug(p.title) === id
+    const project = [...projects, ...projectConcepts].find(p =>
+        matchesContent(p, id)
     );
 
     // Redirect to slug if currently using number ID
     useLayoutEffect(() => {
         if (!loading && project && String(project.id) === id) {
-            const slug = getSlug(project.title);
+            const slug = getSlug(project);
             if (slug) navigate(`/projects/${slug}`, { replace: true });
         }
     }, [id, project, loading, navigate]);
 
-    if (loading) return <DetailSkeleton />;
+    if (loading && !project) return <DetailSkeleton />;
 
     if (!project) return <div className="pt-32 text-center text-gray-900 min-h-screen">Project not found</div>;
+    if (project.status === 'Concept') return <ConceptDetail project={project} />;
 
     const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
     const description = language === 'bn' ? (project.description_bn || project.description) : project.description;
@@ -841,11 +774,11 @@ const ProjectDetail = () => {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {(relatedProjects as Project[]).map((p: Project) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                                 key={p.id}
                                 className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
                                 onClick={() => {
-                                    navigate(`/projects/${getSlug(p.title)}`);
+                                    navigate(`/projects/${getSlug(p)}`);
                                     window.scrollTo(0, 0);
                                 }}
                             >
@@ -897,16 +830,17 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm' : 'bg-white/80 backdrop-blur-md border-b border-gray-50'}`}>
-            <div className="container mx-auto px-6 flex justify-between items-center">
-                <Link to="/" className="text-2xl font-black tracking-tighter cursor-pointer flex items-center gap-2 text-[#500000]">
+            <nav data-scrolled={scrolled} className={`rq-navigation fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm' : 'bg-white/80 backdrop-blur-md border-b border-gray-50'}`}>
+            <div className="rq-nav-inner container mx-auto px-6 flex justify-between items-center">
+                <Link to="/" className="rq-brand text-2xl font-black tracking-tighter cursor-pointer flex items-center gap-2 text-[#500000]">
                     <span>RIZQARA TECH</span>
                 </Link>
 
-                <div className="hidden lg:flex items-center rounded-full px-2 py-1 border bg-gray-100/50 border-gray-200">
+                <div className="rq-nav-links hidden lg:flex items-center rounded-full px-2 py-1 border bg-gray-100/50 border-gray-200">
                     {links.map(link => (
                         <Link
                             key={link.name}
+                            aria-current={isActive(link.path) ? "page" : undefined}
                             to={link.path}
                             className={`px-6 py-3 rounded-full text-sm font-bold transition-all ${isActive(link.path) ? 'bg-[#500000] text-white shadow-md' : 'text-gray-600 hover:text-[#500000] hover:bg-white'}`}
                         >
@@ -918,16 +852,16 @@ const Navbar = () => {
                 <div className="hidden lg:flex items-center gap-4">
                     <button
                         onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
-                        className="px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
+                        className="rq-nav-cta px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
                     >
                         {t('freeAudit')}
                     </button>
                 </div>
 
                 <div className="lg:hidden flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <button type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors bg-[#500000] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </div>
+                    </button>
                 </div>
             </div>
             </nav>
@@ -990,170 +924,30 @@ const Navbar = () => {
 
 // --- Home Page Components ---
 
-const CaseStudyShowcase = () => {
-    const { caseStudies, language, t } = useData();
-    const [activeTab, setActiveTab] = useState(0);
-    const navigate = useNavigate();
-
-    if (!caseStudies || caseStudies.length === 0) return null;
-
-    const activeStudy = caseStudies[activeTab] || caseStudies[0];
-    const title = language === 'bn' ? (activeStudy.title_bn || activeStudy.title) : activeStudy.title;
-    const category = language === 'bn' ? (activeStudy.category_bn || activeStudy.category) : activeStudy.category;
-    const desc = language === 'bn' ? (activeStudy.description_bn || activeStudy.description) : activeStudy.description;
-
-    return (
-        <section id="case-studies" className="py-24 bg-white overflow-hidden">
-            <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-                    <div>
-                        <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{t ? t('caseStudies') : 'Case Studies'}</h2>
-                        <p className="text-gray-500 max-w-xl">
-                            {language === 'bn' ? 'আমাদের অত্যন্ত উদ্ভাবনী সমাধানগুলি কীভাবে ব্যবসাগুলিকে রূপান্তরিত করেছে তা দেখুন।' : 'Check out our case studies that show how innovative solutions transformed businesses.'}
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => navigate('/case-studies')}
-                        className="px-6 py-3 font-bold rounded-full transition-all text-sm shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap"
-                        style={{ backgroundColor: '#500000', color: '#ffffff' }}
-                    >
-                        {language === 'bn' ? 'সবগুলো কেস স্টাডি দেখুন' : 'See all Case Studies'}
-                    </button>
-                </div>
-
-                {/* Tabs */}
-                <div className="flex flex-wrap gap-4 mb-16 border-b border-gray-100 pb-10">
-                    {caseStudies.slice(0, 6).map((study, idx) => (
-                        <button
-                            key={study.id}
-                            onClick={() => setActiveTab(idx)}
-                            className={`relative px-8 py-5 rounded-2xl transition-all duration-500 flex items-center justify-center min-w-[140px] h-20 group ${activeTab === idx
-                                ? 'bg-white shadow-2xl ring-1 ring-gray-100'
-                                : 'bg-gray-50 hover:bg-white hover:shadow-xl'
-                                }`}
-                        >
-                            <img
-                                src={study.image}
-                                alt={study.title}
-                                className={`h-8 object-contain transition-all duration-500 ${activeTab === idx ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}
-                            />
-                            {activeTab === idx && (
-                                <motion.div
-                                    layoutId="activeTabUnderline"
-                                    className="absolute -bottom-10 left-0 right-0 h-1.5 bg-[#00AEEF] rounded-full"
-                                />
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Content Area */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start pb-12">
-                    <motion.div
-                        key={activeStudy.id + 'img'}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="relative rounded-[40px] overflow-hidden shadow-2xl aspect-[1.1/1]"
-                    >
-                        <img
-                            src={activeStudy.image}
-                            alt={title}
-                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                    </motion.div>
-
-                    <motion.div
-                        key={activeStudy.id + 'content'}
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-                        className="flex flex-col h-full"
-                    >
-                        <div className="mb-6 text-[#00AEEF] font-black text-sm tracking-[0.2em] uppercase">
-                            {category}
-                        </div>
-                        <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-8 leading-[1.1]">
-                            {title}
-                        </h3>
-                        <p className="text-gray-600 text-lg md:text-xl font-medium mb-10 leading-relaxed max-w-2xl">
-                            {desc}
-                        </p>
-
-                        {activeStudy.growthBefore && activeStudy.growthAfter && (
-                            <div className="flex gap-4 mb-10">
-                                <motion.div 
-                                    whileHover={{ y: -5, scale: 1.02 }}
-                                    className="flex-1 bg-white border border-gray-100 rounded-3xl p-6 relative overflow-hidden group shadow-xl shadow-gray-200/50 transition-all duration-300"
-                                >
-                                    <div className="absolute -right-8 -bottom-8 opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 duration-700 text-gray-900 z-0 pointer-events-none font-bold">
-                                        <Activity size={140} strokeWidth={1} />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">
-                                            {language === 'bn' ? 'আগে বৃদ্ধি' : 'Growth Before'}
-                                        </div>
-                                        <div className="text-3xl font-black text-gray-900">
-                                            {activeStudy.growthBefore}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                                <motion.div 
-                                    whileHover={{ y: -5, scale: 1.02 }}
-                                    className="flex-1 bg-gradient-to-br from-[#500000] to-[#2a0000] border border-white/10 rounded-3xl p-6 relative overflow-hidden group shadow-2xl shadow-red-900/30 transition-all duration-300"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                    <div className="absolute -right-8 -bottom-8 opacity-10 rotate-12 transition-transform group-hover:scale-110 duration-700 text-white z-0 pointer-events-none">
-                                        <TrendingUp size={140} strokeWidth={1} />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">
-                                            {language === 'bn' ? 'আমাদের কাজের পরে' : 'After Our Work'}
-                                        </div>
-                                        <div className="text-3xl font-black text-white">
-                                            {activeStudy.growthAfter}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        )}
-
-                        <div
-                            onClick={() => navigate(`/case-studies/${getSlug(activeStudy.title)}`)}
-                            className="flex items-center text-[#fbb03b] hover:text-[#f7931e] font-black text-lg gap-3 cursor-pointer group w-fit transition-all"
-                        >
-                            <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Case Study'}</span>
-                            <ArrowRight size={20} className="translate-x-0 group-hover:translate-x-2 transition-transform duration-300" />
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-        </section>
-    );
-};
+const CaseStudyShowcase = () => <CaseStudyExperience />;
 
 // --- Footer ---
 
 const Footer = () => {
     const { language, t, addMessage } = useData();
-    const navigate = useNavigate();
+
 
     return (
-        <footer className="bg-gray-50 text-gray-900 pt-20 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
+        <footer className="rq-footer rq-footer-premium bg-gray-50 text-gray-900 pt-20 pb-8 mt-32 border-t border-gray-200 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
 
             <div className="container mx-auto px-6">
+                <div className="rq-footer-intro"><span>RIZQARA TECH / {language === 'bn' ? 'পরবর্তী অধ্যায়' : 'YOUR NEXT CHAPTER'}</span><a href="mailto:rizqaratech@gmail.com">rizqaratech@gmail.com ↗</a></div>
                 {/* CTA Banner */}
                 <div className="mb-16">
-                    <div className="bg-gradient-to-r from-[#500000] to-[#3a0000] rounded-2xl p-8 md:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                    <div className="rq-footer-cta bg-gradient-to-r from-[#500000] to-[#3a0000] rounded-2xl p-8 md:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
                         <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full pointer-events-none" />
                         <div>
                             <span className="text-red-200 text-xs font-black uppercase tracking-widest block mb-2">
-                                {language === 'bn' ? 'রিজকারা টেক-এর সাথে কাজ করুন' : 'READY TO BUILD SOMETHING GREAT?'}
+                                {language === 'bn' ? 'রিজকারা টেক-এর সাথে কাজ করুন' : 'HAVE SOMETHING IN MIND?'}
                             </span>
                             <h3 className="text-2xl md:text-3xl font-black tracking-tight">
-                                {language === 'bn' ? 'আজই আপনার প্রজেক্ট শুরু করুন' : "Let's build your next big idea together"}
+                                {language === 'bn' ? 'আজই আপনার প্রজেক্ট শুরু করুন' : "Great ideas deserve extraordinary execution."}
                             </h3>
                         </div>
                         <a
@@ -1161,15 +955,15 @@ const Footer = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-shrink-0 flex items-center justify-center gap-3 px-8 py-4 text-white rounded-xl font-black text-sm transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
-                            style={{ backgroundColor: '#25D366' }}
+                            style={{ backgroundColor: '#ffffff', color: '#500000' }}
                         >
-                            <WhatsAppLogo size={22} className="text-white" />
-                            {language === 'bn' ? 'মার্কেটিং টিমের সাথে কথা বলুন' : 'Connect with Marketing Team'}
+                            <WhatsAppLogo size={22} />
+                            {language === 'bn' ? 'মার্কেটিং টিমের সাথে কথা বলুন' : 'Let’s talk about it'}
                         </a>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+                <div className="rq-footer-columns grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     <div className="lg:col-span-2">
                         <div className="flex items-center gap-4 mb-6 flex-wrap">
                             <h2 className="text-3xl font-black tracking-tighter text-[#500000]">RIZQARA TECH</h2>
@@ -1190,15 +984,16 @@ const Footer = () => {
                         {/* Social Icons */}
                         <div className="flex gap-4 flex-wrap items-center">
                             {[
-                                { Icon: XLogo, link: 'https://x.com/Rizqaratech' },
-                                { Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
-                                { Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
-                                { Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
-                                { Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' },
-                                { Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' }
-                            ].map(({ Icon, link }, i) => (
+                                { name: 'X', Icon: XLogo, link: 'https://x.com/Rizqaratech' },
+                                { name: 'Facebook', Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
+                                { name: 'LinkedIn', Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
+                                { name: 'Instagram', Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
+                                { name: 'Medium', Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' },
+                                { name: 'YouTube', Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' }
+                            ].map(({ name, Icon, link }, i) => (
                                 <a
                                     key={i}
+                                    aria-label={name}
                                     href={link}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -1270,6 +1065,12 @@ const Footer = () => {
                                 </li>
                             ))}
                         </ul>
+                        <div className="rq-footer-extra">
+                            <h4>{language === 'bn' ? 'যোগাযোগ করুন' : 'Direct contact'}</h4>
+                            <a href="tel:+8801343042761">+880 1343-042761 <span>↗</span></a>
+                            <a href="mailto:rizqaratech@gmail.com">{language === 'bn' ? 'ইমেইল করুন' : 'Email our team'} <span>↗</span></a>
+                            <div className="rq-footer-location"><span>{language === 'bn' ? 'আমাদের অবস্থান' : 'OUR LOCATIONS'}</span><p>{language === 'bn' ? 'ঢাকা ও বরিশাল, বাংলাদেশ' : 'Dhaka & Barisal, Bangladesh'}</p></div>
+                        </div>
                     </div>
 
                     {/* Solutions Column */}
@@ -1293,9 +1094,54 @@ const Footer = () => {
                                 </li>
                             ))}
                         </ul>
+                        <div className="rq-footer-extra">
+                            <h4>{language === 'bn' ? 'আমাদের দক্ষতা' : 'Our expertise'}</h4>
+                            {[
+                                ['software-web-development', 'Software & Web', 'সফটওয়্যার ও ওয়েব'],
+                                ['business-management-solutions', 'Business systems', 'ব্যবসা পরিচালনা'],
+                                ['ai-automation', 'AI & Automation', 'AI ও অটোমেশন'],
+                                ['mobile-application-development', 'Mobile applications', 'মোবাইল অ্যাপ'],
+                                ['uiux-creative-design', 'UI/UX & Branding', 'UI/UX ও ব্র্যান্ডিং'],
+                                ['digital-marketing-growth', 'Marketing & Growth', 'মার্কেটিং ও প্রবৃদ্ধি'],
+                                ['enterprise-custom-solutions', 'Enterprise solutions', 'এন্টারপ্রাইজ সমাধান']
+                            ].map(([id,en,bn]) => <Link key={id} to={`/services#${id}`}>{language === 'bn' ? bn : en}<span>↗</span></Link>)}
+                        </div>
 
-                        {/* Recognized & Certified — sits under Solutions, flowing naturally */}
-                        <div className="mt-8 pt-6 border-t border-gray-200">
+
+                    </div>
+
+                    <div className="lg:col-span-1 rq-newsletter-card">
+                        <div className="rq-newsletter-emblem" aria-hidden="true">✉<span>↗</span></div>
+                        <h3 className="text-gray-900 font-bold mb-6 text-base uppercase tracking-wider">{t('newsletter')}</h3>
+                        <h4 className="rq-newsletter-title">{language === 'bn' ? 'আগামীর খবর, আপনার ইনবক্সে।' : <>A little insight.<br/>A lot of possibility.</>}</h4>
+                        <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            const form = e.target as HTMLFormElement;
+                            const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+                            try {
+                                await addMessage({
+                                    name: 'Subscriber',
+                                    email: email,
+                                    subject: 'New Newsletter Subscriber',
+                                    message: 'User subscribed to newsletter',
+                                    type: 'Contact'
+                                });
+                                toast.success('Subscribed successfully!');
+                                form.reset();
+                            } catch (err) {
+                                console.error(err);
+                                toast.error('Failed to subscribe.');
+                            }
+                        }} className="flex flex-col gap-3">
+                            <input aria-label="Newsletter email address" name="email" type="email" placeholder={language === 'bn' ? "আপনার ইমেইল দিন" : "Enter your email"} required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000] transition-colors" />
+                            <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-md hover:shadow-lg">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
+                        </form>
+                    </div>
+                </div>
+
+                                        {/* Recognized & Certified — sits under Solutions, flowing naturally */}
+                        <div className="rq-footer-recognition">
                             <div className="flex items-center gap-1.5 mb-4">
                                 <ShieldCheck size={13} className="text-[#500000]" />
                                 <span className="text-[10px] font-black text-[#500000] uppercase tracking-widest">
@@ -1304,7 +1150,7 @@ const Footer = () => {
                             </div>
 
                             {/* Clutch + 3 cert badges in one row, all same height */}
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
 
                                 {/* Clutch – maroon card */}
                                 <a
@@ -1390,57 +1236,31 @@ const Footer = () => {
 
                             </div>
                         </div>
-                    </div>
-
-                    <div className="lg:col-span-1">
-                        <h3 className="text-gray-900 font-bold mb-6 text-base uppercase tracking-wider">{t('newsletter')}</h3>
-                        <p className="text-sm text-gray-600 mb-4">{language === 'bn' ? "সর্বশেষ আপডেট এবং অফারের জন্য সাবস্ক্রাইব করুন।" : "Subscribe for latest updates and offers."}</p>
-                        <form onSubmit={async (e) => {
-                            e.preventDefault();
-                            const form = e.target as HTMLFormElement;
-                            const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-                            try {
-                                // @ts-ignore
-                                await window.emailjs?.send(
-                                    (import.meta as any).env.VITE_EMAILJS_SERVICE_ID,
-                                    (import.meta as any).env.VITE_EMAILJS_SUBSCRIBE_TEMPLATE_ID,
-                                    { email }
-                                );
-                                addMessage({
-                                    name: 'Subscriber',
-                                    email: email,
-                                    subject: 'New Newsletter Subscriber',
-                                    message: 'User subscribed to newsletter',
-                                    type: 'Contact'
-                                });
-                                toast.success('Subscribed successfully!');
-                                form.reset();
-                            } catch (err) {
-                                console.error(err);
-                                toast.error('Failed to subscribe.');
-                            }
-                        }} className="flex flex-col gap-3">
-                            <input name="email" type="email" placeholder={language === 'bn' ? "আপনার ইমেইল দিন" : "Enter your email"} required className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#500000] transition-colors" />
-                            <button type="submit" className="w-full bg-[#500000] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-md hover:shadow-lg">{language === 'bn' ? "সাবস্ক্রাইব করুন" : "Subscribe"}</button>
-                        </form>
+                <div className="rq-footer-capabilities" aria-label="Our expertise">
+                    <span>{language === 'bn' ? 'আমাদের দক্ষতা' : 'OUR EXPERTISE'}</span>
+                    <div>
+                        <Link to="/services#software-web-development"><Code2 size={19}/><span>{language === 'bn' ? 'সফটওয়্যার ডেভেলপমেন্ট' : 'Software development'}</span></Link>
+                        <Link to="/services#ai-automation"><Cpu size={19}/><span>{language === 'bn' ? 'AI ও অটোমেশন' : 'AI & automation'}</span></Link>
+                        <Link to="/services#mobile-application-development"><Code2 size={19}/><span>{language === 'bn' ? 'মোবাইল অ্যাপ' : 'Mobile applications'}</span></Link>
+                        <Link to="/services#uiux-creative-design"><Globe size={19}/><span>{language === 'bn' ? 'UI/UX ও ডিজাইন' : 'UI/UX & creative design'}</span></Link>
                     </div>
                 </div>
-
-                <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <div className="rq-footer-wordmark" aria-label="Rizqara Tech trademark"><span className="rq-wordmark-text">RIZQARA TECH</span><sup>™</sup></div>
+                <div className="rq-footer-bottom border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
                     <p>© {new Date().getFullYear()} <span className="font-semibold text-gray-700">Rizqara Tech</span>. All rights reserved.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
-                        <span onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</span>
-                        <span onClick={() => navigate('/privacy-policy')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</span>
-                        <span onClick={() => navigate('/terms-of-service')} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</span>
+                        <button type="button" onClick={() => window.openCookieSettings?.()} className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'কুকি সেটিংস' : 'Cookie Settings'}</button>
+                        <Link to="/privacy-policy" className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'গোপনীয়তা নীতি' : 'Privacy Policy'}</Link>
+                        <Link to="/terms-of-service" className="cursor-pointer hover:text-[#500000] transition-colors">{language === 'bn' ? 'পরিষেবার শর্তাবলী' : 'Terms of Service'}</Link>
                     </div>
                 </div>
             </div>
         </footer>
     );
 };
-const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
+const Home = () => {
     const navigate = useNavigate();
-    const { services, projects, loading, language, t } = useData();
+    const { projects, loading, language, t } = useData();
 
     if (loading) {
         return <HomeSkeleton />;
@@ -1465,7 +1285,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
 
     return (
-        <div className="space-y-32 pb-0 overflow-x-hidden">
+        <div className="rq-home space-y-32 pb-0 overflow-x-hidden">
 
             {/* 1. HERO CAROUSEL */}
             <SEO
@@ -1474,15 +1294,16 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 keywords="RizQara Tech, Rizq, Rizq Tech, Rizq Ara, software company Bangladesh, software development company in Dhaka, best software company in Bangladesh, AI software solutions BD, mobile app development Bangladesh"
                 canonical="https://rizqara.tech/"
             />
-            <HeroCarousel onNavigate={onNavigate} />
+            <h1 className="sr-only">RizQara Tech — Software and AI solutions</h1>
+                <HeroCarousel onNavigate={onNavigate} />
 
             {/* 2. BUILD PROJECT TEASER */}
-            <BuildPreviewTeaser onNavigate={onNavigate} setBuildConfig={setBuildConfig} />
+            <ProjectPathfinder />
 
 
 
             {/* 3. TRUSTED COMPANIES */}
-            <section className="container mx-auto px-6">
+            <section data-rq-reveal className="container mx-auto px-6">
                 <h2 className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</h2>
                 <AutoScrollCarousel items={
                     partners.map((partner, i) => (
@@ -1499,11 +1320,12 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
 
 
             {/* NEW: 3.7. OUR PROCESS */}
-            <section className="w-full py-24 bg-white mt-16">
+            <section data-rq-reveal className="w-full py-24 bg-white mt-16">
                 <div className="container mx-auto px-6">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <SectionTitle title={t('ourProcess')} subtitle={t('processSubtitle')} center />
                     </div>
+                    <EngineeringExperience />
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                         {[
                             { 
@@ -1522,7 +1344,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                                 desc: language==='bn'?'প্রোডাক্ট দ্রুত এবং নির্ভরযোগ্য রাখতে ডিপ্লয়, মনিটর এবং অপ্টিমাইজ করুন।':'Deploy, monitor, and optimize to keep products fast and reliable.' 
                             },
                         ].map((item, idx) => (
-                            <div key={idx} className="bg-[#500000] rounded-3xl p-8 md:p-10 relative overflow-hidden flex flex-col justify-end min-h-[360px] shadow-2xl hover:-translate-y-2 transition-transform duration-500 group">
+                            <div key={idx} data-rq-tilt className="rq-process-card bg-[#500000] rounded-3xl p-8 md:p-10 relative overflow-hidden flex flex-col justify-end min-h-[360px] shadow-2xl hover:-translate-y-2 transition-transform duration-500 group">
                                 <div style={{ fontSize: '12rem', lineHeight: 0.8 }} className="absolute -top-4 -left-4 font-black text-white opacity-10 group-hover:opacity-20 transition-opacity tracking-tighter select-none pointer-events-none">
                                     {item.step}
                                 </div>
@@ -1546,197 +1368,34 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 </div>
             </section>
 
-            {/* 4. SERVICES */}
-            <section className="container mx-auto px-6">
-                <div className="flex justify-between items-end mb-12">
-                    <SectionTitle title={t('ourServices')} subtitle={language === 'bn' ? 'ব্যাপক ডিজিটাল সমাধান।' : 'Comprehensive digital solutions.'} />
-                    <button onClick={() => onNavigate('Services')} className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold mb-16">{t('readMore')} <ArrowRight size={16} /></button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {services.slice(0, 6).map((service) => {
-                        const Icon = {
-                            Globe, Layout, Palette, Code2, Smartphone, BarChart,
-                            Lightbulb, Cpu, MessageSquare, Zap, Activity, Star, Layers, Server
-                        }[service.icon] || Code2;
+            <ServiceCategoryPreview />
 
-                        const title = language === 'bn' ? (service.title_bn || service.title) : service.title;
-                        const desc = language === 'bn' ? (service.description_bn || service.description) : service.description;
-
-                        return (
-                            <div key={service.id} onClick={() => onNavigate('ServiceDetail', getSlug(service.title))} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
-                                <div className="h-48 overflow-hidden relative shrink-0">
-                                    <img
-                                        src={getProxiedImage(service.image) || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
-                                        alt={title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        onError={(e) => {
-                                            e.currentTarget.style.display = 'none'; // Or set to fallback
-                                            // Better: fallback URL
-                                            e.currentTarget.src = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop";
-                                            // Prevent infinite loop if fallback also fails
-                                            e.currentTarget.onerror = null;
-                                        }}
-                                    />
-                                    <div className="absolute top-4 left-4 w-12 h-12 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center text-[#500000] shadow-sm">
-                                        <Icon size={24} />
-                                    </div>
-                                </div>
-                                <div className="p-8 flex flex-col flex-grow">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#500000] transition-colors">{title}</h3>
-                                    <p className="text-gray-500 line-clamp-2 text-sm">{desc}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* 6. REAL PROJECTS PREVIEW (Carousel) */}
-            <section className="w-full py-24 bg-gray-50 border-y border-gray-200">
-                <div className="container mx-auto px-6 mb-12">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                        <SectionTitle
-                            title={t('ourProjects')}
-                            subtitle={language === 'bn' ? "আমাদের সাম্প্রতিক কাজ এবং সাফল্যের গল্প দেখুন।" : "Explore our latest work and success stories delivering impact."}
-                        />
-                        <button
-                            onClick={() => onNavigate('Projects')}
-                            className="px-6 py-3 font-bold rounded-full transition-all text-sm shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap mb-16"
-                            style={{ backgroundColor: '#500000', color: '#ffffff' }}
-                        >
-                            {language === 'bn' ? 'সবগুলো প্রজেক্ট দেখুন' : 'See all Projects'}
-                        </button>
-                    </div>
-
-                    {/* Homepage Project Search */}
-                    <div className="relative w-full max-w-2xl mx-auto -mt-8 mb-12 z-10">
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                            <Search size={18} />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search featured projects...'}
-                            className="w-full pr-6 py-4 bg-white border border-gray-200 rounded-full shadow-md focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all text-gray-900 text-lg"
-                            style={{ paddingLeft: '3.5rem' }}
-                            onChange={(e) => {
-                                // Simple local filter for the carousel
-                                const q = e.target.value.toLowerCase();
-                                const filtered = document.querySelectorAll('.project-card');
-                                filtered.forEach((el: any) => {
-                                    const title = el.getAttribute('data-title')?.toLowerCase();
-                                    if (title?.includes(q)) {
-                                        el.style.display = 'block';
-                                        el.style.opacity = '1';
-                                    } else {
-                                        el.style.display = 'none';
-                                        el.style.opacity = '0';
-                                    }
-                                });
-                                // Note: Filtering a carousel is tricky naturally. 
-                                // Better UX: Navigate to Projects Page on Enter?
-                                // OR: Just filter the array passed to map below.
-                                // I can't easily add state to this big App component without context or full reload.
-                                // I will use the `navigate` approach for best UX? No, user asked for "search bar".
-                                // Let's try to add a state variable to App component top, but that's far away.
-                                // I will use a simple DOM manipulation or just inject a state if I can find the top of App.
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    // @ts-ignore
-                                    navigate(`/projects?q=${e.target.value}`);
-                                }
-                            }}
-                        />
-                    </div>
-                </div>
-                {/* Note: Real filtering requires state. I'll stick to a "Search & Go" or just visual. 
-                   Actually, I can't add state here easily in `replace_file_content` without seeing the top.
-                   The user surely wants it to work.
-                   I'll modify the top of App to add `const [homeProjectSearch, setHomeProjectSearch] = useState("");`
-                   and use it here.
-                */}
-                <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {projects.slice(0, 8).map((project, idx) => {
-                            const title = language === 'bn' ? (project.title_bn || project.title) : project.title;
-                            const category = language === 'bn' ? (project.category_bn || project.category) : project.category;
-                            
-                            // Make the first card span 2 cols on very large screens for a dynamic look
-                            const isFeatured = idx === 0 || idx === 3;
-
-                            return (
-                                <TiltCard 
-                                    key={project.id}
-                                    className={`w-full group cursor-pointer project-card bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${isFeatured ? 'lg:col-span-2' : ''}`}
-                                    data-title={title.toLowerCase()}
-                                >
-                                    <div onClick={() => onNavigate('ProjectDetail', project.id)} className="h-[400px] md:h-[450px] relative flex flex-col justify-end">
-                                        {/* Full Card Image Background */}
-                                        <img src={project.image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                        
-                                        {/* Gradient Overlays for Text Readability */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                        
-                                        {/* Content on Top of Image */}
-                                        <div className="relative z-10 p-8 flex flex-col justify-end h-full">
-                                            {/* Link Button (Top Right) */}
-                                            {project.link && (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); window.open(project.link, '_blank'); }}
-                                                    className="absolute top-6 right-6 p-3 bg-white/10 backdrop-blur-md text-white rounded-full hover:bg-[#500000] transition-all shadow-lg border border-white/20"
-                                                    title="View Live"
-                                                >
-                                                    <ExternalLink size={18} />
-                                                </button>
-                                            )}
-
-                                            <div className="mt-auto transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                                <div className="inline-flex px-3 py-1 mb-3 bg-[#500000]/80 backdrop-blur-sm border border-white/10 rounded-full text-[10px] md:text-xs font-bold text-white uppercase tracking-widest shadow-lg">
-                                                    {category}
-                                                </div>
-                                                
-                                                <h3 className="font-black text-white leading-tight drop-shadow-lg mb-2 text-xl md:text-2xl">
-                                                    {title}
-                                                </h3>
-
-                                                <div className="flex items-center text-white/90 font-bold text-sm hover:gap-3 gap-2 transition-all mt-4">
-                                                    <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'View Project'}</span>
-                                                    <ArrowRight size={16} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </TiltCard>
-                            )
-                        })}
-                    </div>
-                </div>
-            </section>
+            <ProjectShowcase preview />
 
             {/* 7. CASE STUDIES SHOWCASE */}
             <CaseStudyShowcase />
 
             {/* NEW: 3.6. TRUST & GUARANTEE */}
-            <section className="container mx-auto px-6 mt-32">
+            <section data-rq-reveal className="container mx-auto px-6 mt-32">
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <SectionTitle title={t('trustGuarantee')} subtitle={t('trustSubtitle')} center />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                    <div data-rq-tilt className="rq-guarantee-card bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
                         <div className="w-16 h-16 bg-red-50 text-[#500000] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <FileSignature size={32} />
                         </div>
                         <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('nda')}</h3>
                         <p className="text-gray-600 leading-relaxed">{t('ndaDesc')}</p>
                     </div>
-                    <div className="bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
+                    <div data-rq-tilt className="rq-guarantee-card bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2">
                         <div className="w-16 h-16 bg-red-50 text-[#500000] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Scale size={32} />
                         </div>
                         <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('milestones')}</h3>
                         <p className="text-gray-600 leading-relaxed">{t('milestonesDesc')}</p>
                     </div>
-                    <div className="bg-[#500000] rounded-3xl p-8 shadow-2xl transition-all duration-300 group hover:-translate-y-2 text-white">
+                    <div data-rq-tilt className="rq-guarantee-card rq-dark-card bg-[#500000] rounded-3xl p-8 shadow-2xl transition-all duration-300 group hover:-translate-y-2 text-white">
                         <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Code2 size={32} />
                         </div>
@@ -1747,7 +1406,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             </section>
 
             {/* 7. WHY RIZQARA (Redesigned) */}
-            <section className="container mx-auto px-6">
+            <section data-rq-reveal className="container mx-auto px-6">
                 <SectionTitle
                     title={language === 'bn' ? "কেন আমাদের নির্বাচন করবেন" : "Why Choose Us"}
                     subtitle={language === 'bn' ? "আমরা আপনার ব্যবসার জন্য সর্বোত্তম সমাধান প্রদান করি।" : "We deliver tailored excellence to drive your business forward."}
@@ -1755,39 +1414,11 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                 <PremiumComparison onNavigate={onNavigate} />
             </section>
 
-            {/* 8. NEW: VIDEOS SECTION */}
-            <section className="container mx-auto px-6">
-                <div className="flex justify-between items-end mb-4">
-                    <SectionTitle title={t('latestInsights')} subtitle={language === 'bn' ? "আমাদের সর্বশেষ প্রযুক্তি শোকেস এবং টিউটোরিয়াল দেখুন।" : "Watch our latest tech showcases and tutorials."} />
-                    <button onClick={() => onNavigate('Videos')} className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold mb-16">{t('readMore')} <ArrowRight size={16} /></button>
-                </div>
-                <LatestVideos onNavigate={onNavigate} />
-            </section>
-
-            {/* 9. PACKAGES (Detailed) */}
-            <section className="container mx-auto px-6">
-                <SectionTitle
-                    title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"}
-                    subtitle={language === 'bn' ? "আপনার ব্যবসার জন্য সেরা পরিকল্পনা চয়ন করুন।" : "Choose the perfect plan for your business growth."}
-                    center
-                />
-                <PricingDetailed onNavigate={onNavigate} />
-            </section>
-
-            {/* 10. NEW: BLOG SECTION */}
-            <section className="container mx-auto px-6">
-                <div className="flex justify-between items-end mb-12">
-                    <SectionTitle
-                        title={language === 'bn' ? "টেক ব্লগ" : "Tech Blog"}
-                        subtitle={language === 'bn' ? "প্রযুক্তি এবং উদ্ভাবন সম্পর্কে আমাদের সর্বশেষ চিন্তা।" : "Our latest thoughts on technology, innovation, and industry trends."}
-                    />
-                    <button onClick={() => onNavigate('Blog')} className="text-gray-500 hover:text-[#500000] flex items-center gap-2 font-bold">{t('readMore')} <ArrowRight size={16} /></button>
-                </div>
-                <LatestBlogs onNavigate={onNavigate} />
-            </section>
+            <EditorialSection kind="videos" />
+            <EditorialSection kind="blogs" />
 
             {/* 11. IMPACT (Stats) - Separated */}
-            <section className="bg-gradient-to-br from-white to-gray-50 py-24 relative overflow-hidden border-t border-gray-200">
+            <section data-rq-reveal className="bg-gradient-to-br from-white to-gray-50 py-24 relative overflow-hidden border-t border-gray-200">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] invert"></div>
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-16">
@@ -1795,46 +1426,26 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
                         <p className="text-gray-600 max-w-2xl mx-auto">{language === 'bn' ? "মহাদেশ এবং শিল্প জুড়ে শ্রেষ্ঠত্ব প্রদান।" : "Delivering excellence across continents and industries."}</p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                        <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
+                        <div data-rq-tilt className="rq-stat-card p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
                             <StatsCounter value={120 + projects.length} label={language === 'bn' ? "প্রকল্প বিতরণ" : "Projects Delivered"} />
                         </div>
-                        <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
+                        <div data-rq-tilt className="rq-stat-card p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
                             <StatsCounter value={100} label={language === 'bn' ? "গ্রাহক সন্তুষ্টি" : "Client Satisfaction"} suffix="%" />
                         </div>
-                        <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
+                        <div data-rq-tilt className="rq-stat-card p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
                             <StatsCounter value={10} label={language === 'bn' ? "দেশ সেবা করা হয়েছে" : "Countries Served"} suffix="+" />
                         </div>
-                        <div className="p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
+                        <div data-rq-tilt className="rq-stat-card p-8 bg-white border border-gray-200 rounded-3xl shadow-lg hover:-translate-y-2 group transition-all duration-500">
                             <StatsCounter value={5} label={language === 'bn' ? "বছরের শ্রেষ্ঠত্ব" : "Years Excellence"} suffix="+" />
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* NEW: OUR TECH STACK */}
-            <section className="container mx-auto px-6 mb-24">
-                <div className="mb-12">
-                    <SectionTitle
-                        title={language === 'bn' ? "আমাদের প্রযুক্তি স্ট্যাক" : "Our Tech Stack"}
-                        subtitle={language === 'bn' ? "আমরা সর্বোত্তম ফলাফলের জন্য আধুনিক প্রযুক্তি ব্যবহার করি।" : "We leverage cutting-edge technologies to build robust and scalable solutions."}
-                        center
-                    />
-
-                </div>
-                <AutoScrollCarousel items={
-                    techStack.map((tech, i) => (
-                        <div key={i} className="flex flex-col items-center gap-3 transition-opacity px-6 duration-500 shrink-0 min-w-[100px] group cursor-pointer" title={tech.name}>
-                            <div className="h-12 w-auto flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                                {tech.logo}
-                            </div>
-                            <span className="text-xs font-bold text-gray-400 group-hover:text-gray-900 transition-colors mt-2 opacity-0 group-hover:opacity-100">{tech.name}</span>
-                        </div>
-                    ))
-                } />
-            </section>
+            <TechnologyExperience />
 
             {/* 12. FEEDBACK (Testimonials) - Separated & Carousel */}
-            <section className="container mx-auto px-6">
+            <section data-rq-reveal className="container mx-auto px-6">
                 <SectionTitle
                     title={t('whatClientsSay')}
                     subtitle={language === 'bn' ? "আমাদের গ্রাহকরা আমাদের সম্পর্কে যা বলেন।" : "Hear from our satisfied partners and clients worldwide."}
@@ -1847,7 +1458,7 @@ const Home = ({ setBuildConfig }: { setBuildConfig: any }) => {
             <FAQSection />
 
             {/* 15. CONTACT + MAP (Real Map) */}
-            <section className="container mx-auto px-6 mb-32" id="contact-section">
+            <section data-rq-reveal className="container mx-auto px-6 mb-32" id="contact-section">
                 <SectionTitle title={t('contact')} />
                 <ContactFormWithMap />
             </section>
@@ -1867,14 +1478,17 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
     const navigate = useNavigate();
     const { t, language } = useData();
 
-    const handleLogin = (e: React.FormEvent) => {
+    const [busy, setBusy] = useState(false);
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email === 'admin@rizqaratech.com' && password === 'rizqaratech878') {
-            localStorage.setItem('rizqara_admin_auth', 'true');
+        if (busy) return;
+        setBusy(true);
+        try {
+            await apiRequest('auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+            setPassword('');
             setIsAuthenticated(true);
-        } else {
-            alert('Incorrect credentials');
-        }
+        } catch (error) { toast.error(error instanceof Error ? error.message : 'Sign in failed'); }
+        finally { setBusy(false); }
     };
 
     return (
@@ -1895,6 +1509,7 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="email"
+                            aria-label="Administrator email" autoComplete="username" required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder={t('email')}
@@ -1904,6 +1519,7 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
                     <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
+                            aria-label="Administrator password" autoComplete="current-password" required
                             type={showPassword ? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -1912,7 +1528,7 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
                         />
                         <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                         >
                             {showPassword ? (
@@ -1923,7 +1539,7 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
                         </button>
                     </div>
 
-                    <button className="w-full bg-[#500000] hover:bg-[#3a0000] text-white py-4 rounded-xl font-bold transition-all shadow-lg flex justify-center items-center gap-2 group">
+                    <button disabled={busy} className="w-full bg-[#500000] hover:bg-[#3a0000] text-white py-4 rounded-xl font-bold transition-all shadow-lg flex justify-center items-center gap-2 group">
                         {t('login')} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </form>
@@ -1937,188 +1553,9 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
     );
 };
 
-const ServicesPage = () => {
-    const { services, t, language } = useData();
-    const navigate = useNavigate();
+const ServicesPage = ServiceCatalogPage;
 
-    return (
-        <div className="container mx-auto px-6 py-32">
-            <SectionTitle title={t('ourServices')} />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services.map(s => {
-                    const Icon = {
-                        Globe, Layout, Palette, Code2, Smartphone, BarChart,
-                        Lightbulb, Cpu, MessageSquare, Zap, Activity, Star, Layers, Server
-                    }[s.icon] || Code2;
-                    const title = language === 'bn' ? (s.title_bn || s.title) : s.title;
-                    const desc = language === 'bn' ? (s.description_bn || s.description) : s.description;
-
-                    return (
-                        <div key={s.id} onClick={() => navigate(`/services/${getSlug(s.title)}`)} className="group bg-white border border-gray-200 hover:shadow-xl hover:border-[#500000]/20 rounded-3xl transition-all duration-300 cursor-pointer shadow-sm overflow-hidden flex flex-col h-full">
-                            <div className="h-48 overflow-hidden relative shrink-0">
-                                <img src={s.image || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                <div className="absolute top-4 left-4 w-12 h-12 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center text-[#500000] shadow-sm">
-                                    <Icon size={24} />
-                                </div>
-                            </div>
-                            <div className="p-8 flex flex-col flex-grow">
-                                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#500000] transition-colors">{title}</h3>
-                                <p className="text-gray-500 line-clamp-2 text-sm">{desc}</p>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    )
-};
-
-const ProjectsPage = () => {
-    const { projects, t, language } = useData();
-    const navigate = useNavigate();
-    const [selectedCategory, setSelectedCategory] = useState("All Projects");
-    const [searchQuery, setSearchQuery] = useState("");
-
-    // Dynamic Categories: Defaults + Unique from Projects
-    const defaultCategories = [
-        "SaaS Platforms",
-        "E-Commerce",
-        "Mobile App",
-        "Business Website",
-        "Web Applications",
-        "Enterprise Collaboration"
-    ];
-
-    // Extract unique categories from actual projects
-    const projectCategories = Array.from(new Set(projects.map(p => p.category?.trim()).filter(Boolean)));
-
-    // Merge and deduplicate
-    const allUniqueCategories = Array.from(new Set([...defaultCategories, ...projectCategories]));
-
-    const categories = ["All Projects", ...allUniqueCategories];
-
-    const filteredProjects = projects.filter(p => {
-        const title = language === 'bn' ? (p.title_bn || p.title) : p.title;
-        const desc = language === 'bn' ? (p.description_bn || p.description) : p.description;
-        const category = language === 'bn' ? (p.category_bn || p.category) : p.category;
-
-        const matchesCategory = selectedCategory === "All Projects" ||
-            (category && category.toLowerCase() === selectedCategory.toLowerCase()) ||
-            (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
-
-        const matchesSearch = !searchQuery ||
-            title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (desc && desc.toLowerCase().includes(searchQuery.toLowerCase()));
-
-        return matchesCategory && matchesSearch;
-    });
-
-    return (
-        <div className="container mx-auto px-6 py-32 min-h-screen">
-            <SectionTitle title={t('ourProjects')} />
-
-            {/* Filters & Search */}
-            <div className="mb-12 space-y-6">
-                {/* Search Bar */}
-                <div className="relative max-w-md md:max-w-6xl mx-auto">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <Search size={20} />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder={language === 'bn' ? 'প্রকল্প খুঁজুন...' : 'Search projects...'}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/10 transition-all"
-                    />
-                    {searchQuery && (
-                        <button
-                            onClick={() => setSearchQuery('')}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#500000] bg-gray-100 rounded-full transition-colors"
-                        >
-                            <X size={14} />
-                        </button>
-                    )}
-                </div>
-
-                {/* Categories */}
-                <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat}
-                            onClick={() => setSelectedCategory(cat)}
-                            className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${selectedCategory === cat
-                                ? 'bg-[#500000] text-white shadow-md transform scale-105'
-                                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                                }`}
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <AnimatePresence mode="popLayout">
-                    {filteredProjects.length > 0 ? (
-                        filteredProjects.map(p => {
-                            const title = language === 'bn' ? (p.title_bn || p.title) : p.title;
-                            const category = language === 'bn' ? (p.category_bn || p.category) : p.category;
-
-                            return (
-                                <motion.div
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
-                                    key={p.id}
-                                    onClick={() => navigate(`/projects/${getSlug(p.title)}`)}
-                                    className="group cursor-pointer bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
-                                >
-                                    <div className="aspect-video relative overflow-hidden">
-                                        <img src={p.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
-                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
-                                    </div>
-                                    <div className="p-6 flex flex-col h-[260px]">
-                                        <div className="h-[80px] mb-3 shrink-0">
-                                            <div className="text-xs font-black text-[#500000]/60 uppercase tracking-widest mb-1">{category}</div>
-                                            <h3 className="text-lg font-bold text-[#500000] group-hover:underline decoration-[#500000]/30 transition-colors leading-tight line-clamp-2 pt-2">{title}</h3>
-                                        </div>
-
-                                        <div className="h-[60px] mb-4 shrink-0 overflow-hidden text-ellipsis">
-                                            <p className="text-gray-500 text-sm font-medium leading-relaxed">
-                                                {(language === 'bn' ? (p.description_bn || p.description) : p.description)?.slice(0, 100)}...
-                                            </p>
-                                        </div>
-
-                                        <div className="mt-auto flex items-center text-[#500000] font-bold text-sm group-hover:gap-3 gap-2 transition-all shrink-0">
-                                            <span>{language === 'bn' ? 'বিস্তারিত দেখুন' : 'See More'}</span>
-                                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )
-                        })
-                    ) : (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="col-span-1 md:col-span-2 w-full flex flex-col items-center justify-center text-center py-32 bg-gray-50 rounded-3xl border border-dashed border-gray-200 mx-auto"
-                        >
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                                <Search size={32} />
-                            </div>
-                            <p className="text-xl font-bold text-gray-600">{language === 'bn' ? 'কোনো প্রকল্প পাওয়া যায়নি' : 'No projects found'}</p>
-                            <p className="text-gray-400">{language === 'bn' ? 'অন্য ক্যাটাগরি বা শব্দ দিয়ে চেষ্টা করুন' : 'Try a different category or search term'}</p>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-        </div>
-    )
-};
+const ProjectsPage = () => <ProjectShowcase />;
 
 const AmbientBackground = () => (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-white">
@@ -2127,17 +1564,20 @@ const AmbientBackground = () => (
 );
 
 const MainContent = () => {
-    const [buildConfig, setBuildConfig] = useState({
+    const [buildConfig] = useState({
         type: 'Web App',
         feature: 'Standard',
         time: '1 Month'
     });
-    const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem('rizqara_admin_auth') === 'true';
-    });
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [checkingSession, setCheckingSession] = useState(true);
+    useEffect(() => {
+        localStorage.removeItem('rizqara_admin_auth');
+        apiRequest('auth/session').then(() => setIsAuthenticated(true)).catch(() => setIsAuthenticated(false)).finally(() => setCheckingSession(false));
+    }, []);
     const location = useLocation();
     const navigate = useNavigate();
-    const { t, language, loading } = useData();
+    const { t, language, loading, loadErrors, retryLoad } = useData();
 
     // Scroll to top on route change
     useLayoutEffect(() => {
@@ -2168,14 +1608,17 @@ const MainContent = () => {
     const showNavbar = !location.pathname.startsWith('/admin');
 
     return (
-        <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-[#500000] selection:text-white overflow-x-hidden relative scroll-smooth">
+        <div className={`${showNavbar ? 'rq-premium' : ''} min-h-screen bg-white text-gray-900 font-sans selection:bg-[#500000] selection:text-white overflow-x-hidden relative scroll-smooth`}>
             <AmbientBackground />
+            {showNavbar && <PremiumExperience />}
 
             {showNavbar && <Navbar />}
 
+            {location.pathname.startsWith('/admin') && <SEO title="Administrator sign in" description="Private administration area." noIndex />}
+            {loadErrors.length > 0 && <div role="alert" className="relative z-40 mt-24 bg-amber-50 p-4 text-center">Some content could not be loaded. <button type="button" className="underline" onClick={retryLoad}>Try again</button></div>}
             <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
-                    <Route path="/" element={<Home setBuildConfig={setBuildConfig} />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/vision-2030" element={<Vision2030Page />} />
                     <Route path="/registered-company" element={<RegisteredCompanyPage />} />
 
@@ -2202,7 +1645,8 @@ const MainContent = () => {
                     <Route path="/packages" element={<div className="container mx-auto px-6 pt-32 pb-32"><SectionTitle title={language === 'bn' ? "প্যাকেজসমূহ" : "Packages"} /><PricingDetailed onNavigate={onNavigate} /></div>} />
                     <Route path="/contact" element={
                         <div className="pt-20 pb-32 container mx-auto px-6">
-                            <SEO
+                            <h1 className="sr-only">Contact RizQara Tech</h1>
+                        <SEO
                                 title="Contact Us | RizQara Tech - Software & AI Solutions"
                                 description="Get in touch with RizQara Tech for custom software development, AI solutions, web apps, and digital transformation services in Bangladesh."
                                 canonical="https://rizqara.tech/contact"
@@ -2282,21 +1726,20 @@ const MainContent = () => {
                     </>} />
 
                     <Route path="/admin" element={
-                        isAuthenticated ?
+                        checkingSession ? <DetailSkeleton /> : isAuthenticated ?
                             <div className="bg-[#F5F7FA]">
-                                <AdminDashboard onLogout={() => {
-                                    navigate('/', { replace: true });
-                                    // Delay state update to prevent "Login" screen flicker during transition
-                                    setTimeout(() => {
+                                <Suspense fallback={<DetailSkeleton />}><AdminDashboard onLogout={async () => {
+                                    try {
+                                        await apiRequest('auth/logout', { method: 'POST' });
                                         setIsAuthenticated(false);
-                                        localStorage.removeItem('rizqara_admin_auth');
-                                    }, 50);
-                                }} />
+                                        navigate('/', { replace: true });
+                                    } catch { toast.error('Unable to sign out. Please try again.'); }
+                                }} /></Suspense>
                             </div> :
                             <AdminLogin setIsAuthenticated={setIsAuthenticated} />
                     } />
 
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<div className="container mx-auto p-12"><SEO title="Page not found" description="The requested page could not be found." /><h1 className="text-3xl font-bold">Page not found</h1><Link to="/">Return home</Link></div>} />
                 </Routes>
             </main>
 
@@ -2319,12 +1762,12 @@ const FeatureDetailWrapper = () => {
 
 const App = () => {
     return (
-        <Router>
+        <MotionConfig reducedMotion="user"><Router>
             <DataProvider>
                 <MainContent />
                 <Toaster />
             </DataProvider>
-        </Router>
+        </Router></MotionConfig>
     );
 };
 

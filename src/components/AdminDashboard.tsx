@@ -1,3 +1,6 @@
+import serviceCatalog from '../../shared/service-catalog.json';
+import { useDialog } from '../utils/useDialog';
+import { apiRequest, API_URL } from '../utils/api';
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import { useData } from '../context/DataContext';
@@ -33,14 +36,15 @@ const PremiumStatCard = ({ icon: Icon, value, label, color, bg }: any) => (
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, updateData, resetData, language, deleteData, fetchAdminData } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, updateData, resetData, language, deleteData, fetchAdminData, markMessageRead } = useData();
 
     React.useEffect(() => {
-        fetchAdminData();
+        void fetchAdminData().catch(error => toast.error(error.message));
     }, []);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const dialogRef = useDialog(isModalOpen, () => setIsModalOpen(false));
     const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice' | 'galleryItem'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
@@ -65,6 +69,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const handleDelete = async (type: string, id: string) => {
         if (!window.confirm(language === 'bn' ? 'আপনি কি নিশ্চিত যে আপনি এই আইটেমটি মুছতে চান?' : 'Are you sure you want to delete this item?')) return;
 
+        try {
+        if (type === 'message') await deleteData('messages', id);
+        if (type === 'application') await deleteData('careerApplications', id);
         if (type === 'service') await deleteData('services', id);
         if (type === 'project') await deleteData('projects', id);
         if (type === 'review') await deleteData('reviews', id);
@@ -76,15 +83,23 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'caseStudy') await deleteData('caseStudies', id);
         if (type === 'notice') await deleteData('notice', id);
         if (type === 'galleryItem') await deleteData('galleryItems', id);
-        // Message and Application handling might be different in UI (check tabs)
+        } catch (error) { toast.error(error instanceof Error ? error.message : 'Delete failed'); }
+        // Private records use authenticated versioned deletion.
         // Note: AdminDashboard usually handles main content. Messages might be handled in "messages" tab
     };
 
-    const handleSave = (e: React.FormEvent) => {
+    const [saving, setSaving] = useState(false);
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (saving) return;
+        setSaving(true);
+        try {
         const formData = new FormData(e.target as HTMLFormElement);
         const data: any = Object.fromEntries(formData.entries());
 
+        if (modalType === 'service') {
+            for (const field of ['capabilities', 'capabilities_bn', 'process', 'process_bn']) data[field] = String(data[field] || '').split('\n').map(s => s.trim()).filter(Boolean);
+        }
         if (modalType === 'project' && data.tech) {
             data.tech = data.tech.split(',').map((t: string) => t.trim());
         }
@@ -106,7 +121,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             if (data.gallery_1) gallery.push(data.gallery_1);
             if (data.gallery_2) gallery.push(data.gallery_2);
             if (data.gallery_3) gallery.push(data.gallery_3);
-            if (gallery.length > 0) data.gallery = gallery;
+            data.gallery = gallery;
 
             // Remove temp fields
             delete data.gallery_1;
@@ -127,7 +142,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             if (data.gallery_2) gallery.push(data.gallery_2);
             if (data.gallery_3) gallery.push(data.gallery_3);
             if (data.gallery_4) gallery.push(data.gallery_4);
-            if (gallery.length > 0) data.gallery = gallery;
+            data.gallery = gallery;
             
             // Handle Growth Before/After
             if (data.growthBefore) data.growthBefore = data.growthBefore;
@@ -167,7 +182,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             const updatedNotices = editingItem 
                 ? notices.map((n: any) => n.id === editingItem.id ? newItem : n) 
                 : [...notices, newItem];
-            updateData('notice', updatedNotices);
+            await updateData('notice', updatedNotices);
             setIsModalOpen(false);
             setEditingItem(null);
             return;
@@ -180,19 +195,21 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             value: data.value ? parseFloat(data.value) : undefined
         };
 
-        if (modalType === 'service') updateData('services', editingItem ? services.map(s => s.id === editingItem.id ? newItem : s) : [...services, newItem]);
-        if (modalType === 'project') updateData('projects', editingItem ? projects.map(p => p.id === editingItem.id ? newItem : p) : [...projects, newItem]);
-        if (modalType === 'review') updateData('reviews', editingItem ? reviews.map(r => r.id === editingItem.id ? newItem : r) : [...reviews, newItem]);
-        if (modalType === 'blog') updateData('blogs', editingItem ? blogs.map(b => b.id === editingItem.id ? newItem : b) : [...blogs, newItem]);
-        if (modalType === 'job') updateData('jobs', editingItem ? jobs.map(j => j.id === editingItem.id ? newItem : j) : [...jobs, newItem]);
-        if (modalType === 'video') updateData('videos', editingItem ? videos.map(v => v.id === editingItem.id ? newItem : v) : [...videos, newItem]);
-        if (modalType === 'carousel') updateData('carousel', editingItem ? carouselSlides.map(c => c.id === editingItem.id ? newItem : c) : [...carouselSlides, newItem]);
-        if (modalType === 'buildOption') updateData('buildOptions', editingItem ? buildOptions.map(b => b.id === editingItem.id ? newItem : b) : [...buildOptions, newItem]);
-        if (modalType === 'caseStudy') updateData('caseStudies', editingItem ? caseStudies.map(c => c.id === editingItem.id ? newItem : c) : [...caseStudies, newItem]);
-        if (modalType === 'galleryItem') updateData('galleryItems', editingItem ? galleryItems.map(g => g.id === editingItem.id ? newItem : g) : [...galleryItems, newItem]);
+        if (modalType === 'service') await updateData('services', editingItem ? services.map(s => s.id === editingItem.id ? newItem : s) : [...services, newItem]);
+        if (modalType === 'project') await updateData('projects', editingItem ? projects.map(p => p.id === editingItem.id ? newItem : p) : [...projects, newItem]);
+        if (modalType === 'review') await updateData('reviews', editingItem ? reviews.map(r => r.id === editingItem.id ? newItem : r) : [...reviews, newItem]);
+        if (modalType === 'blog') await updateData('blogs', editingItem ? blogs.map(b => b.id === editingItem.id ? newItem : b) : [...blogs, newItem]);
+        if (modalType === 'job') await updateData('jobs', editingItem ? jobs.map(j => j.id === editingItem.id ? newItem : j) : [...jobs, newItem]);
+        if (modalType === 'video') await updateData('videos', editingItem ? videos.map(v => v.id === editingItem.id ? newItem : v) : [...videos, newItem]);
+        if (modalType === 'carousel') await updateData('carousel', editingItem ? carouselSlides.map(c => c.id === editingItem.id ? newItem : c) : [...carouselSlides, newItem]);
+        if (modalType === 'buildOption') await updateData('buildOptions', editingItem ? buildOptions.map(b => b.id === editingItem.id ? newItem : b) : [...buildOptions, newItem]);
+        if (modalType === 'caseStudy') await updateData('caseStudies', editingItem ? caseStudies.map(c => c.id === editingItem.id ? newItem : c) : [...caseStudies, newItem]);
+        if (modalType === 'galleryItem') await updateData('galleryItems', editingItem ? galleryItems.map(g => g.id === editingItem.id ? newItem : g) : [...galleryItems, newItem]);
 
         setIsModalOpen(false);
         setEditingItem(null);
+        } catch { /* Preserve the editor when persistence fails. */ }
+        finally { setSaving(false); }
     };
 
     const openModal = (type: any, item: any = null) => {
@@ -233,8 +250,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     <h3 className="text-xl font-bold text-gray-800 mb-2">{language === 'bn' ? "সিস্টেম নিয়ন্ত্রণ" : "System Controls"}</h3>
                     <p className="text-gray-500">{language === 'bn' ? "গ্লোবাল সেটিংস এবং ডেটা পরিচালনা করুন।" : "Manage global settings and data persistence."}</p>
                 </div>
-                <AdminButton variant="danger" onClick={() => { if (window.confirm(language === 'bn' ? 'সব ডেটা রিসেট করবেন? এটি পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।' : 'Reset all data to default? This cannot be undone.')) resetData(); }}>
-                    <RotateCcw size={18} /> {language === 'bn' ? "সিস্টেম ডেটা রিসেট করুন" : "Reset System Data"}
+                <AdminButton variant="danger" onClick={() => { if (window.confirm(language === 'bn' ? 'ভাষার পছন্দ রিসেট করবেন?'  : 'Reset your language preference?')) resetData(); }}>
+                    <RotateCcw size={18} /> {language === 'bn' ? "ভাষার পছন্দ রিসেট করুন" : "Reset Language Preference"}
                 </AdminButton>
             </AdminCard>
         </div>
@@ -255,7 +272,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     <div className="flex gap-4 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
+                            <input aria-label="text"
                                 type="text"
                                 placeholder={language === 'bn' ? 'অনুসন্ধান...' : "Search..."}
                                 value={searchTerm}
@@ -263,7 +280,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                 className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all"
                             />
                         </div>
-                        {type !== 'message' && <AdminButton onClick={() => openModal(type)}><Plus size={18} /> {language === 'bn' ? 'নতুন যোগ করুন' : 'Add New'}</AdminButton>}
+                        {!['message', 'application'].includes(type) && <AdminButton onClick={() => openModal(type)}><Plus size={18} /> {language === 'bn' ? 'নতুন যোগ করুন' : 'Add New'}</AdminButton>}
                     </div>
                 </div>
 
@@ -273,9 +290,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             <div className="flex-1 mr-4">
                                 {renderItem(item)}
                             </div>
-                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                {type !== 'message' && <AdminButton variant="secondary" onClick={() => openModal(type, item)} className="px-3 py-2"><Edit2 size={16} /></AdminButton>}
-                                <AdminButton variant="danger" onClick={() => handleDelete(type, item.id)} className="px-3 py-2"><Trash2 size={16} /></AdminButton>
+                            <div className="flex gap-2 opacity-100 transition-opacity">
+                                {!['message', 'application'].includes(type) && <AdminButton aria-label="Edit record" variant="secondary" onClick={() => openModal(type, item)} className="px-3 py-2"><Edit2 size={16} /></AdminButton>}
+                                <AdminButton aria-label="Delete record" variant="danger" onClick={() => handleDelete(type, item.id)} className="px-3 py-2"><Trash2 size={16} /></AdminButton>
                             </div>
                         </AdminCard>
                     ))}
@@ -294,7 +311,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         const form = document.getElementById('admin-form') as HTMLFormElement;
         if (!form) return;
 
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
         const translatePairs = [
             { src: 'title', dest: 'title_bn' },
             { src: 'subtitle', dest: 'subtitle_bn' },
@@ -336,7 +353,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         try {
             await Promise.all(toTranslate.map(async (item) => {
                 try {
-                    const res = await fetch(`${API_URL}/translate`, {
+                    const res = await apiRequest('translate', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: item.text })
@@ -345,9 +362,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     if (data.translatedText) {
                         item.destEl.value = data.translatedText;
                     }
-                } catch (e) {
-                    console.error(e);
-                }
+                } catch (e) { throw e; }
             }));
             toast.success(language === 'bn' ? "অনুবাদ সম্পন্ন!" : "Translation complete!", { id: toastId });
         } catch (e) {
@@ -387,7 +402,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         <div className="font-bold text-gray-800">{language === 'bn' ? 'অ্যাডমিন ব্যবহারকারী' : 'Admin User'}</div>
                         <div className="text-xs text-gray-400">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Super Administrator'}</div>
                     </div>
-                    <button onClick={onLogout} className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                    <button aria-label="Sign out" onClick={onLogout} className="p-2 text-gray-400 hover:text-red-600 transition-colors">
                         <LogOut size={20} />
                     </button>
                 </div>
@@ -418,17 +433,18 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                 <div className="flex-1 min-h-[80vh]">
                     {activeTab === 'dashboard' && renderDashboard()}
 
-                    {activeTab === 'inbox' && renderList(language === 'bn' ? 'ইনবক্স' : 'Inbox', messages.filter(m => m.type === 'Contact'), 'message', (item) => (
+                    {activeTab === 'inbox' && renderList(language === 'bn' ? 'ইনবক্স' : 'Inbox', messages, 'message', (item) => (
                         <div className="relative group">
                             <div className="flex items-center gap-2 mb-1">
                                 <div className={`p-1.5 rounded-md ${item.subject === 'New Newsletter Subscriber' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
                                     {item.subject === 'New Newsletter Subscriber' ? <Tag size={14} /> : <Mail size={14} />}
                                 </div>
                                 <h3 className="font-bold text-gray-800">{item.subject}</h3>
+                                {!item.read && <button type="button" className="text-xs underline" onClick={() => { void Promise.resolve(markMessageRead(item.id)).catch(error => toast.error(error.message)); }}>Mark read</button>}
                                 <span className="text-xs text-gray-400 ml-auto whitespace-nowrap">{item.date}</span>
                             </div>
                             <p className="text-sm text-gray-800 font-medium mb-1">{item.name} <span className="font-normal text-gray-500 text-xs ml-1">&lt;{item.email}&gt;</span></p>
-                            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 group-hover:bg-white group-hover:shadow-sm transition-all">{item.message}</p>
+                            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 group-hover:bg-white group-hover:shadow-sm transition-all">{item.message}</p><p className="text-xs text-gray-500 mt-2">Email notification: {item.notificationStatus || 'Not queued'}</p>
                         </div>
                     ))}
 
@@ -453,7 +469,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
-                                        updateData('promotion', localPromotion);
+                                        void updateData('promotion', localPromotion).catch(() => {});
                                         // Custom Premium Toast
                                         toast.custom((t) => (
                                             <div className="flex items-center gap-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-sm animate-in slide-in-from-top-5 fade-in duration-300">
@@ -464,7 +480,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                     <h4 className="font-bold text-gray-900 text-sm">Update Successful!</h4>
                                                     <p className="text-xs text-gray-500">Promotion is now live on the site.</p>
                                                 </div>
-                                                <button onClick={() => toast.dismiss(t)} className="ml-auto p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors">
+                                                <button aria-label="Close" onClick={() => toast.dismiss(t)} className="ml-auto p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors">
                                                     <X size={16} />
                                                 </button>
                                             </div>
@@ -493,7 +509,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 mb-2">Offer Rate (%)</label>
-                                                    <input
+                                                    <input aria-label="offerRate"
                                                         name="offerRate"
                                                         value={localPromotion.offerRate}
                                                         onChange={(e) => setLocalPromotion({ ...localPromotion, offerRate: e.target.value })}
@@ -502,7 +518,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 mb-2">Expiry Date</label>
-                                                    <input
+                                                    <input aria-label="date"
                                                         type="date"
                                                         name="expiryDate"
                                                         value={localPromotion.expiryDate}
@@ -515,7 +531,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 mb-2">Target Service</label>
                                                 <div className="relative">
-                                                    <select
+                                                    <select aria-label="serviceName"
                                                         name="serviceName"
                                                         value={localPromotion.serviceName}
                                                         onChange={(e) => setLocalPromotion({ ...localPromotion, serviceName: e.target.value })}
@@ -530,7 +546,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
-                                                <input
+                                                <input aria-label="description"
                                                     name="description"
                                                     value={localPromotion.description}
                                                     onChange={(e) => setLocalPromotion({ ...localPromotion, description: e.target.value })}
@@ -680,9 +696,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                         {(cat === 'type' || cat === 'project') ? `$${item.value}` : `x${item.value}`}
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button onClick={() => openModal('buildOption', item)} className="p-2 bg-white rounded-lg text-gray-500 hover:text-blue-600 shadow-sm"><Edit2 size={14} /></button>
-                                                    <button onClick={() => handleDelete('buildOption', item.id)} className="p-2 bg-white rounded-lg text-gray-500 hover:text-red-600 shadow-sm"><Trash2 size={14} /></button>
+                                                <div className="flex gap-1 opacity-100 transition-opacity">
+                                                    <button aria-label="Edit" onClick={() => openModal('buildOption', item)} className="p-2 bg-white rounded-lg text-gray-500 hover:text-blue-600 shadow-sm"><Edit2 size={14} /></button>
+                                                    <button aria-label="Delete" onClick={() => handleDelete('buildOption', item.id)} className="p-2 bg-white rounded-lg text-gray-500 hover:text-red-600 shadow-sm"><Trash2 size={14} /></button>
                                                 </div>
                                             </div>
                                         ))}
@@ -766,6 +782,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                 <h3 className="font-bold text-gray-800">{item.name}</h3>
                                 <span className="text-xs text-gray-400 ml-auto">{item.date}</span>
                             </div>
+                            <label className="block text-xs mb-2">Application status <select aria-label="Application status" value={item.status} onChange={event => { void updateData('careerApplications', [{ id: item.id, status: event.target.value }], true).catch(() => {}); }}><option>New</option><option>Pending</option><option>Reviewed</option><option>Rejected</option></select></label>
                             <p className="text-sm text-gray-500 mb-2">Applied for: {jobs.find(j => j.id === item.jobId)?.title || 'Unknown Role'} ({item.email})</p>
                             <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
                                 <p className="font-bold text-xs uppercase mb-1">Experience:</p>
@@ -774,7 +791,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                 <p>{item.reason}</p>
                             </div>
                             {item.cvUrl ? (
-                                <a href={item.cvUrl} download={item.cvName || 'resume.pdf'} className="inline-flex items-center gap-2 text-sm px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-bold">
+                                <a href={item.cvUrl.startsWith('/api/') ? `${API_URL}${item.cvUrl.slice(4)}` : undefined} download={item.cvName || 'resume.pdf'} className="inline-flex items-center gap-2 text-sm px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-bold">
                                     <FileDown size={14} /> Download CV
                                 </a>
                             ) : (
@@ -815,7 +832,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             {/* Modal Overlay */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
+                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Edit content" tabIndex={-1} className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                             <h3 className="text-xl font-bold text-gray-800">
                                 {editingItem ? (language === 'bn' ? 'সম্পাদনা করুন' : 'Edit') : (language === 'bn' ? 'নতুন যোগ করুন' : 'Add New')} {modalType.charAt(0).toUpperCase() + modalType.slice(1)}
@@ -828,7 +845,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                 >
                                     <Globe size={20} />
                                 </button>
-                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-800 transition-colors bg-white p-2 rounded-full shadow-sm hover:shadow-md">
+                                <button aria-label="Close" onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-800 transition-colors bg-white p-2 rounded-full shadow-sm hover:shadow-md">
                                     <X size={20} />
                                 </button>
                             </div>
@@ -841,6 +858,13 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
 
                                     <AdminInput label="Icon Name" name="icon" defaultValue={editingItem?.icon} />
+                                    <AdminSelect label="Service category" name="categoryId" defaultValue={editingItem?.categoryId || serviceCatalog.categories[0].id}>
+                                        {serviceCatalog.categories.map(c => <option value={c.id} key={c.id}>{c.title}</option>)}
+                                    </AdminSelect>
+                                    <AdminInput label="Image URL" name="image" defaultValue={editingItem?.image} />
+                                    <AdminInput label="Image description" name="imageAlt" defaultValue={editingItem?.imageAlt} />
+                                    {(['capabilities', 'capabilities_bn', 'process', 'process_bn'] as const).map(field => <AdminTextArea key={field} label={`${field.replace(/_/g, ' ')} (one per line)`} name={field} defaultValue={(editingItem?.[field] || []).join('\n')} />)}
+
 
                                     <AdminTextArea label="Short Description" name="description" defaultValue={editingItem?.description} />
                                     <AdminTextArea label="Short Description (Bengali)" name="description_bn" defaultValue={editingItem?.description_bn} placeholder="বাংলা বর্ণনা" />
@@ -1028,7 +1052,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onUploadEnd={() => setUploadingCount(p => p - 1)}
                                         aspectRatio={16 / 9}
                                     />
-                                    <input type="hidden" name="image" value={blogImage} />
+                                    <input aria-label="hidden" type="hidden" name="image" value={blogImage} />
 
                                     <AdminTextArea label="Excerpt" name="excerpt" defaultValue={editingItem?.excerpt} required />
                                     <AdminTextArea label="Excerpt (Bengali)" name="excerpt_bn" defaultValue={editingItem?.excerpt_bn} placeholder="বাংলা সারাংশ" />
@@ -1066,7 +1090,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                     <div className="mb-4">
                                         <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Link</label>
-                                        <input
+                                        <input aria-label="url"
                                             name="url"
                                             defaultValue={editingItem?.url}
                                             onChange={(e) => setVideoUrl(e.target.value)}
@@ -1112,7 +1136,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onUploadEnd={() => setUploadingCount(p => p - 1)}
                                         aspectRatio={16 / 9}
                                     />
-                                    <input type="hidden" name="image" value={carouselImage} />
+                                    <input aria-label="hidden" type="hidden" name="image" value={carouselImage} />
 
                                     <AdminSelect label="Button Action" name="cta" defaultValue={editingItem?.cta || 'Contact Now'}>
                                         <option value="View Projects">View Projects</option>
@@ -1185,7 +1209,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                 type="submit" 
                                 form="admin-form" 
                                 className="w-full"
-                                disabled={isUploadingImage}
+                                disabled={isUploadingImage || saving}
                             >
                                 {isUploadingImage ? (
                                     <div className="flex items-center gap-2">

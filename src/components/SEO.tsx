@@ -9,6 +9,7 @@ type SEOProps = {
     image?: string;
     type?: string;
     schema?: object;
+    noIndex?: boolean;
 };
 
 export const SEO: React.FC<SEOProps> = ({
@@ -18,7 +19,8 @@ export const SEO: React.FC<SEOProps> = ({
     canonical,
     image = 'https://rizqara.tech/og-image.png',
     type = 'website',
-    schema
+    schema,
+    noIndex = false
 }) => {
     const fullTitle = title.includes('|') ? title : `${title} | RizQara Tech`; // Auto-append brand if missing
     
@@ -31,9 +33,9 @@ export const SEO: React.FC<SEOProps> = ({
         "logo": "https://rizqara.tech/logo.png",
         "sameAs": [
             "https://facebook.com/rizqaratech",
-            "https://twitter.com/rizqaratech",
+            "https://x.com/Rizqaratech",
             "https://instagram.com/rizqaratech",
-            "https://linkedin.com/company/rizqaratech",
+            "https://linkedin.com/company/rizqara-tech",
             "https://medium.com/@rizqaratech",
             "https://www.youtube.com/@rizqaratech"
         ]
@@ -43,6 +45,7 @@ export const SEO: React.FC<SEOProps> = ({
         <Helmet>
             {/* Primary Meta Tags */}
             <title>{fullTitle}</title>
+            <meta name="robots" content={noIndex || title.toLowerCase().includes('not found') ? 'noindex' : 'index, follow'} />
             <meta name="description" content={description} />
             {keywords && <meta name="keywords" content={keywords} />}
             {canonical && <link rel="canonical" href={canonical} />}

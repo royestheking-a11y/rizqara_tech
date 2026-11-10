@@ -1,18 +1,20 @@
+import { useDialog } from '../../utils/useDialog';
+import { AssistantCharacter, StudioProcess, ContactDetails } from '../studio/StudioDetails';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProxiedImage } from '../../utils/imageProxy';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import {
     ArrowRight, ChevronLeft, ChevronRight, Check, X,
     Globe, Award, Briefcase, Zap, Users,
     Rocket, Star, Crown,
     Layout, Monitor, Clock,
     Settings, Sliders, Play, User, Send, MapPin, Phone, Mail,
-    Bot, Loader, Activity, PlayCircle, MessageSquare,
+    Loader, Activity, PlayCircle, MessageSquare,
     Music, Pause, Volume2
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
-import { getSlug } from '../../App';
+import { getSlug } from '../../utils/content';
 import { RizqAIEngine, ChatbotState } from '../../utils/chatbotEngine';
 
 import { toast } from "sonner";
@@ -40,7 +42,7 @@ export const WhatsAppLogo = ({ size = 24, className = "" }: { size?: number, cla
 );
 
 export const SectionTitle = ({ title, subtitle, center = false, className = "mb-16" }: { title: string, subtitle?: string, center?: boolean, className?: string }) => (
-    <div className={`${className} ${center ? 'text-center' : ''}`}>
+    <div className={`rq-section-title ${className} ${center ? 'text-center' : ''}`}>
         <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -49,6 +51,7 @@ export const SectionTitle = ({ title, subtitle, center = false, className = "mb-
         >
             {title}
         </motion.h2>
+        <span className="rq-title-accent" data-center={center} aria-hidden="true"><i /><i /><i /></span>
         {subtitle && (
             <motion.p
                 initial={{ opacity: 0 }}
@@ -63,50 +66,32 @@ export const SectionTitle = ({ title, subtitle, center = false, className = "mb-
 );
 
 // --- 1. CAROUSEL (Generic) ---
-export const TiltCard = ({ children, className = "", ...props }: { children: React.ReactNode, className?: string } & React.HTMLAttributes<HTMLDivElement>) => {
+export const TiltCard = ({ children, className = "", style, onMouseMove, onMouseLeave, ...props }: { children: React.ReactNode, className?: string } & React.HTMLAttributes<HTMLDivElement>) => {
     const cardRef = useRef<HTMLDivElement>(null);
-    const [style, setStyle] = useState({});
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!cardRef.current) return;
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = ((y - centerY) / centerY) * -5;
-        const rotateY = ((x - centerX) / centerX) * 5;
-        
-        setStyle({
-            transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
-            transition: "none"
+    const frame = useRef(0);
+    const reduced = useReducedMotion();
+    useEffect(() => () => cancelAnimationFrame(frame.current), []);
+    const move = (event: React.MouseEvent<HTMLDivElement>) => {
+        onMouseMove?.(event);
+        if (reduced || !matchMedia('(hover: hover) and (pointer: fine)').matches || !cardRef.current) return;
+        const element = cardRef.current;
+        const box = element.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width;
+        const y = (event.clientY - box.top) / box.height;
+        cancelAnimationFrame(frame.current);
+        frame.current = requestAnimationFrame(() => {
+            element.style.setProperty('--rq-tilt-x', `${(0.5 - y) * 7}deg`);
+            element.style.setProperty('--rq-tilt-y', `${(x - 0.5) * 8}deg`);
         });
     };
-
-    const handleMouseLeave = () => {
-        setStyle({
-            transform: "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
-            transition: "transform 0.5s ease"
-        });
+    const leave = (event: React.MouseEvent<HTMLDivElement>) => {
+        onMouseLeave?.(event); cancelAnimationFrame(frame.current);
+        cardRef.current?.style.setProperty('--rq-tilt-x', '0deg');
+        cardRef.current?.style.setProperty('--rq-tilt-y', '0deg');
     };
-
-    return (
-        <div
-            ref={cardRef}
-            className={`will-change-transform ${className}`}
-            style={{ ...style, transformStyle: 'preserve-3d' }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onMouseEnter={() => setStyle(prev => ({ ...prev, transition: "transform 0.1s ease" }))}
-            {...props}
-        >
-            <div style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d', width: '100%', height: '100%' }}>
-                {children}
-            </div>
-        </div>
-    );
+    return <div ref={cardRef} className={`rq-tilt-card ${className}`} style={{ ...style, transformStyle: 'preserve-3d' }} onMouseMove={move} onMouseLeave={leave} {...props}>
+        <div style={{ transform: 'translateZ(18px)', transformStyle: 'preserve-3d', width: '100%', height: '100%' }}>{children}</div>
+    </div>;
 };
 
 export const Carousel = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
@@ -119,19 +104,11 @@ export const Carousel = ({ children, className = "" }: { children: React.ReactNo
 
 // --- 2. AUTO SCROLL CAROUSEL ---
 export const AutoScrollCarousel = ({ items }: { items: React.ReactNode[] }) => {
-    return (
-        <div className="flex overflow-hidden relative w-full mask-gradient">
-            <motion.div
-                className="flex gap-12 whitespace-nowrap"
-                animate={{ x: ["0%", "-33.33%"] }}
-                transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-            >
-                {items}
-                {items} {/* Duplicate for smooth loop */}
-                {items}
-            </motion.div>
-        </div>
-    );
+    const ref = useRef<HTMLDivElement>(null);
+    const visible = useInView(ref);
+    return <div ref={ref} className="rq-marquee flex overflow-hidden relative w-full mask-gradient">
+        <div className="rq-marquee-track flex gap-12 whitespace-nowrap" data-inview={visible}>{items}{items}{items}</div>
+    </div>;
 };
 
 // --- 3. STATS COUNTER ---
@@ -139,8 +116,10 @@ export const StatsCounter = ({ value, label, suffix = "" }: { value: number, lab
     const [count, setCount] = useState(0);
     const ref = useRef(null);
     const isInView = useInView(ref);
+    const reduced = useReducedMotion();
 
     useEffect(() => {
+        if (reduced) { setCount(value); return; }
         if (isInView) {
             const duration = 2000;
             const steps = 60;
@@ -157,7 +136,7 @@ export const StatsCounter = ({ value, label, suffix = "" }: { value: number, lab
             }, stepTime);
             return () => clearInterval(timer);
         }
-    }, [isInView, value]);
+    }, [isInView, value, reduced]);
 
     return (
         <div ref={ref} className="text-center">
@@ -585,7 +564,7 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
                             className="relative w-full max-w-4xl bg-white rounded-3xl md:rounded-[2.5rem] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh]"
                         >
                             {/* Close Button */}
-                            <button
+                            <button aria-label="Close"
                                 onClick={() => setActiveIdx(null)}
                                 className="absolute top-4 right-4 md:top-6 md:right-6 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 backdrop-blur text-gray-900 md:text-white md:bg-white/20 flex items-center justify-center hover:bg-white hover:text-[#500000] transition-all shadow-lg"
                             >
@@ -612,13 +591,13 @@ Outcome: RizQara Tech stands as a global tech leader, not just a vendor`,
 
                                 <div className="relative z-10 mt-8 md:mt-0">
                                     <div className="flex gap-3">
-                                        <button
+                                        <button aria-label="Previous"
                                             onClick={(e) => { e.stopPropagation(); setActiveIdx((prev) => prev !== null && prev > 0 ? prev - 1 : milestones.length - 1) }}
                                             className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-[#500000] transition-all"
                                         >
                                             <ChevronLeft size={20} />
                                         </button>
-                                        <button
+                                        <button aria-label="Next"
                                             onClick={(e) => { e.stopPropagation(); setActiveIdx((prev) => prev !== null && prev < milestones.length - 1 ? prev + 1 : 0) }}
                                             className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center hover:bg-white hover:text-[#500000] transition-all"
                                         >
@@ -746,7 +725,7 @@ export const PricingDetailed: React.FC<PricingDetailedProps> = ({ onNavigate }) 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {packages.map((pkg) => (
-                <div key={pkg.name} className={`relative p-6 rounded-3xl border ${pkg.popular ? 'bg-white border-[#500000] shadow-2xl z-10 ring-4 ring-[#500000]/5' : 'bg-white border-gray-200 shadow-sm'} flex flex-col transition-all hover:translate-y-1`}>
+                <div key={pkg.name} data-rq-tilt data-popular={pkg.popular} className={`rq-pricing-card relative p-6 rounded-3xl border ${pkg.popular ? 'bg-white border-[#500000] shadow-2xl z-10 ring-4 ring-[#500000]/5' : 'bg-white border-gray-200 shadow-sm'} flex flex-col transition-all hover:translate-y-1`}>
                     {pkg.popular && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#500000] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">Top Tier</div>}
                     <h3 className="text-xl font-bold text-gray-900 mb-1">{pkg.name}</h3>
                     <p className="text-xs text-gray-500 mb-6 h-8">{pkg.subtitle}</p>
@@ -799,7 +778,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
             <div className="bg-white w-full max-w-6xl rounded-2xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[80vh] shadow-2xl relative">
 
                 {/* Close Button (Universal) */}
-                <button
+                <button aria-label="Close"
                     onClick={onClose}
                     className="absolute top-3 right-3 z-[100] p-2 bg-white rounded-full text-gray-900 hover:bg-gray-100 hover:text-[#500000] transition-colors shadow-lg border border-gray-100"
                 >
@@ -856,7 +835,7 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
 
                     <div className="p-4 bg-white border-t border-gray-200 shrink-0">
                         <form onSubmit={handleCommentSubmit} className="space-y-3">
-                            <input
+                            <input aria-label="userName"
                                 placeholder={language === 'bn' ? "আপনার নাম" : "Your Name"}
                                 value={userName}
                                 onChange={e => setUserName(e.target.value)}
@@ -864,14 +843,14 @@ export const VideoModal = ({ video, onClose }: { video: any, onClose: () => void
                                 required
                             />
                             <div className="relative">
-                                <textarea
+                                <textarea aria-label="commentText"
                                     placeholder={language === 'bn' ? "একটি মন্তব্য যোগ করুন..." : "Add a comment..."}
                                     value={commentText}
                                     onChange={e => setCommentText(e.target.value)}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-[#500000] placeholder:text-gray-400 pr-10 resize-none h-14 md:h-20"
                                     required
                                 />
-                                <button type="submit" className="absolute bottom-2 right-2 p-1.5 bg-[#500000] text-white rounded-md hover:bg-[#3a0000] transition-colors shadow-sm">
+                                <button aria-label="Send" type="submit" className="absolute bottom-2 right-2 p-1.5 bg-[#500000] text-white rounded-md hover:bg-[#3a0000] transition-colors shadow-sm">
                                     <Send size={14} />
                                 </button>
                             </div>
@@ -896,10 +875,10 @@ export const LatestVideos: React.FC<LatestVideosProps> = () => {
                 {videos.slice(0, 3).map((video) => {
                     const title = language === 'bn' ? (video.title_bn || video.title) : video.title;
                     return (
-                        <div
+                        <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                             key={video.id}
-                            className="group relative rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm cursor-pointer hover:shadow-lg transition-all"
-                            onClick={() => navigate(`/videos/${video.id}`)}
+                            data-rq-tilt className="rq-video-card group relative rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm cursor-pointer hover:shadow-lg transition-all"
+                            onClick={() => navigate(`/videos/${getSlug(video)}`)}
                         >
                             <div className="aspect-video relative">
                                 {/* Use YouTube Thumbnail if available, else fallback to stored thumbnail */}
@@ -946,7 +925,7 @@ export const LatestBlogs = ({ onNavigate }: any) => {
                 const excerpt = language === 'bn' ? (blog.excerpt_bn || blog.excerpt) : blog.excerpt;
 
                 return (
-                    <div key={blog.id} onClick={() => onNavigate('BlogDetail', getSlug(blog.title))} className="flex gap-6 items-start group cursor-pointer bg-white p-4 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
+                    <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }} key={blog.id} onClick={() => onNavigate('BlogDetail', getSlug(blog))} data-rq-tilt className="rq-blog-card flex gap-6 items-start group cursor-pointer bg-white p-4 rounded-2xl border border-gray-200 hover:shadow-lg transition-all">
                         <img src={blog.image} alt={title} className="w-32 h-32 rounded-xl object-cover shadow-sm" />
                         <div>
                             <div className="text-xs text-white bg-[#500000] inline-block px-2 py-0.5 rounded-md font-bold mb-2 shadow-sm">{blog.date}</div>
@@ -975,7 +954,7 @@ export const TestimonialSlider = () => {
     }, [reviews.length]);
 
     return (
-        <div className="relative bg-white border border-gray-200 rounded-3xl p-12 shadow-xl text-center max-w-4xl mx-auto">
+        <div data-rq-reveal className="rq-testimonial relative bg-white border border-gray-200 rounded-3xl p-12 shadow-xl text-center max-w-4xl mx-auto">
             <AnimatePresence mode='wait'>
                 <motion.div
                     key={index}
@@ -999,8 +978,8 @@ export const TestimonialSlider = () => {
                 </motion.div>
             </AnimatePresence>
             <div className="flex justify-center gap-4 mt-8">
-                <button onClick={() => setIndex((index - 1 + reviews.length) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronLeft /></button>
-                <button onClick={() => setIndex((index + 1) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronRight /></button>
+                <button aria-label="Previous" onClick={() => setIndex((index - 1 + reviews.length) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronLeft /></button>
+                <button aria-label="Next" onClick={() => setIndex((index + 1) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronRight /></button>
             </div>
         </div>
     );
@@ -1050,10 +1029,10 @@ export const PremiumComparison = ({ onNavigate }: { onNavigate: (page: string, i
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#500000] opacity-[0.03] blur-[100px] -z-10 rounded-full pointer-events-none" />
 
             {features.map((f) => (
-                <div
+                <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                     key={f.id}
                     onClick={() => onNavigate('FeatureDetail', f.id)}
-                    className={`group relative p-8 rounded-3xl bg-white border border-gray-200 overflow-hidden transition-all duration-500 hover:transform hover:-translate-y-2 hover:shadow-xl ${f.border} cursor-pointer shadow-sm`}
+                    data-rq-tilt className={`rq-feature-card group relative p-8 rounded-3xl bg-white border border-gray-200 overflow-hidden transition-all duration-500 hover:transform hover:-translate-y-2 hover:shadow-xl ${f.border} cursor-pointer shadow-sm`}
                 >
 
                     {/* Hover Gradient Background */}
@@ -1280,8 +1259,8 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
 
     if (loading) {
         return (
-            <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
-                <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
+            <section className="rq-hero container mx-auto px-4 md:px-6 pt-32 pb-12">
+                <div className="rq-hero-panels w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
                     {[1, 2, 3].map((i) => (
                         <div 
                             key={i}
@@ -1302,8 +1281,8 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
     if (!slides.length) return null;
 
     return (
-        <section className="container mx-auto px-4 md:px-6 pt-32 pb-12">
-            <div className="w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
+        <section className="rq-hero container mx-auto px-4 md:px-6 pt-32 pb-12">
+            <div className="rq-hero-panels w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">
                 {slides.map((slide, idx) => {
                     const isActive = hoveredIndex === idx;
                     // When nothing is hovered, default back to 0 or stay as equal? Let's keep the one that was hovered as active.
@@ -1316,11 +1295,12 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
                     const cta = language === 'bn' ? (slide.cta_bn || slide.cta || 'Contact Now') : (slide.cta || 'Contact Now');
 
                     return (
-                        <div
+                        <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
+                            data-active={isActive}
                             key={slide.id || idx}
                             onMouseEnter={() => setHoveredIndex(idx)}
                             onMouseLeave={() => setHoveredIndex(0)}
-                            className="relative overflow-hidden rounded-xl cursor-pointer group flex-shrink-0 bg-gray-900 border border-gray-200 shadow-2xl"
+                            className="rq-hero-panel relative overflow-hidden rounded-xl cursor-pointer group flex-shrink-0 bg-gray-900 border border-gray-200 shadow-2xl"
                             style={{
                                 flex: isActive ? "8 1 0%" : "1 1 0%",
                                 transition: "flex 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -1406,7 +1386,7 @@ const GlassSelect = ({ label, value, onChange, options, icon: Icon }: any) => (
             {Icon && <Icon size={14} className="text-white bg-[#500000] rounded-full p-0.5" />} {label}
         </label>}
         <div className="relative group">
-            <select
+            <select aria-label="value"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 className="w-full bg-white hover:bg-gray-50 text-gray-900 p-4 pr-12 rounded-xl border border-gray-200 focus:outline-none focus:border-[#500000] appearance-none transition-all cursor-pointer font-medium shadow-sm"
@@ -1668,27 +1648,16 @@ export const ContactFormWithMap = () => {
     const [initialMessage, setInitialMessage] = useState('');
 
     useEffect(() => {
-        // Initialize EmailJS
-        // @ts-ignore
-        if (window.emailjs) return; // Prevent double init
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-        script.async = true;
-        script.onload = () => {
-            // @ts-ignore
-            // @ts-ignore
-            window.emailjs.init((import.meta as any).env.VITE_EMAILJS_PUBLIC_KEY);
-        };
-        document.body.appendChild(script);
-
         // Check for pending inquiry from Build Page
-        const pendingInquiry = localStorage.getItem('pendingInquiry');
+        const goalInquiry = sessionStorage.getItem('rizqaraGoalInquiry');
+        const pendingInquiry = goalInquiry || localStorage.getItem('pendingInquiry');
         if (pendingInquiry) {
             try {
                 const data = JSON.parse(pendingInquiry);
                 setInitialSubject(data.subject);
                 setInitialMessage(data.message);
-                localStorage.removeItem('pendingInquiry');
+                if (goalInquiry) sessionStorage.removeItem('rizqaraGoalInquiry');
+                else localStorage.removeItem('pendingInquiry');
                 toast.success(language === 'bn' ? "প্রকল্পের বিবরণ পূরণ করা হয়েছে। আপনার যোগাযোগ তথ্য যোগ করুন!" : "Project details pre-filled. Please add your contact info!");
             } catch (e) {
                 console.error("Failed to parse inquiry", e);
@@ -1698,6 +1667,7 @@ export const ContactFormWithMap = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (status === 'sending') return;
         setStatus('sending');
 
         const formData = new FormData(e.target as HTMLFormElement);
@@ -1709,23 +1679,7 @@ export const ContactFormWithMap = () => {
         };
 
         try {
-            // 1. Send Email via EmailJS
-            // @ts-ignore
-            await window.emailjs?.send(
-                (import.meta as any).env.VITE_EMAILJS_SERVICE_ID,
-                (import.meta as any).env.VITE_EMAILJS_CONTACT_TEMPLATE_ID,
-                {
-                    from_name: data.name,
-                    from_email: data.email,
-                    email: data.email, // Matched to template variable {{email}}
-                    subject: data.subject,
-                    message: data.message,
-                    reply_to: data.email
-                }
-            );
-
-            // 2. Log to Admin Panel (DataContext)
-            addMessage({
+            await addMessage({
                 name: data.name,
                 email: data.email,
                 subject: data.subject,
@@ -1750,12 +1704,12 @@ export const ContactFormWithMap = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="rq-contact rq-contact-premium max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
 
-                {/* Left Side: Redesigned for Beauty */}
+                {/* Contact introduction */}
                 <div className="lg:pr-8">
-                    <div className="mb-10">
+                    <div className="mb-10"><span className="rq-contact-eyebrow">RIZQARA / START A CONVERSATION</span>
                         <h2 className="text-3xl md:text-4xl font-black text-[#500000] mb-6 tracking-tighter leading-[1.1]">
                             {language === 'bn' ? 'আসুন একটি' : "Let's start a"} <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">{language === 'bn' ? 'কথোপকথন শুরু করি।' : 'conversation.'}</span>
@@ -1765,9 +1719,9 @@ export const ContactFormWithMap = () => {
                         </p>
                     </div>
 
-                    <div className="space-y-5">
+                    <ContactDetails /><div className="space-y-5">
                         {/* Interactive Contact Cards */}
-                        <a href="#" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dhaka+Bangladesh" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
                             <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300">
                                 <MapPin size={24} />
                             </div>
@@ -1800,7 +1754,7 @@ export const ContactFormWithMap = () => {
                             </div>
                         </a>
 
-                        <a href="tel:+880123456789" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
+                        <a href="tel:+8801343042761" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
                             <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300">
                                 <Phone size={24} />
                             </div>
@@ -1816,14 +1770,14 @@ export const ContactFormWithMap = () => {
                 <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-gray-100 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#500000] opacity-5 rounded-bl-[100px] pointer-events-none" />
 
-                    <h3 className="text-2xl font-black text-gray-900 mb-8">{language === 'bn' ? 'বার্তা পাঠান' : 'Send a Message'}</h3>
+                    <span className="rq-contact-eyebrow">YOUR NEXT IDEA STARTS HERE</span><h3 className="text-2xl font-black text-gray-900 mb-8">{language === 'bn' ? 'বার্তা পাঠান' : 'Send a Message'}</h3>
 
                     <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{language === 'bn' ? 'আপনার নাম' : 'Your Name'}</label>
                             <div className="relative group">
                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-[#500000] transition-colors" size={18} />
-                                <input
+                                <input aria-label="name"
                                     name="name"
                                     type="text"
                                     required
@@ -1837,7 +1791,7 @@ export const ContactFormWithMap = () => {
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{language === 'bn' ? 'ইমেইল ঠিকানা' : 'Email Address'}</label>
                             <div className="relative group">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-[#500000] transition-colors" size={18} />
-                                <input
+                                <input aria-label="email"
                                     name="email"
                                     type="email"
                                     required
@@ -1851,7 +1805,7 @@ export const ContactFormWithMap = () => {
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{language === 'bn' ? 'বিষয়' : 'Subject'}</label>
                             <div className="relative group">
                                 <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-[#500000] transition-colors" size={18} />
-                                <input
+                                <input aria-label="subject"
                                     name="subject"
                                     type="text"
                                     required
@@ -1864,7 +1818,7 @@ export const ContactFormWithMap = () => {
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{language === 'bn' ? 'বার্তা' : 'Message'}</label>
-                            <textarea
+                            <textarea aria-label="message"
                                 name="message"
                                 rows={4}
                                 required
@@ -1918,6 +1872,7 @@ export const ContactFormWithMap = () => {
 // --- RizqAI Chatbot ---
 export const RizqAIBot = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const assistantDialog = useDialog(isOpen, () => setIsOpen(false));
     const dataContext = useData();
     const { language, addMessage } = dataContext;
     
@@ -1982,7 +1937,7 @@ export const RizqAIBot = () => {
 
     const handleSend = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputText.trim()) return;
+        if (!inputText.trim() || isTyping) return;
 
         const userMsg = inputText.trim();
         setMessages(prev => [...prev, { id: Date.now(), text: userMsg, sender: 'user' }]);
@@ -1990,8 +1945,9 @@ export const RizqAIBot = () => {
         simulateAIResponse(userMsg);
     };
 
-    const handleFinalSubmit = () => {
-        addMessage({
+    const handleFinalSubmit = async () => {
+        try {
+        await addMessage({
             name: leadData.name,
             email: leadData.email,
             subject: 'New Lead from RizqAI',
@@ -2004,12 +1960,13 @@ export const RizqAIBot = () => {
             sender: 'bot'
         }]);
         setChatState('idle');
+        } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to submit. Please try again.'); }
     };
 
     const whatsappLink = `https://wa.me/message/CSYKXUISDAIVI1`;
 
     return (
-        <div className="fixed bottom-6 right-6 z-[9999]">
+        <div className="rq-assistant fixed bottom-6 right-6 z-[9999]">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -2017,22 +1974,22 @@ export const RizqAIBot = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="mb-4 bg-white rounded-3xl shadow-2xl border border-gray-100 w-[90vw] md:w-96 overflow-hidden flex flex-col ring-1 ring-black/5"
+                        ref={assistantDialog} role="dialog" aria-modal="true" aria-label="RizqAI assistant" className="rq-assistant-panel mb-4 bg-white rounded-3xl shadow-2xl border border-gray-100 w-[90vw] md:w-96 overflow-hidden flex flex-col ring-1 ring-black/5"
                     >
                         {/* Header */}
                         <div className="bg-white p-4 border-b border-gray-100 flex justify-between items-center shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-[#500000] rounded-full flex items-center justify-center">
-                                    <Bot size={22} className="text-white" />
+                                    <AssistantCharacter />
                                 </div>
                                 <div>
                                     <span className="font-bold text-gray-900 text-lg block leading-none">RizqAI</span>
                                     <span className="text-xs text-green-500 font-medium flex items-center gap-1 mt-1">
-                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Hybrid Engine Active
+                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Your product guide
                                     </span>
                                 </div>
                             </div>
-                            <button
+                            <button aria-label="Close"
                                 onClick={() => setIsOpen(false)}
                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-900"
                             >
@@ -2040,8 +1997,9 @@ export const RizqAIBot = () => {
                             </button>
                         </div>
 
+                        <div className="rq-assistant-shortcuts"><p>Explore ideas. Find the right next step.</p>{['Services', 'Portfolio', 'WhatsApp'].map(prompt => <button key={prompt} disabled={isTyping || chatState !== 'idle'} onClick={() => { setMessages(prev => [...prev, {id: Date.now(),text:prompt,sender:'user'}]); simulateAIResponse(prompt); }}>{prompt} ↗</button>)}<button disabled={isTyping} onClick={() => {setMessages([{id:Date.now(),text:"Let’s start fresh. What would you like to explore?",sender:'bot'}]);setChatState('idle');setLeadData({name:'',email:'',phone:'',requirements:''});}}>New chat</button></div>
                         {/* Chat Area */}
-                        <div className="h-[400px] bg-slate-50 p-5 overflow-y-auto flex flex-col gap-4 scrollbar-thin scrollbar-thumb-gray-200">
+                        <div aria-live="polite" aria-label="Conversation" className="rq-assistant-messages h-[400px] bg-slate-50 p-5 overflow-y-auto flex flex-col gap-4 scrollbar-thin scrollbar-thumb-gray-200">
                             {messages.map(msg => (
                                 <motion.div
                                     key={msg.id}
@@ -2102,7 +2060,7 @@ export const RizqAIBot = () => {
                                     )}
 
                                     <span className="text-[10px] text-gray-300 mt-1 px-1 font-medium">
-                                        {msg.sender === 'bot' ? 'Hybrid AI' : 'You'}
+                                        {msg.sender === 'bot' ? 'RizqAI guide' : 'You'}
                                     </span>
                                 </motion.div>
                             ))}
@@ -2123,16 +2081,16 @@ export const RizqAIBot = () => {
 
                         {/* Input Area */}
                         <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex gap-3 shrink-0 items-center">
-                            <input
+                            <input aria-label="Message RizqAI"
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
                                 placeholder={language === 'bn' ? 'বার্তা লিখুন...' : "Type your message..."}
                                 className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000]/10 transition-all text-gray-800 placeholder:text-gray-400"
                             />
-                            <button
+                            <button aria-label="Send"
                                 type="submit"
                                 className="p-3 bg-[#500000] text-white rounded-xl flex items-center justify-center disabled:opacity-50"
-                                disabled={!inputText.trim()}
+                                disabled={!inputText.trim() || isTyping}
                             >
                                 <Send size={18} />
                             </button>
@@ -2142,14 +2100,14 @@ export const RizqAIBot = () => {
             </AnimatePresence>
 
             {/* Floating Trigger Button */}
-            <div
+            <div role="button" aria-label={isOpen ? "Close RizqAI assistant" : "Open RizqAI assistant"} aria-expanded={isOpen} tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-14 h-14 bg-[#500000] text-white rounded-full flex items-center justify-center cursor-pointer z-50 relative"
             >
                 {isOpen ? (
                     <MessageSquare size={24} />
                 ) : (
-                    <Bot size={28} />
+                    <AssistantCharacter />
                 )}
             </div>
         </div>
@@ -2438,7 +2396,7 @@ export const ContactSkeleton = () => (
 export const AboutHero = () => {
     const { t, language } = useData();
     return (
-        <section className="relative pt-32 pb-20 overflow-hidden bg-white">
+        <section className="rq-about-hero relative pt-32 pb-20 overflow-hidden bg-white">
             {/* Background Accents */}
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gray-50 to-transparent -z-10" />
             <div className="absolute top-1/4 -right-20 w-80 h-80 bg-[#500000]/5 blur-[100px] rounded-full -z-10" />
@@ -2491,23 +2449,15 @@ export const AboutHero = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="relative"
                     >
-                        <div className="relative rounded-[40px] overflow-hidden shadow-2xl z-10 aspect-[4/3] max-w-lg lg:ml-auto">
-                            <img 
-                                src="/rizqaratechlogo.png" 
-                                alt="RizQara Tech Logo" 
-                                loading="lazy"
-                                className="w-full h-full object-contain bg-white p-8 transition-transform duration-700 hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                            <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 p-4 md:p-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl text-white shadow-2xl transition-all duration-300">
-                                <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-2 opacity-70">{t('transparency')}</div>
-                                <div className="text-sm md:text-xl font-black leading-tight">{language === 'bn' ? 'উন্নত মানের ফলাফল নিশ্চিত করছি' : 'Ensuring High-Quality Results'}</div>
-                            </div>
+                        <div className="rq-about-brand" aria-label="RizQara Tech official brand">
+                            <img src="/images/brand/rizqara-official.png" alt="RizQara Tech official logo" width="1254" height="1254" />
+                            <div className="rq-about-brand-name">RIZQARA TECH<sup>™</sup></div>
+                            <p>{language === 'bn' ? 'ভাবনা থেকে বাস্তবায়ন।' : 'From vision to possibility.'}</p>
                         </div>
                     </motion.div>
                 </div>
             </div>
-        </section>
+        <StudioProcess /></section>
     );
 };
 

@@ -16,21 +16,22 @@ export const UserInteractionAnalytics = () => {
     const { messages, careerApplications } = useData();
     const [timeRange, setTimeRange] = useState<'weekly' | 'monthly' | 'yearly'>('weekly');
 
-    // Helper to process data based on time range
+    const dateKey = (value: string | Date) => { const date = new Date(value); return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date); };
+    // Aggregate by business day rather than browser timezone.
     const chartData = useMemo(() => {
-        const today = new Date();
+        const today = new Date(`${dateKey(new Date())}T12:00:00+06:00`);
         const data = [];
 
         if (timeRange === 'weekly') {
             // Last 7 days
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(today);
-                d.setDate(today.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
-                const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+                d.setUTCDate(today.getUTCDate() - i);
+                const dateStr = dateKey(d);
+                const dayName = d.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'Asia/Dhaka' });
 
-                const msgCount = messages.filter(m => m.date === dateStr).length;
-                const appCount = careerApplications.filter(a => a.date === dateStr).length;
+                const msgCount = messages.filter(m => dateKey(m.date) === dateStr).length;
+                const appCount = careerApplications.filter(a => dateKey(a.date) === dateStr).length;
 
                 data.push({
                     name: dayName,
@@ -43,9 +44,9 @@ export const UserInteractionAnalytics = () => {
             // Last 4 weeks (roughly)
             for (let i = 3; i >= 0; i--) {
                 const start = new Date(today);
-                start.setDate(today.getDate() - (i * 7) - 6);
+                start.setUTCDate(today.getUTCDate() - (i * 7) - 6);
                 const end = new Date(today);
-                end.setDate(today.getDate() - (i * 7));
+                end.setUTCDate(today.getUTCDate() - (i * 7));
 
                 const weekLabel = `Week ${4 - i}`;
 
@@ -54,12 +55,12 @@ export const UserInteractionAnalytics = () => {
 
                 // Simple range check
                 messages.forEach(m => {
-                    const mDate = new Date(m.date);
-                    if (mDate >= start && mDate <= end) msgCount++;
+                    const mDate = dateKey(m.date);
+                    if (mDate >= dateKey(start) && mDate <= dateKey(end)) msgCount++;
                 });
                 careerApplications.forEach(a => {
-                    const aDate = new Date(a.date);
-                    if (aDate >= start && aDate <= end) appCount++;
+                    const aDate = dateKey(a.date);
+                    if (aDate >= dateKey(start) && aDate <= dateKey(end)) appCount++;
                 });
 
                 data.push({
@@ -75,16 +76,14 @@ export const UserInteractionAnalytics = () => {
             months.forEach((month, index) => {
                 // Filter by month index (assuming current year for simplicity, or we check year too)
                 // For a real app, ideally check year. We'll assume all data is relatively recent or we filter by current year.
-                const currentYear = today.getFullYear();
+                const currentYear = dateKey(today).slice(0, 4);
 
                 const msgCount = messages.filter(m => {
-                    const d = new Date(m.date);
-                    return d.getMonth() === index && d.getFullYear() === currentYear;
+                    return dateKey(m.date).slice(0, 7) === `${currentYear}-${String(index + 1).padStart(2, '0')}`;
                 }).length;
 
                 const appCount = careerApplications.filter(a => {
-                    const d = new Date(a.date);
-                    return d.getMonth() === index && d.getFullYear() === currentYear;
+                    return dateKey(a.date).slice(0, 7) === `${currentYear}-${String(index + 1).padStart(2, '0')}`;
                 }).length;
 
                 data.push({

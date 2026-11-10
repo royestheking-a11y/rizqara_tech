@@ -1,3 +1,5 @@
+import { useDialog } from '../../utils/useDialog';
+import { readConsent, saveConsent, applyConsent } from '../../utils/consent';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -11,13 +13,11 @@ export const CookieConsent = () => {
   const { language } = useData();
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [preferences, setPreferences] = useState({
-    essential: true, // Always true
-    analytics: true,
-    marketing: false,
-  });
+  const [preferences, setPreferences] = useState(readConsent);
+  const dialogRef = useDialog(isVisible && showDetails, () => setShowDetails(false));
 
   useEffect(() => {
+    applyConsent(readConsent());
     // Check if user has already consented
     const consent = localStorage.getItem('rizqara_cookie_consent');
 
@@ -30,26 +30,17 @@ export const CookieConsent = () => {
   }, []);
 
   const handleAcceptAll = () => {
-    localStorage.setItem('rizqara_cookie_consent', 'all');
-    localStorage.setItem('rizqara_cookie_preferences', JSON.stringify({ essential: true, analytics: true, marketing: true }));
-    setIsVisible(false);
+    saveConsent({ essential: true, analytics: true, marketing: true }, 'all'); setIsVisible(false);
   };
-
-  const handleSavePreferences = () => {
-    localStorage.setItem('rizqara_cookie_consent', 'custom');
-    localStorage.setItem('rizqara_cookie_preferences', JSON.stringify(preferences));
-    setIsVisible(false);
-  };
-
+  const handleSavePreferences = () => { saveConsent(preferences, 'custom'); setIsVisible(false); };
   const handleRejectAll = () => {
-    localStorage.setItem('rizqara_cookie_consent', 'rejected');
-    localStorage.setItem('rizqara_cookie_preferences', JSON.stringify({ essential: true, analytics: false, marketing: false }));
-    setIsVisible(false);
+    saveConsent({ essential: true, analytics: false, marketing: false }, 'rejected'); setIsVisible(false);
   };
 
   // Expose a function to open the modal from footer
   useEffect(() => {
     window.openCookieSettings = () => {
+      setPreferences(readConsent());
       setIsVisible(true);
       setShowDetails(true);
     };
@@ -69,7 +60,7 @@ export const CookieConsent = () => {
             />
           )}
 
-          <motion.div
+          <motion.div ref={dialogRef} role={showDetails ? "dialog" : "region"} aria-modal={showDetails ? true : undefined} aria-label="Cookie preferences" tabIndex={-1}
             initial={showDetails ? { y: 100, opacity: 0 } : { y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
@@ -96,7 +87,7 @@ export const CookieConsent = () => {
                         <p className="text-white/70 text-xs">{language === 'bn' ? 'আপনার গোপনীয়তা পছন্দ গুরুত্বপূর্ণ' : 'Your privacy choices matter'}</p>
                       </div>
                     </div>
-                    <button type="button" onClick={() => setShowDetails(false)} className="text-white/50 hover:text-white transition-colors">
+                    <button aria-label="Close" type="button" onClick={() => setShowDetails(false)} className="text-white/50 hover:text-white transition-colors">
                       <X size={20} />
                     </button>
                   </div>
@@ -121,7 +112,7 @@ export const CookieConsent = () => {
                         <p className="text-xs text-gray-500">{language === 'bn' ? 'বেসিক ওয়েবসাইট কার্যকারিতা এবং নিরাপত্তার জন্য প্রয়োজনীয়।' : 'Necessary for basic website functionality and security.'}</p>
                       </div>
                       <div className="relative">
-                        <input type="checkbox" checked disabled className="peer sr-only" />
+                        <input aria-label="Essential cookies" type="checkbox" checked disabled className="peer sr-only" />
                         <div className="w-9 h-5 bg-gray-300 rounded-full peer-checked:bg-[#500000] opacity-50 cursor-not-allowed"></div>
                         <div className="absolute top-1 left-1 bg-white w-3 h-3 rounded-full translate-x-4"></div>
                       </div>
@@ -139,7 +130,7 @@ export const CookieConsent = () => {
                         <p className="text-xs text-gray-500">{language === 'bn' ? 'আমাদের ওয়েবসাইট আপনি কীভাবে ব্যবহার করেন তা বুঝতে এবং অভিজ্ঞতা উন্নত করতে সাহায্য করুন।' : 'Help us understand how you use our website to improve experience.'}</p>
                       </div>
                       <label className="relative cursor-pointer">
-                        <input
+                        <input aria-label="Analytics cookies"
                           type="checkbox"
                           checked={preferences.analytics}
                           onChange={(e) => setPreferences({ ...preferences, analytics: e.target.checked })}
@@ -162,7 +153,7 @@ export const CookieConsent = () => {
                         <p className="text-xs text-gray-500">{language === 'bn' ? 'প্রাসঙ্গিক বিজ্ঞাপন বিতরণ এবং প্রচারাভিযানের কার্যকারিতা ট্র্যাক করতে ব্যবহৃত হয়।' : 'Used to deliver relevant advertisements and track campaign performance.'}</p>
                       </div>
                       <label className="relative cursor-pointer">
-                        <input
+                        <input aria-label="Marketing cookies"
                           type="checkbox"
                           checked={preferences.marketing}
                           onChange={(e) => setPreferences({ ...preferences, marketing: e.target.checked })}

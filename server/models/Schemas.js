@@ -14,7 +14,12 @@ const ServiceSchema = new mongoose.Schema({
     process: [String],
     process_bn: [String],
     image: String,
-    gallery: [String]
+    gallery: [String],
+    categoryId: String,
+    catalogKey: { type: String, unique: true, sparse: true },
+    catalogRevision: String,
+    displayOrder: Number,
+    imageAlt: String
 }, { timestamps: true });
 
 const ProjectSchema = new mongoose.Schema({
@@ -41,9 +46,10 @@ const ReviewSchema = new mongoose.Schema({
     role: { type: String, required: true },
     role_bn: String,
     company: { type: String, required: true },
+    company_bn: String,
     content: { type: String, required: true },
     content_bn: String,
-    rating: { type: Number, required: true }
+    rating: { type: Number, required: true, min: 1, max: 5 }
 }, { timestamps: true });
 
 const BlogSchema = new mongoose.Schema({
@@ -68,6 +74,8 @@ const JobSchema = new mongoose.Schema({
     location: { type: String, required: true },
     location_bn: String,
     salary: { type: String, required: true },
+    salary_bn: String,
+    type_bn: String,
     description: { type: String, required: true },
     description_bn: String
 }, { timestamps: true });
@@ -77,6 +85,8 @@ const VideoSchema = new mongoose.Schema({
     title: { type: String, required: true },
     title_bn: String,
     thumbnail: { type: String, required: true },
+    description: String,
+    description_bn: String,
     url: { type: String, required: true },
     category: { type: String, required: true },
     category_bn: String,
@@ -101,7 +111,7 @@ const CarouselSchema = new mongoose.Schema({
 
 const BuildOptionSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
-    category: { type: String, enum: ['type', 'feature', 'time'], required: true },
+    category: { type: String, enum: ['type', 'feature', 'time', 'project'], required: true },
     label: { type: String, required: true },
     label_bn: String,
     value: { type: Number, required: true }
@@ -111,7 +121,7 @@ const MessageSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
     type: { type: String, required: true },
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, maxlength: 300, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
     subject: { type: String, required: true },
     message: { type: String, required: true },
     date: { type: String, required: true },
@@ -122,10 +132,11 @@ const MessageSchema = new mongoose.Schema({
 const CareerApplicationSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, maxlength: 300, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
     experience: { type: String, required: true },
     reason: { type: String, required: true },
     cvUrl: { type: String, required: true },
+    cvKey: { type: String, select: false },
     cvName: { type: String, required: true },
     jobId: String,
     date: { type: String, required: true },
@@ -186,6 +197,19 @@ const GalleryItemSchema = new mongoose.Schema({
     description: String,
     description_bn: String
 }, { timestamps: true });
+
+for (const schema of [MessageSchema, CareerApplicationSchema]) {
+    schema.add({
+        notificationStatus: { type: String, enum: ['pending', 'sending', 'sent', 'failed'], default: 'pending' },
+        notificationAttempts: { type: Number, default: 0 },
+        notificationNextAttempt: { type: Date, default: Date.now }
+    });
+    schema.index({ notificationStatus: 1, notificationNextAttempt: 1 });
+}
+
+for (const schema of [ServiceSchema, ProjectSchema, BlogSchema, CaseStudySchema, VideoSchema]) {
+    schema.add({ slug: { type: String, unique: true, sparse: true }, previousSlugs: [String] });
+}
 
 module.exports = {
     Service: mongoose.model('Service', ServiceSchema),

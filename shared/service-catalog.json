@@ -1,0 +1,702 @@
+{
+  "version": 1,
+  "brand": {
+    "name": "RizQara Tech",
+    "colors": [
+      "#500000",
+      "#701b32",
+      "#ffffff"
+    ]
+  },
+  "process": [
+    "Discovery and requirements",
+    "Architecture and experience design",
+    "Implementation and integration",
+    "Testing, launch, and handover"
+  ],
+  "process_bn": [
+    "চাহিদা ও লক্ষ্য নির্ধারণ",
+    "আর্কিটেকচার ও অভিজ্ঞতা ডিজাইন",
+    "বাস্তবায়ন ও ইন্টিগ্রেশন",
+    "পরীক্ষা, প্রকাশ ও হস্তান্তর"
+  ],
+  "categories": [
+    {
+      "id": "software-web-development",
+      "title": "Software & Web Development",
+      "title_bn": "সফটওয়্যার ও ওয়েব ডেভেলপমেন্ট",
+      "shortTitle": "Software & Web",
+      "icon": "Code2",
+      "imageKey": "software-web",
+      "description": "From a focused business website to a connected SaaS platform, we build the digital foundations your business needs.",
+      "description_bn": "ব্যবসায়িক ওয়েবসাইট থেকে সংযুক্ত SaaS প্ল্যাটফর্ম—আপনার ব্যবসার জন্য প্রয়োজনীয় ডিজিটাল ভিত্তি তৈরি করি.",
+      "offerings": [
+        {
+          "key": "custom-website-development",
+          "title": "Custom website development",
+          "title_bn": "কাস্টম ওয়েবসাইট ডেভেলপমেন্ট",
+          "summary": "Responsive, brand-aligned websites built around your content, audience, and business goals.",
+          "summary_bn": "আপনার ব্র্যান্ড, গ্রাহক ও ব্যবসায়িক লক্ষ্য অনুযায়ী রেসপন্সিভ ওয়েবসাইট।",
+          "deliverables": [
+            "Responsive layouts and accessible navigation",
+            "Content structure and CMS integration",
+            "Performance, forms, and search-friendly foundations"
+          ],
+          "order": 1
+        },
+        {
+          "key": "web-applications",
+          "title": "Web applications",
+          "title_bn": "ওয়েব অ্যাপ্লিকেশন",
+          "summary": "Browser-based applications with the workflows, interfaces, and integrations your team needs.",
+          "summary_bn": "আপনার দলের কাজ, ইন্টারফেস ও ইন্টিগ্রেশনের জন্য ব্রাউজারভিত্তিক অ্যাপ্লিকেশন।",
+          "deliverables": [
+            "Role-based workflows and user accounts",
+            "Connected frontend and backend development",
+            "API integration and application testing"
+          ],
+          "order": 2
+        },
+        {
+          "key": "saas-platforms",
+          "title": "SaaS platforms",
+          "title_bn": "SaaS প্ল্যাটফর্ম",
+          "summary": "Subscription-ready software platforms designed for product delivery, account management, and ongoing growth.",
+          "summary_bn": "সাবস্ক্রিপশনভিত্তিক সফটওয়্যার, অ্যাকাউন্ট ব্যবস্থাপনা ও ধারাবাহিক উন্নয়নের জন্য প্ল্যাটফর্ম।",
+          "deliverables": [
+            "Tenant and account architecture",
+            "Subscription and billing integration",
+            "Administration, reporting, and product workflows"
+          ],
+          "order": 3
+        },
+        {
+          "key": "business-management-systems",
+          "title": "Business management systems",
+          "title_bn": "ব্যবসা ব্যবস্থাপনা সিস্টেম",
+          "summary": "Connected software for coordinating daily operations, business records, and team workflows.",
+          "summary_bn": "দৈনন্দিন কার্যক্রম, ব্যবসায়িক তথ্য ও দলের কাজ একসঙ্গে পরিচালনার সফটওয়্যার।",
+          "deliverables": [
+            "Operational workflows and record management",
+            "Role-based dashboards and permissions",
+            "Reporting and third-party connectivity"
+          ],
+          "order": 4
+        },
+        {
+          "key": "e-commerce-platforms",
+          "title": "E-commerce platforms",
+          "title_bn": "ই-কমার্স প্ল্যাটফর্ম",
+          "summary": "Online commerce experiences connecting product discovery, checkout, orders, and store administration.",
+          "summary_bn": "পণ্য দেখা, চেকআউট, অর্ডার ও স্টোর পরিচালনার সমন্বিত অনলাইন কমার্স অভিজ্ঞতা।",
+          "deliverables": [
+            "Product catalog and storefront development",
+            "Payment, shipping, and order integrations",
+            "Store management and customer journeys"
+          ],
+          "order": 5
+        },
+        {
+          "key": "progressive-web-apps",
+          "title": "Progressive Web Apps (PWA)",
+          "title_bn": "প্রগ্রেসিভ ওয়েব অ্যাপ (PWA)",
+          "summary": "Installable web experiences designed to work across devices with app-like interactions.",
+          "summary_bn": "বিভিন্ন ডিভাইসে অ্যাপের মতো ব্যবহারযোগ্য ও ইনস্টল করা যায় এমন ওয়েব অভিজ্ঞতা।",
+          "deliverables": [
+            "Installable app shells and responsive interfaces",
+            "Offline strategies where supported",
+            "Device-aware performance and update handling"
+          ],
+          "order": 6
+        },
+        {
+          "key": "custom-dashboards-portals",
+          "title": "Custom dashboards and portals",
+          "title_bn": "কাস্টম ড্যাশবোর্ড ও পোর্টাল",
+          "summary": "Focused workspaces that bring the right information and actions together for customers, teams, and partners.",
+          "summary_bn": "গ্রাহক, দল ও অংশীদারদের প্রয়োজনীয় তথ্য এবং কাজের সমন্বিত ওয়ার্কস্পেস।",
+          "deliverables": [
+            "Role-specific dashboards and workspaces",
+            "Data visualization and reporting interfaces",
+            "Client, employee, and partner portals"
+          ],
+          "order": 7
+        }
+      ],
+      "order": 1,
+      "image": "/images/services/premium/software-web-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for Software & Web Development by RizQara Tech"
+    },
+    {
+      "id": "business-management-solutions",
+      "title": "Business Management Solutions",
+      "title_bn": "ব্যবসা পরিচালনার সমাধান",
+      "shortTitle": "Business Systems",
+      "icon": "Briefcase",
+      "imageKey": "business-management",
+      "description": "Connected systems for sales, inventory, people, and day-to-day operations—built around how your business works.",
+      "description_bn": "আপনার ব্যবসার ধরন অনুযায়ী বিক্রয়, মজুত, কর্মী ও দৈনন্দিন কাজের সংযুক্ত সিস্টেম।",
+      "offerings": [
+        {
+          "key": "pos-systems",
+          "title": "POS systems",
+          "title_bn": "POS সিস্টেম",
+          "summary": "Point-of-sale experiences that connect billing, payments, receipts, and sales records.",
+          "summary_bn": "বিলিং, পেমেন্ট, রসিদ ও বিক্রয়ের তথ্য একসঙ্গে পরিচালনার পয়েন্ট-অব-সেল ব্যবস্থা।",
+          "deliverables": [
+            "Billing and checkout workflows",
+            "Product, payment, and receipt integration",
+            "Sales summaries and operator permissions"
+          ],
+          "order": 1
+        },
+        {
+          "key": "inventory-management",
+          "title": "Inventory management",
+          "title_bn": "ইনভেন্টরি ম্যানেজমেন্ট",
+          "summary": "Inventory tools for tracking stock movements, purchase records, and availability across your operation.",
+          "summary_bn": "ব্যবসায় পণ্য আসা-যাওয়া, ক্রয় ও মজুতের অবস্থা দেখার ব্যবস্থা।",
+          "deliverables": [
+            "Stock tracking and movement history",
+            "Purchasing and supplier records",
+            "Reorder alerts and inventory reporting"
+          ],
+          "order": 2
+        },
+        {
+          "key": "restaurant-management-systems",
+          "title": "Restaurant management systems",
+          "title_bn": "রেস্তোরাঁ ম্যানেজমেন্ট সিস্টেম",
+          "summary": "Operational software connecting restaurant orders, tables, billing, and service workflows.",
+          "summary_bn": "রেস্তোরাঁর অর্ডার, টেবিল, বিলিং ও সেবার কাজ একসঙ্গে পরিচালনার সফটওয়্যার।",
+          "deliverables": [
+            "Menu, table, and order management",
+            "Billing and kitchen coordination",
+            "Operational reporting and integrations"
+          ],
+          "order": 3
+        },
+        {
+          "key": "kitchen-display-systems",
+          "title": "Kitchen Display Systems (KDS)",
+          "title_bn": "কিচেন ডিসপ্লে সিস্টেম (KDS)",
+          "summary": "Digital kitchen workflows that organize incoming orders and make preparation status easier to follow.",
+          "summary_bn": "আসা অর্ডার সাজানো ও খাবার প্রস্তুতির অবস্থা দেখার ডিজিটাল কিচেন ব্যবস্থা।",
+          "deliverables": [
+            "Kitchen order queues and station routing",
+            "Preparation status and service handoffs",
+            "POS and restaurant-system connectivity"
+          ],
+          "order": 4
+        },
+        {
+          "key": "crm-erp-systems",
+          "title": "CRM and ERP systems",
+          "title_bn": "CRM ও ERP সিস্টেম",
+          "summary": "Connected business platforms for customer relationships, internal processes, and operational data.",
+          "summary_bn": "গ্রাহক সম্পর্ক, অভ্যন্তরীণ কাজ ও ব্যবসায়িক তথ্যের জন্য সমন্বিত প্ল্যাটফর্ম।",
+          "deliverables": [
+            "Customer and business-process workflows",
+            "Role-based modules and shared records",
+            "Data migration, reporting, and integrations"
+          ],
+          "order": 5
+        },
+        {
+          "key": "employee-hr-management",
+          "title": "Employee and HR management",
+          "title_bn": "কর্মী ও HR ম্যানেজমেন্ট",
+          "summary": "People-management tools for employee records, attendance, leave, and everyday HR workflows.",
+          "summary_bn": "কর্মীদের তথ্য, উপস্থিতি, ছুটি ও HR-এর দৈনন্দিন কাজ পরিচালনার টুল।",
+          "deliverables": [
+            "Employee profiles and access controls",
+            "Attendance and leave workflows",
+            "HR reporting and payroll-system integration"
+          ],
+          "order": 6
+        },
+        {
+          "key": "booking-appointment-systems",
+          "title": "Booking and appointment systems",
+          "title_bn": "বুকিং ও অ্যাপয়েন্টমেন্ট সিস্টেম",
+          "summary": "Scheduling experiences that connect availability, bookings, reminders, and administrative control.",
+          "summary_bn": "সময়সূচি, বুকিং, রিমাইন্ডার ও প্রশাসনিক নিয়ন্ত্রণের সমন্বিত অভিজ্ঞতা।",
+          "deliverables": [
+            "Availability and appointment calendars",
+            "Booking forms and notification workflows",
+            "Staff scheduling and external calendar integration"
+          ],
+          "order": 7
+        }
+      ],
+      "order": 2,
+      "image": "/images/services/premium/business-management-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for Business Management Solutions by RizQara Tech"
+    },
+    {
+      "id": "ai-automation",
+      "title": "AI & Automation",
+      "title_bn": "AI ও অটোমেশন",
+      "shortTitle": "AI & Automation",
+      "icon": "Cpu",
+      "imageKey": "ai-automation",
+      "description": "Practical AI and automation that connect your tools, support your customers, and simplify repetitive work.",
+      "description_bn": "ব্যবহারের উপযোগী AI ও অটোমেশন দিয়ে টুল সংযোগ, গ্রাহক সহায়তা এবং পুনরাবৃত্ত কাজ সহজ করি।",
+      "offerings": [
+        {
+          "key": "ai-agents-chatbots",
+          "title": "AI agents and chatbots",
+          "title_bn": "AI এজেন্ট ও চ্যাটবট",
+          "summary": "Conversational tools and task-focused agents connected to your knowledge, workflows, and applications.",
+          "summary_bn": "আপনার তথ্য, কাজের ধাপ ও অ্যাপ্লিকেশনের সঙ্গে যুক্ত কথোপকথনভিত্তিক টুল ও AI এজেন্ট।",
+          "deliverables": [
+            "Conversational interfaces and knowledge retrieval",
+            "Task orchestration and tool integration",
+            "Human handoff, evaluation, and monitoring"
+          ],
+          "order": 1
+        },
+        {
+          "key": "ai-customer-support",
+          "title": "AI-powered customer support",
+          "title_bn": "AI-ভিত্তিক গ্রাহক সহায়তা",
+          "summary": "AI-assisted support experiences for answering common questions and routing customers to the right help.",
+          "summary_bn": "সাধারণ প্রশ্নের উত্তর ও সঠিক সহায়তা পেতে গ্রাহককে নির্দেশনার AI ব্যবস্থা।",
+          "deliverables": [
+            "Support knowledge-base integration",
+            "Ticket triage and response assistance",
+            "Escalation paths and support-system connectivity"
+          ],
+          "order": 2
+        },
+        {
+          "key": "business-workflow-automation",
+          "title": "Business workflow automation",
+          "title_bn": "ব্যবসায়িক কাজের অটোমেশন",
+          "summary": "Automated workflows that move information between systems and reduce repetitive manual steps.",
+          "summary_bn": "সিস্টেমের মধ্যে তথ্য আদান-প্রদান ও পুনরাবৃত্ত ম্যানুয়াল কাজ কমানোর স্বয়ংক্রিয় কার্যপ্রবাহ।",
+          "deliverables": [
+            "Workflow mapping and trigger-based actions",
+            "Approvals, notifications, and data synchronization",
+            "Error handling and operational visibility"
+          ],
+          "order": 3
+        },
+        {
+          "key": "lead-generation-management",
+          "title": "Lead generation and management",
+          "title_bn": "লিড জেনারেশন ও ম্যানেজমেন্ট",
+          "summary": "Connected lead-capture and management workflows that help teams organize opportunities and follow-ups.",
+          "summary_bn": "সম্ভাব্য গ্রাহকের তথ্য সংগ্রহ, সুযোগ সাজানো ও ফলোআপ পরিচালনার সমন্বিত কাজের ধাপ।",
+          "deliverables": [
+            "Lead-capture forms and source integrations",
+            "Lead qualification and CRM synchronization",
+            "Follow-up workflows and pipeline reporting"
+          ],
+          "order": 4
+        },
+        {
+          "key": "whatsapp-email-automation",
+          "title": "WhatsApp and email automation",
+          "title_bn": "WhatsApp ও ইমেইল অটোমেশন",
+          "summary": "Messaging workflows for notifications, follow-ups, and business communication through approved integrations.",
+          "summary_bn": "অনুমোদিত ইন্টিগ্রেশনের মাধ্যমে নোটিফিকেশন, ফলোআপ ও ব্যবসায়িক যোগাযোগের ব্যবস্থা।",
+          "deliverables": [
+            "Provider and messaging API integration",
+            "Event-driven notifications and follow-ups",
+            "Consent, delivery handling, and human escalation"
+          ],
+          "order": 5
+        },
+        {
+          "key": "data-collection-processing",
+          "title": "Data collection and processing",
+          "title_bn": "তথ্য সংগ্রহ ও প্রক্রিয়াকরণ",
+          "summary": "Data pipelines that collect, validate, transform, and organize information for your business workflows.",
+          "summary_bn": "ব্যবসায়িক কাজের জন্য তথ্য সংগ্রহ, যাচাই, রূপান্তর ও সাজানোর ডেটা পাইপলাইন।",
+          "deliverables": [
+            "Source connectors and structured collection",
+            "Validation, normalization, and transformation",
+            "Scheduled processing and operational reporting"
+          ],
+          "order": 6
+        },
+        {
+          "key": "api-integrations-webhooks",
+          "title": "API integrations and webhooks",
+          "title_bn": "API ইন্টিগ্রেশন ও ওয়েবহুক",
+          "summary": "System integrations that connect applications and respond to business events reliably.",
+          "summary_bn": "অ্যাপ্লিকেশন সংযোগ ও ব্যবসায়িক ইভেন্ট অনুযায়ী কাজ করার সমন্বিত ব্যবস্থা।",
+          "deliverables": [
+            "API connector design and authentication",
+            "Webhook ingestion and event handling",
+            "Retries, observability, and integration testing"
+          ],
+          "order": 7
+        }
+      ],
+      "order": 3,
+      "image": "/images/services/premium/ai-automation-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for AI & Automation by RizQara Tech"
+    },
+    {
+      "id": "mobile-application-development",
+      "title": "Mobile Application Development",
+      "title_bn": "মোবাইল অ্যাপ্লিকেশন ডেভেলপমেন্ট",
+      "shortTitle": "Mobile Applications",
+      "icon": "Smartphone",
+      "imageKey": "mobile-applications",
+      "description": "Considered mobile experiences for Android, iOS, and the teams and customers who depend on them.",
+      "description_bn": "Android, iOS এবং ব্যবহারকারীদের প্রয়োজন অনুযায়ী পরিকল্পিত মোবাইল অভিজ্ঞতা।",
+      "offerings": [
+        {
+          "key": "android-applications",
+          "title": "Android applications",
+          "title_bn": "Android অ্যাপ্লিকেশন",
+          "summary": "Android applications shaped around your product goals and the devices your audience uses.",
+          "summary_bn": "আপনার পণ্যের লক্ষ্য ও ব্যবহারকারীদের ডিভাইস অনুযায়ী Android অ্যাপ্লিকেশন।",
+          "deliverables": [
+            "Android interface and application development",
+            "Backend, device, and service integration",
+            "Device testing and release preparation"
+          ],
+          "order": 1
+        },
+        {
+          "key": "ios-applications",
+          "title": "iOS applications",
+          "title_bn": "iOS অ্যাপ্লিকেশন",
+          "summary": "iOS experiences with focused interfaces, connected functionality, and release-ready implementation.",
+          "summary_bn": "পরিকল্পিত ইন্টারফেস ও সংযুক্ত সুবিধাসহ প্রকাশের উপযোগী iOS অভিজ্ঞতা।",
+          "deliverables": [
+            "iPhone and iPad experience design",
+            "Service and platform capability integration",
+            "Application testing and release preparation"
+          ],
+          "order": 2
+        },
+        {
+          "key": "cross-platform-applications",
+          "title": "Cross-platform applications",
+          "title_bn": "ক্রস-প্ল্যাটফর্ম অ্যাপ্লিকেশন",
+          "summary": "Shared-code mobile applications designed to serve Android and iOS audiences consistently.",
+          "summary_bn": "একটি সমন্বিত কোডভিত্তি দিয়ে Android ও iOS ব্যবহারকারীদের জন্য মোবাইল অ্যাপ।",
+          "deliverables": [
+            "Shared application architecture",
+            "Platform-aware interfaces and native integrations",
+            "Cross-device testing and delivery workflows"
+          ],
+          "order": 3
+        },
+        {
+          "key": "business-mobile-applications",
+          "title": "Business mobile applications",
+          "title_bn": "ব্যবসায়িক মোবাইল অ্যাপ্লিকেশন",
+          "summary": "Mobile tools that bring business workflows to employees, customers, and field teams.",
+          "summary_bn": "কর্মী, গ্রাহক ও মাঠপর্যায়ের দলের হাতে ব্যবসায়িক কাজ পৌঁছে দেওয়ার মোবাইল টুল।",
+          "deliverables": [
+            "Employee, customer, and field-service workflows",
+            "Business-system and authentication integration",
+            "Data synchronization and role-based access"
+          ],
+          "order": 4
+        }
+      ],
+      "order": 4,
+      "image": "/images/services/premium/mobile-applications-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for Mobile Application Development by RizQara Tech"
+    },
+    {
+      "id": "uiux-creative-design",
+      "title": "UI/UX & Creative Design",
+      "title_bn": "UI/UX ও ক্রিয়েটিভ ডিজাইন",
+      "shortTitle": "UI/UX & Design",
+      "icon": "Palette",
+      "imageKey": "uiux-creative",
+      "description": "Research, interfaces, and visual identities that make digital products clearer, more useful, and unmistakably yours.",
+      "description_bn": "ডিজিটাল পণ্যকে সহজ, কার্যকর ও নিজস্ব পরিচয়ে গড়তে রিসার্চ, ইন্টারফেস ও ভিজ্যুয়াল আইডেন্টিটি।",
+      "offerings": [
+        {
+          "key": "uiux-research-design",
+          "title": "UI/UX research and design",
+          "title_bn": "UI/UX রিসার্চ ও ডিজাইন",
+          "summary": "User-centered research and interface design connecting business goals to everyday product experiences.",
+          "summary_bn": "ব্যবসায়িক লক্ষ্য ও ব্যবহারকারীর অভিজ্ঞতার সমন্বয়ে রিসার্চ এবং ইন্টারফেস ডিজাইন।",
+          "deliverables": [
+            "User journeys and information architecture",
+            "Wireframes and high-fidelity interfaces",
+            "Usability review and responsive design systems"
+          ],
+          "order": 1
+        },
+        {
+          "key": "figma-prototypes",
+          "title": "Figma prototypes",
+          "title_bn": "Figma প্রোটোটাইপ",
+          "summary": "Interactive prototypes that help teams explore, communicate, and validate product flows before development.",
+          "summary_bn": "ডেভেলপমেন্টের আগে পণ্যের কাজের ধাপ দেখা, বোঝানো ও যাচাইয়ের ইন্টার‌্যাক্টিভ প্রোটোটাইপ।",
+          "deliverables": [
+            "Interactive user-flow prototypes",
+            "Reusable Figma components and variants",
+            "Design handoff and stakeholder walkthroughs"
+          ],
+          "order": 2
+        },
+        {
+          "key": "saas-dashboard-design",
+          "title": "SaaS dashboard design",
+          "title_bn": "SaaS ড্যাশবোর্ড ডিজাইন",
+          "summary": "Clear, purposeful dashboard experiences for complex data, workflows, and product administration.",
+          "summary_bn": "জটিল তথ্য, কাজের ধাপ ও পণ্য পরিচালনার জন্য সহজ ও পরিকল্পিত ড্যাশবোর্ড অভিজ্ঞতা।",
+          "deliverables": [
+            "Dashboard information hierarchy",
+            "Data visualization and interaction patterns",
+            "Responsive component systems and handoff"
+          ],
+          "order": 3
+        },
+        {
+          "key": "website-application-redesign",
+          "title": "Website and application redesign",
+          "title_bn": "ওয়েবসাইট ও অ্যাপ্লিকেশন রিডিজাইন",
+          "summary": "Thoughtful redesigns that address usability, visual consistency, and changing product requirements.",
+          "summary_bn": "ব্যবহারযোগ্যতা, ভিজ্যুয়াল সামঞ্জস্য ও পরিবর্তিত চাহিদা অনুযায়ী পরিকল্পিত রিডিজাইন।",
+          "deliverables": [
+            "Existing experience and usability review",
+            "Reworked layouts, flows, and component systems",
+            "Implementation-ready design specifications"
+          ],
+          "order": 4
+        },
+        {
+          "key": "branding-graphic-design",
+          "title": "Branding and graphic design",
+          "title_bn": "ব্র্যান্ডিং ও গ্রাফিক ডিজাইন",
+          "summary": "Visual communication that connects your business identity across digital and marketing touchpoints.",
+          "summary_bn": "ডিজিটাল ও বিপণনের প্রতিটি মাধ্যমে ব্যবসার পরিচয় তুলে ধরার ভিজ্যুয়াল কমিউনিকেশন।",
+          "deliverables": [
+            "Brand visual direction and design assets",
+            "Digital and campaign graphics",
+            "Consistent layouts, typography, and color systems"
+          ],
+          "order": 5
+        },
+        {
+          "key": "logo-visual-identity",
+          "title": "Logo and visual identity",
+          "title_bn": "লোগো ও ভিজ্যুয়াল আইডেন্টিটি",
+          "summary": "Distinctive identity systems built around your brand’s character and practical communication needs.",
+          "summary_bn": "ব্র্যান্ডের বৈশিষ্ট্য ও যোগাযোগের প্রয়োজন অনুযায়ী স্বতন্ত্র পরিচয় ব্যবস্থা।",
+          "deliverables": [
+            "Logo concepts and refinement",
+            "Color, typography, and identity guidelines",
+            "Reusable brand assets and usage examples"
+          ],
+          "order": 6
+        }
+      ],
+      "order": 5,
+      "image": "/images/services/premium/uiux-creative-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for UI/UX & Creative Design by RizQara Tech"
+    },
+    {
+      "id": "digital-marketing-growth",
+      "title": "Digital Marketing & Growth",
+      "title_bn": "ডিজিটাল মার্কেটিং ও প্রবৃদ্ধি",
+      "shortTitle": "Marketing & Growth",
+      "icon": "BarChart",
+      "imageKey": "marketing-growth",
+      "description": "Search, content, campaigns, and strategy that connect your business with the right audience.",
+      "description_bn": "সার্চ, কনটেন্ট, ক্যাম্পেইন ও কৌশলের মাধ্যমে সঠিক গ্রাহকের সঙ্গে ব্যবসাকে যুক্ত করি।",
+      "offerings": [
+        {
+          "key": "search-engine-optimization",
+          "title": "Search Engine Optimization (SEO)",
+          "title_bn": "সার্চ ইঞ্জিন অপ্টিমাইজেশন (SEO)",
+          "summary": "Search-focused improvements to help your website communicate its relevance and become easier to discover.",
+          "summary_bn": "ওয়েবসাইটের বিষয়বস্তু প্রাসঙ্গিকভাবে তুলে ধরা ও খুঁজে পাওয়া সহজ করার সার্চভিত্তিক উন্নয়ন।",
+          "deliverables": [
+            "Search intent and content opportunity review",
+            "On-page structure and metadata optimization",
+            "Search visibility measurement and reporting"
+          ],
+          "order": 1
+        },
+        {
+          "key": "technical-seo",
+          "title": "Technical SEO",
+          "title_bn": "টেকনিক্যাল SEO",
+          "summary": "Technical reviews and implementation work supporting crawling, indexing, and website performance.",
+          "summary_bn": "ক্রলিং, ইনডেক্সিং ও ওয়েবসাইটের পারফরম্যান্স উন্নত করতে প্রযুক্তিগত পর্যালোচনা ও বাস্তবায়ন।",
+          "deliverables": [
+            "Crawlability and indexing diagnostics",
+            "Structured data, canonical, and sitemap work",
+            "Performance and technical implementation review"
+          ],
+          "order": 2
+        },
+        {
+          "key": "digital-marketing",
+          "title": "Digital marketing",
+          "title_bn": "ডিজিটাল মার্কেটিং",
+          "summary": "Coordinated digital campaigns that connect your message, audience, channels, and measurement.",
+          "summary_bn": "বার্তা, গ্রাহক, মাধ্যম ও ফলাফল পরিমাপের সমন্বিত ডিজিটাল ক্যাম্পেইন।",
+          "deliverables": [
+            "Campaign planning and channel coordination",
+            "Creative assets and landing-page collaboration",
+            "Measurement setup and campaign reporting"
+          ],
+          "order": 3
+        },
+        {
+          "key": "social-media-management",
+          "title": "Social media management",
+          "title_bn": "সোশ্যাল মিডিয়া ম্যানেজমেন্ট",
+          "summary": "Organized social publishing and brand communication built around your audience and content goals.",
+          "summary_bn": "গ্রাহক ও কনটেন্টের লক্ষ্য অনুযায়ী সোশ্যাল প্রকাশনা এবং ব্র্যান্ড যোগাযোগ ব্যবস্থাপনা।",
+          "deliverables": [
+            "Content planning and publishing workflows",
+            "Platform-specific creative coordination",
+            "Community response processes and reporting"
+          ],
+          "order": 4
+        },
+        {
+          "key": "performance-marketing",
+          "title": "Performance marketing",
+          "title_bn": "পারফরম্যান্স মার্কেটিং",
+          "summary": "Measured paid-campaign work focused on testing, learning, and improving customer acquisition.",
+          "summary_bn": "পরীক্ষা, শেখা ও গ্রাহক অর্জনের প্রক্রিয়া উন্নয়নে ফলাফলভিত্তিক পেইড ক্যাম্পেইন।",
+          "deliverables": [
+            "Campaign structure and conversion tracking",
+            "Creative and audience testing",
+            "Budget monitoring and performance analysis"
+          ],
+          "order": 5
+        },
+        {
+          "key": "business-growth-strategy",
+          "title": "Business growth strategy",
+          "title_bn": "ব্যবসায়িক প্রবৃদ্ধির কৌশল",
+          "summary": "Practical growth planning connecting market opportunities, customer journeys, and business priorities.",
+          "summary_bn": "বাজারের সুযোগ, গ্রাহকের যাত্রা ও ব্যবসায়িক অগ্রাধিকারের সমন্বয়ে বাস্তবমুখী প্রবৃদ্ধির পরিকল্পনা।",
+          "deliverables": [
+            "Business and digital-channel discovery",
+            "Customer journey and opportunity mapping",
+            "Prioritized experiments and measurement plans"
+          ],
+          "order": 6
+        }
+      ],
+      "order": 6,
+      "image": "/images/services/premium/marketing-growth-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for Digital Marketing & Growth by RizQara Tech"
+    },
+    {
+      "id": "enterprise-custom-solutions",
+      "title": "Enterprise & Custom Solutions",
+      "title_bn": "এন্টারপ্রাইজ ও কাস্টম সমাধান",
+      "shortTitle": "Enterprise Solutions",
+      "icon": "Server",
+      "imageKey": "enterprise-custom",
+      "description": "Tailored systems, connected data, and implementation expertise for complex business environments.",
+      "description_bn": "জটিল ব্যবসায়িক পরিবেশের জন্য প্রয়োজনমাফিক সিস্টেম, সংযুক্ত তথ্য ও বাস্তবায়ন সহায়তা।",
+      "offerings": [
+        {
+          "key": "real-estate-technology",
+          "title": "Real estate technology",
+          "title_bn": "রিয়েল এস্টেট প্রযুক্তি",
+          "summary": "Digital systems for property information, lead handling, and real-estate business operations.",
+          "summary_bn": "সম্পত্তির তথ্য, সম্ভাব্য গ্রাহক ও রিয়েল এস্টেট ব্যবসার কার্যক্রম পরিচালনার ডিজিটাল সিস্টেম।",
+          "deliverables": [
+            "Property listings and management portals",
+            "Lead, booking, and customer workflows",
+            "Operational dashboards and system integrations"
+          ],
+          "order": 1
+        },
+        {
+          "key": "data-scraping-collection",
+          "title": "Data scraping and collection",
+          "title_bn": "ডেটা স্ক্র্যাপিং ও সংগ্রহ",
+          "summary": "Purpose-built collection pipelines for organizing permitted public or authorized source data.",
+          "summary_bn": "অনুমোদিত বা ব্যবহারযোগ্য প্রকাশ্য উৎস থেকে তথ্য সংগ্রহ ও সাজানোর প্রয়োজনভিত্তিক পাইপলাইন।",
+          "deliverables": [
+            "Source review and collection pipeline design",
+            "Structured extraction and validation",
+            "Scheduling, deduplication, and export workflows"
+          ],
+          "order": 2
+        },
+        {
+          "key": "business-intelligence-dashboards",
+          "title": "Business intelligence dashboards",
+          "title_bn": "বিজনেস ইন্টেলিজেন্স ড্যাশবোর্ড",
+          "summary": "Decision-support dashboards that turn connected business data into useful views and reports.",
+          "summary_bn": "সংযুক্ত ব্যবসায়িক তথ্যকে সিদ্ধান্ত গ্রহণের উপযোগী ভিউ ও রিপোর্টে রূপান্তরের ড্যাশবোর্ড।",
+          "deliverables": [
+            "Data-source integration and metric modeling",
+            "Interactive reporting and visualization",
+            "Role-specific views and reporting workflows"
+          ],
+          "order": 3
+        },
+        {
+          "key": "third-party-integrations",
+          "title": "Third-party integrations",
+          "title_bn": "থার্ড-পার্টি ইন্টিগ্রেশন",
+          "summary": "Connections between your business applications, providers, and external service platforms.",
+          "summary_bn": "আপনার ব্যবসায়িক অ্যাপ্লিকেশন, সেবাদাতা ও বাইরের প্ল্যাটফর্মের মধ্যে সংযোগ।",
+          "deliverables": [
+            "Integration discovery and connector development",
+            "Authentication and data synchronization",
+            "Failure recovery and integration monitoring"
+          ],
+          "order": 4
+        },
+        {
+          "key": "custom-database-solutions",
+          "title": "Custom database solutions",
+          "title_bn": "কাস্টম ডেটাবেস সমাধান",
+          "summary": "Database architecture and implementation shaped around your application and reporting needs.",
+          "summary_bn": "অ্যাপ্লিকেশন ও রিপোর্টিংয়ের চাহিদা অনুযায়ী ডেটাবেস আর্কিটেকচার এবং বাস্তবায়ন।",
+          "deliverables": [
+            "Data modeling and schema design",
+            "Migration, query, and index work",
+            "Application integration and operational planning"
+          ],
+          "order": 5
+        },
+        {
+          "key": "cloud-business-systems",
+          "title": "Cloud-based business systems",
+          "title_bn": "ক্লাউডভিত্তিক ব্যবসায়িক সিস্টেম",
+          "summary": "Business applications and operational systems designed for managed cloud environments.",
+          "summary_bn": "ম্যানেজড ক্লাউড পরিবেশের জন্য ব্যবসায়িক অ্যাপ্লিকেশন ও পরিচালন ব্যবস্থা।",
+          "deliverables": [
+            "Cloud application and deployment architecture",
+            "Identity, storage, and service integration",
+            "Monitoring, backup, and operational handoff"
+          ],
+          "order": 6
+        },
+        {
+          "key": "odoo-implementation",
+          "title": "Odoo implementation",
+          "title_bn": "Odoo বাস্তবায়ন",
+          "summary": "Odoo configuration and integration work aligned with your processes, modules, and business data.",
+          "summary_bn": "আপনার ব্যবসার কাজের ধাপ, মডিউল ও তথ্য অনুযায়ী Odoo কনফিগারেশন এবং ইন্টিগ্রেশন।",
+          "deliverables": [
+            "Business-process and module requirement mapping",
+            "Configuration, customization, and data migration",
+            "Third-party integrations, testing, and team handoff"
+          ],
+          "order": 7
+        }
+      ],
+      "order": 7,
+      "image": "/images/services/premium/enterprise-custom-v1.webp",
+      "imageAlt": "Premium maroon-and-white 3D illustration for Enterprise & Custom Solutions by RizQara Tech"
+    }
+  ]
+}

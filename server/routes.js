@@ -1,121 +1,110 @@
 const express = require('express');
-const router = express.Router();
+const crypto = require('node:crypto');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const { requireAdmin, rateLimit, mountAuth } = require('./security');
 const { Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy, Notice, GalleryItem } = require('./models/Schemas');
-
-// Cloudinary Config
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-// Multer config for generic upload (memory storage)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// Helper to map collection names to Models
-const models = {
-    services: Service,
-    projects: Project,
-    reviews: Review,
-    blogs: Blog,
-    jobs: Job,
-    videos: Video,
-    carousel: Carousel,
-    buildOptions: BuildOption,
-    messages: Message,
-    promotion: Promotion,
-    careerApplications: CareerApplication,
-    caseStudies: CaseStudy,
-    notice: Notice,
-    galleryItems: GalleryItem
-};
-
-const translate = require('translation-google');
-
-// --- In-Memory Cache Implementation ---
-const cache = {
-    data: {},
-    ttl: 5 * 60 * 1000, // 5 minute TTL
-    set: function(key, val) {
-        this.data[key] = {
-            value: val,
-            expiry: Date.now() + this.ttl
-        };
-    },
-    get: function(key) {
-        const item = this.data[key];
-        if (!item) return null;
-        if (Date.now() > item.expiry) {
-            delete this.data[key];
-            return null;
-        }
-        return item.value;
-    },
-    clear: function(key) {
-        if (key) delete this.data[key];
-        else this.data = {};
+const router = express.Router();
+const models = Object.freeze({ services: Service, projects: Project, reviews: Review, blogs: Blog, jobs: Job, videos: Video, carousel: Carousel, buildOptions: BuildOption, messages: Message, promotion: Promotion, careerApplications: CareerApplication, caseStudies: CaseStudy, notice: Notice, galleryItems: GalleryItem });
+const privateCollections = new Set(['messages', 'careerApplications']);
+const cvDirectory = path.resolve(process.env.PRIVATE_UPLOAD_DIR || path.join(__dirname, 'private-uploads'));
+cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10, fieldSize: 20000 } });
+mountAuth(router);
+const ready = (req, res, next) => mongoose.connection.readyState === 1 ? next() : res.status(503).json({ error: 'Database is unavailable. Please try again later.' });
+function modelFor(req, res, next) {
+    if (!Object.hasOwn(models, req.params.collection)) return res.status(404).json({ error: 'Collection not found' });
+    req.model = models[req.params.collection]; next();
+}
+function safeBody(model, body) {
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw Object.assign(new Error('Invalid body'), { status: 400 });
+    const result = {};
+    for (const [key, value] of Object.entries(body)) {
+        if (['id', '_id', '__v', 'createdAt', 'updatedAt', 'slug', 'previousSlugs', 'cvKey'].includes(key)) continue;
+        if (key.startsWith('$') || key.includes('.') || !model.schema.path(key)) throw Object.assign(new Error('Invalid field'), { status: 400 });
+        if (typeof value === 'string' && (value.length > 100000 || value.startsWith('data:') || value.startsWith('blob:'))) throw Object.assign(new Error('Invalid value'), { status: 400 });
+        if (['image', 'thumbnail', 'link', 'url'].includes(key) && value && !validURL(value)) throw Object.assign(new Error('Invalid URL'), { status: 400 });
+        if (key === 'gallery' && (!Array.isArray(value) || value.length > 30 || value.some(x => !validURL(x)))) throw Object.assign(new Error('Invalid gallery'), { status: 400 });
+        result[key] = value;
     }
-};
-
-// --- UPLOAD ROUTE (Must be before generic :collection routes) ---
-router.post('/upload', upload.single('file'), async (req, res) => {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-    // Convert buffer to data URI
-    const b64 = Buffer.from(req.file.buffer).toString('base64');
-    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-
-    try {
-        const result = await cloudinary.uploader.upload(dataURI, {
-            folder: 'rizqaratech/uploads'
-        });
-        res.json({ url: result.secure_url });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    return result;
+}
+function validURL(value) {
+    if (typeof value !== 'string') return false;
+    if (value.startsWith('/') && !value.startsWith('//')) return true;
+    try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password; } catch { return false; }
+}
+const slugify = title => title.toLowerCase().normalize('NFKC').trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 'item';
+function publicRecord(doc, collection) {
+    const item = doc.toObject ? doc.toObject() : { ...doc };
+    if (collection === 'careerApplications') { delete item.cvKey; item.cvUrl = `/api/applications/${encodeURIComponent(item.id)}/cv`; }
+    return item;
+}
+function publicFields(body, keys) {
+    const result = {};
+    for (const key of keys) {
+        if (typeof body?.[key] !== 'string' || !body[key].trim() || body[key].length > (['message', 'experience', 'reason', 'text'].includes(key) ? 10000 : 300)) throw Object.assign(new Error('Invalid form'), { status: 400 });
+        result[key] = body[key].trim();
     }
+    if (result.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(result.email)) throw Object.assign(new Error('Invalid email'), { status: 400 });
+    return result;
+}
+router.post('/upload', requireAdmin, rateLimit('upload', 10), upload.single('file'), async (req, res) => {
+    const file = req.file;
+    const valid = file && (file.buffer.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff])) || file.buffer.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])));
+    if (!valid) return res.status(400).json({ error: 'Upload a JPEG or PNG image, at most 5 MB' });
+    if (!process.env.CLOUDINARY_API_SECRET) return res.status(503).json({ error: 'Image storage is not configured' });
+    const mime = file.buffer[0] === 0xff ? 'image/jpeg' : 'image/png';
+    const result = await cloudinary.uploader.upload(`data:${mime};base64,${file.buffer.toString('base64')}`, { folder: 'rizqaratech/uploads', resource_type: 'image' });
+    res.json({ url: result.secure_url });
 });
-
-// --- IMAGE PROXY ROUTE (Bypass ISP Blocks) ---
-router.get('/proxy-image', (req, res) => {
-    const imageUrl = req.query.url;
-    if (!imageUrl) return res.status(400).send('URL required');
-
-    try {
-        const { URL } = require('url');
-        const parsedUrl = new URL(imageUrl);
-        const protocol = parsedUrl.protocol === 'https:' ? require('https') : require('http');
-
-        const proxyReq = protocol.get(imageUrl, (proxyRes) => {
-            if (proxyRes.statusCode !== 200) {
-                proxyRes.resume(); // Consume response data to free up memory
-                return res.status(502).send(`Upstream Error: ${proxyRes.statusCode}`);
-            }
-
-            const contentType = proxyRes.headers['content-type'];
-            if (contentType) res.setHeader('Content-Type', contentType);
-
-            res.setHeader('Cache-Control', 'public, max-age=86400');
-            res.setHeader('Access-Control-Allow-Origin', '*');
-
-            proxyRes.pipe(res);
-        });
-
-        proxyReq.on('error', (err) => {
-            console.error('Proxy Error:', err.message);
-            if (!res.headersSent) res.status(500).send(`Proxy Request Failed: ${err.message}`);
-        });
-
-    } catch (err) {
-        console.error('Proxy URL Error:', err.message);
-        if (!res.headersSent) res.status(400).send(`Invalid URL: ${err.message}`);
-    }
+router.get('/proxy-image', (req, res) => res.status(410).json({ error: 'Image proxy removed. Use the original image URL.' }));
+router.post('/translate', requireAdmin, rateLimit('translate', 20), async (req, res) => {
+    const { text, to = 'bn' } = req.body || {};
+    if (typeof text !== 'string' || !text.trim() || text.length > 5000 || !['bn', 'en'].includes(to)) return res.status(400).json({ error: 'Invalid translation request' });
+    if (!process.env.GOOGLE_TRANSLATE_API_KEY) return res.status(503).json({ error: 'Translation is not configured. Enter the translation manually.' });
+    const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${encodeURIComponent(process.env.GOOGLE_TRANSLATE_API_KEY)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ q: text, target: to, format: 'text' }), signal: AbortSignal.timeout(10000) });
+    if (!response.ok) return res.status(502).json({ error: 'Translation service is unavailable' });
+    const data = await response.json(); res.json({ translatedText: data.data.translations[0].translatedText });
 });
-
+router.post('/messages', rateLimit('message', 5, 15 * 60000), ready, async (req, res) => {
+    const data = publicFields(req.body, ['name', 'email', 'subject', 'message', 'type']);
+    if (!['Contact', 'Build', 'Chatbot', 'Newsletter', 'Order'].includes(data.type)) return res.status(400).json({ error: 'Invalid message type' });
+    await Message.create({ ...data, id: crypto.randomUUID(), date: new Date().toISOString(), read: false, status: 'Pending' });
+    res.status(201).json({ accepted: true });
+});
+router.post('/careerApplications', rateLimit('application', 3, 60 * 60000), ready, upload.single('cv'), async (req, res) => {
+    const data = publicFields(req.body, ['name', 'email', 'experience', 'reason', 'jobId']);
+    const file = req.file;
+    if (!file || file.buffer.subarray(0, 5).toString() !== '%PDF-') return res.status(400).json({ error: 'Attach a PDF CV, at most 5 MB' });
+    if (!await Job.exists({ id: data.jobId })) return res.status(400).json({ error: 'This vacancy is no longer available' });
+    await fs.mkdir(cvDirectory, { recursive: true, mode: 0o700 });
+    const id = crypto.randomUUID(), cvKey = `${id}.pdf`;
+    await fs.writeFile(path.join(cvDirectory, cvKey), file.buffer, { mode: 0o600, flag: 'wx' });
+    try { await CareerApplication.create({ ...data, id, cvKey, cvName: path.basename(file.originalname).replace(/[\r\n"]/g, ''), cvUrl: `/api/applications/${id}/cv`, date: new Date().toISOString(), status: 'New' }); }
+    catch (error) { await fs.unlink(path.join(cvDirectory, cvKey)).catch(() => {}); throw error; }
+    res.status(201).json({ accepted: true });
+});
+router.get('/applications/:id/cv', requireAdmin, ready, async (req, res) => {
+    const item = await CareerApplication.findOne({ id: req.params.id }).select('+cvKey');
+    if (!item) return res.status(404).json({ error: 'Application not found' });
+    res.set({ 'Cache-Control': 'no-store', 'Content-Type': 'application/pdf', 'Content-Disposition': 'attachment; filename="resume.pdf"' });
+    if (item.cvKey && /^[a-f0-9-]+\.pdf$/.test(item.cvKey)) return res.sendFile(path.join(cvDirectory, item.cvKey));
+    if (item.cvUrl?.startsWith('data:application/pdf;base64,')) return res.send(Buffer.from(item.cvUrl.split(',')[1], 'base64'));
+    return res.status(404).json({ error: 'CV unavailable. Migrate legacy CV storage.' });
+});
+router.post('/videos/:id/comments', rateLimit('comment', 5, 15 * 60000), ready, async (req, res) => {
+    const data = publicFields({ user: req.body?.user, text: req.body?.text }, ['user', 'text']);
+    const comment = { ...data, id: crypto.randomUUID(), date: new Date().toISOString() };
+    const item = await Video.findOneAndUpdate({ id: req.params.id }, { $push: { comments: { $each: [comment], $position: 0, $slice: 500 } }, $inc: { __v: 1 } }, { returnDocument: 'after', runValidators: true });
+    if (!item) return res.status(404).json({ error: 'Video not found' });
+    res.status(201).json(comment);
+});
 // --- RSS FEED ROUTE ---
-router.get('/rss', async (req, res) => {
+router.get('/rss', ready, async (req, res) => {
     try {
         const blogs = await Blog.find().sort({ date: -1 }).limit(20);
         const projects = await Project.find().sort({ createdAt: -1 }).limit(10);
@@ -202,209 +191,54 @@ router.get('/rss', async (req, res) => {
     }
 });
 
-// --- TRANSLATE ROUTE ---
-router.post('/translate', async (req, res) => {
-    const { text, to = 'bn' } = req.body;
-    if (!text) return res.status(400).json({ error: 'Text is required' });
-
-    try {
-        const result = await translate(text, { to });
-        res.json({ translatedText: result.text });
-    } catch (err) {
-        console.error('Translation error:', err);
-        res.status(500).json({ error: 'Translation failed' });
-    }
-});
-
-// --- GENERIC CRUD ROUTES ---
-
-// GET All
+router.use('/:collection', modelFor, (req, res, next) => {
+    if (req.method !== 'GET' || privateCollections.has(req.params.collection)) return requireAdmin(req, res, next);
+    next();
+}, ready);
 router.get('/:collection', async (req, res) => {
-    const { collection } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        // Check Cache
-        const cachedData = cache.get(collection);
-        if (cachedData) return res.json(cachedData);
-
-        // Default sort: Newest First (-1)
-        let sortOrder = { createdAt: -1 };
-        if (collection === 'services' || collection === 'buildOptions') {
-            sortOrder = { createdAt: 1 };
-        }
-
-        const items = await model.find().sort(sortOrder);
-        
-        // Save to Cache
-        cache.set(collection, items);
-        
-        res.json(items);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const collection = req.params.collection;
+    const limit = Number(req.query.limit ?? 100);
+    const offset = Number(req.query.offset ?? 0);
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isInteger(offset) || offset < 0 || offset > 1000000) return res.status(400).json({ error: 'Invalid pagination parameters' });
+    const items = await req.model.find().select('-cvKey').sort({ createdAt: ['services', 'buildOptions'].includes(collection) ? 1 : -1, _id: 1 }).skip(offset).limit(limit + 1);
+    res.set({ 'X-Has-More': String(items.length > limit), 'Access-Control-Expose-Headers': 'X-Has-More' });
+    if (privateCollections.has(collection)) res.set('Cache-Control', 'no-store');
+    res.json(items.slice(0, limit).map(item => publicRecord(item, collection)));
 });
-
-// GET One by ID
 router.get('/:collection/:id', async (req, res) => {
-    const { collection, id } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        const item = await model.findOne({ id });
-        if (!item) return res.status(404).json({ error: 'Item not found' });
-        res.json(item);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const item = await req.model.findOne({ id: req.params.id }).select('-cvKey');
+    if (!item) return res.status(404).json({ error: 'Record not found' });
+    res.json(publicRecord(item, req.params.collection));
 });
-
-// POST Create
 router.post('/:collection', async (req, res) => {
-    const { collection } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        const newItem = new model(req.body);
-        const savedItem = await newItem.save();
-        
-        // Invalidate Cache for this collection
-        cache.clear(collection);
-        
-        res.status(201).json(savedItem);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const data = safeBody(req.model, req.body);
+    const id = crypto.randomUUID();
+    if (data.title) data.slug = `${slugify(data.title)}-${id.slice(0, 8)}`;
+    const item = await req.model.create({ ...data, id });
+    res.status(201).json(publicRecord(item, req.params.collection));
 });
-
-// PUT Update (Bulk or Singleton)
-router.put('/:collection', async (req, res) => {
-    const { collection } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        if (Array.isArray(req.body)) {
-            // SAFE Bulk Validate First
-            for (const item of req.body) {
-                const doc = new model(item);
-                try {
-                    await doc.validate();
-                } catch (validationError) {
-                    console.error('Validation Error (Bulk Aborted):', validationError.message);
-                    return res.status(400).json({ error: validationError.message });
-                }
-            }
-
-            // If we get here, all items are valid. proceed to replace.
-            await model.deleteMany({});
-            const inserted = await model.insertMany(req.body);
-            
-            // Invalidate Cache
-            cache.clear(collection);
-            
-            res.json(inserted);
-
-        } else if (typeof req.body === 'object' && req.body !== null) {
-            // SAFE Singleton Validate
-            const doc = new model(req.body);
-            try {
-                await doc.validate();
-            } catch (validationError) {
-                console.error('Validation Error (Singleton Aborted):', validationError.message);
-                return res.status(400).json({ error: validationError.message });
-            }
-
-            // Replace single document
-            await model.deleteMany({});
-            const created = await model.create(req.body);
-            
-            // Invalidate Cache
-            cache.clear(collection);
-            
-            res.json(created);
-        } else {
-            res.status(400).json({ error: 'Body must be an Array or Object' });
-        }
-    } catch (err) {
-        console.error('SERVER ERROR (Bulk Update):', err.message);
-        res.status(500).json({ error: err.message });
-    }
-});
-
+router.put('/:collection', (req, res) => res.status(405).set('Allow', 'GET, POST').json({ error: 'Bulk replacement is disabled. Update individual records.' }));
 router.put('/:collection/:id', async (req, res) => {
-    const { collection, id } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        const updated = await model.findOneAndUpdate({ id }, req.body, { new: true });
-        
-        // Invalidate Cache
-        cache.clear(collection);
-        
-        res.json(updated);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const version = req.body?.__v;
+    if (!Number.isInteger(version) || version < 0) return res.status(400).json({ error: 'A record version is required' });
+    const data = safeBody(req.model, req.body);
+    if (privateCollections.has(req.params.collection) && Object.keys(data).some(key => !['read', 'status'].includes(key))) return res.status(400).json({ error: 'Only status and read state can be updated' });
+    const existing = await req.model.findOne({ id: req.params.id });
+    if (!existing) return res.status(404).json({ error: 'Record not found' });
+    if (!existing.slug && existing.title) data.slug = `${slugify(existing.title)}-${existing.id.slice(0, 8)}`;
+    if (existing.title && data.title && existing.title !== data.title) data.previousSlugs = [...new Set([...(existing.previousSlugs || []), slugify(existing.title), existing.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '')])].slice(-30);
+    const updated = await req.model.findOneAndUpdate({ id: req.params.id, __v: version }, { $set: data, $inc: { __v: 1 } }, { returnDocument: 'after', runValidators: true });
+    if (!updated) return res.status(409).json({ error: 'This record changed. Reload before editing again.' });
+    res.json(publicRecord(updated, req.params.collection));
 });
-
-// Helper to delete image from Cloudinary
-const deleteImage = async (url) => {
-    if (!url || !url.includes('cloudinary.com')) return;
-    try {
-        // Extract public_id: 
-        // URL: https://res.cloudinary.com/cloudname/image/upload/v1234/folder/id.jpg
-        // Public ID: folder/id (without extension)
-        const parts = url.split('/');
-        const versionIndex = parts.findIndex(part => part.startsWith('v'));
-        if (versionIndex === -1) return;
-        
-        const publicIdParts = parts.slice(versionIndex + 1);
-        const publicIdWithExt = publicIdParts.join('/');
-        const publicId = publicIdWithExt.split('.')[0];
-
-        await cloudinary.uploader.destroy(publicId);
-        console.log(`Deleted image: ${publicId}`);
-    } catch (err) {
-        console.error(`Failed to delete image ${url}:`, err.message);
-    }
-};
-
-// DELETE
 router.delete('/:collection/:id', async (req, res) => {
-    const { collection, id } = req.params;
-    const model = models[collection];
-    if (!model) return res.status(404).json({ error: 'Collection not found' });
-
-    try {
-        const item = await model.findOne({ id });
-        if (!item) return res.status(404).json({ error: 'Item not found' });
-
-        // Clean up Cloudinary images before deletion
-        if (item.image) await deleteImage(item.image);
-        if (item.thumbnail) await deleteImage(item.thumbnail);
-        if (item.gallery && Array.isArray(item.gallery)) {
-            for (const img of item.gallery) {
-                await deleteImage(img);
-            }
-        }
-
-        await model.findOneAndDelete({ id });
-        
-        // Invalidate Cache
-        cache.clear(collection);
-        
-        res.json({ message: 'Deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const version = Number(req.get('If-Match'));
+    if (!req.get('If-Match') || !Number.isInteger(version) || version < 0) return res.status(400).json({ error: 'A record version is required' });
+    const item = await req.model.findOne({ id: req.params.id });
+    if (!item) return res.status(404).json({ error: 'Record not found' });
+    const deleted = await req.model.findOneAndDelete({ id: req.params.id, __v: version });
+    if (!deleted) return res.status(409).json({ error: 'This record changed. Reload before deleting.' });
+    // Media is retained deliberately: shared references must be checked before cleanup.
+    res.json({ deleted: true });
 });
-
-// --- UPLOAD ROUTE ---
-
-
 module.exports = router;

@@ -1,0 +1,37 @@
+[
+  {
+    "key": "software-web",
+    "original": "assets/service-artwork/software-web-v1.png",
+    "web": "/images/services/premium/software-web-v1.webp"
+  },
+  {
+    "key": "business-management",
+    "original": "assets/service-artwork/business-management-v1.png",
+    "web": "/images/services/premium/business-management-v1.webp"
+  },
+  {
+    "key": "ai-automation",
+    "original": "assets/service-artwork/ai-automation-v1.png",
+    "web": "/images/services/premium/ai-automation-v1.webp"
+  },
+  {
+    "key": "mobile-applications",
+    "original": "assets/service-artwork/mobile-applications-v1.png",
+    "web": "/images/services/premium/mobile-applications-v1.webp"
+  },
+  {
+    "key": "uiux-creative",
+    "original": "assets/service-artwork/uiux-creative-v1.png",
+    "web": "/images/services/premium/uiux-creative-v1.webp"
+  },
+  {
+    "key": "marketing-growth",
+    "original": "assets/service-artwork/marketing-growth-v1.png",
+    "web": "/images/services/premium/marketing-growth-v1.webp"
+  },
+  {
+    "key": "enterprise-custom",
+    "original": "assets/service-artwork/enterprise-custom-v1.png",
+    "web": "/images/services/premium/enterprise-custom-v1.webp"
+  }
+]

@@ -1,3 +1,4 @@
+import { useDialog } from '../../utils/useDialog';
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useData, BlogPost } from '../../context/DataContext';
@@ -9,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getYoutubeId } from '../premium/UIComponents';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SEO } from '../SEO';
-import { getSlug } from '../../App';
+import { getSlug, matchesContent } from '../../utils/content';
 
 const PageHeader = ({ title, subtitle }: { title: string, subtitle: string }) => (
     <div className="mb-16">
@@ -19,6 +20,7 @@ const PageHeader = ({ title, subtitle }: { title: string, subtitle: string }) =>
 );
 
 const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
+    const dialogRef = useDialog(true, onClose);
     const [status, setStatus] = useState('idle'); // idle, sending, success
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState('');
@@ -31,44 +33,31 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const file = fileInputRef.current?.files?.[0];
-        let cvUrl = '';
-        if (file) {
-            cvUrl = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.readAsDataURL(file);
-            });
+        if (!file || file.type !== 'application/pdf' || file.size > 5 * 1024 * 1024) {
+            toast.error('Attach a PDF CV, at most 5 MB.'); setStatus('idle'); return;
+        }
+        formData.set('jobId', job.id);
+        formData.set('cv', file);
+        try {
+            await onSubmit(formData);
+            setStatus('success');
+        } catch (error) {
+            setStatus('idle');
+            toast.error(error instanceof Error ? error.message : 'Application failed. Please try again.');
         }
 
-        const appData = {
-            name: formData.get('name') as string,
-            email: formData.get('email') as string,
-            experience: formData.get('experience') as string,
-            reason: formData.get('reason') as string,
-            cvName: file?.name || 'No CV',
-            cvUrl, // Cloudinary URL
-            jobId: job.id
-        };
-
-        // Simulate network delay
-        setTimeout(() => {
-            onSubmit(appData);
-            setStatus('success');
-            // Toast removed to avoid redundancy (Modal has success UI)
-            setTimeout(onClose, 2000);
-        }, 1500);
     };
 
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 top-0 left-0 h-screen w-screen">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-            <motion.div
+            <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Job application" tabIndex={-1}
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 className="bg-white border border-gray-200 rounded-3xl p-8 w-full max-w-lg relative z-10 shadow-2xl max-h-[85vh] overflow-y-auto"
             >
-                <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 bg-gray-100 rounded-full p-2 transition-colors"><X size={20} /></button>
+                <button aria-label="Close" onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 bg-gray-100 rounded-full p-2 transition-colors"><X size={20} /></button>
 
                 {status === 'success' ? (
                     <div className="text-center py-12">
@@ -86,28 +75,28 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'পুরো নাম' : 'Full Name'}</label>
-                                <input name="name" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
+                                <input aria-label="name" name="name" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'ইমেইল ঠিকানা' : 'Email Address'}</label>
-                                <input name="email" type="email" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
+                                <input aria-label="email" name="email" type="email" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'অভিজ্ঞতার বছর' : 'Years of Experience'}</label>
-                                <input name="experience" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
+                                <input aria-label="experience" name="experience" required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'কেন আপনি এই পদের জন্য উপযুক্ত?' : 'Why are you perfect for this role?'}</label>
-                                <textarea name="reason" rows={3} required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
+                                <textarea aria-label="reason" name="reason" rows={3} required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#500000] outline-none transition-colors" />
                             </div>
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{language === 'bn' ? 'জীবনবৃত্তান্ত / সিভি' : 'Resume / CV'}</label>
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                                     onClick={() => fileInputRef.current?.click()}
                                     className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors group"
                                 >
-                                    <input ref={fileInputRef} type="file" hidden accept=".pdf,.doc,.docx" onChange={(e) => setFileName(e.target.files?.[0]?.name || '')} />
+                                    <input aria-label="file" ref={fileInputRef} type="file" hidden accept="application/pdf" onChange={(e) => setFileName(e.target.files?.[0]?.name || '')} />
                                     {fileName ? (
                                         <div className="flex items-center justify-center gap-2 text-green-600 font-bold">
                                             <FileText size={20} /> {fileName}
@@ -155,7 +144,7 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
                     const category = language === 'bn' ? (post.category_bn || post.category) : post.category;
 
                     return (
-                        <div key={post.id} className="group cursor-pointer" onClick={() => onNavigate('BlogDetail', getSlug(post.title))}>
+                        <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }} key={post.id} className="group cursor-pointer" onClick={() => onNavigate('BlogDetail', getSlug(post))}>
                             <div className="aspect-[16/10] overflow-hidden rounded-2xl mb-6 relative shadow-md">
                                 <img src={post.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                 <div className="absolute top-4 left-4 bg-white text-[#500000] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">{category}</div>
@@ -178,15 +167,15 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
 
 export const BlogDetail = () => {
     const { id } = useParams();
-    const { blogs, language, loading } = useData();
+    const { blogs, language, secondaryLoading: loading } = useData();
     const navigate = useNavigate();
     
-    const blog = blogs.find(b => getSlug(b.title) === id || String(b.id) === id);
+    const blog = blogs.find(b => matchesContent(b, id));
 
     // Redirect from ID to Slug for SEO
     React.useLayoutEffect(() => {
         if (!loading && blog && String(blog.id) === id) {
-            const slug = getSlug(blog.title);
+            const slug = getSlug(blog);
             if (slug && slug !== id) {
                 navigate(`/blog/${slug}`, { replace: true });
             }
@@ -266,7 +255,7 @@ export const BlogDetail = () => {
             <SEO 
                 title={`${title} | Tech Blog | RizQara Tech`}
                 description={excerpt}
-                canonical={`https://rizqara.tech/blog/${getSlug(blog.title)}`}
+                canonical={`https://rizqara.tech/blog/${getSlug(blog)}`}
                 schema={schema}
                 type="article"
                 image={blog.image}
@@ -306,11 +295,11 @@ export const BlogDetail = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {relatedBlogs.map(post => (
-                                <div 
+                                <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                                     key={post.id} 
                                     className="group cursor-pointer" 
                                     onClick={() => {
-                                        navigate(`/blog/${getSlug(post.title)}`);
+                                        navigate(`/blog/${getSlug(post)}`);
                                         window.scrollTo(0, 0);
                                     }}
                                 >
@@ -385,15 +374,12 @@ export const CareersPage: React.FC<{ onNavigate?: (page: string, id?: string) =>
 
 export const VideoDetail = () => {
     const { id } = useParams();
-    const { videos, language, addVideoComment, loading } = useData();
+    const { videos, language, addVideoComment, secondaryLoading: loading } = useData();
     const navigate = useNavigate();
     const [commentText, setCommentText] = useState('');
     const [userName, setUserName] = useState('');
 
-    const video = videos.find(v => {
-        const videoSlug = `${getSlug(v.title)}-${v.id}`;
-        return videoSlug === id || String(v.id) === id;
-    });
+    const video = videos.find(v => matchesContent(v, id));
 
     if (loading) {
         return (
@@ -410,16 +396,18 @@ export const VideoDetail = () => {
     const category = language === 'bn' ? (video.category_bn || video.category) : video.category;
     const description = language === 'bn' ? (video.description_bn || video.description) : video.description;
 
-    const handleCommentSubmit = (e: React.FormEvent) => {
+    const handleCommentSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!commentText.trim() || !userName.trim()) return;
 
-        addVideoComment(video.id, {
+        try {
+        await addVideoComment(video.id, {
             user: userName,
             text: commentText
         });
         setCommentText('');
         toast.success(language === 'bn' ? "মন্তব্য যোগ করা হয়েছে!" : "Comment added!");
+        } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to post comment'); }
     };
 
     return (
@@ -519,7 +507,7 @@ export const VideoDetail = () => {
                         {/* Comment Form */}
                         <div className="p-8 bg-gray-50 border-t border-gray-100">
                             <form onSubmit={handleCommentSubmit} className="space-y-4">
-                                <input
+                                <input aria-label="Selection"
                                     placeholder={language === 'bn' ? "আপনার নাম" : "Your Name"}
                                     value={userName}
                                     onChange={e => setUserName(e.target.value)}
@@ -527,14 +515,14 @@ export const VideoDetail = () => {
                                     required
                                 />
                                 <div className="relative">
-                                    <textarea
+                                    <textarea aria-label="Selection"
                                         placeholder={language === 'bn' ? "একটি মন্তব্য যোগ করুন..." : "Add your thoughts..."}
                                         value={commentText}
                                         onChange={e => setCommentText(e.target.value)}
                                         className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#500000]/20 focus:border-[#500000] shadow-sm transition-all min-h-[100px] resize-none pr-12"
                                         required
                                     />
-                                    <button 
+                                    <button aria-label="Send"
                                         type="submit" 
                                         className="absolute bottom-4 right-4 p-2 bg-[#500000] text-white rounded-lg hover:bg-[#3a0000] hover:scale-105 transition-all shadow-md group"
                                     >
@@ -570,10 +558,10 @@ export const VideosPage: React.FC<{ onNavigate?: (page: string, id?: string) => 
                 {videos.map(video => {
                     const title = language === 'bn' ? (video.title_bn || video.title) : video.title;
                     return (
-                        <div
+                        <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
                             key={video.id}
                             className="group relative cursor-pointer rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all"
-                            onClick={() => navigate(`/videos/${getSlug(video.title)}-${video.id}`)}
+                            onClick={() => navigate(`/videos/${getSlug(video)}`)}
                         >
                             <div className="aspect-video relative overflow-hidden">
                                 {/* Use YouTube Thumbnail if available, else fallback to stored thumbnail */}

@@ -1,3 +1,4 @@
+import { apiRequest } from '../../utils/api';
 import React, { useState, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../utils/canvasUtils';
@@ -40,9 +41,10 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
     }, []);
 
     const readFile = (file: File) => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.addEventListener('load', () => resolve(reader.result), false);
+            reader.addEventListener('error', () => reject(new Error('Unable to read this image')), false);
             reader.readAsDataURL(file);
         });
     };
@@ -50,7 +52,9 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
     const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            const imageDataUrl = await readFile(file) as string;
+            if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 5 * 1024 * 1024) { toast.error('Choose a JPEG or PNG image, at most 5 MB'); return; }
+            let imageDataUrl: string;
+            try { imageDataUrl = await readFile(file) as string; } catch { toast.error('Unable to read this image'); return; }
             setImageSrc(imageDataUrl);
             setIsEditorOpen(true);
         }
@@ -78,8 +82,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                 const formData = new FormData();
                 formData.append('file', blob, 'upload.jpg');
 
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                const uploadRes = await fetch(`${API_URL}/upload`, {
+                const uploadRes = await apiRequest('upload', {
                     method: 'POST',
                     body: formData
                 });
@@ -90,19 +93,9 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                     setRemoteUrl(data.url); // Store the Cloudinary URL
                     onImageChange(data.url);
                     toast.success('Image uploaded successfully! 📸', { id: loadingToast });
-                } else {
-                    console.error('Upload failed, falling back to local data');
-                    setPreviewUrl(croppedImage);
-                    setRemoteUrl(croppedImage); // Fallback to local data
-                    onImageChange(croppedImage);
-                    toast.error('Upload failed, using local fallback', { id: loadingToast });
                 }
             } catch (uploadError) {
-                console.error('Upload error:', uploadError);
-                setPreviewUrl(croppedImage);
-                setRemoteUrl(croppedImage);
-                onImageChange(croppedImage);
-                toast.error('Upload error, using local fallback', { id: loadingToast });
+                toast.error(uploadError instanceof Error ? uploadError.message : 'Upload failed. Your previous image was preserved.', { id: loadingToast });
             } finally {
                 setIsUploading(false);
                 if (onUploadEnd) onUploadEnd();
@@ -142,7 +135,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                                     >
                                         <Crop size={18} />
                                     </button>
-                                    <button
+                                    <button aria-label="Close"
                                         onClick={handleRemove}
                                         className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors disabled:opacity-50"
                                         type="button"
@@ -161,9 +154,9 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                                 </div>
                             ) : (
                                 <>
-                                    <input
+                                    <input aria-label="file"
                                         type="file"
-                                        accept="image/*"
+                                        accept="image/jpeg,image/png"
                                         onChange={onFileChange}
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     />
@@ -183,7 +176,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                 <div className="fixed inset-0 z-[110] bg-black/90 flex flex-col animate-in fade-in duration-200">
                     <div className="flex justify-between items-center p-4 border-b border-white/10">
                         <h3 className="text-white font-bold text-lg">Edit Image</h3>
-                        <button 
+                        <button aria-label="Close"
                             type="button" 
                             onClick={() => setIsEditorOpen(false)} 
                             className="text-white/60 hover:text-white"
@@ -212,7 +205,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                             <div className="flex items-center gap-4">
                                 <span className="text-white/60 w-20 text-xs font-bold uppercase">Zoom</span>
                                 <ZoomIn size={16} className="text-white/60" />
-                                <input
+                                <input aria-label="range"
                                     type="range"
                                     min={1}
                                     max={3}
@@ -226,7 +219,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
                             <div className="flex items-center gap-4">
                                 <span className="text-white/60 w-20 text-xs font-bold uppercase">Rotate</span>
                                 <RotateCw size={16} className="text-white/60" />
-                                <input
+                                <input aria-label="range"
                                     type="range"
                                     min={0}
                                     max={360}
@@ -269,7 +262,7 @@ export const ImageUploader = ({ label = "Image", name = "image", defaultValue = 
             )}
 
             {/* Hidden Input to store value for form submission - Use remoteUrl preferred */}
-            <input type="hidden" name={name} value={remoteUrl || ''} />
+            <input aria-label="hidden" type="hidden" name={name} value={remoteUrl || ''} />
         </div>
     );
 };

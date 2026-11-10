@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, Sparkles } from 'lucide-react';
 import { useData } from '../context/DataContext';
@@ -66,7 +66,7 @@ export const PromotionalBanner = () => {
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#500000] via-red-600 to-[#500000]"></div>
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#500000]/5 rounded-full blur-2xl"></div>
             
-            <button 
+            <button aria-label="Close"
               onClick={handleClose}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors z-10"
             >

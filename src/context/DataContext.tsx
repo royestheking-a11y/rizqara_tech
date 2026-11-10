@@ -1,11 +1,20 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { toast } from "sonner";
 import { translations, Language } from '../utils/translations';
+
+import { apiRequest, getCollection } from '../utils/api';
 
 // --- Types ---
 
 export type Service = {
+  categoryId?: string;
+  catalogKey?: string;
+  displayOrder?: number;
+  imageAlt?: string;
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   description: string;
@@ -23,12 +32,15 @@ export type Service = {
 
 export type Project = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   category: string;
   category_bn?: string;
   image: string;
-  status: 'Live' | 'Ongoing' | 'Completed';
+  status: 'Live' | 'Ongoing' | 'Completed' | 'Concept';
   description: string;
   description_bn?: string;
   tech: string[];
@@ -40,6 +52,9 @@ export type Project = {
 
 export type Review = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   name: string;
   name_bn?: string;
   role: string;
@@ -53,6 +68,9 @@ export type Review = {
 
 export type BlogPost = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   excerpt: string;
@@ -67,6 +85,9 @@ export type BlogPost = {
 
 export type Job = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   type: 'Full-time' | 'Contract' | 'Part-time';
@@ -79,6 +100,9 @@ export type Job = {
 
 export type VideoComment = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   user: string;
   text: string;
   date: string;
@@ -86,6 +110,9 @@ export type VideoComment = {
 
 export type Video = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   thumbnail: string;
@@ -99,6 +126,9 @@ export type Video = {
 
 export type CarouselSlide = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   subtitle: string;
@@ -110,7 +140,10 @@ export type CarouselSlide = {
 
 export type BuildOption = {
   id: string;
-  category: 'type' | 'feature' | 'time';
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
+  category: 'type' | 'feature' | 'time' | 'project';
   label: string;
   label_bn?: string;
   value: number;
@@ -118,6 +151,9 @@ export type BuildOption = {
 
 export type Message = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   type: 'Contact' | 'Order';
   name: string;
   email: string;
@@ -130,6 +166,9 @@ export type Message = {
 
 export type CareerApplication = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   name: string;
   email: string;
   experience: string;
@@ -143,6 +182,9 @@ export type CareerApplication = {
 
 export type CaseStudy = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   category: string;
@@ -176,6 +218,9 @@ export type Promotion = {
 
 export type Notice = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   text: string;
   text_bn: string;
   isActive: boolean;
@@ -183,6 +228,9 @@ export type Notice = {
 
 export type GalleryItem = {
   id: string;
+  slug?: string;
+  previousSlugs?: string[];
+  __v?: number;
   title: string;
   title_bn?: string;
   image: string;
@@ -212,16 +260,19 @@ export type DataContextType = {
   galleryItems: GalleryItem[];
   language: Language;
   setLanguage: (lang: Language) => void;
-  updateData: (key: string, data: any) => void;
+  updateData: (key: string, data: any, silent?: boolean) => Promise<void>;
   resetData: () => void;
-  addMessage: (msg: Omit<Message, 'id' | 'date' | 'read'>) => void;
+  addMessage: (msg: Omit<Message, 'id' | 'date' | 'read' | 'status'>) => Promise<void>;
   deleteMessage: (id: string) => void;
   markMessageRead: (id: string) => void;
-  addCareerApplication: (app: Omit<CareerApplication, 'id' | 'date' | 'status'>) => Promise<void>;
+  addCareerApplication: (app: FormData) => Promise<void>;
   deleteData: (key: string, id: string) => Promise<void>;
-  addVideoComment: (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => void;
+  addVideoComment: (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => Promise<void>;
   t: (key: keyof typeof translations['en']) => string;
   loading: boolean;
+  secondaryLoading: boolean;
+  loadErrors: string[];
+  retryLoad: () => void;
   fetchAdminData: () => Promise<void>;
 };
 
@@ -255,62 +306,7 @@ const DEFAULT_BUILD_OPTIONS: BuildOption[] = [
   { id: '9', category: 'time', label: '3+ Months', label_bn: '৩+ মাস', value: 0.8 },
 ];
 
-export const MOCK_GALLERY: GalleryItem[] = [
-  {
-    id: 'gal-1',
-    title: 'Annual Tech Summit 2026',
-    title_bn: 'বার্ষিক টেক সামিট ২০২৬',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
-    date: '2026-05-15',
-    category: 'Event',
-    category_bn: 'ইভেন্ট',
-    location: 'Dhaka HQ, Bangladesh',
-    location_bn: 'ঢাকা হেডকোয়ার্টার, বাংলাদেশ',
-    description: 'Capturing our team synergy, drive for innovation, and the shared milestones that power the next chapter of RizQara Tech.',
-    description_bn: 'আমাদের দলীয় সমন্বয়, উদ্ভাবনী স্পৃহা এবং রিজকারা টেকের পরবর্তী অধ্যায়কে এগিয়ে নিয়ে যাওয়ার যৌথ মাইলফলক।'
-  },
-  {
-    id: 'gal-2',
-    title: 'Team Building Workshop',
-    title_bn: 'টিম বিল্ডিং কর্মশালা',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
-    date: '2026-06-01',
-    category: 'Workshop',
-    category_bn: 'কর্মশালা',
-    location: 'Dhaka HQ, Bangladesh',
-    location_bn: 'ঢাকা হেডকোয়ার্টার, বাংলাদেশ',
-    description: 'This moment reflects our shared passion for technology, collaborative problem solving, and building memorable milestones together.',
-    description_bn: 'এই মুহূর্তটি আমাদের টিমের ক্রমাগত সাধনা, সৃজনশীলতা এবং শ্রেষ্ঠত্ব অর্জনের প্রতিশ্রুতির প্রতীক।'
-  },
-  {
-    id: 'gal-3',
-    title: 'New Office Setup',
-    title_bn: 'নতুন অফিস সেটআপ',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-    date: '2026-06-10',
-    category: 'Culture',
-    category_bn: 'সংস্কৃতি',
-    location: 'Banani Studio, Dhaka',
-    location_bn: 'বনানী স্টুডিও, ঢাকা',
-    description: 'Designing our dynamic innovation studio to foster creative engineering, cross-functional collaboration, and high-performance development.',
-    description_bn: 'সৃজনশীল ইঞ্জিনিয়ারিং এবং উচ্চমানের সফটওয়্যার উদ্ভাবন উৎসাহিত করতে আমাদের আধুনিক ওয়ার্কস্পেস।'
-  },
-  {
-    id: 'gal-4',
-    title: 'Code Hackathon Winners',
-    title_bn: 'কোড হ্যাকাথন বিজয়ীরা',
-    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
-    date: '2026-06-15',
-    category: 'Achievement',
-    category_bn: 'কৃতিত্ব',
-    location: 'Tech Hub Auditorium, Dhaka',
-    location_bn: 'টেক হাব অডিটোরিয়াম, ঢাকা',
-    description: 'Celebrating 48 hours of rapid prototyping, cutting-edge AI product development, and the relentless engineering excellence of our tech leads.',
-    description_bn: '৪৮ ঘণ্টার অবিরাম উদ্ভাবন, এআই প্ল্যাটফর্ম তৈরি এবং আমাদের তরুণ ডেভেলপারদের অসাধারণ সাফল্যের উদযাপন।'
-  }
-];
-
-// --- Context ---
+export // --- Context ---
 
 const DataContext = createContext<DataContextType>({} as DataContextType);
 
@@ -330,309 +326,109 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [promotion, setPromotion] = useState<Promotion>(INITIAL_PROMOTION);
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(MOCK_GALLERY);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [language, setLanguage] = useState<Language>('en');
   const [loading, setLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://rizqaratech-backend.onrender.com/api';
-
-  const fetchWithTimeout = async (resource: string, options: any = {}, timeout = 60000) => {
-    const controller = new AbortController();
-    const id = setTimeout(() => {
-      // @ts-ignore - Some environments support reason
-      controller.abort('timeout');
-    }, timeout);
-    
-    try {
-      const response = await fetch(resource, {
-        ...options,
-        signal: controller.signal
-      });
-      clearTimeout(id);
-      return response;
-    } catch (error) {
-      clearTimeout(id);
-      throw error;
-    }
+  const [secondaryLoading, setSecondaryLoading] = useState(true);
+  const [loadErrors, setLoadErrors] = useState<string[]>([]);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const snapshots = useRef<Record<string, any[]>>({});
+  const pendingWrites = useRef(new Set<string>());
+  const setters: Record<string, (data: any) => void> = {
+    services: setServices, projects: setProjects, reviews: setReviews, blogs: setBlogs,
+    jobs: setJobs, videos: setVideos, carousel: setCarouselSlides, buildOptions: setBuildOptions,
+    messages: setMessages, careerApplications: setCareerApplications, caseStudies: setCaseStudies,
+    promotion: data => setPromotion(data[0] || INITIAL_PROMOTION), notice: setNotices, galleryItems: setGalleryItems,
   };
-
-  const fetchWithRetry = async (resource: string, options: any = {}, retries = 2, delay = 2000) => {
-    for (let i = 0; i <= retries; i++) {
-      try {
-        const response = await fetchWithTimeout(resource, options);
-        if (response.ok) return response;
-        if (i === retries) return response; // Return last failed response
-      } catch (err) {
-        if (i === retries) throw err;
-        // Wait before retry
-        await new Promise(resolve => setTimeout(resolve, delay * (i + 1))); 
-      }
-    }
-    throw new Error('Fetch failed after retries');
-  };
-
+  const commit = (key: string, items: any[]) => { snapshots.current[key] = items; setters[key]?.(items); };
+  const retryLoad = () => setLoadAttempt(value => value + 1);
   useEffect(() => {
-    const storedLang = localStorage.getItem('rizqara_language') as Language;
-    if (storedLang) setLanguage(storedLang);
+    const storedLang = localStorage.getItem('rizqara_language');
+    if (storedLang === 'bn' || storedLang === 'en') setLanguage(storedLang);
   }, []);
-
   useEffect(() => {
     localStorage.setItem('rizqara_language', language);
+    document.documentElement.lang = language;
   }, [language]);
-
-  // Fetch Data from API
   useEffect(() => {
-    const fetchData = async () => {
-      // Phase 1: Critical Data (Required to show the main page)
-      try {
-        const [servicesRes, projectsRes, carouselRes, promotionRes, noticeRes, buildOptionsRes] = await Promise.all([
-          fetchWithRetry(`${API_URL}/services`),
-          fetchWithRetry(`${API_URL}/projects`),
-          fetchWithRetry(`${API_URL}/carousel`),
-          fetchWithRetry(`${API_URL}/promotion`),
-          fetchWithRetry(`${API_URL}/notice`),
-          fetchWithRetry(`${API_URL}/buildOptions`)
-        ]);
-
-        if (servicesRes.ok) setServices(await servicesRes.json());
-        if (projectsRes.ok) setProjects(await projectsRes.json());
-        if (carouselRes.ok) setCarouselSlides(await carouselRes.json());
-        if (promotionRes.ok) {
-          const promoData = await promotionRes.json();
-          setPromotion(Array.isArray(promoData) ? (promoData[0] || INITIAL_PROMOTION) : promoData);
+    const controller = new AbortController();
+    let active = true;
+    setLoading(true); setSecondaryLoading(true); setLoadErrors([]);
+    const loadGroup = async (keys: string[], done: () => void) => {
+      await Promise.allSettled(keys.map(async key => {
+        try {
+          const data = await getCollection(key, controller.signal);
+          if (active) commit(key, data);
+        } catch {
+          if (active) setLoadErrors(previous => [...previous, key]);
         }
-        if (noticeRes && noticeRes.ok) {
-          setNotices(await noticeRes.json());
-        }
-        if (buildOptionsRes && buildOptionsRes.ok) {
-          setBuildOptions(await buildOptionsRes.json());
-        }
-
-        // We can show the site now!
-        setLoading(false);
-      } catch (error) {
-        console.error('Phase 1 fetch failed:', error);
-        setLoading(false); // Still show site even if some items fail
-      }
-
-      // Phase 2: Secondary Data (Background load)
-      try {
-        const [reviewsRes, blogsRes, jobsRes, videosRes, caseStudiesRes, galleryRes] = await Promise.all([
-          fetchWithTimeout(`${API_URL}/reviews`),
-          fetchWithTimeout(`${API_URL}/blogs`),
-          fetchWithTimeout(`${API_URL}/jobs`),
-          fetchWithTimeout(`${API_URL}/videos`),
-          fetchWithTimeout(`${API_URL}/caseStudies`),
-          fetchWithTimeout(`${API_URL}/galleryItems`)
-        ]);
-
-        if (reviewsRes.ok) setReviews(await reviewsRes.json());
-        if (blogsRes.ok) setBlogs(await blogsRes.json());
-        if (jobsRes.ok) setJobs(await jobsRes.json());
-        if (videosRes.ok) setVideos(await videosRes.json());
-        if (caseStudiesRes.ok) setCaseStudies(await caseStudiesRes.json());
-        if (galleryRes.ok) setGalleryItems(await galleryRes.json());
-      } catch (error) {
-        console.error('Phase 2 fetch failed:', error);
-      }
+      }));
+      if (active) done();
     };
-
-    fetchData();
-
-    // Render Keep-Alive Pinger (Fallback)
-    // The server now has a self-pinger, but we keep this as a secondary measure
-    // to ensure the backend stays warm whenever a user is active.
-    const pingBackend = () => {
-      const pingUrl = API_URL.replace(/\/api$/, '') + '/health';
-      fetch(pingUrl)
-        .then(res => {
-          if (res.ok) console.log('Backend connection warmed');
-        })
-        .catch(() => { });
-    };
-
-    // Ping after a small delay to not compete with initial load
-    const pingTimeout = setTimeout(pingBackend, 5000);
-    const intervalId = setInterval(pingBackend, 5 * 60 * 1000); // 5 minutes
-
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(pingTimeout);
-    };
-  }, []);
-
+    // Both groups begin immediately; one failed resource never discards the others.
+    const critical = loadGroup(['services', 'projects', 'carousel', 'promotion', 'notice', 'buildOptions'], () => setLoading(false));
+    const secondary = loadGroup(['reviews', 'blogs', 'jobs', 'videos', 'caseStudies', 'galleryItems'], () => setSecondaryLoading(false));
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    // Abort also releases skeletons and exposes a retry control.
+    controller.signal.addEventListener('abort', () => { if (active) { setLoading(false); setSecondaryLoading(false); } });
+    void Promise.all([critical, secondary]).finally(() => clearTimeout(timeout));
+    return () => { active = false; clearTimeout(timeout); controller.abort(); };
+  }, [loadAttempt]);
   const fetchAdminData = async () => {
-    try {
-      const [messagesRes, careerApplicationsRes] = await Promise.all([
-        fetchWithTimeout(`${API_URL}/messages`),
-        fetchWithTimeout(`${API_URL}/careerApplications`)
-      ]);
-
-      if (messagesRes.ok) setMessages(await messagesRes.json());
-      if (careerApplicationsRes.ok) setCareerApplications(await careerApplicationsRes.json());
-    } catch (error) {
-      console.error('Failed to fetch admin data:', error);
-      toast.error('Failed to load admin documents');
-    }
+    const results = await Promise.allSettled(['messages', 'careerApplications'].map(async key => commit(key, await getCollection(key))));
+    if (results.some(result => result.status === 'rejected')) throw new Error('Unable to load private documents. Please sign in again.');
   };
-
-  const updateData = async (key: string, data: any, silent: boolean = false) => {
-    // Optimistic Update
-    if (key === 'services') setServices(data);
-    if (key === 'projects') setProjects(data);
-    if (key === 'reviews') setReviews(data);
-    if (key === 'blogs') setBlogs(data);
-    if (key === 'jobs') setJobs(data);
-    if (key === 'videos') setVideos(data);
-    if (key === 'carousel') setCarouselSlides(data);
-    if (key === 'buildOptions') setBuildOptions(data);
-    if (key === 'messages') setMessages(data);
-    if (key === 'careerApplications') setCareerApplications(data);
-    if (key === 'caseStudies') setCaseStudies(data);
-    if (key === 'promotion') setPromotion(data);
-    if (key === 'notice') setNotices(data);
-    if (key === 'galleryItems') setGalleryItems(data);
-
-    // API Sync (Bulk PUT)
+  const updateData = async (key: string, data: any, silent = false) => {
+    if (pendingWrites.current.has(key)) throw new Error('A save is already in progress');
+    pendingWrites.current.add(key);
     try {
-      const response = await fetch(`${API_URL}/${key}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Server Error');
+      const before = snapshots.current[key] || [];
+      const requested = Array.isArray(data) ? data : [data];
+      // A normal save may update or create records. Deletes use their own explicit operation.
+      for (const item of requested) {
+        const previous = before.find(row => row.id === item.id);
+        if (previous && Object.keys(item).every(field => JSON.stringify(item[field]) === JSON.stringify(previous[field]))) continue;
+        const response = await apiRequest(previous ? `${key}/${encodeURIComponent(item.id)}` : key, {
+          method: previous ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...item, __v: previous?.__v ?? 0 }),
+        });
+        const saved = await response.json();
+        const current = snapshots.current[key] || [];
+        commit(key, previous ? current.map(row => row.id === saved.id ? saved : row) : [...current, saved]);
       }
       if (!silent) toast.success('Changes saved successfully');
-    } catch (error: any) {
-      console.error(`Failed to update ${key}:`, error);
-      toast.error(`Failed to save: ${error.message}`);
-      // Revert state (Optional but recommended for robust apps - simpler here to just notify)
-    }
-  };
-
-  const deleteData = async (key: string, id: string) => {
-    // Optimistic Update
-    if (key === 'services') setServices(prev => prev.filter(item => item.id !== id));
-    if (key === 'projects') setProjects(prev => prev.filter(item => item.id !== id));
-    if (key === 'reviews') setReviews(prev => prev.filter(item => item.id !== id));
-    if (key === 'blogs') setBlogs(prev => prev.filter(item => item.id !== id));
-    if (key === 'jobs') setJobs(prev => prev.filter(item => item.id !== id));
-    if (key === 'videos') setVideos(prev => prev.filter(item => item.id !== id));
-    if (key === 'carousel') setCarouselSlides(prev => prev.filter(item => item.id !== id));
-    if (key === 'buildOptions') setBuildOptions(prev => prev.filter(item => item.id !== id));
-    if (key === 'messages') setMessages(prev => prev.filter(item => item.id !== id));
-    if (key === 'careerApplications') setCareerApplications(prev => prev.filter(item => item.id !== id));
-    if (key === 'caseStudies') setCaseStudies(prev => prev.filter(item => item.id !== id));
-    if (key === 'notice') setNotices(prev => prev.filter(item => item.id !== id));
-    if (key === 'galleryItems') setGalleryItems(prev => prev.filter(item => item.id !== id));
-
-    // API Call
-    try {
-      await fetch(`${API_URL}/${key}/${id}`, {
-        method: 'DELETE',
-      });
     } catch (error) {
-      console.error(`Failed to delete from ${key}:`, error);
-    }
+      toast.error(error instanceof Error ? error.message : 'Unable to save');
+      throw error;
+    } finally { pendingWrites.current.delete(key); }
   };
-
+  const deleteData = async (key: string, id: string) => {
+    const previous = (snapshots.current[key] || []).find(row => row.id === id);
+    if (!previous) throw new Error('Reload this collection before deleting');
+    await apiRequest(`${key}/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { 'If-Match': String(previous.__v ?? 0) } });
+    commit(key, (snapshots.current[key] || []).filter(row => row.id !== id));
+  };
   const addMessage = async (msg: Omit<Message, 'id' | 'date' | 'read' | 'status'>) => {
-    const newMessage: Message = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toISOString().split('T')[0],
-      read: false,
-      status: 'Pending',
-      ...msg
-    };
-
-    // Optimistic local update
-    setMessages(prev => [newMessage, ...prev]);
-
-    // SAFE Individual POST (Append only)
-    try {
-      const response = await fetch(`${API_URL}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMessage),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Server Error');
-      }
-    } catch (error: any) {
-      console.error('Failed to send message:', error);
-      toast.error('Failed to send message officially, but it was stored in your session.');
-    }
+    await apiRequest('messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(msg) });
   };
-
-  const addCareerApplication = async (app: Omit<CareerApplication, 'id' | 'date' | 'status'>) => {
-    const newApp: CareerApplication = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toISOString().split('T')[0],
-      status: 'Pending',
-      ...app
-    };
-
-    // Optimistic local update
-    setCareerApplications(prev => [newApp, ...prev]);
-
-    // SAFE Individual POST (Append only)
-    try {
-      const response = await fetch(`${API_URL}/careerApplications`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newApp),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Server Error');
-      }
-    } catch (error: any) {
-      console.error('Failed to submit application:', error);
-      toast.error('Failed to submit application officially, but it was stored in your session.');
-    }
+  const addCareerApplication = async (form: FormData) => {
+    await apiRequest('careerApplications', { method: 'POST', body: form });
   };
-
-  const deleteMessage = (id: string) => {
-    const updated = messages.filter(m => m.id !== id);
-    setMessages(updated);
-    updateData('messages', updated);
+  const deleteMessage = async (id: string) => { await deleteData('messages', id); };
+  const markMessageRead = async (id: string) => {
+    const item = (snapshots.current.messages || []).find(row => row.id === id);
+    if (item) await updateData('messages', [{ id: item.id, read: true }], true);
   };
-
-  const markMessageRead = (id: string) => {
-    const updated = messages.map(m => m.id === id ? { ...m, read: true } : m);
-    setMessages(updated);
-    updateData('messages', updated);
+  const addVideoComment = async (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => {
+    const response = await apiRequest(`videos/${encodeURIComponent(videoId)}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(comment) });
+    const saved = await response.json();
+    commit('videos', (snapshots.current.videos || []).map(row => row.id === videoId ? { ...row, __v: (row.__v || 0) + 1, comments: [saved, ...(row.comments || [])] } : row));
   };
-
-  const addVideoComment = (videoId: string, comment: Omit<VideoComment, 'id' | 'date'>) => {
-    const newComment: VideoComment = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toISOString().split('T')[0],
-      ...comment
-    };
-
-    const updatedVideos = videos.map(v => {
-      if (v.id === videoId) {
-        return { ...v, comments: [newComment, ...(v.comments || [])] };
-      }
-      return v;
-    });
-
-    setVideos(updatedVideos);
-    updateData('videos', updatedVideos);
-  };
-
   const resetData = () => {
-    localStorage.clear();
-    window.location.reload();
+    localStorage.removeItem('rizqara_language');
+    setLanguage('en');
+    toast.success('Language preference reset');
   };
 
   const t = (key: keyof typeof translations['en']) => {
@@ -640,7 +436,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, fetchAdminData }}>
+    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, secondaryLoading, loadErrors, retryLoad, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );

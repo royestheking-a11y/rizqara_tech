@@ -6,9 +6,13 @@
   "scripts": {
     "start": "node index.js",
     "start:server": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "node --watch index.js",
     "build": "cd .. && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/*.test.js",
+    "admin:password": "node scripts/hash-password.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/backup.js restore",
+    "media:inventory": "node scripts/media-inventory.js"
   },
   "keywords": [],
   "author": "",
@@ -20,10 +24,10 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongoose": "^9.1.2",
-    "multer": "^2.0.2",
-    "translation-google": "^0.2.1"
+    "multer": "^2.0.2"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
+  "devDependencies": {},
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

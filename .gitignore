@@ -26,3 +26,8 @@ yarn-error.log*
 
 # Server
 server/.env
+
+# Local databases, credentials, private CVs and backups
+.local-data/
+server/private-uploads/
+backups/
