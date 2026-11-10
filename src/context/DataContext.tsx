@@ -7,6 +7,9 @@ import catalog from '../../shared/service-catalog.json';
 import initialCaseStudies from '../data/case-studies.json';
 import initialCarouselSlides from '../data/carousel.json';
 import initialProjectConcepts from '../data/project-concepts.json';
+import initialReviews from '../data/reviews.json';
+import initialBlogs from '../data/blogs.json';
+import initialVideos from '../data/videos.json';
 
 // --- Types ---
 
@@ -454,10 +457,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const initialCatalogServices = getInitialCatalogServices();
   const [services, setServices] = useState<Service[]>(initialCatalogServices);
   const [projects, setProjects] = useState<Project[]>(initialProjectConcepts as Project[]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews as Review[]);
+  const [blogs, setBlogs] = useState<BlogPost[]>(initialBlogs as unknown as BlogPost[]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<Video[]>(initialVideos as Video[]);
   const [carouselSlides, setCarouselSlides] = useState<CarouselSlide[]>(initialCarouselSlides as CarouselSlide[]);
   const [buildOptions, setBuildOptions] = useState<BuildOption[]>(DEFAULT_BUILD_OPTIONS);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -476,7 +479,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     services: initialCatalogServices,
     caseStudies: initialCaseStudies as CaseStudy[],
     carousel: initialCarouselSlides as CarouselSlide[],
-    projects: initialProjectConcepts as Project[]
+    projects: initialProjectConcepts as Project[],
+    reviews: initialReviews as Review[],
+    blogs: initialBlogs as unknown as BlogPost[],
+    videos: initialVideos as Video[],
   });
   const pendingWrites = useRef(new Set<string>());
   const setters: Record<string, (data: any) => void> = {
@@ -490,10 +496,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       snapshots.current.projects = merged;
       setProjects(merged);
     },
-    reviews: setReviews,
-    blogs: setBlogs,
+    reviews: data => {
+      const items = Array.isArray(data) && data.length > 0 ? data : (initialReviews as Review[]);
+      snapshots.current.reviews = items;
+      setReviews(items);
+    },
+    blogs: data => {
+      const items = Array.isArray(data) && data.length > 0 ? data : (initialBlogs as unknown as BlogPost[]);
+      snapshots.current.blogs = items;
+      setBlogs(items);
+    },
     jobs: setJobs,
-    videos: setVideos,
+    videos: data => {
+      const items = Array.isArray(data) && data.length > 0 ? data : (initialVideos as Video[]);
+      snapshots.current.videos = items;
+      setVideos(items);
+    },
     carousel: data => {
       const items = Array.isArray(data) && data.length > 0 ? data : (initialCarouselSlides as CarouselSlide[]);
       snapshots.current.carousel = items;

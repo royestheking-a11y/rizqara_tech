@@ -1,12 +1,15 @@
 const path = require('node:path');
 const fs = require('node:fs');
 const { createHash } = require('node:crypto');
-const { Service, Project, Carousel, CaseStudy, GalleryItem } = require('./models/Schemas');
+const { Service, Project, Carousel, CaseStudy, GalleryItem, Review, Blog, Video } = require('./models/Schemas');
 
 const catalogPath = path.join(__dirname, '../shared/service-catalog.json');
 const conceptsPath = path.join(__dirname, '../src/data/project-concepts.json');
 const carouselPath = path.join(__dirname, '../src/data/carousel.json');
 const caseStudiesPath = path.join(__dirname, '../src/data/case-studies.json');
+const reviewsPath = path.join(__dirname, '../src/data/reviews.json');
+const blogsPath = path.join(__dirname, '../src/data/blogs.json');
+const videosPath = path.join(__dirname, '../src/data/videos.json');
 
 const legacyServiceMap = {
   'Website Development': 'custom-website-development',
@@ -234,6 +237,48 @@ async function syncDatabase() {
     }
   }
   summary.galleryItems = { total: (await GalleryItem.countDocuments()), updated: galleryChanges };
+
+  // 6. SYNC REVIEWS
+  if (fs.existsSync(reviewsPath)) {
+    const reviews = JSON.parse(fs.readFileSync(reviewsPath, 'utf8'));
+    let reviewChanges = 0;
+    for (const rev of reviews) {
+      const existing = await Review.findOne({ id: rev.id }).lean();
+      if (!existing) {
+        await Review.create(rev);
+        reviewChanges++;
+      }
+    }
+    summary.reviews = { total: await Review.countDocuments(), seeded: reviewChanges };
+  }
+
+  // 7. SYNC BLOGS
+  if (fs.existsSync(blogsPath)) {
+    const blogs = JSON.parse(fs.readFileSync(blogsPath, 'utf8'));
+    let blogChanges = 0;
+    for (const blog of blogs) {
+      const existing = await Blog.findOne({ id: blog.id }).lean();
+      if (!existing) {
+        await Blog.create(blog);
+        blogChanges++;
+      }
+    }
+    summary.blogs = { total: await Blog.countDocuments(), seeded: blogChanges };
+  }
+
+  // 8. SYNC VIDEOS
+  if (fs.existsSync(videosPath)) {
+    const videos = JSON.parse(fs.readFileSync(videosPath, 'utf8'));
+    let videoChanges = 0;
+    for (const vid of videos) {
+      const existing = await Video.findOne({ id: vid.id }).lean();
+      if (!existing) {
+        await Video.create(vid);
+        videoChanges++;
+      }
+    }
+    summary.videos = { total: await Video.countDocuments(), seeded: videoChanges };
+  }
 
   return summary;
 }

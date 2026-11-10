@@ -17,6 +17,7 @@ import { useData } from '../../context/DataContext';
 import { getSlug } from '../../utils/content';
 import { RizqAIEngine, ChatbotState } from '../../utils/chatbotEngine';
 import defaultCarouselSlides from '../../data/carousel.json';
+import defaultReviews from '../../data/reviews.json';
 
 import { toast } from "sonner";
 
@@ -943,16 +944,20 @@ export const LatestBlogs = ({ onNavigate }: any) => {
 // --- 9. TESTIMONIAL SLIDER ---
 export const TestimonialSlider = () => {
     const { reviews, language } = useData();
+    const list = (reviews && reviews.length > 0) ? reviews : (defaultReviews as any[]);
     const [index, setIndex] = useState(0);
 
     // Auto-change every 5 seconds
     useEffect(() => {
-        if (reviews.length === 0) return;
+        if (list.length === 0) return;
         const interval = setInterval(() => {
-            setIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+            setIndex((prevIndex) => (prevIndex + 1) % list.length);
         }, 5000); // 5 seconds
         return () => clearInterval(interval);
-    }, [reviews.length]);
+    }, [list.length]);
+
+    if (!list.length) return null;
+    const current = list[index % list.length] || list[0];
 
     return (
         <div data-rq-reveal className="rq-testimonial relative bg-white border border-gray-200 rounded-3xl p-12 shadow-xl text-center max-w-4xl mx-auto">
@@ -966,21 +971,21 @@ export const TestimonialSlider = () => {
                     <div className="mb-8 text-[#500000]">
                         {[1, 2, 3, 4, 5].map(s => <Star key={s} size={24} className="inline-block fill-current" />)}
                     </div>
-                    <p className="text-2xl md:text-3xl font-light text-gray-800 italic mb-10 leading-relaxed">"{language === 'bn' ? (reviews[index]?.content_bn || reviews[index]?.content) : reviews[index]?.content}"</p>
+                    <p className="text-2xl md:text-3xl font-light text-gray-800 italic mb-10 leading-relaxed">"{language === 'bn' ? (current?.content_bn || current?.content) : current?.content}"</p>
                     <div className="flex flex-col items-center">
-                        {reviews[index]?.image && (
+                        {current?.image && (
                             <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-2 border-[#500000]/10 shadow-md">
-                                <img src={reviews[index].image} alt={reviews[index].name} className="w-full h-full object-cover" />
+                                <img src={current.image} alt={current.name} className="w-full h-full object-cover" />
                             </div>
                         )}
-                        <h4 className="text-gray-900 font-bold text-lg">{language === 'bn' ? (reviews[index]?.name_bn || reviews[index]?.name) : reviews[index]?.name}</h4>
-                        <p className="text-gray-500 text-sm font-medium">{language === 'bn' ? (reviews[index]?.role_bn || reviews[index]?.role) : reviews[index]?.role}, {reviews[index]?.company}</p>
+                        <h4 className="text-gray-900 font-bold text-lg">{language === 'bn' ? (current?.name_bn || current?.name) : current?.name}</h4>
+                        <p className="text-gray-500 text-sm font-medium">{language === 'bn' ? (current?.role_bn || current?.role) : current?.role}, {current?.company}</p>
                     </div>
                 </motion.div>
             </AnimatePresence>
             <div className="flex justify-center gap-4 mt-8">
-                <button aria-label="Previous" onClick={() => setIndex((index - 1 + reviews.length) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronLeft /></button>
-                <button aria-label="Next" onClick={() => setIndex((index + 1) % reviews.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronRight /></button>
+                <button aria-label="Previous" onClick={() => setIndex((index - 1 + list.length) % list.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronLeft /></button>
+                <button aria-label="Next" onClick={() => setIndex((index + 1) % list.length)} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#500000] hover:text-white transition-colors shadow-sm"><ChevronRight /></button>
             </div>
         </div>
     );

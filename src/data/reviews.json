@@ -1,0 +1,72 @@
+[
+  {
+    "id": "lpue6y45v",
+    "company": "BrightPath Solutions",
+    "content": "RizQara Tech delivered our web application on time and exceeded expectations. Their team understood our requirements quickly and built a system that significantly improved our workflow efficiency. Highly professional and reliable.",
+    "content_bn": "RizQara Tech সময়মতো আমাদের ওয়েব অ্যাপ্লিকেশন সরবরাহ করেছে এবং প্রত্যাশা ছাড়িয়েছে। তাদের দল আমাদের প্রয়োজনীয়তাগুলি দ্রুত বুঝতে পেরেছে এবং একটি সিস্টেম তৈরি করেছে যা আমাদের কর্মপ্রবাহের দক্ষতাকে উল্লেখযোগ্যভাবে উন্নত করেছে৷ অত্যন্ত পেশাদার এবং নির্ভরযোগ্য.",
+    "name": "Michael Turner",
+    "rating": 5,
+    "role": "Operations Manager",
+    "role_bn": "অপারেশন ম্যানেজার"
+  },
+  {
+    "id": "8ch0dj3b2",
+    "company": "FreshMart ",
+    "content": "RizQara Tech built our online store with a modern design and smooth user experience. The system works flawlessly, and our customers love it.",
+    "content_bn": "RizQara Tech একটি আধুনিক ডিজাইন এবং মসৃণ ব্যবহারকারীর অভিজ্ঞতা দিয়ে আমাদের অনলাইন স্টোর তৈরি করেছে। সিস্টেমটি নির্দোষভাবে কাজ করে এবং আমাদের গ্রাহকরা এটি পছন্দ করেন।",
+    "name": "Jessica Miller",
+    "rating": 5,
+    "role": "Business Owner",
+    "role_bn": "ব্যবসার মালিক"
+  },
+  {
+    "id": "gsea4f7zy",
+    "company": "Nexa Digital",
+    "content": "The development quality and communication were excellent. RizQara Tech provided regular updates and delivered a modern, high-performance system that matched our business goals perfectly.",
+    "content_bn": "উন্নয়ন মান এবং যোগাযোগ চমৎকার ছিল. RizQara Tech নিয়মিত আপডেট প্রদান করে এবং একটি আধুনিক, উচ্চ-পারফরম্যান্স সিস্টেম প্রদান করে যা আমাদের ব্যবসায়িক লক্ষ্যের সাথে পুরোপুরি মেলে।",
+    "name": "David Lee",
+    "rating": 5,
+    "role": "Project Manager",
+    "role_bn": "প্রজেক্ট ম্যানেজার"
+  },
+  {
+    "id": "agk7d5tiy",
+    "company": "Rahim Traders",
+    "content": "RizQara Tech amar business er jonno ekta professional website create koreche. Design ta modern, system ta fast, and support o onek bhalo chilo.",
+    "content_bn": "RizQara Tech amar business er jonno ekta professional website create koreche. Design ta modern, system ta fast, and support o onek bhalo chilo.",
+    "name": "Rahim Ahmed",
+    "rating": 4,
+    "role": "Business Owner",
+    "role_bn": "ব্যবসার মালিক"
+  },
+  {
+    "id": "3",
+    "company": "Global Solutions",
+    "content": "Top tier development team. Highly recommended for enterprise software",
+    "content_bn": "শীর্ষ স্তরের উন্নয়ন দল। এন্টারপ্রাইজ সফ্টওয়্যার জন্য অত্যন্ত প্রস্তাবিত",
+    "name": "Amara Diop",
+    "rating": 5,
+    "role": "Director",
+    "role_bn": "পরিচালক"
+  },
+  {
+    "id": "2",
+    "company": "StartUp Inc",
+    "content": "Incredible attention to detail. The admin panel is exactly what we needed.",
+    "content_bn": "বিস্তারিত বিষয়ে অবিশ্বাস্য মনোযোগ। অ্যাডমিন প্যানেলটি ঠিক আমাদের যা প্রয়োজন ছিল তাই।",
+    "name": "Michael Chen",
+    "rating": 5,
+    "role": "Founder",
+    "role_bn": "প্রতিষ্ঠাতা"
+  },
+  {
+    "id": "1",
+    "company": "TechFlow",
+    "content": "Rizqara Tech delivered our platform ahead of schedule. The glass UI is stunning.",
+    "content_bn": "রিজকারা টেক আমাদের প্ল্যাটফর্মটি সময়ের আগেই ডেলিভার করেছে। গ্লাস ইউআই অসাধারণ।",
+    "name": "Sarah Jenkins",
+    "rating": 5,
+    "role": "CTO",
+    "role_bn": "সিটিও"
+  }
+]
