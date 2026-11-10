@@ -1040,7 +1040,9 @@ const Footer = () => {
                         <div className="rq-footer-extra">
                             <h4>{language === 'bn' ? 'যোগাযোগ করুন' : 'Direct contact'}</h4>
                             <a href="tel:+8801343042761">+880 1343-042761 <span>↗</span></a>
-                            <a href="mailto:rizqaratech@gmail.com">{language === 'bn' ? 'ইমেইল করুন' : 'Email our team'} <span>↗</span></a>
+                            <a href="mailto:rizqaratech@gmail.com">rizqaratech@gmail.com <span>↗</span></a>
+                            <a href="mailto:rizqarateam@gmail.com">rizqarateam@gmail.com <span>↗</span></a>
+                            <a href="mailto:info.rizqaratech@gmail.com">info.rizqaratech@gmail.com <span>↗</span></a>
                             <div className="rq-footer-location"><span>{language === 'bn' ? 'আমাদের অবস্থান' : 'OUR LOCATIONS'}</span><p>{language === 'bn' ? 'ঢাকা ও বরিশাল, বাংলাদেশ' : 'Dhaka & Barisal, Bangladesh'}</p></div>
                         </div>
                     </div>

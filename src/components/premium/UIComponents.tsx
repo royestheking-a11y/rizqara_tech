@@ -8,7 +8,7 @@ import {
     ArrowRight, ChevronLeft, ChevronRight, Check, X,
     Globe, Award, Briefcase, Zap, Users,
     Rocket, Star, Crown,
-    Layout, Monitor, Clock,
+    Layout, Monitor, Clock, ShieldCheck,
     Settings, Sliders, Play, User, Send, MapPin, Phone, Mail,
     Loader, Activity, PlayCircle, MessageSquare,
     Music, Pause, Volume2
@@ -1719,15 +1719,25 @@ export const ContactFormWithMap = () => {
                             </div>
                         </a>
 
-                        <a href="mailto:rizqaratech@gmail.com" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
-                            <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300">
+                        <div className="flex items-start gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
+                            <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300 shrink-0">
                                 <Mail size={24} />
                             </div>
-                            <div>
-                                <h5 className="font-bold text-gray-900 text-xs uppercase tracking-widest mb-1 opacity-60 group-hover:opacity-100 transition-opacity">{language === 'bn' ? 'ইমেইল করুন' : 'Email Us'}</h5>
-                                <p className="text-lg font-medium text-gray-800 group-hover:text-[#500000] transition-colors">rizqaratech@gmail.com</p>
+                            <div className="space-y-1.5 flex-1 min-w-0">
+                                <h5 className="font-bold text-gray-900 text-xs uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{language === 'bn' ? 'অফিসিয়াল ইমেইলসমূহ' : 'Official Emails'}</h5>
+                                <div className="space-y-1">
+                                    <a href="mailto:rizqaratech@gmail.com" className="block text-sm md:text-base font-medium text-gray-800 hover:text-[#500000] transition-colors truncate">
+                                        rizqaratech@gmail.com
+                                    </a>
+                                    <a href="mailto:rizqarateam@gmail.com" className="block text-sm md:text-base font-medium text-gray-800 hover:text-[#500000] transition-colors truncate">
+                                        rizqarateam@gmail.com
+                                    </a>
+                                    <a href="mailto:info.rizqaratech@gmail.com" className="block text-sm md:text-base font-medium text-gray-800 hover:text-[#500000] transition-colors truncate">
+                                        info.rizqaratech@gmail.com
+                                    </a>
+                                </div>
                             </div>
-                        </a>
+                        </div>
 
                         <a href="tel:+8801343042761" className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50/80 border border-gray-100 hover:border-[#500000]/30 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all group duration-300">
                             <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm group-hover:bg-[#500000] group-hover:text-white group-hover:border-[#500000] transition-all duration-300">
@@ -1815,12 +1825,23 @@ export const ContactFormWithMap = () => {
                             )}
                         </button>
 
-                        <div className="pt-2 flex items-center justify-between text-[11px] text-gray-400">
-                            <span className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                {language === 'bn' ? 'গড় উত্তর: ২–৪ ঘণ্টার মধ্যে' : 'Average response: 2–4 hours'}
-                            </span>
-                            <span>🔒 {language === 'bn' ? '১০০% নিরাপদ ও গোপনীয়' : '100% Confidential'}</span>
+                        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-[#500000]/[0.03] to-[#500000]/[0.08] border border-[#500000]/15 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#500000]">
+                                    <Clock size={15} className="text-[#500000]" />
+                                    <span>{language === 'bn' ? 'গড় উত্তর: ২–৪ ঘণ্টা' : 'Average response: 2–4 hours'}</span>
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200 shadow-sm">
+                                    <ShieldCheck size={13} className="text-emerald-600" />
+                                    <span>{language === 'bn' ? '১০০% গোপনীয়' : '100% Confidential'}</span>
+                                </span>
+                            </div>
+                            <p className="text-xs text-gray-600 leading-relaxed font-normal pt-1 border-t border-[#500000]/10">
+                                <strong className="font-semibold text-gray-900">{language === 'bn' ? 'নোট: ' : 'Note: '}</strong>
+                                {language === 'bn' 
+                                    ? '২–৪ ঘণ্টার মধ্যে আপনি উত্তর পাবেন অথবা আমাদের টিম সরাসরি আপনার সাথে যোগাযোগ করবে।' 
+                                    : 'Within 2–4 hours you will receive a reply or our team will contact you directly.'}
+                            </p>
                         </div>
                     </form>
                 </div>
