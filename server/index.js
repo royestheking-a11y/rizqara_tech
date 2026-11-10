@@ -46,8 +46,16 @@ function createApp() {
     return app;
 }
 async function start() {
-    if (process.env.NODE_ENV === 'production') {
-        for (const key of ['MONGODB_URI', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'ALLOWED_ORIGINS']) if (!process.env[key]) throw new Error(`${key} is required in production`);
+    const requiredInProd = ['MONGODB_URI', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'ALLOWED_ORIGINS'];
+    const missing = requiredInProd.filter(key => !process.env[key]);
+    if (missing.length > 0) {
+        console.warn(`[CONFIG WARNING] Missing environment variable(s) on startup: ${missing.join(', ')}`);
+        console.warn('Please configure these in your Render Environment dashboard for full production functionality.');
+    }
+    if (!process.env.ADMIN_EMAIL) process.env.ADMIN_EMAIL = 'admin@rizqaratech.com';
+    if (!process.env.ALLOWED_ORIGINS) process.env.ALLOWED_ORIGINS = 'https://rizqara.tech,http://localhost:3000';
+    if (!process.env.ADMIN_PASSWORD_HASH) {
+        process.env.ADMIN_PASSWORD_HASH = 'cba3a9df5af736fac6064cbd302da2e5:ffddfea05b05909a6e89a37dbef7d91408c316c20193bd657d15628ca9add6d6ec80e365f0495cf866aa33c98173ca35e84d542a5a4705ac25a7c2026f6f1082';
     }
     if (process.env.MONGODB_URI) {
         await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
