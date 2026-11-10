@@ -1742,7 +1742,7 @@ export const ContactFormWithMap = () => {
                 </div>
 
                 {/* Right Side: Form */}
-                <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-gray-100 relative overflow-hidden">
+                <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-gray-100 relative overflow-hidden self-start h-fit">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#500000] opacity-5 rounded-bl-[100px] pointer-events-none" />
 
                     <span className="rq-contact-eyebrow">YOUR NEXT IDEA STARTS HERE</span><h3 className="text-2xl font-black text-gray-900 mb-8">{language === 'bn' ? 'বার্তা পাঠান' : 'Send a Message'}</h3>
@@ -1814,6 +1814,14 @@ export const ContactFormWithMap = () => {
                                 <>{language === 'bn' ? 'বার্তা পাঠান' : 'Send Message'} <Send size={18} className="group-hover:translate-x-1 transition-transform" /></>
                             )}
                         </button>
+
+                        <div className="pt-2 flex items-center justify-between text-[11px] text-gray-400">
+                            <span className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                {language === 'bn' ? 'গড় উত্তর: ২–৪ ঘণ্টার মধ্যে' : 'Average response: 2–4 hours'}
+                            </span>
+                            <span>🔒 {language === 'bn' ? '১০০% নিরাপদ ও গোপনীয়' : '100% Confidential'}</span>
+                        </div>
                     </form>
                 </div>
             </div>
