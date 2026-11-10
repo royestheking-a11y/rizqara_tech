@@ -53,13 +53,13 @@
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.7.0",
     "three": "^0.187.0",
+    "@types/three": "^0.187.0",
     "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
-    "@types/three": "^0.187.0",
     "@vitejs/plugin-react-swc": "^3.10.2",
     "concurrently": "^9.2.1",
     "sharp": "^0.35.5",

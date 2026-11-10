@@ -277,7 +277,7 @@ export default function TechCore({ mode, paused }: Props) {
       canvas.removeEventListener("pointercancel", up);
       canvas.removeEventListener("pointerleave", resetPointer);
       canvas.removeEventListener("webglcontextlost", lost);
-      scene.traverse((object) => {
+      scene.traverse((object: any) => {
         if (
           object instanceof THREE.Mesh ||
           object instanceof THREE.LineSegments
@@ -286,7 +286,7 @@ export default function TechCore({ mode, paused }: Props) {
           const materials = Array.isArray(object.material)
             ? object.material
             : [object.material];
-          materials.forEach((material) => material.dispose());
+          materials.forEach((material: any) => material?.dispose?.());
         }
       });
       environmentMap.dispose();

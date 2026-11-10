@@ -7,7 +7,7 @@
     "start": "node index.js",
     "start:server": "node index.js",
     "dev": "node --watch index.js",
-    "build": "cd .. && npm run build",
+    "build": "cd .. && npm install --include=dev && npm run build",
     "test": "node --test test/*.test.js",
     "admin:password": "node scripts/hash-password.js",
     "backup": "node scripts/backup.js",
