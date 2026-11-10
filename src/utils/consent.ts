@@ -40,8 +40,10 @@ export function saveConsent(value: Consent, choice: string) {
         document.cookie = `${name}=; Max-Age=0; path=/; domain=.${location.hostname}`;
       }
     }
+    localStorage.removeItem('rizqara_visitor_id');
     location.reload();
     return;
   }
   applyConsent(value);
+  window.dispatchEvent(new Event('rizqara-consent-change'));
 }

@@ -1,3 +1,4 @@
+import { VisitorAnalytics } from './admin/VisitorAnalytics';
 import serviceCatalog from '../../shared/service-catalog.json';
 import { useDialog } from '../utils/useDialog';
 import { apiRequest, API_URL } from '../utils/api';
@@ -243,6 +244,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                 <PremiumStatCard icon={FileText} value={blogs.length} label={language === 'bn' ? "ব্লগ পোস্ট" : "Blog Posts"} color="text-orange-600" bg="bg-orange-50" />
             </div>
 
+            <VisitorAnalytics />
             <UserInteractionAnalytics />
 
             <AdminCard className="flex items-center justify-between p-8 bg-gradient-to-r from-gray-50 to-white border-gray-100">
@@ -734,7 +736,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             <div>
                                 <h3 className="font-bold text-gray-800">{item.title}</h3>
                                 <div className="flex gap-2 mt-1">
-                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${item.status === 'Live' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${item.status === 'Live' ? 'bg-green-100 text-green-700' : item.status === 'Concept' ? 'bg-purple-100 text-purple-700' : 'bg-yellow-100 text-yellow-700'}`}>
                                         {item.status}
                                     </span>
                                     <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-gray-100 text-gray-600 border border-gray-200">
@@ -890,6 +892,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         <option value="Live">Live</option>
                                         <option value="Ongoing">Ongoing</option>
                                         <option value="Completed">Completed</option>
+                                        <option value="Concept">Concept</option>
                                     </AdminSelect>
 
                                     <ImageUploader

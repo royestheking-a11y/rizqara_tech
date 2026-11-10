@@ -10,7 +10,7 @@ export const projectConcepts = concepts as Project[];
 export function ProjectShowcase({preview=false}:{preview?:boolean}) {
  const {projects,language}=useData(); const bn=language==='bn'; const [params]=useSearchParams(); const [query,setQuery]=useState(params.get('q')||''); const [filter,setFilter]=useState('All'); const [limit,setLimit]=useState(12); const [active,setActive]=useState(0);
  const Heading = preview ? 'h2' : 'h1';
- const all=[...projects,...projectConcepts];
+ const all=[...projects,...projectConcepts.filter(c=>!projects.some(p=>p.id===c.id))];
  const filtered=all.filter(p=>(filter==='All'||(filter==='Existing work'?p.status!=='Concept':p.status==='Concept'&&p.category===(filter==='Mobile concepts'?'Mobile App':'Website')))&&`${p.title} ${p.description} ${p.category}`.toLowerCase().includes(query.toLowerCase()));
  const spotlight=projects.slice(0,4); const selected=spotlight[active] || projectConcepts[0];
  const shown=preview?[...projects.slice(0,2),...projectConcepts.slice(0,2),...projectConcepts.slice(30,32)]:filtered.slice(0,limit);

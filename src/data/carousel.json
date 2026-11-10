@@ -1,42 +1,42 @@
 [
   {
     "id": "0mpe4fgn9",
-    "title": "Building Software That Scales Businesses",
-    "title_bn": "বিল্ডিং সফ্টওয়্যার যা ব্যবসা স্কেল করে",
-    "subtitle": "We design, develop, and grow high-performance digital products for modern companies.",
-    "subtitle_bn": "আমরা আধুনিক কোম্পানিগুলির জন্য উচ্চ-ক্ষমতা সম্পন্ন ডিজিটাল পণ্য ডিজাইন, বিকাশ এবং বৃদ্ধি করি।",
-    "image": "https://res.cloudinary.com/dhutfywg2/image/upload/v1767756500/rizqaratech/uploads/msanw3h3avwxq3i6owo2.jpg",
+    "title": "Launch something remarkable.",
+    "title_bn": "অসাধারণ কিছু শুরু করুন।",
+    "subtitle": "Websites, mobile apps and SaaS — built around your next big idea.",
+    "subtitle_bn": "ওয়েবসাইট, মোবাইল অ্যাপ ও সাস — আপনার পরবর্তী বড় ধারণার জন্য।",
+    "image": "/images/hero/launch-v1.webp",
     "cta": "View Projects",
-    "cta_bn": "এখনই যোগাযোগ করুন"
+    "cta_bn": "প্রকল্প দেখুন"
   },
   {
     "id": "ayi3qrui3",
-    "title": "A Team Built on Skill & Innovation",
-    "title_bn": "দক্ষতা ও উদ্ভাবনের উপর নির্মিত একটি দল",
-    "subtitle": "Designers, developers, and strategists working together to build excellence",
-    "subtitle_bn": "ডিজাইনার, ডেভেলপার এবং কৌশলবিদরা একসাথে কাজ করে উৎকর্ষ গড়ে তুলতে",
-    "image": "https://res.cloudinary.com/dhutfywg2/image/upload/v1779604917/rizqaratech/uploads/gwejren4ixwo3ff86zu0.jpg",
-    "cta": "Contact Now",
-    "cta_bn": "এখনই যোগাযোগ করুন"
+    "title": "Give busywork to AI.",
+    "title_bn": "পুনরাবৃত্তির কাজ দিন এআইকে।",
+    "subtitle": "Connect your tools. Automate the repetitive work. Make room for what matters.",
+    "subtitle_bn": "আপনার টুলগুলো সংযুক্ত করুন। সময় বাঁচান, গুরুত্বপূর্ণ কাজে মন দিন।",
+    "image": "/images/hero/automation-v1.webp",
+    "cta": "View Services",
+    "cta_bn": "সেবাসমূহ দেখুন"
   },
   {
     "id": "hvgmvfh3w",
-    "title": "Automate Your Business with AI",
-    "title_bn": "এআই দিয়ে আপনার ব্যবসা স্বয়ংক্রিয় করুন",
-    "subtitle": "Chatbots, automation & smart systems that work 24/7",
-    "subtitle_bn": "চ্যাটবট, অটোমেশন এবং স্মার্ট সিস্টেম যা ২৪/৭ কাজ করে",
-    "image": "https://res.cloudinary.com/dhutfywg2/image/upload/v1777735794/rizqaratech/uploads/gmynwnsakou41q2d03mb.jpg",
+    "title": "Make your brand hard to ignore.",
+    "title_bn": "আপনার ব্র্যান্ডকে আলাদা করে তুলুন।",
+    "subtitle": "Distinctive design, thoughtful websites and digital marketing with a clear direction.",
+    "subtitle_bn": "স্বতন্ত্র ডিজাইন, সুপরিকল্পিত ওয়েবসাইট ও লক্ষ্যভিত্তিক ডিজিটাল মার্কেটিং।",
+    "image": "/images/hero/growth-v1.webp",
     "cta": "View Services",
     "cta_bn": "সেবাসমূহ দেখুন"
   },
   {
     "id": "gglh9n01x",
-    "title": "Control Your Business with Real-Time Insights",
-    "title_bn": "রিয়েল-টাইম তথ্যের মাধ্যমে আপনার ব্যবসা পরিচালনা করুন",
-    "subtitle": "Track performance, monitor growth, and make smarter decisions",
-    "subtitle_bn": "পারফরম্যান্স ট্র্যাক করুন, বৃদ্ধি পর্যবেক্ষণ করুন এবং আরও স্মার্ট সিদ্ধান্ত নিন",
-    "image": "https://res.cloudinary.com/dhutfywg2/image/upload/v1777737162/rizqaratech/uploads/fi9z8dcpgrmbbuwqotyn.jpg",
+    "title": "Your spreadsheet needs a holiday.",
+    "title_bn": "আপনার স্প্রেডশিটের ছুটি দরকার।",
+    "subtitle": "Still running everything in 27 tabs? Let’s build a system that does the heavy lifting.",
+    "subtitle_bn": "এখনও ২৭টি ট্যাবে সব কাজ? চলুন, কাজ সহজ করার একটি সিস্টেম বানাই।",
+    "image": "/images/hero/funny-v1.webp",
     "cta": "Contact Now",
-    "cta_bn": "এখনই যোগাযোগ করুন"
+    "cta_bn": "কথা বলুন"
   }
 ]

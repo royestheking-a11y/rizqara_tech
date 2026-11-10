@@ -227,7 +227,7 @@ const FounderPage = () => {
         "alternateName": "Md Mizanur Rahman Sunny",
         "jobTitle": "Founder, Entrepreneur & Technology Innovator",
         "nationality": "Bangladeshi",
-        "worksFor": { "@type": "Organization", "name": "RizQara Tech", "url": "https://rizqara.tech" },
+        "worksFor": { "@type": "Organization", "name": "RizQara Tech", "url": "https://www.rizqara.tech" },
         "founder": { "@type": "Organization", "name": "RizQara Group" },
         "description": "Bangladeshi entrepreneur who founded RizQara Tech on his birthday — September 12, 2024.",
     };
@@ -330,7 +330,7 @@ const FounderPage = () => {
                 title="Aurangzeb Sunny - Founder of RizQara Tech | Tech Entrepreneur Bangladesh"
                 description="Learn about Aurangzeb Sunny, the visionary founder and CEO behind RizQara Tech. Discover his journey as a leading tech entrepreneur, software innovator, and business leader in Bangladesh."
                 keywords="Aurangzeb Sunny, Founder of RizQara Tech, Tech Entrepreneur Bangladesh, Software Innovator Dhaka, CEO RizQara Group, Best Software Company Founder BD, Aurangzeb Sunny Biography, Tech Leader"
-                canonical="https://rizqara.tech/founder"
+                canonical="https://www.rizqara.tech/founder"
                 schema={schema}
             />
 

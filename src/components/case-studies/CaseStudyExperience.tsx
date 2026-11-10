@@ -37,7 +37,7 @@ export function CaseStudyExperience({page=false}:{page?:boolean}) {
         <SEO
           title="Case Studies | Software & AI Solutions Impact | RizQara Tech"
           description="Explore the challenges, decisions, and business impact behind real-world software and AI solutions delivered by RizQara Tech."
-          canonical="https://rizqara.tech/case-studies"
+          canonical="https://www.rizqara.tech/case-studies"
         />
       )}
       <header className="rq-studies-header">

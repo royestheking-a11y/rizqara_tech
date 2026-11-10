@@ -25,6 +25,10 @@ function createApp() {
     app.use('/api', require('./routes'));
     app.use('/api', (req, res) => res.status(404).json({ error: 'API route not found' }));
     const distPath = path.join(__dirname, '../dist');
+    app.get('/sitemap.xml', async (req, res, next) => {
+        if (mongoose.connection.readyState !== 1) return res.status(503).set('Retry-After', '60').send('Sitemap temporarily unavailable');
+        try { res.type('application/xml').set('Cache-Control','public, max-age=3600').send(await require('./sitemap').sitemap()); } catch (error) { next(error); }
+    });
     app.use(express.static(distPath, { index: false }));
     app.use(async (req, res, next) => {
         if (req.method !== 'GET' || path.extname(req.path)) return res.status(404).send('Not found');

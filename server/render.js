@@ -1,6 +1,6 @@
 const fs = require('node:fs/promises');
 const { Service, Project, Blog, CaseStudy, Video } = require('./models/Schemas');
-const SITE_URL = 'https://rizqara.tech';
+const SITE_URL = 'https://www.rizqara.tech';
 const pages = {
     '/': ['RizQara Tech | Software & AI Solutions', 'Custom web, mobile and AI software built by RizQara Tech in Bangladesh.'],
     '/about': ['About RizQara Tech', 'Meet our software team and learn about our engineering approach.'],
@@ -26,6 +26,7 @@ const pages = {
 const escapeHTML = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const slug = title => title.toLowerCase().normalize('NFKC').trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 'item';
 async function renderPage(file, pathname, ready) {
+    let detail = null;
     let page = pages[pathname], status = 200, canonicalPath = pathname, image = `${SITE_URL}/og-image.png`;
     if (!page && ready) {
         const [, collection, encoded] = pathname.split('/');
@@ -33,10 +34,10 @@ async function renderPage(file, pathname, ready) {
         if (model && encoded) {
             const candidate = decodeURIComponent(encoded);
             // Existing title links are accepted alongside persisted slugs and IDs.
-            const records = await model.find().select('id title description excerpt image slug previousSlugs').limit(1000).lean();
+            const records = await model.find().select('id title description excerpt image slug previousSlugs details capabilities process').limit(1000).lean();
             if (collection === 'projects') records.push(...require('../src/data/project-concepts.json'));
             const item = records.find(record => [record.id, record.slug, `${slug(record.title)}-${record.id}`, `${slug(record.title)}-${record.id.slice(0, 8)}-${record.id}`, `${slug(record.title)}-${record.id.slice(0, 8)}`, slug(record.title), record.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, ''), ...(record.previousSlugs || [])].includes(candidate));
-            if (item) { page = [item.title, item.description || item.excerpt || item.title]; canonicalPath = `/${collection}/${item.slug || `${slug(item.title)}-${item.id.slice(0, 8)}`}`; if (item.image?.startsWith('https://')) image = item.image; else if (item.image?.startsWith('/images/') && !item.image.startsWith('//')) image = `${SITE_URL}${item.image}`; }
+            if (item) { detail = item; page = [item.title, item.description || item.excerpt || item.title]; canonicalPath = `/${collection}/${item.slug || `${slug(item.title)}-${item.id.slice(0, 8)}`}`; if (item.image?.startsWith('https://')) image = item.image; else if (item.image?.startsWith('/images/') && !item.image.startsWith('//')) image = `${SITE_URL}${item.image}`; }
         }
     }
     if (!page && pathname.startsWith('/feature/')) page = ['Project feature', 'Learn about the selected project capability.'];
@@ -46,7 +47,19 @@ async function renderPage(file, pathname, ready) {
     const tags = `<title>${escapeHTML(title)}</title>\n<meta data-rh="true" name="description" content="${escapeHTML(description)}">\n<link data-rh="true" rel="canonical" href="${escapeHTML(canonical)}">\n<meta data-rh="true" property="og:title" content="${escapeHTML(title)}">\n<meta data-rh="true" property="og:description" content="${escapeHTML(description)}">\n<meta data-rh="true" property="og:url" content="${escapeHTML(canonical)}">\n<meta data-rh="true" property="og:image" content="${escapeHTML(image)}">\n<meta data-rh="true" name="twitter:card" content="summary_large_image">\n${pathname === '/admin' || status !== 200 ? '<meta data-rh="true" name="robots" content="noindex">' : ''}`;
     let html = await fs.readFile(file, 'utf8');
     html = html.replace(/<title>[\s\S]*?<\/title>/, tags);
-    html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root"><main style="padding:2rem;font-family:sans-serif"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p></main></div>`);
+    const navigation = Object.entries(pages).filter(([url]) => !['/admin','/build','/packages'].includes(url)).map(([url, info]) => `<a href="${url}">${escapeHTML(info[0])}</a>`).join(' · ');
+    const catalog = require('../shared/service-catalog.json');
+    const serviceContent = ['/', '/services'].includes(pathname) ? `<section><h2>Software, mobile applications and digital services</h2>${catalog.categories.map(category => `<article><h3><a href="/services#${category.id}">${escapeHTML(category.title || category.name)}</a></h3><p>${escapeHTML(category.description || category.summary || '')}</p></article>`).join('')}</section>` : '';
+    const detailContent = detail ? `${detail.details ? `<section><h2>About this service or project</h2><p>${escapeHTML(detail.details)}</p></section>` : ''}${['capabilities','process'].map(key => Array.isArray(detail[key]) && detail[key].length ? `<section><h2>${key === 'capabilities' ? 'Capabilities' : 'Our process'}</h2><ul>${detail[key].map(value=>`<li>${escapeHTML(value)}</li>`).join('')}</ul></section>` : '').join('')}` : '';
+    let directory = '';
+    const listModel = {'/services':Service,'/projects':Project,'/blog':Blog,'/case-studies':CaseStudy,'/videos':Video}[pathname];
+    if (ready && listModel) {
+        const entries = await listModel.find().select('id title slug description excerpt').limit(1000).lean();
+        directory = `<section><h2>Explore ${escapeHTML(pathname.slice(1))}</h2><ul>${entries.map(item=>`<li><a href="${pathname}/${escapeHTML(item.slug || `${slug(item.title)}-${item.id.slice(0,8)}`)}">${escapeHTML(item.title)}</a><p>${escapeHTML(item.description || item.excerpt || '')}</p></li>`).join('')}</ul></section>`;
+    }
+    const fallback = `<main style="padding:2rem;font-family:sans-serif"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
+    html = html.replace(/<!--app-root-start-->[\s\S]*?<!--app-root-end-->/, `<div id="root">${fallback}</div>`);
+
     return { html, status };
 }
 module.exports = { renderPage };

@@ -14,6 +14,7 @@ const cvDirectory = path.resolve(process.env.PRIVATE_UPLOAD_DIR || path.join(__d
 cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10, fieldSize: 20000 } });
 mountAuth(router);
+require('./analytics')(router);
 const ready = (req, res, next) => mongoose.connection.readyState === 1 ? next() : res.status(503).json({ error: 'Database is unavailable. Please try again later.' });
 function modelFor(req, res, next) {
     if (!Object.hasOwn(models, req.params.collection)) return res.status(404).json({ error: 'Collection not found' });

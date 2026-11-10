@@ -17,7 +17,7 @@ export const SEO: React.FC<SEOProps> = ({
     description,
     keywords,
     canonical,
-    image = 'https://rizqara.tech/og-image.png',
+    image = 'https://www.rizqara.tech/og-image.png',
     type = 'website',
     schema,
     noIndex = false
@@ -29,10 +29,10 @@ export const SEO: React.FC<SEOProps> = ({
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "RizQara Tech",
-        "url": "https://rizqara.tech",
-        "logo": "https://rizqara.tech/logo.png",
+        "url": "https://www.rizqara.tech",
+        "logo": "https://www.rizqara.tech/images/brand/rizqara-official.png",
         "sameAs": [
-            "https://facebook.com/rizqaratech",
+            "https://www.facebook.com/rizqaratechology/",
             "https://x.com/Rizqaratech",
             "https://instagram.com/rizqaratech",
             "https://linkedin.com/company/rizqara-tech",

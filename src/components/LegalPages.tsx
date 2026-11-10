@@ -15,7 +15,7 @@ export const PrivacyPolicy = () => {
       <SEO 
         title={language === 'bn' ? 'গোপনীয়তা নীতি | RizQara Tech - সফটওয়্যার কোম্পানি' : 'Privacy Policy | RizQara Tech - Premium Software Company'}
         description={language === 'bn' ? 'রিজকারা টেকের গোপনীয়তা নীতি। আমরা কীভাবে আপনার ডেটা রক্ষা করি এবং আমাদের সফটওয়্যার পরিষেবাগুলিতে আপনার গোপনীয়তা নিশ্চিত করি তা জানুন।' : 'Privacy Policy of Rizqara Tech. Learn how we protect your data and ensure privacy across our custom software and AI development services.'}
-        canonical="https://rizqara.tech/privacy-policy"
+        canonical="https://www.rizqara.tech/privacy-policy"
       />
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
@@ -126,7 +126,7 @@ export const TermsOfService = () => {
       <SEO 
         title={language === 'bn' ? 'সেবার শর্তাবলী | RizQara Tech - সেরা সফটওয়্যার কোম্পানি' : 'Terms of Service | RizQara Tech - Best Software Company'}
         description={language === 'bn' ? 'রিজকারা টেকের সেবার শর্তাবলী। আমাদের পেশাদার সফটওয়্যার ডেভেলপমেন্ট এবং এআই সমাধান ব্যবহারের নিয়মাবলী জানুন।' : 'Terms of Service for Rizqara Tech. Guidelines for using our professional software development, AI solutions, and digital consulting services.'}
-        canonical="https://rizqara.tech/terms-of-service"
+        canonical="https://www.rizqara.tech/terms-of-service"
       />
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">

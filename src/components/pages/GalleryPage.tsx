@@ -112,7 +112,7 @@ export const GalleryPage = () => {
                     ? "রিজকারা টেকের সাম্প্রতিক ইভেন্ট, কর্মশালা, হ্যাকাথন এবং টিমের প্রাণবন্ত মুহূর্তগুলো এক্সপ্লোর করুন।" 
                     : "Explore moments from RizQara Tech's recent events, workshops, hackathons, company culture, and team milestones in Dhaka, Bangladesh."}
                 keywords="RizQara Tech gallery, software company events Dhaka, tech summit Bangladesh, team building workshop, software developers life"
-                canonical="https://rizqara.tech/gallery"
+                canonical="https://www.rizqara.tech/gallery"
             />
 
             {/* Ambient Background Glows */}

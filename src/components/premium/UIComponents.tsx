@@ -1227,7 +1227,7 @@ export const HeroCarousel = ({ onNavigate }: { onNavigate: (page: string) => voi
         else onNavigate('Contact');
     };
 
-    if (loading) {
+    if (loading && !slides.length) {
         return (
             <section className="rq-hero container mx-auto px-4 md:px-6 pt-32 pb-12">
                 <div className="rq-hero-panels w-full h-[500px] md:h-[600px] lg:h-[650px] flex gap-2 md:gap-4">

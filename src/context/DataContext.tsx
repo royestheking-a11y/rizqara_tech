@@ -6,6 +6,7 @@ import { apiRequest, getCollection } from '../utils/api';
 import catalog from '../../shared/service-catalog.json';
 import initialCaseStudies from '../data/case-studies.json';
 import initialCarouselSlides from '../data/carousel.json';
+import initialProjectConcepts from '../data/project-concepts.json';
 
 // --- Types ---
 
@@ -406,6 +407,19 @@ export function mergeCaseStudies(baseline: CaseStudy[], dbStudies: any[]): CaseS
   return [...map.values()];
 }
 
+export function mergeProjects(baseline: Project[], dbProjects: any[]): Project[] {
+  if (!Array.isArray(dbProjects) || dbProjects.length === 0) return baseline;
+  const map = new Map<string, Project>();
+  baseline.forEach(p => map.set(p.id, { ...p }));
+  for (const dbItem of dbProjects) {
+    if (dbItem.id) {
+      const existing = map.get(dbItem.id);
+      map.set(dbItem.id, existing ? { ...existing, ...dbItem } : dbItem);
+    }
+  }
+  return [...map.values()];
+}
+
 const INITIAL_PROMOTION: Promotion = {
   isActive: false,
   offerRate: '30',
@@ -439,7 +453,7 @@ export const useData = () => useContext(DataContext);
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const initialCatalogServices = getInitialCatalogServices();
   const [services, setServices] = useState<Service[]>(initialCatalogServices);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>(initialProjectConcepts as Project[]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -453,7 +467,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [language, setLanguage] = useState<Language>('en');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [secondaryLoading, setSecondaryLoading] = useState(false);
   const [loadErrors, setLoadErrors] = useState<string[]>([]);
@@ -461,7 +475,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const snapshots = useRef<Record<string, any[]>>({
     services: initialCatalogServices,
     caseStudies: initialCaseStudies as CaseStudy[],
-    carousel: initialCarouselSlides as CarouselSlide[]
+    carousel: initialCarouselSlides as CarouselSlide[],
+    projects: initialProjectConcepts as Project[]
   });
   const pendingWrites = useRef(new Set<string>());
   const setters: Record<string, (data: any) => void> = {
@@ -470,7 +485,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       snapshots.current.services = merged;
       setServices(merged);
     },
-    projects: setProjects,
+    projects: data => {
+      const merged = mergeProjects(initialProjectConcepts as Project[], data);
+      snapshots.current.projects = merged;
+      setProjects(merged);
+    },
     reviews: setReviews,
     blogs: setBlogs,
     jobs: setJobs,
@@ -520,7 +539,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Both groups begin immediately; one failed resource never discards the others.
     const critical = loadGroup(['services', 'projects', 'carousel', 'promotion', 'notice', 'buildOptions'], () => setLoading(false));
     const secondary = loadGroup(['reviews', 'blogs', 'jobs', 'videos', 'caseStudies', 'galleryItems'], () => setSecondaryLoading(false));
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 35000);
     // Abort also releases skeletons and exposes a retry control.
     controller.signal.addEventListener('abort', () => { if (active) { setLoading(false); setSecondaryLoading(false); } });
     void Promise.all([critical, secondary]).finally(() => clearTimeout(timeout));

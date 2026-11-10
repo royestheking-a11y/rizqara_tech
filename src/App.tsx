@@ -1,3 +1,4 @@
+import { VisitorTracker } from './components/VisitorTracker';
 import { useDialog } from './utils/useDialog';
 import './styles/mobile-navigation.css';
 import { ProjectPathfinder } from './components/studio/ProjectPathfinder';
@@ -177,7 +178,7 @@ const CaseStudyDetail = () => {
             <SEO
                 title={`${title} | Case Study | RizQara Tech`}
                 description={description}
-                canonical={`https://rizqara.tech/case-studies/${id}`}
+                canonical={`https://www.rizqara.tech/case-studies/${getSlug(study)}`}
             />
 
             <button onClick={() => navigate('/case-studies')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
@@ -434,7 +435,7 @@ const ServiceDetail = () => {
         "provider": {
             "@type": "Organization",
             "name": "RizQara Tech",
-            "url": "https://rizqara.tech"
+            "url": "https://www.rizqara.tech"
         }
     };
 
@@ -444,7 +445,7 @@ const ServiceDetail = () => {
                 title={`${title} | RizQara Tech`}
                 description={description}
                 keywords={`${title}, software company Bangladesh, ${title} service Dhaka, best ${title} company`}
-                canonical={`https://rizqara.tech/services/${id}`}
+                canonical={`https://www.rizqara.tech/services/${getSlug(service)}`}
                 schema={schema}
             />
             <button onClick={() => navigate('/services')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
@@ -638,7 +639,7 @@ const ProjectDetail = () => {
             <SEO
                 title={`${title} | RizQara Tech`}
                 description={description}
-                canonical={`https://rizqara.tech/projects/${id}`}
+                canonical={`https://www.rizqara.tech/projects/${getSlug(project)}`}
                 schema={schema}
                 image={project.image}
             />
@@ -1263,7 +1264,7 @@ const Home = () => {
                 title="RizQara Tech | Best Software & AI Solutions Company in Bangladesh"
                 description="RizQara Tech: The best software company in Bangladesh. Premium web development, AI solutions, mobile apps, and UI/UX design engineered for performance."
                 keywords="RizQara Tech, Rizq, Rizq Tech, Rizq Ara, software company Bangladesh, software development company in Dhaka, best software company in Bangladesh, AI software solutions BD, mobile app development Bangladesh"
-                canonical="https://rizqara.tech/"
+                canonical="https://www.rizqara.tech/"
             />
             <h1 className="sr-only">RizQara Tech — Software and AI solutions</h1>
                 <HeroCarousel onNavigate={onNavigate} />
@@ -1580,13 +1581,15 @@ const MainContent = () => {
 
     return (
         <div className={`${showNavbar ? 'rq-premium' : ''} min-h-screen bg-white text-gray-900 font-sans selection:bg-[#500000] selection:text-white overflow-x-hidden relative scroll-smooth`}>
+            <VisitorTracker />
             <AmbientBackground />
             {showNavbar && <PremiumExperience />}
 
             {showNavbar && <Navbar />}
 
             {location.pathname.startsWith('/admin') && <SEO title="Administrator sign in" description="Private administration area." noIndex />}
-            {loadErrors.length > 0 && <div role="alert" className="relative z-40 mt-24 bg-amber-50 p-4 text-center">Some content could not be loaded. <button type="button" className="underline" onClick={retryLoad}>Try again</button></div>}
+            {loading && <div className="rq-brand-loader" role="status" aria-label="Loading website"><div className="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i/><i/><i/></div></div>}
+            {!loading && loadErrors.length > 0 && <div role="status" className="rq-load-notice">{language === 'bn' ? 'কিছু তথ্য আপডেট করা যায়নি।' : 'Some updates are temporarily unavailable.'}<button type="button" onClick={retryLoad}>{language === 'bn' ? 'আবার চেষ্টা করুন' : 'Retry connection'}</button></div>}
             <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -1597,7 +1600,7 @@ const MainContent = () => {
                         <SEO
                             title="Software Development Services | RizQara Tech Bangladesh"
                             description="Our services include web development, UI UX design, AI solutions, mobile apps, SEO, and custom enterprise software."
-                            canonical="https://rizqara.tech/services"
+                            canonical="https://www.rizqara.tech/services"
                         />
                         {loading && !services.length ? <ServicesSkeleton /> : <ServicesPage />}
                     </>} />
@@ -1607,7 +1610,7 @@ const MainContent = () => {
                         <SEO
                             title="Our Projects | Software & AI Solutions by RizQara Tech"
                             description="Explore real-world software, AI, and digital projects delivered by RizQara Tech for local and global clients."
-                            canonical="https://rizqara.tech/projects"
+                            canonical="https://www.rizqara.tech/projects"
                         />
                         {loading ? <ProjectsSkeleton /> : <ProjectsPage />}
                     </>} />
@@ -1620,7 +1623,7 @@ const MainContent = () => {
                         <SEO
                                 title="Contact Us | RizQara Tech - Software & AI Solutions"
                                 description="Get in touch with RizQara Tech for custom software development, AI solutions, web apps, and digital transformation services in Bangladesh."
-                                canonical="https://rizqara.tech/contact"
+                                canonical="https://www.rizqara.tech/contact"
                             />
                             {loading ? (
                                 <ContactSkeleton />
@@ -1637,7 +1640,7 @@ const MainContent = () => {
                         <SEO
                             title="About RizQara Tech | Leading Software Company in Bangladesh"
                             description="Learn about RizQara Tech’s journey, mission, and vision to become a global software and AI company from Bangladesh."
-                            canonical="https://rizqara.tech/about"
+                            canonical="https://www.rizqara.tech/about"
                         />
                         <div className="bg-white">
                             {loading ? (
@@ -1674,7 +1677,7 @@ const MainContent = () => {
                         <SEO
                             title="Careers | Join RizQara Tech | Software Jobs in Bangladesh"
                             description="Apply for software engineering, design, and marketing roles at RizQara Tech. Build the future with the best software company in Bangladesh."
-                            canonical="https://rizqara.tech/careers"
+                            canonical="https://www.rizqara.tech/careers"
                         />
                         <CareersPage />
                     </>} />
@@ -1691,7 +1694,7 @@ const MainContent = () => {
                         <SEO 
                             title="Gallery | RizQara Tech Bangladesh" 
                             description="Explore our recent activities, team moments, and events in our gallery." 
-                            canonical="https://rizqara.tech/gallery"
+                            canonical="https://www.rizqara.tech/gallery"
                         />
                         <GalleryPage />
                     </>} />

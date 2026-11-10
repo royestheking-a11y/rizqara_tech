@@ -153,10 +153,10 @@ test('notification failures remain queued and successful retries are recorded', 
 });
 test('production HTML has route-specific metadata, one entry script, and real 404 status', async () => {
     const file = path.join(directory, 'shell.html');
-    await require('node:fs/promises').writeFile(file, '<html><head><title>Default</title><script type="module" src="/app.js"></script></head><body><div id="root"><p>Loading</p></div></body></html>');
+    await require('node:fs/promises').writeFile(file, '<html><head><title>Default</title><script type="module" src="/app.js"></script></head><body><!--app-root-start--><div id="root"><p>Loading</p></div><!--app-root-end--></body></html>');
     const { renderPage } = require('../render');
     const page = await renderPage(file, '/contact', true);
-    assert.equal(page.status, 200); assert.match(page.html, /https:\/\/rizqara.tech\/contact/);
+    assert.equal(page.status, 200); assert.match(page.html, /https:\/\/www.rizqara.tech\/contact/);
     assert.equal((page.html.match(/rel="canonical"/g) || []).length, 1);
     assert.equal((page.html.match(/type="module"/g) || []).length, 1);
     assert.match(page.html, /<h1>Contact RizQara Tech<\/h1>/);
@@ -195,6 +195,23 @@ test('service categories, generated artwork and editor fields persist without dr
     assert.ok(edited.previousSlugs.includes('odoo-implementation-test'));
 });
 
+test('visitor analytics requires consent, deduplicates events, and protects reports', async () => {
+    assert.equal((await request('/analytics/summary')).status,401);
+    const event={eventId:crypto.randomUUID(),visitor:crypto.randomUUID(),path:'/services',consent:true};
+    const send=body=>request('/analytics/view',{method:'POST',headers:json(),body:JSON.stringify(body)});
+    assert.equal((await send({...event,consent:false})).status,400);
+    assert.equal((await send({...event,path:'/admin'})).status,400);
+    assert.equal((await send({...event,path:'/contact?email=private'})).status,400);
+    await mongoose.model('PageView').init();
+    assert.equal((await send(event)).status,204);
+    assert.equal((await send(event)).status,204);
+    assert.equal((await send({...event,eventId:crypto.randomUUID(),path:'/contact'})).status,204);
+    const result=await (await request('/analytics/summary?days=7',{admin:true})).json();
+    assert.equal(result.totals.views,2);assert.equal(result.totals.visitors,1);
+    assert.equal(result.pages.length,2);assert.equal(result.daily.reduce((n,row)=>n+row.views,0),2);
+    assert.equal((await request('/analytics/summary?days=999',{admin:true})).status,400);
+});
+
 test('logout invalidates the server-side session',async()=>{
     assert.equal((await request('/auth/logout',{admin:true,method:'POST'})).status,200);
     assert.equal((await request('/auth/session',{admin:true})).status,401);
@@ -209,3 +226,4 @@ test('disconnected database reports not ready and rejects new submissions prompt
         assert.equal((await request('/messages', { method: 'POST', headers: json(), body: '{}' })).status, 503);
     } finally { await mongoose.connect(testUri, { dbName: testDbName }); }
 });
+

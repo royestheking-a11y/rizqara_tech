@@ -244,7 +244,7 @@ export const TopCompaniesSEOPage = () => {
             "name": "RizQara Tech",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://rizqara.tech/logo.png"
+                "url": "https://www.rizqara.tech/logo.png"
             }
         },
         "mainEntity": {

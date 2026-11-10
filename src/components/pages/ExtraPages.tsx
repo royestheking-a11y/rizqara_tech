@@ -130,7 +130,7 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: strin
             <SEO 
                 title="Tech Blog | RizQara Tech - Insights on Software & AI"
                 description="Explore our latest blog posts on software development, AI, UI/UX design, and digital business trends. Stay updated with RizQara Tech."
-                canonical="https://rizqara.tech/blog"
+                canonical="https://www.rizqara.tech/blog"
             />
             <PageHeader
                 title={language === 'bn' ? 'সর্বশেষ অন্তর্দৃষ্টি' : "Latest Insights"}
@@ -255,7 +255,7 @@ export const BlogDetail = () => {
             <SEO 
                 title={`${title} | Tech Blog | RizQara Tech`}
                 description={excerpt}
-                canonical={`https://rizqara.tech/blog/${getSlug(blog)}`}
+                canonical={`https://www.rizqara.tech/blog/${getSlug(blog)}`}
                 schema={schema}
                 type="article"
                 image={blog.image}
@@ -417,7 +417,7 @@ export const VideoDetail = () => {
                 description={description || title}
                 image={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : video.thumbnail}
                 type="video.other"
-                canonical={`https://rizqara.tech/videos/${id}`}
+                canonical={`https://www.rizqara.tech/videos/${id}`}
             />
             {/* Header / Back Navigation */}
             <div className="container mx-auto px-6 py-8 pt-32">
@@ -547,7 +547,7 @@ export const VideosPage: React.FC<{ onNavigate?: (page: string, id?: string) => 
             <SEO 
                 title={language === 'bn' ? 'ফিচার্ড কন্টেন্ট | রিজকারা টেক' : 'Featured Content | Latest Insights | RizQara Tech'}
                 description={language === 'bn' ? 'আমাদের সর্বশেষ শোরিল, টিউটোরিয়াল এবং সাফল্যের গল্প দেখুন।' : 'Watch our latest showreels, tutorials, and success stories at RizQara Tech.'}
-                canonical="https://rizqara.tech/videos"
+                canonical="https://www.rizqara.tech/videos"
             />
             <PageHeader
                 title={language === 'bn' ? 'ফিচার্ড কন্টেন্ট' : "Featured Content"}
