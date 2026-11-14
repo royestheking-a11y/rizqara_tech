@@ -10,6 +10,16 @@
   <link rel="manifest" href="/favicon/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/brand-loader.css" />
+  <style>
+    .rq-brand-loader{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;background:#fff}
+    .rq-loader-symbol{position:relative;width:144px;height:144px;display:grid;place-items:center}
+    .rq-loader-symbol img{width:104px;height:104px;object-fit:contain}
+    .rq-loader-symbol i{position:absolute;inset:0;border:1px solid #ead7df;border-top:2px solid #500000;border-right:2px solid #89324f;border-radius:50%;animation:rq-loader-spin 1.7s linear infinite}
+    .rq-loader-symbol i:nth-of-type(2){inset:-12px;border-color:#f0e5ea;border-bottom:2px solid #ae788e;animation-direction:reverse;animation-duration:2.5s}
+    .rq-loader-symbol i:nth-of-type(3){inset:12px;border-color:#f4eaf0;border-left:2px solid #78213d;animation-duration:2s}
+    @keyframes rq-loader-spin{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){.rq-loader-symbol i{animation:none}}
+  </style>
   <title>RizQara Tech | Best Software & AI Solutions Company in Bangladesh</title>
   <meta name="p:domain_verify" content="52b341fb2fb7f24ffdeaf2a09d3cca5a"/>
 

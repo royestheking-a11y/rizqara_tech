@@ -57,7 +57,8 @@ async function renderPage(file, pathname, ready) {
         const entries = await listModel.find().select('id title slug description excerpt').limit(1000).lean();
         directory = `<section><h2>Explore ${escapeHTML(pathname.slice(1))}</h2><ul>${entries.map(item=>`<li><a href="${pathname}/${escapeHTML(item.slug || `${slug(item.title)}-${item.id.slice(0,8)}`)}">${escapeHTML(item.title)}</a><p>${escapeHTML(item.description || item.excerpt || '')}</p></li>`).join('')}</ul></section>`;
     }
-    const fallback = `<main style="padding:2rem;font-family:sans-serif"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
+    const brandLoader = `<div class="rq-brand-loader" role="status" aria-label="Loading website"><div class="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i></i><i></i><i></i></div></div>`;
+    const fallback = `<main class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
     const adminBoot = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e0407;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased">
         <div style="width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#500000,#7e1735);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(80,0,0,0.55);margin-bottom:20px;border:1px solid rgba(255,255,255,0.12)">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fce4ec" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -69,7 +70,7 @@ async function renderPage(file, pathname, ready) {
         </div>
         <style>@keyframes rq-admin-boot{0%{transform:translateX(-60%)}100%{transform:translateX(180%)}}</style>
     </div>`;
-    const appRootContent = pathname === '/admin' ? adminBoot : fallback;
+    const appRootContent = pathname === '/admin' ? adminBoot : `${brandLoader}${fallback}`;
     html = html.replace(/<!--app-root-start-->[\s\S]*?<!--app-root-end-->/, `<div id="root">${appRootContent}</div>`);
 
     return { html, status };
