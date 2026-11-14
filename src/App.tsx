@@ -1790,9 +1790,9 @@ const MainContent = () => {
 
             {!location.pathname.startsWith('/admin') && <Footer />}
 
-            <RizqAIBot />
+            {!location.pathname.startsWith('/admin') && <RizqAIBot />}
             {!location.pathname.startsWith('/admin') && <PromotionOverlay />}
-            <CookieConsent />
+            {!location.pathname.startsWith('/admin') && <CookieConsent />}
         </div>
     );
 };
