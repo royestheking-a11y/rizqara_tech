@@ -1,0 +1,30 @@
+.rq-admin { min-height: 100vh; background: #f8f2f4; color: #2d1720; }
+.rq-admin-top { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px clamp(16px, 4vw, 52px); background: #fffafa; border-bottom: 1px solid #e5d5db; }
+.rq-admin-layout { display: grid; grid-template-columns: minmax(185px, 224px) minmax(0, 1fr); gap: clamp(16px, 3vw, 36px); width: min(100%, 1460px); margin-inline: auto; padding: clamp(16px, 3vw, 42px); }
+.rq-admin-nav { min-width: 0; }
+.rq-admin-nav-inner { position: sticky; top: 82px; max-height: calc(100vh - 100px); overflow: auto; padding: 12px; border-radius: 18px; background: #331923; color: #f9eaf0; }
+.rq-admin-nav-inner > div:first-child { color: #e4bccd; }
+.rq-admin-nav-button { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 40px; padding: 8px 11px; border-radius: 9px; font-size: 14px; text-align: left; cursor: pointer; }
+.rq-admin-nav-button > div { display: flex; align-items: center; gap: 10px; }
+.rq-admin-nav-button svg { flex: none; }
+.rq-admin-nav-button:hover { background: #ffffff14; }
+.rq-admin-nav-button[aria-current] { background: #fff2f4; color: #562335; font-weight: 700; }
+.rq-admin-nav-button:focus-visible { outline: 2px solid #e6b2c4; outline-offset: -2px; }
+.rq-admin-content { min-width: 0; }
+.rq-admin-page-title { margin: 0 0 24px; font-size: clamp(26px, 4vw, 42px); font-weight: 750; letter-spacing: -0.04em; }
+.rq-admin-overview { display: grid; gap: 24px; }
+.rq-admin-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 12px; }
+.rq-admin-stat { display: grid; justify-items: start; gap: 5px; min-width: 0; padding: 16px; border: 1px solid #e5d5db; border-radius: 15px; background: #fffafa; }
+.rq-admin-stat-icon { display: grid; place-items: center; width: 36px; height: 36px; margin-bottom: 5px; border-radius: 9px; background: #f4e1e8; color: #732e48; }
+.rq-admin-stat strong { font-size: 30px; line-height: 1.1; }
+.rq-admin-stat > span:last-child { color: #694553; font-size: 13px; font-weight: 600; }
+@media (max-width: 760px) {
+    .rq-admin-layout { grid-template-columns: minmax(0, 1fr); }
+    .rq-admin-nav-inner { position: static; display: flex; align-items: center; gap: 4px; max-height: none; }
+    .rq-admin-nav-inner > div:first-child { display: none; }
+    .rq-admin-nav-button { width: auto; flex: none; white-space: nowrap; }
+}
+
+.rq-admin-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 12px; background: #18040b99; }
+.rq-admin-modal-panel { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(100%, 600px); max-height: calc(100dvh - 24px); overflow: hidden; background: #fff; border: 1px solid #ebdce3; border-radius: 20px; box-shadow: 0 24px 64px #18040b4d; }
+.rq-admin-modal-body { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: clamp(16px, 4vw, 32px); }

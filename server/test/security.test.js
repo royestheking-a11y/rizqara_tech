@@ -161,6 +161,17 @@ test('production HTML has route-specific metadata, one entry script, and real 40
     assert.equal((page.html.match(/type="module"/g) || []).length, 1);
     assert.match(page.html, /<h1>Contact RizQara Tech<\/h1>/);
     assert.equal((await renderPage(file, '/unknown-page', true)).status, 404);
+
+    const articlePath = '/blog/scaling-react-performance-for-enterprise-dashboards-blog-rea';
+    const videoPath = '/videos/from-tension-to-solution-in-30-seconds-pengu-rizqara-tech-wz9qq4ix';
+    for (const route of [articlePath, videoPath]) {
+        const bundledPage = await renderPage(file, route, false);
+        assert.equal(bundledPage.status, 200);
+        assert.ok(bundledPage.html.includes('rel="canonical" href="https://www.rizqara.tech' + route + '"'));
+    }
+    const blogIndex = await renderPage(file, '/blog', true);
+    assert.ok(blogIndex.html.includes('href="' + articlePath + '"'));
+    assert.ok((await require('../sitemap').sitemap()).includes(articlePath));
 });
 test('pagination rejects invalid offsets and sizes', async () => {
     for (const query of ['offset=Infinity', 'limit=-1', 'limit=101', 'offset=-1']) assert.equal((await request('/notice?' + query)).status, 400);
@@ -206,7 +217,12 @@ test('visitor analytics requires consent, deduplicates events, and protects repo
     assert.equal((await send(event)).status,204);
     assert.equal((await send(event)).status,204);
     assert.equal((await send({...event,eventId:crypto.randomUUID(),path:'/contact'})).status,204);
+    assert.equal((await send({...event,eventId:crypto.randomUUID(),action:'unknown'})).status,400);
+    const estimate = {...event,eventId:crypto.randomUUID(),path:'/estimate',action:'estimate_completed'};
+    assert.equal((await send(estimate)).status,204);
+    assert.equal((await send(estimate)).status,204);
     const result=await (await request('/analytics/summary?days=7',{admin:true})).json();
+    assert.deepEqual(result.actions,[{_id:'estimate_completed',count:1}]);
     assert.equal(result.totals.views,2);assert.equal(result.totals.visitors,1);
     assert.equal(result.pages.length,2);assert.equal(result.daily.reduce((n,row)=>n+row.views,0),2);
     assert.equal((await request('/analytics/summary?days=999',{admin:true})).status,400);

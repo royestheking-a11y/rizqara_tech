@@ -3,6 +3,7 @@ import { apiRequest } from '../../utils/api';
 import { Eye, Users, RefreshCw, BarChart3, ShieldCheck } from 'lucide-react';
 
 type Summary = {
+    actions?: { _id: string; count: number }[];
     totals: { views: number; visitors: number };
     daily: { _id: string; views: number }[];
     pages: { _id: string; views: number }[];
@@ -120,6 +121,17 @@ export function VisitorAnalytics() {
                         </div>
                     </div>
 
+                    <section aria-label="Growth actions" className="mb-8">
+                        <h3 className="mb-3 font-bold">Growth actions</h3>
+                        <div className="rq-admin-stat-grid">
+                            {Object.entries({ estimate_completed: 'Estimates completed', estimate_shared: 'Estimate links copied', booking_clicked: 'Booking clicks', inquiry_sent: 'Inquiries sent' }).map(([key, label]) => (
+                                <div className="rq-admin-stat" key={key}>
+                                    <strong>{data.actions?.find(action => action._id === key)?.count ?? 0}</strong>
+                                    <span>{label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
                     {data.totals.views === 0 ? (
                         <div className="text-center py-10 px-4 rounded-2xl bg-[#faf6f8] border border-dashed border-[#e6d5de]">
                             <p className="text-sm font-semibold text-[#5a3a49]">No recorded visits in this period.</p>
@@ -194,7 +206,7 @@ export function VisitorAnalytics() {
                     <div className="mt-6 pt-4 border-t border-[#f0e4eb] flex items-center gap-2 text-[11px] text-[#8c6d7a]">
                         <ShieldCheck size={14} className="text-emerald-600 shrink-0" />
                         <span>
-                            Privacy compliant: Unique browsers are anonymous browser tokens. No IP addresses, query parameters, or personal identities are stored. Excludes admin views.
+                            Unique browsers are counted using anonymous browser tokens. No IP addresses, query parameters, or personal identities are stored. Excludes admin views.
                         </span>
                     </div>
                 </>

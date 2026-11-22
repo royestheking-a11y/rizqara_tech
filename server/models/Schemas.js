@@ -30,6 +30,7 @@ const ProjectSchema = new mongoose.Schema({
     category_bn: String,
     image: { type: String, required: true },
     status: { type: String, enum: ['Live', 'Ongoing', 'Completed', 'Concept'], required: true },
+    archived: { type: Boolean, default: false },
     description: { type: String, required: true },
     description_bn: String,
     features: [String],

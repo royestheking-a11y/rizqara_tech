@@ -1,3 +1,4 @@
+import { trackGrowth } from '../../utils/growthAnalytics';
 import { useDialog } from '../../utils/useDialog';
 import { AssistantCharacter, StudioProcess, ContactDetails } from '../studio/StudioDetails';
 import React, { useState, useEffect, useRef } from 'react';
@@ -1662,6 +1663,7 @@ export const ContactFormWithMap = () => {
                 type: 'Contact'
             });
 
+            trackGrowth('inquiry_sent');
             setStatus('success');
             toast.success(language === 'bn' ? "বার্তা সফলভাবে পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।" : "Message sent successfully! We'll be in touch shortly.");
 

@@ -9,6 +9,7 @@ const { requireAdmin, rateLimit, mountAuth } = require('./security');
 const { Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy, Notice, GalleryItem } = require('./models/Schemas');
 const router = express.Router();
 const models = Object.freeze({ services: Service, projects: Project, reviews: Review, blogs: Blog, jobs: Job, videos: Video, carousel: Carousel, buildOptions: BuildOption, messages: Message, promotion: Promotion, careerApplications: CareerApplication, caseStudies: CaseStudy, notice: Notice, galleryItems: GalleryItem });
+const bundledProjects = new Map([...require('../src/data/project-concepts.json'), ...require('../src/data/selected-concepts.json')].map(project => [project.id, project]));
 const privateCollections = new Set(['messages', 'careerApplications']);
 const cvDirectory = path.resolve(process.env.PRIVATE_UPLOAD_DIR || path.join(__dirname, 'private-uploads'));
 cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
@@ -24,7 +25,7 @@ function safeBody(model, body) {
     if (!body || typeof body !== 'object' || Array.isArray(body)) throw Object.assign(new Error('Invalid body'), { status: 400 });
     const result = {};
     for (const [key, value] of Object.entries(body)) {
-        if (['id', '_id', '__v', 'createdAt', 'updatedAt', 'slug', 'previousSlugs', 'cvKey'].includes(key)) continue;
+        if (['id', '_id', '__v', 'createdAt', 'updatedAt', 'slug', 'previousSlugs', 'cvKey', 'archived'].includes(key)) continue;
         if (key.startsWith('$') || key.includes('.') || !model.schema.path(key)) throw Object.assign(new Error('Invalid field'), { status: 400 });
         if (typeof value === 'string' && (value.length > 100000 || value.startsWith('data:') || value.startsWith('blob:'))) throw Object.assign(new Error('Invalid value'), { status: 400 });
         if (['image', 'thumbnail', 'link', 'url'].includes(key) && value && !validURL(value)) throw Object.assign(new Error('Invalid URL'), { status: 400 });
@@ -41,6 +42,7 @@ function validURL(value) {
 const slugify = title => title.toLowerCase().normalize('NFKC').trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 'item';
 function publicRecord(doc, collection) {
     const item = doc.toObject ? doc.toObject() : { ...doc };
+    if (collection === 'projects' && item.archived) return { id: item.id, archived: true };
     if (collection === 'careerApplications') { delete item.cvKey; item.cvUrl = `/api/applications/${encodeURIComponent(item.id)}/cv`; }
     return item;
 }
@@ -208,7 +210,7 @@ router.get('/:collection', async (req, res) => {
 });
 router.get('/:collection/:id', async (req, res) => {
     const item = await req.model.findOne({ id: req.params.id }).select('-cvKey');
-    if (!item) return res.status(404).json({ error: 'Record not found' });
+    if (!item || item.archived) return res.status(404).json({ error: 'Record not found' });
     res.json(publicRecord(item, req.params.collection));
 });
 router.post('/:collection', async (req, res) => {
@@ -225,7 +227,19 @@ router.put('/:collection/:id', async (req, res) => {
     const data = safeBody(req.model, req.body);
     if (privateCollections.has(req.params.collection) && Object.keys(data).some(key => !['read', 'status'].includes(key))) return res.status(400).json({ error: 'Only status and read state can be updated' });
     const existing = await req.model.findOne({ id: req.params.id });
-    if (!existing) return res.status(404).json({ error: 'Record not found' });
+    if (!existing) {
+        const bundled = req.params.collection === 'projects' && bundledProjects.get(req.params.id);
+        if (!bundled) return res.status(404).json({ error: 'Record not found' });
+        if (version !== 0) return res.status(409).json({ error: 'This record changed. Reload before editing again.' });
+        try {
+            const created = await Project.create({ ...bundled, ...data, __v: 1 });
+            return res.json(publicRecord(created, 'projects'));
+        } catch (error) {
+            if (error.code !== 11000) throw error;
+            return res.status(409).json({ error: 'This record changed. Reload before editing again.' });
+        }
+    }
+    if (existing.archived) return res.status(404).json({ error: 'Record not found' });
     if (!existing.slug && existing.title) data.slug = `${slugify(existing.title)}-${existing.id.slice(0, 8)}`;
     if (existing.title && data.title && existing.title !== data.title) data.previousSlugs = [...new Set([...(existing.previousSlugs || []), slugify(existing.title), existing.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '')])].slice(-30);
     const updated = await req.model.findOneAndUpdate({ id: req.params.id, __v: version }, { $set: data, $inc: { __v: 1 } }, { returnDocument: 'after', runValidators: true });
@@ -236,6 +250,22 @@ router.delete('/:collection/:id', async (req, res) => {
     const version = Number(req.get('If-Match'));
     if (!req.get('If-Match') || !Number.isInteger(version) || version < 0) return res.status(400).json({ error: 'A record version is required' });
     const item = await req.model.findOne({ id: req.params.id });
+    const bundled = req.params.collection === 'projects' && bundledProjects.get(req.params.id);
+    if (bundled) {
+        if (item?.archived) return res.status(404).json({ error: 'Record not found' });
+        if (item) {
+            const updated = await Project.findOneAndUpdate({ id: item.id, __v: version }, { $set: { archived: true }, $inc: { __v: 1 } });
+            if (!updated) return res.status(409).json({ error: 'This record changed. Reload before deleting.' });
+        } else {
+            if (version !== 0) return res.status(409).json({ error: 'This record changed. Reload before deleting.' });
+            try { await Project.create({ ...bundled, archived: true, __v: 1 }); }
+            catch (error) {
+                if (error.code !== 11000) throw error;
+                return res.status(409).json({ error: 'This record changed. Reload before deleting.' });
+            }
+        }
+        return res.json({ deleted: true, archived: true });
+    }
     if (!item) return res.status(404).json({ error: 'Record not found' });
     const deleted = await req.model.findOneAndDelete({ id: req.params.id, __v: version });
     if (!deleted) return res.status(409).json({ error: 'This record changed. Reload before deleting.' });

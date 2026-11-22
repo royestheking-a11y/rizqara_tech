@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useData, CaseStudy } from '../../context/DataContext';
 import initialCaseStudies from '../../data/case-studies.json';
+import { selectedConcepts } from '../../data/selected-concepts';
 import { getSlug } from '../../utils/content';
 import { SEO } from '../SEO';
 import '../../styles/case-study-experience.css';
 
 export function CaseStudyExperience({page=false}:{page?:boolean}) {
-  const { caseStudies, language, secondaryLoading } = useData();
+  const { caseStudies, projects, language, secondaryLoading } = useData();
   const [active, setActive] = useState(0);
   const bn = language === 'bn';
   const list = caseStudies && caseStudies.length > 0 ? caseStudies : (initialCaseStudies as CaseStudy[]);
@@ -35,16 +36,16 @@ export function CaseStudyExperience({page=false}:{page?:boolean}) {
     <section id={page ? undefined : 'case-studies'} className={`rq-studies container mx-auto px-6 ${page ? 'rq-studies-page' : ''}`}>
       {page && (
         <SEO
-          title="Case Studies | Software & AI Solutions Impact | RizQara Tech"
-          description="Explore the challenges, decisions, and business impact behind real-world software and AI solutions delivered by RizQara Tech."
+          title="Case Studies | RizQara Tech"
+          description="Read project case studies and independent design walkthroughs from RizQara Tech."
           canonical="https://www.rizqara.tech/case-studies"
         />
       )}
       <header className="rq-studies-header">
         <div>
           <span className="rq-studies-eyebrow">RIZQARA / {bn ? 'কাজের গল্প' : 'BEHIND THE WORK'}</span>
-          <Heading>{bn ? 'প্রতিটি সমাধানের পেছনে, একটি গল্প।' : <>The thinking.<br />The craft. <em>The impact.</em></>}</Heading>
-          <p>{bn ? 'চ্যালেঞ্জ থেকে সমাধান—আমাদের কাজের সিদ্ধান্ত ও ফলাফল দেখুন।' : 'A closer look at the challenges we take on, the decisions we make, and the experiences we create.'}</p>
+          <Heading>{bn ? 'কেস স্টাডি' : 'Case studies'}</Heading>
+          <p>{bn ? 'চ্যালেঞ্জ থেকে সমাধান—আমাদের কাজের সিদ্ধান্ত ও ফলাফল দেখুন।' : 'Read about the problem, the design decisions, and what was checked.'}</p>
         </div>
         {!page && (
           <Link className="rq-studies-all" to="/case-studies">
@@ -79,19 +80,6 @@ export function CaseStudyExperience({page=false}:{page?:boolean}) {
           <div className="rq-study-tech">
             {study.tech?.slice(0, 5).map(t => <span key={t}>{t}</span>)}
           </div>
-          {study.growthBefore && study.growthAfter && (
-            <div className="rq-study-results">
-              <div>
-                <span>{bn ? 'আগে' : 'Growth before'}</span>
-                <strong>{study.growthBefore}</strong>
-              </div>
-              <ArrowRight size={20} />
-              <div>
-                <span>{bn ? 'পরে' : 'After our work'}</span>
-                <strong>{study.growthAfter}</strong>
-              </div>
-            </div>
-          )}
           <Link className="rq-study-read" to={`/case-studies/${getSlug(study)}`}>
             {bn ? 'সম্পূর্ণ কেস স্টাডি পড়ুন' : 'Read the full story'} <ArrowUpRight size={18} />
           </Link>
@@ -127,8 +115,7 @@ export function CaseStudyExperience({page=false}:{page?:boolean}) {
       {page && (
         <div className="rq-study-grid-section">
           <div className="rq-study-grid-header">
-            <span className="rq-studies-eyebrow">{bn ? 'সব রূপান্তরের গল্প' : 'ALL TRANSFORMATIONS'}</span>
-            <h2>{bn ? 'আমাদের সফল প্রকল্পসমূহ' : 'Featured Case Transformations'}</h2>
+            <h2>{bn ? 'প্রজেক্ট কেস স্টাডি' : 'Project case studies'}</h2>
           </div>
           <div className="rq-study-cards-grid">
             {list.map((s, i) => (
@@ -145,6 +132,28 @@ export function CaseStudyExperience({page=false}:{page?:boolean}) {
                     <span>{bn ? 'সম্পূর্ণ স্টোরি পড়ুন' : 'Read Case Study'}</span>
                     <ArrowUpRight size={16} />
                   </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+      {page && (
+        <div className="rq-study-grid-section">
+          <div className="rq-study-grid-header">
+            <h2>{bn ? 'স্বাধীন ডিজাইন কনসেপ্ট' : 'Independent design studies'}</h2>
+            <p>{bn ? 'প্রস্তাবিত কাজের ধাপ ও পরীক্ষার পরিকল্পনা।' : 'Proposed workflows and what we would test with users.'}</p>
+          </div>
+          <div className="rq-study-cards-grid">
+            {selectedConcepts.flatMap(selected => projects.filter(project => project.id === selected.id && project.status === 'Concept')).map(concept => (
+              <Link key={concept.id} to={`/projects/${getSlug(concept)}`} className="rq-study-card group">
+                <div className="rq-study-card-image">
+                  <img src={concept.image} alt={selectedConcepts.find(selected => selected.id === concept.id && selected.image === concept.image)?.imageAlt || ''} width="1200" height="800" loading="lazy" />
+                </div>
+                <div className="rq-study-card-body">
+                  <span className="rq-study-card-cat">{concept.category}</span>
+                  <h3 className="rq-study-card-title">{concept.title}</h3>
+                  <p className="rq-study-card-desc">{concept.description}</p>
                 </div>
               </Link>
             ))}

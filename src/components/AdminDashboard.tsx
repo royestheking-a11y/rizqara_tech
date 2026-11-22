@@ -1,3 +1,4 @@
+import '../styles/admin-dashboard.css';
 import { VisitorAnalytics } from './admin/VisitorAnalytics';
 import serviceCatalog from '../../shared/service-catalog.json';
 import { useDialog } from '../utils/useDialog';
@@ -19,27 +20,13 @@ import { PromotionCard } from './premium/PromotionOverlay';
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-const PremiumStatCard = ({ icon: Icon, value, label, category, color, bg }: any) => (
-    <div className="bg-white/95 backdrop-blur-sm p-5 sm:p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(80,0,0,0.04)] border border-[#ebdce3] relative overflow-hidden group hover:shadow-[0_16px_32px_-8px_rgba(80,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
-        <div className={`absolute -right-4 -bottom-4 p-2 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity ${color} rotate-12 pointer-events-none`}>
-            <Icon size={96} />
-        </div>
-        <div className="relative z-10 flex flex-col h-full justify-between">
-            <div className="flex items-center justify-between mb-4">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${bg} ${color} border border-black/5 shadow-xs`}>
-                    <Icon size={20} />
-                </div>
-                {category && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#faf4f7] text-[#8c6d7a] border border-[#f0e2ea]">
-                        {category}
-                    </span>
-                )}
-            </div>
-            <div>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#230711] tracking-tight mb-1">{value}</h3>
-                <p className="text-[11px] font-bold text-[#8c6d7a] uppercase tracking-[0.14em]">{label}</p>
-            </div>
-        </div>
+const PremiumStatCard = ({ icon: Icon, value, label }: {
+    icon: typeof Briefcase; value: number; label: string;
+}) => (
+    <div className="rq-admin-stat">
+        <span className="rq-admin-stat-icon"><Icon size={19} aria-hidden="true" /></span>
+        <strong>{value.toLocaleString()}</strong>
+        <span>{label}</span>
     </div>
 );
 
@@ -115,10 +102,11 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             if (data.features) data.features = data.features.split(',').map((t: string) => t.trim());
             if (data.features_bn) data.features_bn = data.features_bn.split(',').map((t: string) => t.trim());
             // Explicitly set image from state to ensure it's not empty
-            if (projectImage) data.image = projectImage;
+            data.image = String(data.coverUrl || '').trim() || projectImage || data.image;
+            delete data.coverUrl;
 
             if (!data.image) {
-                toast.error('Project image is required! Please upload an image.');
+                toast.error('Upload a project image or enter its URL.');
                 return;
             }
         }
@@ -238,7 +226,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     // --- Renderers ---
 
     const renderDashboard = () => (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="rq-admin-overview">
             {/* Core Solutions & Catalog */}
             <div>
                 <div className="flex items-center justify-between mb-4">
@@ -247,38 +235,26 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     </h3>
                     <span className="text-[11px] font-medium text-[#a38795]">Published catalog</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="rq-admin-stat-grid">
                     <PremiumStatCard
                         icon={Briefcase}
                         value={services.length}
                         label={language === 'bn' ? "মোট সেবা" : "Total Services"}
-                        category="Solutions"
-                        color="text-[#500000]"
-                        bg="bg-[#500000]/10"
                     />
                     <PremiumStatCard
                         icon={LayoutDashboard}
                         value={projects.length}
-                        label={language === 'bn' ? "সক্রিয় প্রকল্প" : "Active Projects"}
-                        category="Portfolio"
-                        color="text-[#781b37]"
-                        bg="bg-[#781b37]/10"
+                        label={language === 'bn' ? "প্রজেক্ট রেকর্ড" : "Project records"}
                     />
                     <PremiumStatCard
                         icon={Globe}
                         value={caseStudies.length}
                         label={language === 'bn' ? "কেস স্টাডি" : "Case Studies"}
-                        category="Impact"
-                        color="text-[#8c6239]"
-                        bg="bg-[#8c6239]/10"
                     />
                     <PremiumStatCard
                         icon={MessageSquare}
                         value={reviews.length}
                         label={language === 'bn' ? "মোট পর্যালোচনা" : "Client Reviews"}
-                        category="Endorsements"
-                        color="text-[#3b2d54]"
-                        bg="bg-[#3b2d54]/10"
                     />
                 </div>
             </div>
@@ -291,41 +267,31 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     </h3>
                     <span className="text-[11px] font-medium text-[#a38795]">Incoming leads & media updates</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+                <div className="rq-admin-stat-grid">
                     <PremiumStatCard
                         icon={Inbox}
                         value={messages.filter(m => m.type === 'Contact').length}
                         label={language === 'bn' ? "বার্তা" : "Inquiries"}
-                        color="text-[#065f46]"
-                        bg="bg-[#065f46]/10"
                     />
                     <PremiumStatCard
                         icon={Users}
                         value={jobs.length}
                         label={language === 'bn' ? "খালি পদ" : "Open Jobs"}
-                        color="text-[#334155]"
-                        bg="bg-[#334155]/10"
                     />
                     <PremiumStatCard
                         icon={FileDown}
                         value={careerApplications.length}
                         label={language === 'bn' ? "আবেদন" : "Submissions"}
-                        color="text-[#8c6239]"
-                        bg="bg-[#8c6239]/10"
                     />
                     <PremiumStatCard
                         icon={FileText}
                         value={blogs.length}
                         label={language === 'bn' ? "ব্লগ পোস্ট" : "Blog Posts"}
-                        color="text-[#781b37]"
-                        bg="bg-[#781b37]/10"
                     />
                     <PremiumStatCard
                         icon={PlayCircle}
                         value={videos.length}
                         label={language === 'bn' ? "ভিডিও" : "Videos"}
-                        color="text-[#500000]"
-                        bg="bg-[#500000]/10"
                     />
                 </div>
             </div>
@@ -540,10 +506,10 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#fcf9fa] font-sans text-[#240813]">
+        <div className="rq-admin">
 
             {/* Top Header */}
-            <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#e9dae2] px-6 md:px-8 py-3.5 flex justify-between items-center shadow-[0_2px_12px_rgba(80,0,0,0.03)]">
+            <header className="rq-admin-top">
                 <div className="flex items-center gap-3.5">
                     <div className="w-9 h-9 bg-gradient-to-br from-[#500000] to-[#781b37] rounded-xl flex items-center justify-center text-white font-serif font-black shadow-md shadow-[#500000]/25">
                         R
@@ -551,10 +517,6 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-lg font-bold text-[#230711] tracking-tight leading-none">RizQara Tech</h1>
-                            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Live Console
-                            </span>
                         </div>
                         <p className="text-[10px] font-semibold tracking-wider uppercase text-[#967484] mt-0.5">Control & Management Portal</p>
                     </div>
@@ -571,8 +533,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     </a>
                     <div className="h-6 w-px bg-[#ebdbe3] hidden sm:block"></div>
                     <div className="text-right hidden md:block">
-                        <div className="text-xs font-bold text-[#230711]">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Super Administrator'}</div>
-                        <div className="text-[10px] font-medium text-[#967484]">admin@rizqaratech.com</div>
+                        <div className="text-xs font-bold text-[#230711]">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Administrator'}</div>
                     </div>
                     <button
                         aria-label="Sign out"
@@ -585,11 +546,11 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                 </div>
             </header>
 
-            <div className="container mx-auto p-6 max-w-7xl flex flex-col md:flex-row gap-8">
+            <div className="rq-admin-layout">
 
                 {/* Sidebar Navigation */}
-                <div className="w-full md:w-64 shrink-0 space-y-2">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-sm border border-[#ebdce3] sticky top-20">
+                <nav className="rq-admin-nav" aria-label="Admin sections">
+                    <div className="rq-admin-nav-inner">
                         <div className="px-3 py-2 text-[10px] font-bold tracking-[0.16em] uppercase text-[#967484]">
                             Navigation
                         </div>
@@ -597,11 +558,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             <button
                                 key={tab.id}
                                 onClick={() => { setActiveTab(tab.id); setSearchTerm(''); }}
-                                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl mb-1 text-sm font-medium transition-all cursor-pointer ${
-                                    activeTab === tab.id
-                                        ? 'bg-gradient-to-r from-[#500000] to-[#751735] text-white shadow-md shadow-[#500000]/20 font-semibold'
-                                        : 'text-[#614552] hover:bg-[#faf3f6] hover:text-[#500000]'
-                                }`}
+                                className="rq-admin-nav-button"
+                                aria-current={activeTab === tab.id ? "page" : undefined}
                             >
                                 <div className="flex items-center gap-3">
                                     <tab.icon size={17} />
@@ -611,10 +569,11 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             </button>
                         ))}
                     </div>
-                </div>
+                </nav>
 
                 {/* Main Content Area */}
-                <div className="flex-1 min-h-[80vh]">
+                <div className="rq-admin-content">
+                    <h2 className="rq-admin-page-title">{navItems.find(tab => tab.id === activeTab)?.label}</h2>
                     {activeTab === 'dashboard' && renderDashboard()}
 
                     {activeTab === 'inbox' && renderList(language === 'bn' ? 'ইনবক্স' : 'Inbox', messages, 'message', (item) => (
@@ -959,7 +918,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'projects' && renderList(language === 'bn' ? 'প্রকল্প (বিল্ডার প্রিভিউ)' : 'Projects (Builder Previews)', projects, 'project', (item) => (
+                    {activeTab === 'projects' && renderList(language === 'bn' ? 'প্রকল্প' : 'Portfolio projects', projects, 'project', (item) => (
                         <div className="flex items-center gap-4">
                             <img src={item.image} alt="" className="w-16 h-16 rounded-xl bg-gray-100 object-cover shadow-xs border border-[#ebdce3] shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -1120,8 +1079,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
             {/* Modal Overlay */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#18040b]/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Edit content" tabIndex={-1} className="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-[#ebdce3] overflow-hidden max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-200">
+                <div className="rq-admin-modal">
+                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Edit content" tabIndex={-1} className="rq-admin-modal-panel">
                         <div className="px-6 py-4 border-b border-[#ebdce3] flex justify-between items-center bg-gradient-to-r from-[#faf4f7] via-white to-[#faf4f7]">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-xl bg-[#500000]/10 text-[#500000] flex items-center justify-center">
@@ -1152,7 +1111,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             </div>
                         </div>
 
-                        <div className="p-8 overflow-y-auto">
+                        <div className="rq-admin-modal-body">
                             <form id="admin-form" onSubmit={handleSave}>
                                 {modalType === 'service' && <>
                                     <AdminInput label="Title" name="title" defaultValue={editingItem?.title} required />
@@ -1179,11 +1138,12 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     <AdminInput label="Project Title (Bengali)" name="title_bn" defaultValue={editingItem?.title_bn} placeholder="বাংলা শিরোনাম" />
 
                                     {/* Improved Category Selector based on Build Options */}
-                                    <AdminSelect label="Project Type (For Builder Preview)" name="category" defaultValue={editingItem?.category || 'Web App'}>
-                                        {buildOptions.filter(b => b.category === 'type').map(opt => (
-                                            <option key={opt.id} value={opt.label}>{opt.label}</option>
+                                    <AdminSelect label="Project type" name="category" defaultValue={editingItem?.category || 'Website'}>
+                                        {[...new Set(['Website', 'Mobile App', 'Web Application', 'Business Software', 'E-commerce',
+                                            ...buildOptions.filter(option => option.category === 'type').map(option => option.label),
+                                            ...(editingItem?.category ? [editingItem.category] : []), 'Other'])].map(category => (
+                                            <option key={category} value={category}>{category}</option>
                                         ))}
-                                        <option value="Other">Other</option>
                                     </AdminSelect>
                                     <AdminInput label="Project Type (Bengali)" name="category_bn" defaultValue={editingItem?.category_bn} placeholder="বাংলা ধরণ" />
 
@@ -1202,6 +1162,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         onUploadEnd={() => setUploadingCount(p => p - 1)}
                                     />
 
+
+                                    <AdminInput label="Project image URL (optional)" name="coverUrl" placeholder="https://example.com/project.webp" />
 
                                     <div className="grid grid-cols-3 gap-4 mb-6">
                                         <ImageUploader

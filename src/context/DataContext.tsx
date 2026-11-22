@@ -6,7 +6,9 @@ import { apiRequest, getCollection } from '../utils/api';
 import catalog from '../../shared/service-catalog.json';
 import initialCaseStudies from '../data/case-studies.json';
 import initialCarouselSlides from '../data/carousel.json';
-import initialProjectConcepts from '../data/project-concepts.json';
+import legacyProjectConcepts from '../data/project-concepts.json';
+import { selectedConcepts } from '../data/selected-concepts';
+const initialProjectConcepts = [...selectedConcepts, ...legacyProjectConcepts.filter(project => !selectedConcepts.some(concept => concept.id === project.id))] as Project[];
 import initialReviews from '../data/reviews.json';
 import initialBlogs from '../data/blogs.json';
 import initialVideos from '../data/videos.json';
@@ -48,6 +50,7 @@ export type Project = {
   category_bn?: string;
   image: string;
   status: 'Live' | 'Ongoing' | 'Completed' | 'Concept';
+  archived?: boolean;
   description: string;
   description_bn?: string;
   tech: string[];
@@ -494,7 +497,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     projects: data => {
       const merged = mergeProjects(initialProjectConcepts as Project[], data);
       snapshots.current.projects = merged;
-      setProjects(merged);
+      setProjects(merged.filter(project => !project.archived));
     },
     reviews: data => {
       const items = Array.isArray(data) && data.length > 0 ? data : (initialReviews as Review[]);
@@ -632,8 +635,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const deleteData = async (key: string, id: string) => {
     const previous = (snapshots.current[key] || []).find(row => row.id === id);
     if (!previous) throw new Error('Reload this collection before deleting');
-    await apiRequest(`${key}/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { 'If-Match': String(previous.__v ?? 0) } });
-    commit(key, (snapshots.current[key] || []).filter(row => row.id !== id));
+    const response = await apiRequest(`${key}/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { 'If-Match': String(previous.__v ?? 0) } });
+    const result = await response.json();
+    const remaining = (snapshots.current[key] || []).filter(row => row.id !== id);
+    commit(key, result.archived ? [...remaining, { ...previous, archived: true }] : remaining);
   };
   const addMessage = async (msg: Omit<Message, 'id' | 'date' | 'read' | 'status'>) => {
     await apiRequest('messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(msg) });

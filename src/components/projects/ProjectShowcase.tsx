@@ -1,26 +1,106 @@
-import { ConceptPreview } from './ConceptPreview';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowUpRight, Search } from 'lucide-react';
-import { useData, Project } from '../../context/DataContext';
+import { useData } from '../../context/DataContext';
 import concepts from '../../data/project-concepts.json';
+import { selectedConcepts } from '../../data/selected-concepts';
+import { DocumentedWork } from './DocumentedWork';
 import { getSlug } from '../../utils/content';
 import '../../styles/project-showcase.css';
-export const projectConcepts = concepts as Project[];
-export function ProjectShowcase({preview=false}:{preview?:boolean}) {
- const {projects,language}=useData(); const bn=language==='bn'; const [params]=useSearchParams(); const [query,setQuery]=useState(params.get('q')||''); const [filter,setFilter]=useState('All'); const [limit,setLimit]=useState(12); const [active,setActive]=useState(0);
- const Heading = preview ? 'h2' : 'h1';
- const all=[...projects,...projectConcepts.filter(c=>!projects.some(p=>p.id===c.id))];
- const filtered=all.filter(p=>(filter==='All'||(filter==='Existing work'?p.status!=='Concept':p.status==='Concept'&&p.category===(filter==='Mobile concepts'?'Mobile App':'Website')))&&`${p.title} ${p.description} ${p.category}`.toLowerCase().includes(query.toLowerCase()));
- const spotlight=projects.slice(0,4); const selected=spotlight[active] || projectConcepts[0];
- const shown=preview?[...projects.slice(0,2),...projectConcepts.slice(0,2),...projectConcepts.slice(30,32)]:filtered.slice(0,limit);
- return <section className={`rq-work ${preview?'rq-work-preview':'rq-work-page'} container mx-auto px-6`}>
- <header className="rq-work-heading"><div><span className="rq-work-kicker">RIZQARA / SELECTED WORK & IDEAS</span><Heading>{bn?'ভাবনা। অভিজ্ঞতা। সম্ভাবনা।':<>Digital experiences.<br/><em>Made to stand out.</em></>}</Heading><p>{bn?'আমাদের বর্তমান কাজ এবং স্বাধীন ডিজাইন কনসেপ্ট দেখুন।':'Explore our existing portfolio alongside 50 independent concepts for mobile and the web.'}</p></div>{preview?<Link className="rq-work-button" to="/projects">{bn?'সব প্রজেক্ট দেখুন':'Explore the collection'} <ArrowUpRight size={18}/></Link>:<div className="rq-work-count"><strong>30 / 20</strong><span>MOBILE / WEBSITE CONCEPTS</span></div>}</header>
- <div className="rq-spotlight"><div className="rq-spotlight-story"><span className="rq-work-kicker">IN FOCUS / {String(active+1).padStart(2,'0')}</span><span className="rq-spotlight-category">{selected.category}</span><h3>{selected.title}</h3><p>{selected.description}</p><div className="rq-spotlight-stack">{selected.tech?.slice(0,3).map(t=><span key={t}>{t}</span>)}</div><Link to={`/projects/${getSlug(selected)}`} className="rq-spotlight-cta">Explore the project <ArrowUpRight size={19}/></Link><div className="rq-spotlight-controls">{spotlight.map((p,i)=><button key={p.id} aria-label={`Show featured project ${i+1}: ${p.title}`} aria-pressed={active===i} onClick={()=>setActive(i)}>0{i+1}</button>)}</div></div><Link className="rq-spotlight-visual" to={`/projects/${getSlug(selected)}`}><img key={selected.id} src={selected.image} alt={selected.title}/><span>SELECTED WORK <ArrowUpRight size={20}/></span></Link></div>
- <div className="rq-collection-title"><span>THE COLLECTION</span><p>Explore the craft behind every experience.</p><span>↓</span></div>
- {!preview&&<><div className="rq-work-tools"><div className="rq-work-tabs">{['All','Existing work','Mobile concepts','Website concepts'].map(f=><button aria-pressed={filter===f} key={f} onClick={()=>{setFilter(f);setLimit(12);}}>{f}</button>)}</div><label className="rq-work-search"><Search size={17}/><input aria-label="Search projects" placeholder="Search the collection" value={query} onChange={e=>{setQuery(e.target.value);setLimit(12);}}/></label></div><p className="rq-work-note">{filtered.length} projects · Concept entries are independent visual studies, not completed client commissions.</p></>}
- <div className="rq-work-grid">{shown.map((p,i)=><Link className={`rq-work-card ${i%5===0?'rq-work-featured':''}`} key={p.id} to={`/projects/${getSlug(p)}`}><div className="rq-work-art"><>{p.status==='Concept'?<ConceptPreview project={p}/>:<img src={p.image} alt={p.title} width="1200" height="900" loading="lazy"/>}</><div className="rq-work-labels"><span>{p.category}</span><span>{p.status==='Concept'?'DESIGN CONCEPT':p.status}</span></div><span className="rq-work-open"><ArrowUpRight/></span></div><div className="rq-work-copy"><div><span className="rq-work-index">{String(i+1).padStart(2,'0')} / {p.status==='Concept'?'EXPLORATION':'PORTFOLIO'}</span><h3>{bn?(p.title_bn||p.title):p.title}</h3><p>{(bn?(p.description_bn||p.description):p.description).split(' An independent')[0]}</p><div className="rq-card-features">{p.features?.slice(0,3).map(f=><span key={f}>{f}</span>)}</div></div><span className="rq-work-detail">{bn?'বিস্তারিত':'View project'} ↗</span></div></Link>)}</div>
- {!shown.length&&<div className="rq-work-empty"><h3>No matching projects</h3><button onClick={()=>{setQuery('');setFilter('All');}}>Reset filters</button></div>}
- {!preview&&filtered.length>limit&&<button className="rq-work-more" onClick={()=>setLimit(n=>n+12)}>Show more projects ({filtered.length-limit} remaining)</button>}
- </section>;
+
+const archiveIds = new Set(concepts.map(project => project.id));
+const categoryLabels: Record<string, string> = {
+  'Mobile App': 'মোবাইল অ্যাপ', Website: 'ওয়েবসাইট', 'Business Software': 'ব্যবসায়িক সফটওয়্যার',
+  'Web Application': 'ওয়েব অ্যাপ্লিকেশন', 'E-commerce': 'ই-কমার্স', 'Tablet App': 'ট্যাবলেট অ্যাপ',
+  'AI Automation': 'এআই অটোমেশন', 'UI/UX Design': 'ইউআই/ইউএক্স ডিজাইন', 'Analytics Dashboard': 'অ্যানালিটিক্স ড্যাশবোর্ড',
+
+};
+
+export function ProjectShowcase({ preview = false }: { preview?: boolean }) {
+  const { projects, language } = useData();
+  const bn = language === 'bn';
+  const [params] = useSearchParams();
+  const [query, setQuery] = useState(params.get('q') || '');
+  const [filter, setFilter] = useState('');
+  const [limit, setLimit] = useState(12);
+  const Heading = preview ? 'h2' : 'h1';
+
+  const curatedIds = new Set(selectedConcepts.map(concept => concept.id));
+  const curated = selectedConcepts.flatMap(concept => projects.filter(project => project.id === concept.id));
+  const work = projects.filter(project => !curatedIds.has(project.id) &&
+    (!archiveIds.has(project.id) || project.status !== 'Concept' || (project.__v ?? 0) > 0));
+  const all = [...work, ...curated];
+  const categories = [...new Set(all.map(project => project.category))];
+  const filtered = all.filter(project =>
+    (!filter || project.category === filter) &&
+    [project.title, project.title_bn, project.description, project.description_bn, project.category, categoryLabels[project.category]]
+      .join(' ').toLowerCase().includes(query.trim().toLowerCase()),
+  );
+  const shown = preview ? all.slice(0, 9) : filtered.slice(0, limit);
+
+  return (
+    <section className={`rq-work rq-portfolio ${preview ? 'rq-work-preview' : 'rq-work-page'} container mx-auto px-6`}>
+      <header className="rq-work-heading">
+        <div>
+          <Heading>{bn ? 'নির্বাচিত প্রজেক্ট' : 'Selected projects'}</Heading>
+          <p>{bn
+            ? 'মোবাইল অ্যাপ, ওয়েবসাইট এবং দৈনন্দিন কাজের সফটওয়্যারের ডিজাইন দেখুন।'
+            : 'Explore the interfaces and workflows behind mobile apps, websites, and software for everyday operations.'}</p>
+        </div>
+        <Link className="rq-work-button" to={preview ? '/projects' : '/case-studies'}>
+          {preview ? (bn ? 'সব প্রজেক্ট' : 'All projects') : (bn ? 'কেস স্টাডি' : 'Case studies')} <ArrowUpRight size={18} aria-hidden="true" />
+        </Link>
+      </header>
+      <DocumentedWork />
+      <h2 className="rq-portfolio-gallery-heading">{bn ? 'ডিজাইন কনসেপ্ট ও অন্যান্য প্রজেক্ট' : 'Design concepts and other projects'}</h2>
+      {!preview && (
+        <div className="rq-work-tools">
+          <div className="rq-work-tabs" aria-label={bn ? 'প্রজেক্টের ধরন' : 'Project categories'}>
+            {['', ...categories].map(category => (
+              <button type="button" aria-pressed={filter === category} key={category} onClick={() => {
+                setFilter(category);
+                setLimit(12);
+              }}>
+                {category ? (bn ? categoryLabels[category] || category : category) : (bn ? 'সব' : 'All')}
+              </button>
+            ))}
+          </div>
+          <label className="rq-work-search">
+            <Search size={17} aria-hidden="true" />
+            <input aria-label={bn ? 'প্রজেক্ট খুঁজুন' : 'Search projects'} placeholder={bn ? 'প্রজেক্ট খুঁজুন' : 'Search projects'}
+              value={query} onChange={event => { setQuery(event.target.value); setLimit(12); }} />
+          </label>
+        </div>
+      )}
+      <div className="rq-work-grid">
+        {shown.map(project => {
+          const concept = selectedConcepts.find(item => item.id === project.id);
+          const category = bn ? categoryLabels[project.category] || project.category : project.category;
+          return (
+            <Link className="rq-work-card" key={project.id} to={`/projects/${getSlug(project)}`}>
+              <div className="rq-work-art">
+                <img src={project.image} alt={concept?.imageAlt || ''} width="1200" height="800" loading="lazy" decoding="async" />
+              </div>
+              <div className="rq-work-copy">
+                <div>
+                  <span className="rq-portfolio-type">{category}{project.status === 'Concept' && (
+                    <> · {bn ? 'ডিজাইন কনসেপ্ট' : 'Design concept'}</>
+                  )}</span>
+                  <h3>{bn ? project.title_bn || project.title : project.title}</h3>
+                  <p>{bn ? project.description_bn || project.description : project.description}</p>
+                </div>
+                <ArrowUpRight size={20} aria-hidden="true" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+      {!shown.length && <div className="rq-work-empty" role="status">{bn ? 'কোনো প্রজেক্ট পাওয়া যায়নি।' : 'No matching projects.'}</div>}
+      {!preview && filtered.length > limit && (
+        <button type="button" className="rq-work-more" onClick={() => setLimit(previous => previous + 12)}>
+          {bn ? 'আরও প্রজেক্ট দেখুন' : 'Show more projects'}
+        </button>
+      )}
+    </section>
+  );
 }

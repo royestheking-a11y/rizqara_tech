@@ -1,0 +1,12 @@
+.rq-estimator { width: min(100% - 32px, 1080px); margin: auto; padding: 44px 0 76px; color: #321924; }
+.rq-estimator h1 { font-size: clamp(32px, 6vw, 64px); font-weight: 750; letter-spacing: -0.055em; line-height: 1.08; margin-bottom: 12px; }
+.rq-estimator-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 22px; margin-top: 28px; }
+.rq-estimator-panel { display: grid; align-content: start; gap: 12px; padding: clamp(18px, 4vw, 34px); background: #fdf8f9; border: 1px solid #e7d6dd; border-radius: 20px; }
+.rq-estimator-panel h2 { font-size: 22px; font-weight: 700; }
+.rq-estimator-panel p { color: #694b58; line-height: 1.55; }
+.rq-estimator select, .rq-estimator input { width: 100%; background: white; color: #321924; border: 1px solid #a98a98; border-radius: 8px; min-height: 44px; padding: 8px 12px; }
+.rq-estimator button { width: fit-content; min-height: 44px; padding: 8px 16px; border-radius: 8px; background: #67263d; color: white; font-weight: 650; cursor: pointer; }
+.rq-estimator :is(button, select, input):focus-visible { outline: 2px solid #8c3755; outline-offset: 3px; }
+.rq-estimator-actions, .rq-estimator-figures { display: flex; gap: 12px; flex-wrap: wrap; }
+.rq-estimator-figures { font-size: clamp(20px, 3vw, 30px); }
+@media (max-width: 700px) { .rq-estimator-layout { grid-template-columns: minmax(0, 1fr); } }

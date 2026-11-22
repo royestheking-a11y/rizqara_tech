@@ -1,0 +1,245 @@
+[
+  {
+    "id": "concept-aurelia",
+    "slug": "concept-aurelia",
+    "title": "Aurelia — Personal finance",
+    "category": "Mobile App",
+    "status": "Concept",
+    "image": "/images/projects/selected/aurelia.webp",
+    "imageAlt": "Two Aurelia phone screens showing balances and spending in a dark teal interface",
+    "description": "A mobile budgeting concept for people who want to see what is available after bills and savings commitments.",
+    "challenge": "A bank balance can look reassuring even when rent and other recurring payments are still due. The design separates available spending from money already set aside.",
+    "workflow": [
+      {
+        "title": "Review this month",
+        "detail": "See the current balance alongside scheduled bills and the amount left to spend."
+      },
+      {
+        "title": "Correct a category",
+        "detail": "Open an unfamiliar transaction, adjust its category, and see the revised budget immediately."
+      },
+      {
+        "title": "Set money aside",
+        "detail": "Create a savings goal and check its progress without leaving the overview."
+      }
+    ],
+    "validation": "Test whether users can explain the difference between current balance and available spending before making a purchase.",
+    "tech": []
+  },
+  {
+    "id": "concept-maison-vale",
+    "slug": "concept-maison-vale",
+    "title": "Maison Vale — Architecture studio",
+    "category": "Website",
+    "status": "Concept",
+    "image": "/images/projects/selected/maison-vale.webp",
+    "imageAlt": "Maison Vale architecture website featuring an editorial interior photograph",
+    "description": "An architecture studio website that helps prospective residential clients browse past work and make an informed inquiry.",
+    "challenge": "Visitors need enough detail about a studio’s work to decide whether it fits their project, often before they know how to describe what they want.",
+    "workflow": [
+      {
+        "title": "Browse by project type",
+        "detail": "Explore renovations and new builds through a photo-led index."
+      },
+      {
+        "title": "Open a project",
+        "detail": "Read the brief, review material choices, and see how the layout responds to the site."
+      },
+      {
+        "title": "Share a brief",
+        "detail": "Send the studio a location, project type, and approximate timeline."
+      }
+    ],
+    "validation": "Ask prospective clients to find a relevant project and identify what to include in an inquiry.",
+    "tech": []
+  },
+  {
+    "id": "concept-pocketstock",
+    "slug": "concept-pocketstock",
+    "title": "PocketStock — Inventory operations",
+    "category": "Business Software",
+    "status": "Concept",
+    "image": "/images/projects/selected/pocketstock.webp",
+    "imageAlt": "PocketStock inventory workspace showing a stock table, warehouse columns, and low-stock indicators",
+    "description": "A desktop inventory workspace for small distributors receiving shipments and tracking stock across warehouses.",
+    "challenge": "A stock count becomes hard to reconcile when units are reserved, damaged, or sitting at another warehouse.",
+    "workflow": [
+      {
+        "title": "Receive a shipment",
+        "detail": "Match incoming quantities to a purchase order and flag damaged or missing units."
+      },
+      {
+        "title": "Check availability",
+        "detail": "Compare on-hand and reserved quantities by location before committing units to an order."
+      },
+      {
+        "title": "Review low stock",
+        "detail": "Filter items below reorder thresholds and inspect their movement history."
+      }
+    ],
+    "validation": "Run a trial with a partial receipt and a stock discrepancy to see whether staff can reconcile both.",
+    "tech": []
+  },
+  {
+    "id": "concept-parcelio",
+    "slug": "concept-parcelio",
+    "title": "Parcelio — Dispatch coordination",
+    "category": "Web Application",
+    "status": "Concept",
+    "image": "/images/projects/selected/parcelio.webp",
+    "imageAlt": "Parcelio dispatch map with a violet route and a delivery stop list",
+    "description": "A browser-based dispatch workspace for assigning deliveries and adjusting routes when plans change.",
+    "challenge": "A dispatcher needs to see what changed and who is affected when a driver falls behind or a stop moves outside its delivery window.",
+    "workflow": [
+      {
+        "title": "Assign stops",
+        "detail": "Group stops by area and check their time windows before handing a route to a driver."
+      },
+      {
+        "title": "Handle a delay",
+        "detail": "Open a flagged stop, compare nearby routes, and review the impact before reassigning it."
+      },
+      {
+        "title": "Close a delivery",
+        "detail": "Record the delivery status and keep the stop history available for follow-up."
+      }
+    ],
+    "validation": "Use a delayed-route scenario to test how quickly dispatchers can identify the affected stops and make a handoff.",
+    "tech": []
+  },
+  {
+    "id": "concept-kinfolk-shop",
+    "slug": "concept-kinfolk-shop",
+    "title": "Kinfolk Shop — Ceramics storefront",
+    "category": "E-commerce",
+    "status": "Concept",
+    "image": "/images/projects/selected/kinfolk-shop.webp",
+    "imageAlt": "Kinfolk Shop storefront with hand-finished ceramic products and prices",
+    "description": "An online storefront for small-batch ceramics, with product photography and clear delivery information.",
+    "challenge": "Buying handmade ceramics online requires confidence about size, finish, and whether a limited run can arrive on time.",
+    "workflow": [
+      {
+        "title": "Browse the collection",
+        "detail": "Explore products by use and see availability beside each item."
+      },
+      {
+        "title": "Compare finishes",
+        "detail": "Check glaze photographs, dimensions, and care guidance on the product page."
+      },
+      {
+        "title": "Review delivery",
+        "detail": "See packaging details, delivery estimates, and return terms before checkout."
+      }
+    ],
+    "validation": "Test whether a gift shopper can compare two pieces and determine which will arrive before a given date.",
+    "tech": []
+  },
+  {
+    "id": "concept-fieldnote",
+    "slug": "concept-fieldnote",
+    "title": "Fieldnote — Site inspections",
+    "category": "Tablet App",
+    "status": "Concept",
+    "image": "/images/projects/selected/fieldnote.webp",
+    "imageAlt": "Fieldnote tablet interface showing a site photo and an inspection checklist",
+    "description": "A tablet-first inspection workflow for site supervisors recording issues and assigning follow-up work.",
+    "challenge": "Notes and photographs collected on-site can lose their context when the supervisor turns them into a report at the end of a shift.",
+    "workflow": [
+      {
+        "title": "Open the checklist",
+        "detail": "Choose a site and inspection area, then review the items required for that visit."
+      },
+      {
+        "title": "Record a defect",
+        "detail": "Attach a photo to an individual item with its location and required follow-up."
+      },
+      {
+        "title": "Hand off follow-up",
+        "detail": "Review outstanding items and assign each action before sharing the report."
+      }
+    ],
+    "validation": "Test a walkthrough with intermittent connectivity, including a photo capture and later handoff.",
+    "tech": []
+  },
+  {
+    "id": "concept-relay-desk",
+    "slug": "concept-relay-desk",
+    "title": "Relay Desk — Customer support inbox",
+    "category": "AI Automation",
+    "status": "Concept",
+    "image": "/images/projects/selected/relay-desk.webp",
+    "imageAlt": "Relay Desk ticket queue, customer conversation, and suggested reply panel",
+    "description": "An AI-assisted inbox for support teams that need to answer recurring questions while keeping agents in control of every reply.",
+    "challenge": "Agents often switch between a conversation and several policy documents to confirm what they can offer a customer. The draft needs to show which policy it used and when the evidence is incomplete.",
+    "workflow": [
+      {
+        "title": "Identify the issue",
+        "detail": "Group incoming tickets by topic and flag conversations that include a deadline or an unresolved escalation."
+      },
+      {
+        "title": "Review a draft",
+        "detail": "Open the cited policy beside the suggested reply and edit the wording before sending."
+      },
+      {
+        "title": "Escalate exceptions",
+        "detail": "Assign cases with unclear policies to a supervisor and include the context already gathered."
+      }
+    ],
+    "validation": "Give agents a ticket where two policy versions disagree and check whether they can spot and resolve the conflict before sending a reply.",
+    "tech": []
+  },
+  {
+    "id": "concept-access-lab",
+    "slug": "concept-access-lab",
+    "title": "Access Lab — Accessibility review",
+    "category": "UI/UX Design",
+    "status": "Concept",
+    "image": "/images/projects/selected/access-lab.webp",
+    "imageAlt": "Access Lab showing a website preview beside a list of accessibility findings",
+    "description": "A review workspace for design and engineering teams checking accessibility before a release.",
+    "challenge": "An audit finding can be difficult to reproduce if the report leaves out the page state, the interaction, or the browser conditions.",
+    "workflow": [
+      {
+        "title": "Capture a finding",
+        "detail": "Record the page, browser, viewport, and steps that reproduce a keyboard or contrast issue."
+      },
+      {
+        "title": "Assign a fix",
+        "detail": "Connect the finding to an owner and add the expected behavior, including where keyboard focus should land."
+      },
+      {
+        "title": "Retest the interaction",
+        "detail": "Repeat the recorded steps and document the result, including whether new issues appeared."
+      }
+    ],
+    "validation": "Ask a developer to reproduce a focus issue from the report, then check whether another reviewer can confirm the fix from the same steps.",
+    "tech": []
+  },
+  {
+    "id": "concept-meterline",
+    "slug": "concept-meterline",
+    "title": "Meterline — Energy analytics",
+    "category": "Analytics Dashboard",
+    "status": "Concept",
+    "image": "/images/projects/selected/meterline.webp",
+    "imageAlt": "Meterline dashboard with energy consumption charts and a facility comparison table",
+    "description": "An energy monitoring dashboard for facility managers comparing electricity use across sites and operating schedules.",
+    "challenge": "A spike can indicate equipment running after hours, a planned shift, or missing meter readings. The dashboard needs to show the context before a manager investigates.",
+    "workflow": [
+      {
+        "title": "Compare sites",
+        "detail": "Review usage against each site’s own baseline and compare equivalent operating hours."
+      },
+      {
+        "title": "Investigate a spike",
+        "detail": "Open the interval readings and check them against operating schedules and meter availability."
+      },
+      {
+        "title": "Share the evidence",
+        "detail": "Export the relevant chart and attach notes about scheduled work or a suspected equipment issue."
+      }
+    ],
+    "validation": "Give a manager a chart with one overnight spike and one missing reading to see if both are identified correctly.",
+    "tech": []
+  }
+]

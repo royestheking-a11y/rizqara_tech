@@ -1,24 +1,29 @@
+import { ProjectEstimator } from './components/studio/ProjectEstimator';
+import { trackGrowth } from './utils/growthAnalytics';
 import { VisitorTracker } from './components/VisitorTracker';
 import { useDialog } from './utils/useDialog';
 import './styles/mobile-navigation.css';
+import './styles/admin-login.css';
 import { ProjectPathfinder } from './components/studio/ProjectPathfinder';
 import { EditorialSection, TechnologyExperience } from './components/editorial/HomeEditorial';
 import './styles/footer-experience.css';
 import { CaseStudyExperience } from './components/case-studies/CaseStudyExperience';
+import { selectedConcepts } from './data/selected-concepts';
+import { DocumentedWork, RESTAURANT_CASE } from './components/projects/DocumentedWork';
 import { ConceptDetail } from './components/projects/ConceptDetail';
-import { ProjectShowcase, projectConcepts } from './components/projects/ProjectShowcase';
+import { ProjectShowcase } from './components/projects/ProjectShowcase';
 import { ServiceCategoryPreview, ServiceCatalogPage } from './components/services/ServiceCatalog';
 import { PremiumExperience, EngineeringExperience } from './components/experience/PremiumExperience';
 import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from 'react';
 import {
     X, ChevronRight, Check,
     Code2, Globe,
-    ArrowRight, Star,
+    ArrowRight,
     Linkedin, Instagram, Facebook, Youtube,
     Shield, Zap, Briefcase,
     ShieldCheck,
-    Lock, User, ExternalLink, Share2,
-    TrendingUp, Cpu, Activity, Image as ImageIcon,
+    Lock, Mail, Eye, EyeOff, ArrowLeft, ExternalLink, Share2,
+    Cpu, Activity, Image as ImageIcon,
     FileSignature, Scale, Building2
 } from 'lucide-react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
@@ -192,6 +197,7 @@ const CaseStudyDetail = () => {
                 title={`${title} | Case Study | RizQara Tech`}
                 description={description}
                 canonical={`https://www.rizqara.tech/case-studies/${getSlug(study)}`}
+                image={study.image.startsWith('/images/') ? `https://www.rizqara.tech${study.image}` : study.image.startsWith('https://') ? study.image : undefined}
             />
 
             <button onClick={() => navigate('/case-studies')} className="flex items-center text-gray-500 hover:text-[#500000] mb-12 transition-colors group">
@@ -209,56 +215,12 @@ const CaseStudyDetail = () => {
                 <div className="lg:col-span-2">
                     <div className="flex items-center gap-4 mb-6">
                         <span className="px-4 py-1 rounded-full border border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider">{study.category}</span>
-                        <span className="px-4 py-1 rounded-full bg-[#500000] text-white text-xs font-bold uppercase tracking-wider">Featured Case Study</span>
+                        <span className="px-4 py-1 rounded-full bg-[#500000] text-white text-xs font-bold uppercase tracking-wider">{study.id === 'rizqara-admin-sign-in' ? (language === 'bn' ? 'নিজস্ব প্রজেক্ট' : 'In-house project') : (language === 'bn' ? 'কেস স্টাডি' : 'Case study')}</span>
                     </div>
                     <h1 className="text-5xl font-black text-[#500000] mb-8">{title}</h1>
                     <p className="text-xl text-gray-600 leading-relaxed mb-12 font-light whitespace-pre-line">
                         {description}
                     </p>
-
-                    {study.growthBefore && study.growthAfter && (
-                        <div className="flex gap-6 mb-16">
-                            <motion.div 
-                                whileHover={{ scale: 1.02, y: -5 }}
-                                className="flex-1 bg-white border border-gray-100 rounded-[32px] p-8 relative overflow-hidden group shadow-2xl shadow-black/5 transition-all duration-300"
-                            >
-                                <div className="absolute -right-10 -bottom-10 opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 duration-1000 text-gray-900 z-0 pointer-events-none font-bold">
-                                    <Activity size={180} strokeWidth={1} />
-                                </div>
-                                <div className="relative z-10">
-                                    <div className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-4">
-                                        {language === 'bn' ? 'শুরুর অবস্থা' : 'Initial Status'}
-                                    </div>
-                                    <div className="text-5xl font-black text-gray-900">
-                                        {study.growthBefore}
-                                    </div>
-                                    <div className="mt-4 text-sm font-bold text-gray-400 uppercase tracking-widest opacity-60">
-                                        {language === 'bn' ? 'বেসলাইন মেট্রিক্স' : 'Baseline Metrics'}
-                                    </div>
-                                </div>
-                            </motion.div>
-                            <motion.div 
-                                whileHover={{ scale: 1.02, y: -5 }}
-                                className="flex-1 bg-gradient-to-br from-[#500000] to-[#1a0000] rounded-[32px] p-8 relative overflow-hidden group shadow-2xl shadow-red-900/30 border border-white/10 transition-all duration-300"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                <div className="absolute -right-10 -bottom-10 opacity-10 rotate-12 transition-transform group-hover:scale-110 duration-1000 text-white z-0 pointer-events-none">
-                                    <TrendingUp size={180} strokeWidth={1} />
-                                </div>
-                                <div className="relative z-10">
-                                    <div className="text-xs font-black uppercase tracking-[0.2em] text-white/50 mb-4">
-                                        {language === 'bn' ? 'রিজকারা টেক প্রয়োগের পর' : 'Post Implementation'}
-                                    </div>
-                                    <div className="text-5xl font-black text-white">
-                                        {study.growthAfter}
-                                    </div>
-                                    <div className="mt-4 text-sm font-bold text-white/80 uppercase tracking-widest flex items-center gap-2">
-                                        <Check size={16} className="text-white" /> {language === 'bn' ? 'প্রমাণিত বৃদ্ধি' : 'Proven Growth'}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-                    )}
 
                     <div className="pb-24">
                         {/* Problem Section */}
@@ -287,7 +249,7 @@ const CaseStudyDetail = () => {
                         <div className="pt-20 mb-40">
                             <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-3">
                                 <Zap className="text-[#500000]" size={24} />
-                                {language === 'bn' ? 'ব্যবসায়িক প্রভাব' : 'Business Impact'}
+                                {language === 'bn' ? 'ফলাফল' : 'Outcome'}
                             </h3>
                             <div className="p-8 bg-[#500000]/5 rounded-2xl border border-[#500000]/10 text-lg text-gray-700 leading-relaxed shadow-sm whitespace-pre-line">
                                 {impact}
@@ -297,7 +259,7 @@ const CaseStudyDetail = () => {
                         {/* Key Results */}
                         {features.length > 0 && (
                             <div className="pt-20 mb-40">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-12">{language === 'bn' ? 'মূল ফলাফল' : 'Key Results'}</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-12">{language === 'bn' ? 'মূল ফিচার' : 'Key Features'}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {features.map((f: string, i: number) => (
                                         <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
@@ -391,7 +353,7 @@ const CaseStudyDetail = () => {
                             <h4 className="text-xl font-bold text-white mb-3 relative z-10">Expert Advice?</h4>
                             <p className="text-white/60 text-sm mb-8 leading-relaxed relative z-10">Get a 30-minute consultation with our lead technical architect to discuss your vision.</p>
                             <button
-                                onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
+                                onClick={() => { trackGrowth('booking_clicked'); window.open(bookingUrl, '_blank', 'noopener,noreferrer'); }}
                                 className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-[#500000] px-6 py-3 rounded-xl hover:bg-[#500000] hover:text-white transition-all shadow-xl active:scale-95 group/btn"
                             >
                                 Book Strategy Call <ArrowRight size={18} className="group-hover/btn:translate-x-2 transition-transform" />
@@ -403,6 +365,33 @@ const CaseStudyDetail = () => {
         </div>
     );
 };
+
+const bookingUrl = 'https://cal.com/rizqara-tech-a8z6yt';
+
+const serviceExamples: Record<string, string[]> = {
+    'custom-website-development': ['maison-vale'],
+    'web-applications': ['parcelio'],
+    'saas-platforms': ['relay-desk'],
+    'business-management-systems': ['pocketstock', 'fieldnote'],
+    'e-commerce-platforms': ['kinfolk-shop'],
+    'custom-dashboards-portals': ['meterline'],
+    'inventory-management': ['pocketstock'],
+    'ai-agents-chatbots': ['relay-desk'],
+    'ai-customer-support': ['relay-desk'],
+    'android-applications': ['aurelia', 'fieldnote'],
+    'ios-applications': ['aurelia'],
+    'cross-platform-applications': ['aurelia', 'fieldnote'],
+    'business-mobile-applications': ['fieldnote'],
+    'uiux-research-design': ['access-lab'],
+    'figma-prototypes': ['access-lab', 'aurelia'],
+    'saas-dashboard-design': ['meterline', 'relay-desk'],
+    'business-intelligence-dashboards': ['meterline'],
+};
+
+const restaurantExamples = new Set([
+    'custom-website-development', 'restaurant-management-systems',
+    'booking-appointment-systems', 'website-application-redesign',
+]);
 
 const ServiceDetail = () => {
     const { id } = useParams();
@@ -435,10 +424,9 @@ const ServiceDetail = () => {
     const process = language === 'bn' ? (service.process_bn || service.process) : service.process;
     const details = language === 'bn' ? (service.details_bn || service.details) : service.details;
 
-    const relatedProjects = (projects as Project[]).filter((p: Project) =>
-        p.category.toLowerCase().includes(service.title.toLowerCase()) ||
-        service.title.toLowerCase().includes(p.category.toLowerCase())
-    ).slice(0, 3);
+    const serviceKey = service.catalogKey || getSlug(service);
+    const exampleIds = serviceExamples[serviceKey] || [];
+    const examples = exampleIds.flatMap(id => projects.filter(project => project.id === `concept-${id}`));
 
     const schema = {
         "@context": "https://schema.org",
@@ -522,49 +510,40 @@ const ServiceDetail = () => {
                         <p className="text-gray-500 text-sm mb-4">Book a consultation call with our experts to discuss your requirements.</p>
                         <ButtonPremium
                             className="w-full"
-                            onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
+                            onClick={() => { trackGrowth('booking_clicked'); window.open(bookingUrl, '_blank', 'noopener,noreferrer'); }}
                         >
-                            Book Appointment
+                            {language === 'bn' ? 'কল বুক করুন' : 'Book a call'}
                         </ButtonPremium>
+                        <Link to="/contact" className="mt-4 inline-block text-sm font-semibold text-[#500000] underline">
+                            {language === 'bn' ? 'প্রজেক্টের বিবরণ পাঠান' : 'Send a project brief'}
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            {/* Related Projects - Proof of Work Backlinking */}
-            {relatedProjects.length > 0 && (
-                <div className="mt-24 pt-24 border-t border-gray-100">
-                    <h3 className="text-3xl font-black text-[#500000] mb-12 uppercase tracking-tight">
-                        {language === 'bn' ? 'সম্পর্কিত প্রকল্পসমূহ' : 'Recent Work in this Category'}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {(relatedProjects as Project[]).map((project: Project) => (
-                            <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
-                                key={project.id}
-                                className="group cursor-pointer bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
-                                onClick={() => {
-                                    navigate(`/projects/${getSlug(project)}`);
-                                    window.scrollTo(0, 0);
-                                }}
-                            >
-                                <div className="aspect-video overflow-hidden relative">
-                                    <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[10px] font-bold text-[#500000] uppercase rounded-full shadow-sm">
-                                            {language === 'bn' ? (project.category_bn || project.category) : project.category}
-                                        </span>
+            <div className="rq-portfolio">
+                {restaurantExamples.has(serviceKey) && <DocumentedWork ids={[RESTAURANT_CASE]} />}
+                {examples.length > 0 && (
+                    <section aria-labelledby="service-examples">
+                        <h2 id="service-examples" className="rq-portfolio-gallery-heading">
+                            {language === 'bn' ? 'সম্পর্কিত ডিজাইন কনসেপ্ট' : 'Related design concepts'}
+                        </h2>
+                        <div className="rq-work-grid">
+                            {examples.map(project => (
+                                <Link key={project.id} to={`/projects/${getSlug(project)}`} className="rq-work-card">
+                                    <div className="rq-work-art">
+                                        <img src={project.image} alt={selectedConcepts.find(concept => concept.id === project.id && concept.image === project.image)?.imageAlt || ''} width="1200" height="800" loading="lazy" />
                                     </div>
-                                </div>
-                                <div className="p-6">
-                                    <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#500000] transition-colors mb-2">
-                                        {language === 'bn' ? (project.title_bn || project.title) : project.title}
-                                    </h4>
-                                    <p className="text-gray-500 text-sm line-clamp-2">{language === 'bn' ? (project.description_bn || project.description) : project.description}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
+                                    <div className="rq-work-copy">
+                                        <div><h3>{project.title}</h3><p>{project.description}</p></div>
+                                        <ArrowRight size={20} aria-hidden="true" />
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
+            </div>
         </div>
     );
 };
@@ -574,7 +553,7 @@ const ProjectDetail = () => {
     const navigate = useNavigate();
     const { projects, language, t, loading } = useData();
 
-    const project = [...projects, ...projectConcepts].find(p =>
+    const project = projects.find(p =>
         matchesContent(p, id)
     );
 
@@ -877,7 +856,7 @@ const Navbar = () => {
 
                 <div className="hidden lg:flex items-center gap-4">
                     <button
-                        onClick={() => window.open('https://cal.com/rizqara-tech-a8z6yt', '_blank')}
+                        onClick={() => { trackGrowth('booking_clicked'); window.open(bookingUrl, '_blank', 'noopener,noreferrer'); }}
                         className="rq-nav-cta px-6 py-3 bg-[#500000] text-white rounded-full font-bold text-sm hover:bg-[#3a0000] transition-colors shadow-[0_5px_15px_rgba(80,0,0,0.3)] flex items-center gap-2"
                     >
                         {t('freeAudit')}
@@ -898,7 +877,7 @@ const Navbar = () => {
                         <header><Link to="/" onClick={()=>setMobileMenuOpen(false)}>RIZQARA TECH</Link><button className="rq-menu-close" aria-label="Close navigation" onClick={()=>setMobileMenuOpen(false)}><X size={20}/></button></header>
                         <div className="rq-mobile-menu-body"><div className="rq-mobile-caption"><span>{language==='bn'?'এক্সপ্লোর করুন':'EXPLORE RIZQARA'}</span><span>01 — 07</span></div>
                         <nav aria-label="Mobile navigation">{links.map((link,i)=><Link key={link.path} to={link.path} aria-current={isActive(link.path)?'page':undefined} onClick={()=>setMobileMenuOpen(false)}><span className="rq-mobile-index">0{i+1}</span><span>{link.name}</span><span className="rq-mobile-arrow"><ArrowRight size={17}/></span></Link>)}</nav>
-                        <div className="rq-mobile-contact"><span>{language==='bn'?'নতুন কিছু তৈরি করি':'LET’S MAKE SOMETHING GREAT'}</span><a href="https://cal.com/rizqara-tech-a8z6yt" target="_blank" rel="noopener noreferrer" onClick={()=>setMobileMenuOpen(false)}>{t('freeAudit')}<ArrowRight size={18}/></a><a className="rq-mobile-email" href="mailto:rizqaratech@gmail.com">rizqaratech@gmail.com</a></div>
+                        <div className="rq-mobile-contact"><span>{language==='bn'?'নতুন কিছু তৈরি করি':'LET’S MAKE SOMETHING GREAT'}</span><a href={bookingUrl} target="_blank" rel="noopener noreferrer" onClick={()=>{trackGrowth('booking_clicked');setMobileMenuOpen(false);}}>{t('freeAudit')}<ArrowRight size={18}/></a><a className="rq-mobile-email" href="mailto:rizqaratech@gmail.com">rizqaratech@gmail.com</a></div>
                         </div><footer><span>Dhaka · Barisal</span><span>Ideas beyond borders ↗</span></footer>
                     </motion.div>
                 </motion.div>}
@@ -1127,105 +1106,14 @@ const Footer = () => {
                     </div>
                 </div>
 
-                                        {/* Recognized & Certified — sits under Solutions, flowing naturally */}
-                        <div className="rq-footer-recognition">
-                            <div className="flex items-center gap-1.5 mb-4">
-                                <ShieldCheck size={13} className="text-[#500000]" />
-                                <span className="text-[10px] font-black text-[#500000] uppercase tracking-widest">
-                                    {language === 'bn' ? 'স্বীকৃত ও প্রত্যয়িত' : 'Recognized & Certified'}
-                                </span>
-                            </div>
-
-                            {/* Clutch + 3 cert badges in one row, all same height */}
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-
-                                {/* Clutch – maroon card */}
-                                <a
-                                    href="https://clutch.co/profile/rizqara-tech"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                        width: '120px', minWidth: '120px', height: '68px',
-                                        flexShrink: 0, textDecoration: 'none',
-                                        background: '#500000', borderRadius: '12px',
-                                        display: 'flex', flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                        padding: '8px 10px',
-                                        boxShadow: '0 2px 8px rgba(80,0,0,0.18)',
-                                        transition: 'transform 0.2s, box-shadow 0.2s'
-                                    }}
-                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'; }}
-                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '6px', fontWeight: 700, color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Reviewed on</span>
-                                        <div style={{ display: 'flex', gap: '1px' }}>
-                                            {[1,2,3,4,5].map((_,i) => <Star key={i} size={7} fill="#FFD700" stroke="#FFD700" />)}
-                                        </div>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <img
-                                            src="https://res.cloudinary.com/dhutfywg2/image/upload/v1773642640/rizqaratech/clutch/clutch.png"
-                                            alt="Clutch"
-                                            style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
-                                        />
-                                    </div>
-                                    <div style={{ fontSize: '7px', fontWeight: 900, color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', textAlign: 'right', letterSpacing: '0.05em' }}>10 Reviews</div>
-                                </a>
-
-                                {/* GDPR */}
-                                <div
-                                    style={{
-                                        width: '68px', minWidth: '68px', height: '68px',
-                                        flexShrink: 0, background: '#fff',
-                                        border: '1px solid #e5e7eb', borderRadius: '12px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        padding: '6px',
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                                        cursor: 'default'
-                                    }}
-                                    title="GDPR Compliant"
-                                >
-                                    <img src="/gdpr-2.webp" alt="GDPR" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
-                                </div>
-
-                                {/* ISO 27001 */}
-                                <div
-                                    style={{
-                                        width: '68px', minWidth: '68px', height: '68px',
-                                        flexShrink: 0, background: '#fff',
-                                        border: '1px solid #e5e7eb', borderRadius: '12px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        padding: '6px',
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                                        cursor: 'default'
-                                    }}
-                                    title="ISO 27001 Certified"
-                                >
-                                    <img src="/iso2-2.webp" alt="ISO 27001" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
-                                </div>
-
-                                {/* ISO 9001 */}
-                                <div
-                                    style={{
-                                        width: '68px', minWidth: '68px', height: '68px',
-                                        flexShrink: 0, background: '#fff',
-                                        border: '1px solid #e5e7eb', borderRadius: '12px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        padding: '6px',
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                                        cursor: 'default'
-                                    }}
-                                    title="ISO 9001 Certified"
-                                >
-                                    <img src="/iso9001-2.webp" alt="ISO 9001" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
-                                </div>
-
-                            </div>
+                        <div className="rq-footer-recognition flex flex-wrap gap-4">
+                            <Link to="/registered-company" className="underline">{language === 'bn' ? 'কোম্পানির তথ্য' : 'Company information'}</Link>
+                            <a href="https://clutch.co/profile/rizqara-tech" target="_blank" rel="noopener noreferrer" className="underline">Clutch profile</a>
                         </div>
                 <div className="rq-footer-capabilities" aria-label="Our expertise">
                     <span>{language === 'bn' ? 'আমাদের দক্ষতা' : 'OUR EXPERTISE'}</span>
                     <div>
+                        <Link to="/estimate"><Briefcase size={19}/><span>{language === 'bn' ? 'প্রজেক্টের হিসাব' : 'Project estimator'}</span></Link>
                         <Link to="/services#software-web-development"><Code2 size={19}/><span>{language === 'bn' ? 'সফটওয়্যার ডেভেলপমেন্ট' : 'Software development'}</span></Link>
                         <Link to="/services#ai-automation"><Cpu size={19}/><span>{language === 'bn' ? 'AI ও অটোমেশন' : 'AI & automation'}</span></Link>
                         <Link to="/services#mobile-application-development"><Code2 size={19}/><span>{language === 'bn' ? 'মোবাইল অ্যাপ' : 'Mobile applications'}</span></Link>
@@ -1276,8 +1164,8 @@ const Home = () => {
 
             {/* 1. HERO CAROUSEL */}
             <SEO
-                title="RizQara Tech | Best Software & AI Solutions Company in Bangladesh"
-                description="RizQara Tech: The best software company in Bangladesh. Premium web development, AI solutions, mobile apps, and UI/UX design engineered for performance."
+                title="RizQara Tech | Custom Software for Business Operations"
+                description="RizQara Tech builds booking websites, inventory software, and workflow automation for growing businesses."
                 keywords="RizQara Tech, Rizq, Rizq Tech, Rizq Ara, software company Bangladesh, software development company in Dhaka, best software company in Bangladesh, AI software solutions BD, mobile app development Bangladesh"
                 canonical="https://www.rizqara.tech/"
             />
@@ -1347,9 +1235,9 @@ const Home = () => {
                             <p className="text-[#500000] text-lg font-bold flex-1 text-center md:text-left">
                                 {language === 'bn' ? 'বিশেষজ্ঞ কোড দিয়ে নির্ভরযোগ্য, ব্যবহারকারী-কেন্দ্রিক পণ্য তৈরি করুন।' : 'Build reliable, user-focused products with expert code.'}
                             </p>
-                            <button onClick={() => onNavigate('Contact')} className="bg-[#500000] text-white px-8 py-3 rounded-full font-bold hover:bg-[#6a0000] transition-colors shadow-lg shrink-0 text-center w-full md:w-auto break-words">
+                            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackGrowth('booking_clicked')} className="bg-[#500000] text-white px-8 py-3 rounded-full font-bold hover:bg-[#6a0000] transition-colors shadow-lg shrink-0 text-center w-full md:w-auto break-words">
                                 {language === 'bn' ? 'কল বুক করুন' : 'Book a call'}
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1462,7 +1350,6 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
     const { language } = useData();
 
     const [busy, setBusy] = useState(false);
@@ -1483,115 +1370,76 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
         finally { setBusy(false); }
     };
 
+    const isBangla = language === 'bn';
+
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 relative bg-[#0e0307] text-[#2b1820] overflow-hidden">
-            {/* Ambient luxury lighting */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-[#500000] to-[#7d1835] rounded-full blur-[140px] opacity-25"></div>
-                <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-[#3a0614] rounded-full blur-[120px] opacity-20"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(14,3,7,0.8)_100%)]"></div>
-            </div>
-
-            <div className="w-full max-w-md bg-white/95 backdrop-blur-xl border border-[#ecdde4] rounded-3xl p-8 sm:p-12 relative z-10 shadow-[0_25px_60px_-15px_rgba(80,0,0,0.35)]">
-                {/* Brand Crest */}
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#500000] to-[#7b1735] mx-auto flex items-center justify-center text-white mb-6 shadow-xl shadow-[#500000]/30 border border-white/20">
-                    <Shield size={30} strokeWidth={2.2} className="text-[#fce4ec]" />
-                </div>
-
-                <div className="text-center mb-8">
-                    <span className="block text-[10px] font-bold tracking-[0.22em] uppercase text-[#8c354f] mb-1.5">
-                        RIZQARA / SECURE CONSOLE
-                    </span>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-[#230711] tracking-tight">
-                        {language === 'bn' ? 'প্রশাসক সাইন ইন' : 'Administrator Sign In'}
-                    </h1>
-                    <p className="text-[#7d606d] text-xs mt-2 leading-relaxed">
-                        {language === 'bn' 
-                            ? 'শুধুমাত্র অনুমোদিত কর্মীদের জন্য নিরাপদ ব্যবস্থাপনা অ্যাক্সেস।' 
-                            : 'Sign in with your administrative credentials to manage RizQara Tech.'}
+        <div className="admin-login" lang={isBangla ? 'bn' : 'en'}>
+            <div className="admin-login__layout">
+                <div className="admin-login__brand">
+                    <div className="admin-login__wordmark">
+                        <span className="admin-login__mark"><ShieldCheck size={21} aria-hidden="true" /></span>
+                        RizQara Tech
+                    </div>
+                    <div className="admin-login__art" aria-hidden="true">
+                        <span className="admin-login__orbit" />
+                        <span className="admin-login__orbit" />
+                        <span className="admin-login__orbit" />
+                        <div className="admin-login__crest"><ShieldCheck size={66} strokeWidth={1} /></div>
+                    </div>
+                    <p className="admin-login__restricted">
+                        <Lock size={15} aria-hidden="true" />
+                        {isBangla ? 'শুধু অনুমোদিত কর্মীদের জন্য' : 'Authorized personnel only'}
                     </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                        <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-[#846271] mb-1.5 text-left">
-                            {language === 'bn' ? 'ইমেইল ঠিকানা' : 'Official Email'}
-                        </label>
-                        <div className="relative">
-                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8c6777]" size={16} />
-                            <input
-                                type="email"
-                                aria-label="Administrator email"
-                                autoComplete="username"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="admin@rizqaratech.com"
-                                className="w-full bg-[#faf5f7] border border-[#e5d0db] p-3.5 pl-11 rounded-xl text-[#230711] text-sm placeholder:text-[#b598a5] focus:outline-none focus:border-[#500000] focus:bg-white focus:ring-2 focus:ring-[#500000]/10 transition-all font-medium"
-                            />
-                        </div>
-                    </div>
+                <section className="admin-login__panel" aria-labelledby="admin-login-title">
+                    <Link className="admin-login__back" to="/">
+                        <ArrowLeft size={16} aria-hidden="true" />
+                        {isBangla ? 'ওয়েবসাইটে ফিরে যান' : 'Back to website'}
+                    </Link>
 
-                    <div>
-                        <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-[#846271] mb-1.5 text-left">
-                            {language === 'bn' ? 'পাসওয়ার্ড' : 'Security Password'}
-                        </label>
-                        <div className="relative">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8c6777]" size={16} />
-                            <input
-                                aria-label="Administrator password"
-                                autoComplete="current-password"
-                                required
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••••••"
-                                className="w-full bg-[#faf5f7] border border-[#e5d0db] p-3.5 pl-11 pr-11 rounded-xl text-[#230711] text-sm placeholder:text-[#b598a5] focus:outline-none focus:border-[#500000] focus:bg-white focus:ring-2 focus:ring-[#500000]/10 transition-all font-medium"
-                            />
-                            <button
-                                type="button"
-                                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8c6777] hover:text-[#500000] transition-colors p-1 cursor-pointer"
-                            >
-                                {showPassword ? (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                                ) : (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                                )}
+                    <div className="admin-login__content">
+                        <header className="admin-login__header">
+                            <h1 id="admin-login-title">{isBangla ? 'প্রশাসক সাইন ইন' : 'Admin sign-in'}</h1>
+                            <p>{isBangla
+                                ? 'আপনার প্রশাসক অ্যাকাউন্ট দিয়ে সাইন ইন করুন।'
+                                : 'Sign in with your RizQara Tech admin account.'}</p>
+                        </header>
+
+                        <form className="admin-login__form" onSubmit={handleLogin} aria-busy={busy}>
+                            <div className="admin-login__field">
+                                <label htmlFor="admin-email">{isBangla ? 'ইমেইল ঠিকানা' : 'Email address'}</label>
+                                <div className="admin-login__input">
+                                    <Mail size={18} aria-hidden="true" />
+                                    <input id="admin-email" name="email" type="email" autoComplete="username"
+                                        autoCapitalize="none" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="admin-login__field">
+                                <label htmlFor="admin-password">{isBangla ? 'পাসওয়ার্ড' : 'Password'}</label>
+                                <div className="admin-login__input">
+                                    <Lock size={18} aria-hidden="true" />
+                                    <input id="admin-password" name="password" type={showPassword ? 'text' : 'password'}
+                                        autoComplete="current-password" required value={password}
+                                        onChange={(e) => setPassword(e.target.value)} />
+                                    <button className="admin-login__visibility" type="button" aria-controls="admin-password"
+                                        aria-label={showPassword
+                                            ? (isBangla ? 'পাসওয়ার্ড লুকান' : 'Hide password')
+                                            : (isBangla ? 'পাসওয়ার্ড দেখুন' : 'Show password')}
+                                        onClick={() => setShowPassword(visible => !visible)}>
+                                        {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
+                                    </button>
+                                </div>
+                            </div>
+                            <button className="admin-login__submit" type="submit" disabled={busy}>
+                                <span>{busy
+                                    ? (isBangla ? 'যাচাই করা হচ্ছে…' : 'Verifying credentials…')
+                                    : (isBangla ? 'সাইন ইন করুন' : 'Sign in')}</span>
+                                {!busy && <ArrowRight size={19} aria-hidden="true" />}
                             </button>
-                        </div>
+                        </form>
                     </div>
-
-                    <button
-                        type="submit"
-                        disabled={busy}
-                        className="w-full mt-2 bg-gradient-to-r from-[#500000] to-[#781834] hover:from-[#3f0000] hover:to-[#631229] text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-[#500000]/25 hover:shadow-xl flex justify-center items-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
-                    >
-                        {busy ? (
-                            <span>{language === 'bn' ? 'যাচাই করা হচ্ছে...' : 'Verifying credentials...'}</span>
-                        ) : (
-                            <>
-                                <span>{language === 'bn' ? 'লগইন করুন' : 'Sign in to Console'}</span>
-                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                            </>
-                        )}
-                    </button>
-                </form>
-
-                <div className="mt-8 pt-6 border-t border-[#ebdce3] flex flex-col items-center gap-3 text-center">
-                    <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#8c6777] uppercase tracking-wider">
-                        <ShieldCheck size={13} className="text-[#500000]" />
-                        <span>256-Bit Encrypted · Strict Origin Guard</span>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/')}
-                        className="text-xs font-semibold text-[#7d5e6c] hover:text-[#500000] transition-colors cursor-pointer"
-                    >
-                        ← {language === 'bn' ? 'হোমপেজে ফিরে যান' : 'Return to RizQara Tech'}
-                    </button>
-                </div>
+                </section>
             </div>
         </div>
     );
@@ -1679,8 +1527,8 @@ const MainContent = () => {
 
                     <Route path="/projects" element={<>
                         <SEO
-                            title="Our Projects | Software & AI Solutions by RizQara Tech"
-                            description="Explore real-world software, AI, and digital projects delivered by RizQara Tech for local and global clients."
+                            title="Selected Projects | RizQara Tech"
+                            description="Explore selected mobile, web, and business software projects and independent design concepts from RizQara Tech."
                             canonical="https://www.rizqara.tech/projects"
                         />
                         {loading ? <ProjectsSkeleton /> : <ProjectsPage />}
@@ -1757,6 +1605,7 @@ const MainContent = () => {
                     <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
                     <Route path="/videos" element={<VideosPage onNavigate={onNavigate} />} />
                     <Route path="/videos/:id" element={<VideoDetail />} />
+                    <Route path="/estimate" element={<ProjectEstimator />} />
                     <Route path="/build" element={<BuildPage onNavigate={onNavigate} initialConfig={buildConfig} />} />
                     <Route path="/feature/:id" element={<FeatureDetailWrapper />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />

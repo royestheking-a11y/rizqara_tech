@@ -1,5 +1,14 @@
 const fs = require('node:fs/promises');
 const { Service, Project, Blog, CaseStudy, Video } = require('./models/Schemas');
+const selectedConcepts = require('../src/data/selected-concepts.json');
+const caseStudies = require('../src/data/case-studies.json');
+const catalog = require('../shared/service-catalog.json');
+const serviceEntries = catalog.categories.flatMap(category => category.offerings.map(offering => ({
+    id: 'svc-' + offering.key, slug: offering.key, title: offering.title, description: offering.summary,
+    image: category.image, capabilities: offering.deliverables, process: catalog.process,
+})));
+const editorialFallback = { blog: require('../src/data/blogs.json'), videos: require('../src/data/videos.json') };
+const bundled = { services: serviceEntries, projects: selectedConcepts, 'case-studies': caseStudies };
 const SITE_URL = 'https://www.rizqara.tech';
 const pages = {
     '/': ['RizQara Tech | Software & AI Solutions', 'Custom web, mobile and AI software built by RizQara Tech in Bangladesh.'],
@@ -16,6 +25,7 @@ const pages = {
     '/founder': ['Founder of RizQara Tech', 'Learn about the founder of RizQara Tech.'],
     '/vision-2030': ['Vision 2030', 'Explore the future vision of RizQara Tech.'],
     '/registered-company': ['Company Information', 'Company information for RizQara Tech.'],
+    '/estimate': ['Software Project Estimator', 'Get a planning range and suggested first-release scope for a website, app, or business software project.'],
     '/build': ['Plan Your Project', 'Configure your project and contact our team for a quote.'],
     '/packages': ['Software Packages', 'Compare software development packages.'],
     '/privacy-policy': ['Privacy Policy', 'Read our privacy policy.'],
@@ -28,14 +38,21 @@ const slug = title => title.toLowerCase().normalize('NFKC').trim().replace(/[^\p
 async function renderPage(file, pathname, ready) {
     let detail = null;
     let page = pages[pathname], status = 200, canonicalPath = pathname, image = `${SITE_URL}/og-image.png`;
-    if (!page && ready) {
+    if (pathname === '/estimate') image = SITE_URL + '/images/projects/selected/pocketstock.webp';
+    if (!page) {
         const [, collection, encoded] = pathname.split('/');
         const model = { services: Service, projects: Project, blog: Blog, 'case-studies': CaseStudy, videos: Video }[collection];
         if (model && encoded) {
-            const candidate = decodeURIComponent(encoded);
+            let candidate = encoded;
+            try { candidate = decodeURIComponent(encoded); } catch { /* Invalid URL encoding cannot match a content slug. */ }
             // Existing title links are accepted alongside persisted slugs and IDs.
-            const records = await model.find().select('id title description excerpt image slug previousSlugs details capabilities process').limit(1000).lean();
-            if (collection === 'projects') records.push(...require('../src/data/project-concepts.json'));
+            const defaults = collection === 'projects' ? [...require('../src/data/project-concepts.json'), ...selectedConcepts] : (bundled[collection] || []);
+            const recordsById = new Map(defaults.map(item => [item.id, item]));
+            if (ready) {
+                const saved = await model.find().select('id title description excerpt image slug previousSlugs details capabilities process archived').limit(1000).lean();
+                for (const item of saved) recordsById.set(item.id, item);
+            }
+            const records = recordsById.size ? [...recordsById.values()].filter(item => !item.archived) : (editorialFallback[collection] || []);
             const item = records.find(record => [record.id, record.slug, `${slug(record.title)}-${record.id}`, `${slug(record.title)}-${record.id.slice(0, 8)}-${record.id}`, `${slug(record.title)}-${record.id.slice(0, 8)}`, slug(record.title), record.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, ''), ...(record.previousSlugs || [])].includes(candidate));
             if (item) { detail = item; page = [item.title, item.description || item.excerpt || item.title]; canonicalPath = `/${collection}/${item.slug || `${slug(item.title)}-${item.id.slice(0, 8)}`}`; if (item.image?.startsWith('https://')) image = item.image; else if (item.image?.startsWith('/images/') && !item.image.startsWith('//')) image = `${SITE_URL}${item.image}`; }
         }
@@ -48,13 +65,18 @@ async function renderPage(file, pathname, ready) {
     let html = await fs.readFile(file, 'utf8');
     html = html.replace(/<title>[\s\S]*?<\/title>/, tags);
     const navigation = Object.entries(pages).filter(([url]) => !['/admin','/build','/packages'].includes(url)).map(([url, info]) => `<a href="${url}">${escapeHTML(info[0])}</a>`).join(' · ');
-    const catalog = require('../shared/service-catalog.json');
     const serviceContent = ['/', '/services'].includes(pathname) ? `<section><h2>Software, mobile applications and digital services</h2>${catalog.categories.map(category => `<article><h3><a href="/services#${category.id}">${escapeHTML(category.title || category.name)}</a></h3><p>${escapeHTML(category.description || category.summary || '')}</p></article>`).join('')}</section>` : '';
     const detailContent = detail ? `${detail.details ? `<section><h2>About this service or project</h2><p>${escapeHTML(detail.details)}</p></section>` : ''}${['capabilities','process'].map(key => Array.isArray(detail[key]) && detail[key].length ? `<section><h2>${key === 'capabilities' ? 'Capabilities' : 'Our process'}</h2><ul>${detail[key].map(value=>`<li>${escapeHTML(value)}</li>`).join('')}</ul></section>` : '').join('')}` : '';
     let directory = '';
     const listModel = {'/services':Service,'/projects':Project,'/blog':Blog,'/case-studies':CaseStudy,'/videos':Video}[pathname];
-    if (ready && listModel) {
-        const entries = await listModel.find().select('id title slug description excerpt').limit(1000).lean();
+    if (listModel) {
+        const collection = pathname.slice(1);
+        const entriesById = new Map((bundled[collection] || []).map(item => [item.id, item]));
+        if (ready) {
+            const records = await listModel.find().select('id title slug description excerpt archived').limit(1000).lean();
+            for (const item of records) entriesById.set(item.id, item);
+        }
+        const entries = entriesById.size ? [...entriesById.values()].filter(item => !item.archived) : (editorialFallback[collection] || []);
         directory = `<section><h2>Explore ${escapeHTML(pathname.slice(1))}</h2><ul>${entries.map(item=>`<li><a href="${pathname}/${escapeHTML(item.slug || `${slug(item.title)}-${item.id.slice(0,8)}`)}">${escapeHTML(item.title)}</a><p>${escapeHTML(item.description || item.excerpt || '')}</p></li>`).join('')}</ul></section>`;
     }
     const brandLoader = `<div class="rq-brand-loader" role="status" aria-label="Loading website"><div class="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i></i><i></i><i></i></div></div>`;
