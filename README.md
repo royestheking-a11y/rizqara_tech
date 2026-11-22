@@ -61,7 +61,7 @@ NODE_ENV=production npm start
 
 Set `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, and `ALLOWED_ORIGINS` explicitly. Enable `TRUST_PROXY=1` only behind a known single reverse proxy. HTTPS is required for production session cookies. The Vercel configuration forwards requests to the existing Render hostname, including the Node-rendered route metadata. Deploy the updated Node service before switching the frontend proxy. Do not deploy only `dist` to a static host if route-specific previews and correct HTTP 404 statuses are required.
 
-Administrator sessions are HttpOnly/SameSite cookies backed by this API process's bounded memory store. They expire after eight hours and are invalidated on restart. Run one API instance; shared session/rate-limit storage is required before scaling to multiple instances. Use a durable private volume for `PRIVATE_UPLOAD_DIR`; CVs are served only to signed-in administrators. Back up that directory separately from MongoDB.
+Administrator sessions use HttpOnly, SameSite cookies. MongoDB stores hashed session tokens with an eight-hour expiry, so a session can survive an API restart. Rate limits are per API instance. Use a durable private volume for `PRIVATE_UPLOAD_DIR`; CVs are served only to signed-in administrators. Back up that directory separately from MongoDB.
 
 ## Optional providers
 

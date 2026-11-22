@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { isStarterResource } = require('../academy/starter-courses');
 
 const ServiceSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
@@ -212,7 +213,31 @@ for (const schema of [ServiceSchema, ProjectSchema, BlogSchema, CaseStudySchema,
     schema.add({ slug: { type: String, unique: true, sparse: true }, previousSlugs: [String] });
 }
 
+const CourseSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    title: { type: String, required: true, trim: true, maxlength: 160 },
+    description: { type: String, required: true, trim: true, maxlength: 2400 },
+    category: { type: String, required: true, trim: true, maxlength: 80 },
+    level: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced', 'All levels'], required: true },
+    image: String,
+    downloadUrl: {
+        type: String, required: true, maxlength: 2048,
+        validate: {
+            validator(value) {
+                if (isStarterResource(value)) return true;
+                try {
+                    const url = new URL(value);
+                    return url.protocol === 'https:' && !url.username && !url.password;
+                } catch { return false; }
+            },
+            message: 'Use a valid HTTPS download URL or a bundled course resource',
+        },
+    },
+    published: { type: Boolean, default: false },
+}, { timestamps: true });
+
 module.exports = {
+    Course: mongoose.model('Course', CourseSchema),
     Service: mongoose.model('Service', ServiceSchema),
     Project: mongoose.model('Project', ProjectSchema),
     Review: mongoose.model('Review', ReviewSchema),

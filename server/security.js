@@ -1,5 +1,11 @@
 const crypto = require('node:crypto');
-const sessions = new Map();
+const mongoose = require('mongoose');
+
+const sessionSchema = new mongoose.Schema({
+    _id: String,
+    expiresAt: { type: Date, required: true, expires: 0 },
+}, { versionKey: false });
+const AdminSession = mongoose.model('AdminSession', sessionSchema);
 const windows = new Map();
 const cookieName = 'rizqara_session';
 const sessionTTL = 8 * 60 * 60 * 1000;
@@ -56,11 +62,21 @@ function rateLimit(name, limit, interval = 60000) {
 function getToken(req) {
     return (req.headers.cookie || '').split(';').map(x => x.trim()).find(x => x.startsWith(`${cookieName}=`))?.slice(cookieName.length + 1);
 }
-function requireAdmin(req, res, next) {
-    const token = getToken(req);
-    const session = sessions.get(token);
-    if (!session || session.expires <= Date.now()) { sessions.delete(token); return res.status(401).json({ error: 'Please sign in as administrator' }); }
+function sessionKey(token) {
+    return /^[a-f0-9]{64}$/.test(token || '')
+        ? crypto.createHash('sha256').update(token).digest('hex')
+        : null;
+}
+
+async function requireAdmin(req, res, next) {
     res.set('Cache-Control', 'no-store');
+    const key = sessionKey(getToken(req));
+    if (!key) return res.status(401).json({ error: 'Please sign in as administrator' });
+    if (mongoose.connection.readyState !== 1) {
+        return res.status(503).json({ error: 'Session verification is temporarily unavailable. Try again shortly.' });
+    }
+    const session = await AdminSession.exists({ _id: key, expiresAt: { $gt: new Date() } });
+    if (!session) return res.status(401).json({ error: 'Please sign in as administrator' });
     next();
 }
 function verifyPassword(password, encoded) {
@@ -70,37 +86,41 @@ function verifyPassword(password, encoded) {
         return crypto.timingSafeEqual(crypto.scryptSync(password, salt, 64), Buffer.from(expected, 'hex'));
     } catch { return false; }
 }
-const DEFAULT_ADMIN_EMAIL = 'admin@rizqaratech.com';
-const DEFAULT_ADMIN_HASH = 'f2dc0946e897c29a356ca91bdd49daf2:7fa8ce461bbb0b743b55ef75210f88a239c5b06673c214552bac0d882b983674e67e851784ce024efe383dda60dbaf5966e7be0270302d764eb6bb66d6fdc440';
-
 function cookieOptions() { return { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/api', maxAge: sessionTTL }; }
 function mountAuth(router) {
-    router.post('/auth/login', checkOrigin, rateLimit('login', 15, 15 * 60000), (req, res) => {
+    router.post('/auth/login', checkOrigin, rateLimit('login', 15, 15 * 60000), async (req, res) => {
+        res.set('Cache-Control', 'no-store');
         const { email, password } = req.body || {};
         if (typeof email !== 'string' || typeof password !== 'string' || password.length > 256) {
             return res.status(401).json({ error: 'Incorrect credentials' });
         }
         const inputEmail = email.trim().toLowerCase();
-        const configuredEmail = (process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL).trim().toLowerCase();
-        const emailMatches = inputEmail === configuredEmail || inputEmail === DEFAULT_ADMIN_EMAIL;
-
-        const configuredHash = process.env.ADMIN_PASSWORD_HASH;
-        const passwordMatches = (configuredHash && verifyPassword(password, configuredHash)) ||
-                                verifyPassword(password, DEFAULT_ADMIN_HASH);
+        const configuredEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+        const emailMatches = Boolean(configuredEmail) && inputEmail === configuredEmail;
+        const passwordMatches = verifyPassword(password, process.env.ADMIN_PASSWORD_HASH);
 
         if (!emailMatches || !passwordMatches) {
             return res.status(401).json({ error: 'Incorrect credentials' });
         }
-        for (const [key, session] of sessions) if (session.expires <= Date.now()) sessions.delete(key);
-        sessions.delete(getToken(req));
-        if (sessions.size >= 100) sessions.delete(sessions.keys().next().value);
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ error: 'Sign-in is temporarily unavailable. Try again shortly.' });
+        }
         const token = crypto.randomBytes(32).toString('hex');
-        sessions.set(token, { expires: Date.now() + sessionTTL });
+        const previous = sessionKey(getToken(req));
+        if (previous) await AdminSession.deleteOne({ _id: previous });
+        await AdminSession.create({ _id: sessionKey(token), expiresAt: new Date(Date.now() + sessionTTL) });
         res.cookie(cookieName, token, cookieOptions()).set('Cache-Control', 'no-store').json({ authenticated: true });
     });
     router.get('/auth/session', requireAdmin, (req, res) => res.json({ authenticated: true }));
-    router.post('/auth/logout', checkOrigin, (req, res) => {
-        sessions.delete(getToken(req)); res.clearCookie(cookieName, cookieOptions()).json({ authenticated: false });
+    router.post('/auth/logout', checkOrigin, async (req, res) => {
+        res.set('Cache-Control', 'no-store');
+        const key = sessionKey(getToken(req));
+        if (key && mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ error: 'Sign-out is temporarily unavailable. Try again shortly.' });
+        }
+        if (key) await AdminSession.deleteOne({ _id: key });
+        const { maxAge, ...options } = cookieOptions();
+        res.clearCookie(cookieName, options).json({ authenticated: false });
     });
 }
 module.exports = { requireAdmin, rateLimit, checkOrigin, mountAuth, allowedOrigins };

@@ -4548,3 +4548,6 @@ html {
     transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
   }
 }
+.rq-skip-link { position: fixed; inset: 12px auto auto 12px; z-index: 21000; transform: translateY(calc(-100% - 24px)); padding: 10px 14px; border-radius: 8px; background: #67263e; color: #fff; font-weight: 700; }
+.rq-skip-link:focus { transform: none; outline: 2px solid #fff; outline-offset: 2px; }
+#rq-main-content { scroll-margin-top: 80px; }

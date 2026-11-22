@@ -11,7 +11,7 @@ import {
     LayoutDashboard, Briefcase, Users, MessageSquare,
     Plus, Trash2, Edit2, Save, X, RotateCcw,
     FileText, PlayCircle, Image, Settings, LogOut,
-    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Bell, Sparkles
+    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Bell, Sparkles, BookOpen
 } from 'lucide-react';
 import { ImageUploader } from './admin/ImageUploader';
 import { UserInteractionAnalytics } from './admin/UserInteractionAnalytics';
@@ -31,7 +31,7 @@ const PremiumStatCard = ({ icon: Icon, value, label }: {
 );
 
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
-    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, updateData, resetData, language, deleteData, fetchAdminData, markMessageRead } = useData();
+    const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, courses, fetchCourses, updateData, resetData, language, deleteData, fetchAdminData, markMessageRead } = useData();
 
     const [privateStatus, setPrivateStatus] = useState<'loading' | 'ready' | 'error'>('loading');
     const [privateAttempt, setPrivateAttempt] = useState(0);
@@ -49,10 +49,20 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         return () => { active = false; };
     }, [privateAttempt]);
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [courseStatus, setCourseStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+    const [courseAttempt, setCourseAttempt] = useState(0);
+    React.useEffect(() => {
+        if (activeTab !== 'academy') return;
+        let active = true;
+        setCourseStatus('loading');
+        void fetchCourses().then(() => { if (active) setCourseStatus('ready'); })
+            .catch(() => { if (active) setCourseStatus('error'); });
+        return () => { active = false; };
+    }, [activeTab, courseAttempt]);
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dialogRef = useDialog(isModalOpen, () => setIsModalOpen(false));
-    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice' | 'galleryItem'>('service');
+    const [modalType, setModalType] = useState<'service' | 'project' | 'review' | 'blog' | 'job' | 'video' | 'carousel' | 'buildOption' | 'caseStudy' | 'notice' | 'galleryItem' | 'course'>('service');
     const [searchTerm, setSearchTerm] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [carouselImage, setCarouselImage] = useState('');
@@ -90,6 +100,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (type === 'caseStudy') await deleteData('caseStudies', id);
         if (type === 'notice') await deleteData('notice', id);
         if (type === 'galleryItem') await deleteData('galleryItems', id);
+        if (type === 'course') await deleteData('courses', id);
         } catch (error) { toast.error(error instanceof Error ? error.message : 'Delete failed'); }
         // Private records use authenticated versioned deletion.
         // Note: AdminDashboard usually handles main content. Messages might be handled in "messages" tab
@@ -180,6 +191,11 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'carousel' && carouselImage) data.image = carouselImage;
         if (modalType === 'blog' && blogImage) data.image = blogImage;
         if (modalType === 'galleryItem' && galleryImage) data.image = galleryImage;
+        if (modalType === 'course') {
+            data.published = data.published === 'on';
+            data.image = String(data.coverUrl || '').trim() || data.image;
+            delete data.coverUrl;
+        }
 
         if (modalType === 'notice') {
             const newItem = {
@@ -212,6 +228,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         if (modalType === 'carousel') await updateData('carousel', editingItem ? carouselSlides.map(c => c.id === editingItem.id ? newItem : c) : [...carouselSlides, newItem]);
         if (modalType === 'buildOption') await updateData('buildOptions', editingItem ? buildOptions.map(b => b.id === editingItem.id ? newItem : b) : [...buildOptions, newItem]);
         if (modalType === 'caseStudy') await updateData('caseStudies', editingItem ? caseStudies.map(c => c.id === editingItem.id ? newItem : c) : [...caseStudies, newItem]);
+        if (modalType === 'course') await updateData('courses', newItem);
         if (modalType === 'galleryItem') await updateData('galleryItems', editingItem ? galleryItems.map(g => g.id === editingItem.id ? newItem : g) : [...galleryItems, newItem]);
 
         setIsModalOpen(false);
@@ -370,7 +387,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     {filteredData.map(item => (
                         <div
                             key={item.id}
-                            className="rq-admin-record"
+                            className={type === 'galleryItem' ? 'rq-admin-record rq-admin-record--gallery' : 'rq-admin-record'}
                         >
                             <div className="rq-admin-record-content">
                                 {renderItem(item)}
@@ -504,6 +521,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         { id: 'applications', icon: FileDown, label: language === 'bn' ? 'আবেদন' : 'Applications' },
         { id: 'videos', icon: PlayCircle, label: language === 'bn' ? 'ভিডিও' : 'Videos' },
         { id: 'notice', icon: Bell, label: language === 'bn' ? 'নোটিশ' : 'Notice' },
+        { id: 'academy', icon: BookOpen, label: language === 'bn' ? 'একাডেমি' : 'Academy' },
         { id: 'gallery', icon: Image, label: language === 'bn' ? 'গ্যালারি' : 'Gallery' },
     ];
 
@@ -803,27 +821,39 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
+                    {activeTab === 'academy' && (courseStatus === 'ready' ? renderList(courses, 'course', item => (
+                        <div className="rq-admin-gallery-entry">
+                            {item.image ? <img src={item.image} alt="" className="rq-admin-gallery-thumb" width="80" height="72" />
+                                : <span className="rq-admin-gallery-thumb rq-admin-gallery-placeholder"><BookOpen size={20} aria-hidden="true" /></span>}
+                            <div className="rq-admin-gallery-copy">
+                                <h3>{item.title}</h3>
+                                <p>{item.category} · {item.level} · {item.published ? (language === 'bn' ? 'প্রকাশিত' : 'Published') : (language === 'bn' ? 'খসড়া' : 'Draft')}</p>
+                            </div>
+                        </div>
+                    )) : courseStatus === 'error' ? (
+                        <div className="rq-admin-report-state rq-admin-report-state--error" role="alert">
+                            {language === 'bn' ? 'কোর্স লোড করা যায়নি।' : 'Courses could not load.'}
+                            <AdminButton variant="secondary" onClick={() => setCourseAttempt(value => value + 1)}>{language === 'bn' ? 'আবার চেষ্টা করুন' : 'Try again'}</AdminButton>
+                        </div>
+                    ) : <p className="rq-admin-report-state" role="status">{language === 'bn' ? 'কোর্স লোড হচ্ছে…' : 'Loading courses…'}</p>)}
+
                     {activeTab === 'gallery' && renderList(galleryItems, 'galleryItem', (item) => (
-                        <div className="flex items-center gap-4">
+                        <div className="rq-admin-gallery-entry">
                             {item.image ? (
-                                <img src={item.image} alt={item.title} className="w-18 h-18 object-cover rounded-xl shadow-xs border border-[#ebdce3] shrink-0" />
+                                <img className="rq-admin-gallery-thumb" src={item.image} alt="" width="80" height="72" loading="lazy" />
                             ) : (
-                                <div className="w-18 h-18 rounded-xl bg-[#faf4f7] border border-[#ebdce3] flex items-center justify-center text-[#9a7d8c] shrink-0">
-                                    <Image size={22} />
+                                <div className="rq-admin-gallery-thumb rq-admin-gallery-placeholder" aria-hidden="true">
+                                    <Image size={21} />
                                 </div>
                             )}
-                            <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="px-2 py-0.5 bg-[#500000]/10 text-[#500000] rounded-md text-[10px] font-bold uppercase tracking-wider">
-                                        {item.category}
-                                    </span>
-                                    {item.date && <span className="text-[11px] text-[#8c6d7a]">• {item.date}</span>}
-                                    {item.location && <span className="text-[11px] text-[#8c6d7a]">• {item.location}</span>}
+                            <div className="rq-admin-gallery-copy">
+                                <h3>{item.title}</h3>
+                                <div className="rq-admin-gallery-meta">
+                                    {item.category && <span className="rq-admin-gallery-category">{item.category}</span>}
+                                    {item.date && <span className="rq-admin-gallery-date">{item.date}</span>}
+                                    {item.location && <span>{item.location}</span>}
                                 </div>
-                                <h3 className="font-bold text-[#230711] text-sm truncate">{item.title}</h3>
-                                {item.description && (
-                                    <p className="text-xs text-[#785967] mt-1 line-clamp-1">{item.description}</p>
-                                )}
+                                {item.description && <p>{item.description}</p>}
                             </div>
                         </div>
                     ))}
@@ -1396,6 +1426,26 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         <option value="View Blogs">View Blogs</option>
                                     </AdminSelect>
                                     <AdminInput label="Button Label (Bengali)" name="cta_bn" defaultValue={editingItem?.cta_bn} placeholder="উদাহরণ: আমাদের সাথে কথা বলুন" />
+                                </>}
+
+                                {modalType === 'course' && <>
+                                    <AdminInput name="title" label="Course title" defaultValue={editingItem?.title} maxLength={160} required />
+                                    <AdminInput name="category" label="Category" defaultValue={editingItem?.category} placeholder="e.g. Web development" maxLength={80} required />
+                                    <AdminSelect name="level" label="Level" defaultValue={editingItem?.level || 'Beginner'}>
+                                        {['Beginner', 'Intermediate', 'Advanced', 'All levels'].map(level => <option key={level}>{level}</option>)}
+                                    </AdminSelect>
+                                    <AdminTextArea name="description" label="Course description" defaultValue={editingItem?.description} maxLength={2400} required />
+                                    <ImageUploader label="Course cover" defaultValue={editingItem?.image} onImageChange={() => {}}
+                                        onUploadStart={() => setUploadingCount(value => value + 1)}
+                                        onUploadEnd={() => setUploadingCount(value => value - 1)} aspectRatio={16 / 9} />
+                                    <AdminInput name="coverUrl" label="Or use an image URL" placeholder="https://example.com/cover.webp" />
+                                    <AdminInput name="downloadUrl" label="Course resource or Google Drive URL"
+                                        defaultValue={editingItem?.downloadUrl} placeholder="https://drive.google.com/…" required />
+                                    {editingItem?.downloadUrl?.startsWith('starter:') && <p className="rq-admin-report-state">This course uses a bundled lesson pack. Keep its resource value or replace it with an HTTPS link.</p>}
+                                    <label className="rq-academy-confirm">
+                                        <input type="checkbox" name="published" defaultChecked={editingItem?.published ?? false} />
+                                        {language === 'bn' ? 'একাডেমিতে প্রকাশ করুন' : 'Publish in the Academy catalog'}
+                                    </label>
                                 </>}
 
                                 {modalType === 'galleryItem' && <>

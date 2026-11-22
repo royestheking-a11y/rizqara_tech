@@ -1,7 +1,7 @@
 import { API_URL } from './api';
 import { readConsent } from './consent';
 
-export function trackGrowth(action: 'estimate_completed' | 'estimate_shared' | 'booking_clicked' | 'inquiry_sent') {
+export function trackGrowth(action: 'estimate_completed' | 'estimate_shared' | 'booking_clicked' | 'inquiry_sent' | 'academy_sample_click') {
     if (!readConsent().analytics || !crypto.randomUUID) return;
     const path = window.location.pathname;
     if (/^\/(admin|api)(\/|$)/i.test(path)) return;

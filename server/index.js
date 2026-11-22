@@ -72,11 +72,7 @@ async function start() {
         console.warn(`[CONFIG WARNING] Missing environment variable(s) on startup: ${missing.join(', ')}`);
         console.warn('Please configure these in your Render Environment dashboard for full production functionality.');
     }
-    if (!process.env.ADMIN_EMAIL) process.env.ADMIN_EMAIL = 'admin@rizqaratech.com';
     if (!process.env.ALLOWED_ORIGINS) process.env.ALLOWED_ORIGINS = 'https://rizqara.tech,https://www.rizqara.tech,http://localhost:3000';
-    if (!process.env.ADMIN_PASSWORD_HASH) {
-        process.env.ADMIN_PASSWORD_HASH = 'f2dc0946e897c29a356ca91bdd49daf2:7fa8ce461bbb0b743b55ef75210f88a239c5b06673c214552bac0d882b983674e67e851784ce024efe383dda60dbaf5966e7be0270302d764eb6bb66d6fdc440';
-    }
     if (process.env.MONGODB_URI) {
         await mongoose.connect(process.env.MONGODB_URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
         try {
@@ -84,6 +80,18 @@ async function start() {
             await syncDatabase();
         } catch (syncErr) {
             console.error('Database sync error on startup:', syncErr.message);
+        }
+        try {
+            const { seedStarterCourses } = require('./academy/starter-courses');
+            await seedStarterCourses(require('./models/Schemas').Course);
+        } catch (error) {
+            console.error('Academy setup failed:', error.message);
+        }
+        try {
+            const { publishDocumentedCaseStudy } = require('./publish-case-study');
+            await publishDocumentedCaseStudy(require('./models/Schemas').CaseStudy);
+        } catch (error) {
+            console.error('Case study publication failed:', error.message);
         }
     } else console.warn('MONGODB_URI is missing. Database endpoints will return 503 until configured.');
     require('./notifications').startNotifications();

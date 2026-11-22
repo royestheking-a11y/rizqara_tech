@@ -60,6 +60,18 @@ export type Project = {
   link?: string;
 };
 
+export type Course = {
+  id: string;
+  __v?: number;
+  title: string;
+  description: string;
+  category: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'All levels';
+  image?: string;
+  downloadUrl: string;
+  published: boolean;
+};
+
 export type Review = {
   id: string;
   slug?: string;
@@ -256,6 +268,8 @@ export type GalleryItem = {
 export type DataContextType = {
   services: Service[];
   projects: Project[];
+  courses: Course[];
+  fetchCourses: () => Promise<void>;
   reviews: Review[];
   blogs: BlogPost[];
   jobs: Job[];
@@ -459,6 +473,7 @@ export const useData = () => useContext(DataContext);
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const initialCatalogServices = getInitialCatalogServices();
   const [services, setServices] = useState<Service[]>(initialCatalogServices);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [projects, setProjects] = useState<Project[]>(initialProjectConcepts as Project[]);
   const [reviews, setReviews] = useState<Review[]>(initialReviews as Review[]);
   const [blogs, setBlogs] = useState<BlogPost[]>(initialBlogs as unknown as BlogPost[]);
@@ -531,6 +546,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     promotion: data => setPromotion(data[0] || INITIAL_PROMOTION),
     notice: setNotices,
     galleryItems: setGalleryItems,
+    courses: setCourses,
   };
   const commit = (key: string, items: any[]) => { snapshots.current[key] = items; setters[key]?.(items); };
   const retryLoad = () => setLoadAttempt(value => value + 1);
@@ -604,6 +620,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       controller.abort();
     };
   }, [loadAttempt]);
+  const fetchCourses = async () => { commit('courses', await getCollection('courses')); };
   const fetchAdminData = async () => {
     const results = await Promise.allSettled(['messages', 'careerApplications'].map(async key => commit(key, await getCollection(key))));
     if (results.some(result => result.status === 'rejected')) throw new Error('Unable to load private documents. Please sign in again.');
@@ -667,7 +684,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <DataContext.Provider value={{ services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, secondaryLoading, loadErrors, retryLoad, fetchAdminData }}>
+    <DataContext.Provider value={{ services, projects, courses, fetchCourses, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, language, setLanguage, t, updateData, resetData, addMessage, addCareerApplication, addVideoComment, deleteData, deleteMessage, markMessageRead, loading, secondaryLoading, loadErrors, retryLoad, fetchAdminData }}>
       {children}
     </DataContext.Provider>
   );

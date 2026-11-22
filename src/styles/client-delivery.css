@@ -1,0 +1,21 @@
+.rq-client-delivery { width: min(calc(100% - 32px), 1180px); margin-inline: auto; padding: clamp(20px, 4vw, 44px); border: 1px solid #e7d7df; border-radius: 24px; background: #fcf6f8; color: #36202b; }
+.rq-client-delivery__intro { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); align-items: center; gap: 24px; }
+.rq-client-delivery h2 { margin: 0 0 12px; font-size: clamp(28px,4vw,46px); font-weight: 750; letter-spacing: -.04em; line-height: 1.1; }
+.rq-client-delivery h3 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+.rq-client-delivery p { margin: 0; color: #644b57; line-height: 1.6; }
+.rq-client-delivery__actions, .rq-client-delivery__links { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+.rq-client-delivery__actions { margin-top: 18px; }
+.rq-client-delivery__actions a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 650; color: #6c2944; }
+.rq-client-delivery__actions a:first-child { background: #67263e; color: white; }
+.rq-client-delivery__actions a:hover, .rq-client-delivery__links a:hover { text-decoration: underline; }
+.rq-client-delivery__case { display: grid; grid-template-columns: 84px minmax(0,1fr) auto; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddc9d3; border-radius: 12px; background: #fff; }
+.rq-client-delivery__case:hover { border-color: #86576c; }
+.rq-client-delivery__case img { width: 84px; height: 70px; object-fit: cover; border-radius: 7px; }
+.rq-client-delivery__case span { color: #744558; font-size: 12px; }
+.rq-client-delivery__case p { font-size: 13px; }
+.rq-client-delivery__steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e7d7df; font-size: 14px; }
+.rq-client-delivery__links { margin-top: 18px; color: #6c2944; font-size: 14px; font-weight: 650; }
+.rq-client-delivery a:focus-visible { outline: 2px solid #8b395a; outline-offset: 3px; }
+@media (max-width: 760px) {
+    .rq-client-delivery__intro, .rq-client-delivery__steps { grid-template-columns: minmax(0,1fr); }
+}

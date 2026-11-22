@@ -1,0 +1,44 @@
+.rq-academy { width: min(calc(100% - 32px), 1180px); margin: 0 auto; padding: clamp(22px,5vw,60px) 0 72px; color: #2e1a24; }
+.rq-academy-hero { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 20px; padding: clamp(24px,6vw,68px); border-radius: 24px; background: #411d30; color: #fff8fb; }
+.rq-academy-hero h1 { max-width: 730px; margin: 0 0 12px; font-size: clamp(32px,6vw,65px); font-weight: 750; letter-spacing: -.05em; line-height: 1.08; }
+.rq-academy-hero p { max-width: 580px; margin: 0; color: #edd7e2; line-height: 1.65; }
+.rq-academy-hero > svg { color: #d7abc0; }
+.rq-academy-catalog { margin-top: 30px; }
+.rq-academy-catalog h2, .rq-academy-dialog h2 { font-size: clamp(22px,3vw,32px); font-weight: 750; line-height: 1.2; margin: 0 0 12px; }
+.rq-academy-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.rq-academy-filters label { display: flex; align-items: center; flex: 1 1 220px; gap: 8px; padding-inline: 10px; }
+.rq-academy-filters :is(label,select) { min-height: 44px; border: 1px solid #d9c4cf; border-radius: 9px; background: #fff; color: #543549; }
+.rq-academy-filters select { padding: 7px 10px; }
+.rq-academy-filters input { width: 100%; min-width: 0; }
+.rq-academy-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%, 270px),1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.rq-academy-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e7d8df; border-radius: 15px; background: #fffafa; }
+.rq-academy-cover { display: grid; place-items: center; aspect-ratio: 16 / 9; max-height: 220px; overflow: hidden; background: #f2e2eb; color: #764057; }
+.rq-academy-cover img { width: 100%; height: 100%; object-fit: cover; }
+.rq-academy-card-body { display: grid; flex: 1; align-content: start; gap: 9px; padding: 16px; }
+.rq-academy-card h3 { font-weight: 750; font-size: 19px; }
+.rq-academy-meta, .rq-academy-card-body p, .rq-academy-state { color: #674959; font-size: 14px; line-height: 1.5; }
+.rq-academy-card-action { display: inline-flex; align-items: center; gap: 6px; width: fit-content; min-height: 44px; color: #782c4a; font-weight: 700; cursor: pointer; }
+.rq-academy-card-action:hover { text-decoration: underline; }
+.rq-academy-state { padding: 18px; border: 1px solid #e7d8df; border-radius: 12px; background: #fbf4f8; }
+.rq-academy-overlay { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 14px; background: #230d1ab0; }
+.rq-academy-dialog { position: relative; width: min(100%,500px); max-height: calc(100dvh - 28px); overflow: auto; padding: clamp(18px,4vw,30px); border-radius: 17px; background: #fffafa; }
+.rq-academy-dialog h2 { padding-right: 30px; }
+.rq-academy-dialog p { margin-bottom: 12px; color: #674959; line-height: 1.5; }
+.rq-academy-dialog .rq-academy-error { color: #a3203e; }
+.rq-academy-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 38px; height: 38px; cursor: pointer; color: #6d3650; }
+.rq-academy-social { display: flex; flex-wrap: wrap; gap: 8px; }
+.rq-academy-social a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 6px 10px; border: 1px solid #d9c4cf; border-radius: 8px; color: #672b47; font-weight: 650; }
+.rq-academy-confirm { display: flex; align-items: start; gap: 9px; margin: 15px 0; color: #543549; font-size: 14px; }
+.rq-academy-confirm input { appearance: auto; width: 17px; height: 17px; flex: none; margin-top: 2px; accent-color: #6f2a48; }
+.rq-academy-button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; min-height: 44px; border-radius: 8px; background: #6f2a48; color: #fff; font-weight: 650; cursor: pointer; }
+.rq-academy-button:disabled { opacity: .55; cursor: not-allowed; }
+:is(.rq-academy,.rq-academy-dialog) :is(a,button,input,select):focus-visible { outline: 2px solid #9b4269; outline-offset: 2px; }
+@media(max-width:600px) { .rq-academy-hero { grid-template-columns: minmax(0,1fr); } .rq-academy-hero > svg { display: none; } }
+.rq-academy-sample .rq-academy-card-action { margin-bottom: 10px; }
+.rq-academy-lesson { max-width: 760px; margin: 24px auto 0; padding: clamp(18px,4vw,32px); border: 1px solid #e7d8df; border-radius: 15px; background: #fffafa; }
+.rq-academy-lesson h2 { font-size: 22px; font-weight: 750; margin-bottom: 8px; }
+.rq-academy-lesson p, .rq-academy-lesson li { color: #624555; line-height: 1.65; }
+.rq-academy-lesson pre { overflow-x: auto; margin: 14px 0 22px; padding: 14px; border-radius: 9px; background: #3f1d30; color: #fff4fa; font-size: 13px; }
+.rq-academy-lesson ol { list-style: decimal; padding-left: 22px; margin: 0 0 18px; }
+.rq-academy .rq-academy-sample-link { margin: 8px 0 12px; }
+.rq-academy-catalog h2 { scroll-margin-top: 100px; }

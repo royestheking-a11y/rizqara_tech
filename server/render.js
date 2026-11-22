@@ -9,6 +9,7 @@ const serviceEntries = catalog.categories.flatMap(category => category.offerings
 })));
 const editorialFallback = { blog: require('../src/data/blogs.json'), videos: require('../src/data/videos.json') };
 const bundled = { services: serviceEntries, projects: selectedConcepts, 'case-studies': caseStudies };
+const teamMembers = require('../src/data/team-members.json');
 const SITE_URL = 'https://www.rizqara.tech';
 const pages = {
     '/': ['RizQara Tech | Software & AI Solutions', 'Custom web, mobile and AI software built by RizQara Tech in Bangladesh.'],
@@ -20,6 +21,8 @@ const pages = {
     '/careers': ['Careers at RizQara Tech', 'Explore open roles and submit your application.'],
     '/blog': ['RizQara Tech Blog', 'Software engineering and technology insights.'],
     '/videos': ['RizQara Tech Videos', 'Project showcases, technology videos and tutorials.'],
+    '/academy/responsive-web-sample': ['Build a Responsive Card Grid | RizQara Tech Academy', 'A free Responsive Website Studio sample lesson on CSS Grid and testing layouts at three screen widths.'],
+    '/academy': ['RizQara Tech Academy | Courses and Learning Resources', 'Explore courses and downloadable learning resources from RizQara Tech Academy.'],
     '/team': ['Our Team', 'Meet the RizQara Tech team.'],
     '/gallery': ['Gallery', 'Team activities and events at RizQara Tech.'],
     '/founder': ['Founder of RizQara Tech', 'Learn about the founder of RizQara Tech.'],
@@ -38,7 +41,14 @@ const slug = title => title.toLowerCase().normalize('NFKC').trim().replace(/[^\p
 async function renderPage(file, pathname, ready) {
     let detail = null;
     let page = pages[pathname], status = 200, canonicalPath = pathname, image = `${SITE_URL}/og-image.png`;
+    const member = teamMembers.find(item => pathname === '/' + item.slug);
+    if (member && !page) {
+        page = [member.name + ' — ' + member.role + ' | RizQara Tech', member.bio];
+        if (member.image) image = SITE_URL + member.image;
+    }
     if (pathname === '/estimate') image = SITE_URL + '/images/projects/selected/pocketstock.webp';
+    if (pathname === '/academy/responsive-web-sample') image = SITE_URL + '/images/academy/responsive-web-sample.jpg';
+
     if (!page) {
         const [, collection, encoded] = pathname.split('/');
         const model = { services: Service, projects: Project, blog: Blog, 'case-studies': CaseStudy, videos: Video }[collection];

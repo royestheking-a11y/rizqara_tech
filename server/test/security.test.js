@@ -228,6 +228,111 @@ test('visitor analytics requires consent, deduplicates events, and protects repo
     assert.equal((await request('/analytics/summary?days=999',{admin:true})).status,400);
 });
 
+test('Academy drafts stay private and downloads require confirmation', async () => {
+    const course = {
+        title: 'Academy test course', description: 'A local test resource.', category: 'Software',
+        level: 'Beginner', downloadUrl: 'https://drive.google.com/file/d/fixture/view',
+    };
+    const post = data => ({ method: 'POST', headers: json(), body: JSON.stringify(data) });
+    assert.equal((await request('/courses')).status, 401);
+    assert.equal((await request('/courses', post(course))).status, 401);
+    assert.equal((await request('/courses', { admin: true, ...post({ ...course, downloadUrl: 'http://example.test/course' }) })).status, 400);
+    const created = await request('/courses', { admin: true, ...post(course) });
+    assert.equal(created.status, 201);
+    const draft = await created.json();
+    const download = '/academy/' + draft.id + '/download';
+    assert.equal((await request(download, post({ confirmedFollow: true }))).status, 404);
+    const draftCatalog = await (await request('/academy/catalog')).json();
+    assert.ok(draftCatalog.every(item => item.id !== draft.id));
+
+    const published = await request('/courses/' + draft.id, {
+        admin: true, method: 'PUT', headers: json(),
+        body: JSON.stringify({ published: true, __v: draft.__v }),
+    });
+    assert.equal(published.status, 200);
+    const active = await published.json();
+    const catalogResponse = await request('/academy/catalog');
+    assert.equal(catalogResponse.headers.get('cache-control'), 'no-store');
+    const record = (await catalogResponse.json()).find(item => item.id === draft.id);
+    assert.equal(record.title, course.title);
+    assert.equal(record.downloadUrl, undefined);
+    assert.equal((await request(download, post({ confirmedFollow: false }))).status, 400);
+    const resource = await request(download, post({ confirmedFollow: true }));
+    assert.equal(resource.status, 200);
+    assert.deepEqual(await resource.json(), { url: course.downloadUrl });
+    assert.equal((await request('/courses/' + draft.id, {
+        admin: true, method: 'DELETE', headers: { 'If-Match': String(active.__v) },
+    })).status, 200);
+    assert.equal((await request(download, post({ confirmedFollow: true }))).status, 404);
+});
+
+test('Academy starter packs seed once and unlock downloadable lessons', async () => {
+    const { Course } = require('../models/Schemas');
+    const { seedStarterCourses } = require('../academy/starter-courses');
+    await seedStarterCourses(Course);
+    const catalog = await (await request('/academy/catalog')).json();
+    const starters = catalog.filter(item => item.id.startsWith('academy-starter-'));
+    assert.equal(starters.length, 3);
+    for (const item of starters) {
+        assert.equal(item.downloadUrl, undefined);
+        const response = await request('/academy/' + item.id + '/download', {
+            method: 'POST', headers: json(), body: JSON.stringify({ confirmedFollow: true }),
+        });
+        assert.equal(response.status, 200);
+        const { resource } = await response.json();
+        assert.match(resource.filename, /\.md$/);
+        assert.ok(resource.content.startsWith('# ' + item.title));
+        assert.match(resource.content, /Lesson 3/);
+    }
+    await Course.updateOne({ id: starters[0].id }, { title: 'Edited starter' });
+    await Course.deleteOne({ id: starters[1].id });
+    await seedStarterCourses(Course);
+    assert.equal((await Course.findOne({ id: starters[0].id })).title, 'Edited starter');
+    assert.equal(await Course.exists({ id: starters[1].id }), null);
+});
+
+test('a session cookie still works on a new API process and logout revokes it there', async () => {
+    const childScript = [
+        'const mongoose = require("mongoose");',
+        'mongoose.connect(process.env.TEST_SESSION_URI, { dbName: process.env.TEST_SESSION_DB }).then(() => {',
+        '  const server = require("./index").createApp().listen(0, "127.0.0.1");',
+        '  server.on("listening", () => process.send(server.address().port));',
+        '}, error => { console.error(error); process.exitCode = 1; });'
+    ].join('\n');
+    const instance = spawn(process.execPath, ['-e', childScript], {
+        cwd: path.join(__dirname, '..'),
+        env: { ...process.env, TEST_SESSION_URI: testUri, TEST_SESSION_DB: testDbName },
+        stdio: ['ignore', 'ignore', 'inherit', 'ipc'],
+    });
+    try {
+        const secondPort = await new Promise((resolve, reject) => {
+            instance.once('message', resolve);
+            instance.once('error', reject);
+            instance.once('exit', code => reject(new Error('Second API process exited: ' + code)));
+        });
+        const secondApi = 'http://127.0.0.1:' + secondPort + '/api';
+        const headers = { Cookie: cookie };
+        const session = await fetch(secondApi + '/auth/session', { headers });
+        assert.equal(session.status, 200);
+        assert.equal(session.headers.get('cache-control'), 'no-store');
+        assert.equal((await fetch(secondApi + '/analytics/summary', { headers })).status, 200);
+
+        const login = await request('/auth/login', {
+            method: 'POST', headers: json(), body: JSON.stringify({ email: process.env.ADMIN_EMAIL, password }),
+        });
+        assert.equal(login.status, 200);
+        const anotherCookie = login.headers.get('set-cookie').split(';')[0];
+        assert.equal((await fetch(secondApi + '/auth/logout', { method: 'POST', headers: { Cookie: anotherCookie } })).status, 200);
+        assert.equal((await request('/auth/session', { headers: { Cookie: anotherCookie } })).status, 401);
+    } finally {
+        if (instance.exitCode === null && instance.signalCode === null) {
+            const exited = new Promise(resolve => instance.once('exit', resolve));
+            instance.kill('SIGTERM');
+            await exited;
+        }
+    }
+});
+
 test('logout invalidates the server-side session',async()=>{
     assert.equal((await request('/auth/logout',{admin:true,method:'POST'})).status,200);
     assert.equal((await request('/auth/session',{admin:true})).status,401);

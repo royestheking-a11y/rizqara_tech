@@ -5,12 +5,13 @@ const path = require('node:path');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const { getStarterResource } = require('./academy/starter-courses');
 const { requireAdmin, rateLimit, mountAuth } = require('./security');
-const { Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy, Notice, GalleryItem } = require('./models/Schemas');
+const { Course, Service, Project, Review, Blog, Job, Video, Carousel, BuildOption, Message, Promotion, CareerApplication, CaseStudy, Notice, GalleryItem } = require('./models/Schemas');
 const router = express.Router();
-const models = Object.freeze({ services: Service, projects: Project, reviews: Review, blogs: Blog, jobs: Job, videos: Video, carousel: Carousel, buildOptions: BuildOption, messages: Message, promotion: Promotion, careerApplications: CareerApplication, caseStudies: CaseStudy, notice: Notice, galleryItems: GalleryItem });
+const models = Object.freeze({ courses: Course, services: Service, projects: Project, reviews: Review, blogs: Blog, jobs: Job, videos: Video, carousel: Carousel, buildOptions: BuildOption, messages: Message, promotion: Promotion, careerApplications: CareerApplication, caseStudies: CaseStudy, notice: Notice, galleryItems: GalleryItem });
 const bundledProjects = new Map([...require('../src/data/project-concepts.json'), ...require('../src/data/selected-concepts.json')].map(project => [project.id, project]));
-const privateCollections = new Set(['messages', 'careerApplications']);
+const privateCollections = new Set(['messages', 'careerApplications', 'courses']);
 const cvDirectory = path.resolve(process.env.PRIVATE_UPLOAD_DIR || path.join(__dirname, 'private-uploads'));
 cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10, fieldSize: 20000 } });
@@ -194,6 +195,21 @@ router.get('/rss', ready, async (req, res) => {
     }
 });
 
+router.get('/academy/catalog', ready, async (_req, res) => {
+    const courses = await Course.find({ published: true })
+        .select('id title description category level image -_id').sort({ createdAt: -1 }).lean();
+    res.set('Cache-Control', 'no-store').json(courses);
+});
+
+router.post('/academy/:id/download', rateLimit('academy-download', 30), ready, async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (req.body?.confirmedFollow !== true) return res.status(400).json({ error: 'Confirm that you followed both pages to continue.' });
+    const course = await Course.findOne({ id: req.params.id, published: true }).select('downloadUrl').lean();
+    if (!course) return res.status(404).json({ error: 'This course is unavailable.' });
+    const resource = await getStarterResource(course.downloadUrl);
+    res.json(resource ? { resource } : { url: course.downloadUrl });
+});
+
 router.use('/:collection', modelFor, (req, res, next) => {
     if (req.method !== 'GET' || privateCollections.has(req.params.collection)) return requireAdmin(req, res, next);
     next();
@@ -216,7 +232,7 @@ router.get('/:collection/:id', async (req, res) => {
 router.post('/:collection', async (req, res) => {
     const data = safeBody(req.model, req.body);
     const id = crypto.randomUUID();
-    if (data.title) data.slug = `${slugify(data.title)}-${id.slice(0, 8)}`;
+    if (data.title && req.model.schema.path('slug')) data.slug = `${slugify(data.title)}-${id.slice(0, 8)}`;
     const item = await req.model.create({ ...data, id });
     res.status(201).json(publicRecord(item, req.params.collection));
 });
@@ -225,7 +241,7 @@ router.put('/:collection/:id', async (req, res) => {
     const version = req.body?.__v;
     if (!Number.isInteger(version) || version < 0) return res.status(400).json({ error: 'A record version is required' });
     const data = safeBody(req.model, req.body);
-    if (privateCollections.has(req.params.collection) && Object.keys(data).some(key => !['read', 'status'].includes(key))) return res.status(400).json({ error: 'Only status and read state can be updated' });
+    if (['messages', 'careerApplications'].includes(req.params.collection) && Object.keys(data).some(key => !['read', 'status'].includes(key))) return res.status(400).json({ error: 'Only status and read state can be updated' });
     const existing = await req.model.findOne({ id: req.params.id });
     if (!existing) {
         const bundled = req.params.collection === 'projects' && bundledProjects.get(req.params.id);
@@ -240,8 +256,8 @@ router.put('/:collection/:id', async (req, res) => {
         }
     }
     if (existing.archived) return res.status(404).json({ error: 'Record not found' });
-    if (!existing.slug && existing.title) data.slug = `${slugify(existing.title)}-${existing.id.slice(0, 8)}`;
-    if (existing.title && data.title && existing.title !== data.title) data.previousSlugs = [...new Set([...(existing.previousSlugs || []), slugify(existing.title), existing.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '')])].slice(-30);
+    if (req.model.schema.path('slug') && !existing.slug && existing.title) data.slug = `${slugify(existing.title)}-${existing.id.slice(0, 8)}`;
+    if (req.model.schema.path('previousSlugs') && existing.title && data.title && existing.title !== data.title) data.previousSlugs = [...new Set([...(existing.previousSlugs || []), slugify(existing.title), existing.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]/g, '')])].slice(-30);
     const updated = await req.model.findOneAndUpdate({ id: req.params.id, __v: version }, { $set: data, $inc: { __v: 1 } }, { returnDocument: 'after', runValidators: true });
     if (!updated) return res.status(409).json({ error: 'This record changed. Reload before editing again.' });
     res.json(publicRecord(updated, req.params.collection));

@@ -82,10 +82,10 @@
       "https://res.cloudinary.com/dhutfywg2/image/upload/v1774425436/rizqaratech/uploads/zf7dg6dajb4tgjiyw0yo.jpg"
     ],
     "image": "https://res.cloudinary.com/dhutfywg2/image/upload/v1774425331/rizqaratech/uploads/hulrwtbfdjo9p0bejr8b.jpg",
-    "impact": "The project scope includes menu updates, table reservations, and catering inquiries.",
+    "impact": "The project gallery and feature scope document how guests can browse the menu, request a table, and ask about catering.",
     "previousSlugs": [],
-    "problem": "Guests need to find the current menu and reserve a table on a phone. Staff need one place to update the menu and review incoming requests.",
-    "solution": "The design puts menu, reservations, and catering on separate paths and gives staff a dashboard for managing the content and requests.",
+    "problem": "A guest arriving on a phone has three distinct tasks: check the menu, request a table, or ask about catering. Each task needs a clear starting point, and staff need a place to manage updates and requests.",
+    "solution": "The project organizes the public website around three paths. Menu browsing stays separate from the reservation form, and catering has its own inquiry flow. The documented staff scope includes editing menu and gallery content and reviewing incoming requests.",
     "tech": [
       "React",
       "Next.js",
@@ -100,7 +100,10 @@
     ],
     "title": "Hot Plate Restaurant: Menu, reservations, and catering",
     "title_bn": "হট প্লেট রেস্তোরাঁ: মেনু, রিজার্ভেশন ও ক্যাটারিং",
-    "slug": "from-outdated-to-premium-complete-website-transformation-for-hot-plate-restaurant-st2usv9c"
+    "slug": "from-outdated-to-premium-complete-website-transformation-for-hot-plate-restaurant-st2usv9c",
+    "problem_bn": "মোবাইল থেকে আসা অতিথি মেনু দেখতে, টেবিল বুক করতে বা ক্যাটারিং সম্পর্কে জানতে চান। প্রতিটি কাজের জন্য আলাদা শুরু এবং কর্মীদের জন্য অনুরোধ ও আপডেট পরিচালনার ব্যবস্থা প্রয়োজন।",
+    "solution_bn": "মেনু, টেবিল রিজার্ভেশন এবং ক্যাটারিংয়ের জন্য আলাদা পথ রাখা হয়েছে। কর্মীদের কাজের পরিধিতে মেনু ও গ্যালারি সম্পাদনা এবং অনুরোধ দেখার ব্যবস্থা রয়েছে।",
+    "impact_bn": "প্রজেক্টের বিবরণ ও গ্যালারিতে মেনু, রিজার্ভেশন ও ক্যাটারিংয়ের কাজের পরিধি দেখা যায়।"
   },
   {
     "id": "d5mxy796d",

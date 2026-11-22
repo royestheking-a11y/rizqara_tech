@@ -1,0 +1,47 @@
+.rq-team-page, .rq-team-profile { width: min(calc(100% - 32px), 1180px); margin: 0 auto; padding: clamp(28px, 6vw, 72px) 0; color: #311c27; }
+.rq-team-page header { margin-bottom: 26px; }
+.rq-team-page h1, .rq-team-profile h1 { margin: 0 0 8px; font-size: clamp(32px, 5vw, 58px); line-height: 1.08; letter-spacing: -.045em; font-weight: 750; }
+.rq-team-page header p, .rq-profile-panel p { color: #654753; line-height: 1.65; }
+.rq-team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr)); gap: 14px; width: min(calc(100% - 32px), 1180px); margin: 0 auto; padding: 0; list-style: none; }
+.rq-team-page .rq-team-grid { width: 100%; }
+.rq-team-card { display: block; height: 100%; padding: 20px; background: #fffafa; border: 1px solid #e6d6dd; border-radius: 16px; }
+.rq-team-card:hover { border-color: #93526e; background: #fff7fa; }
+.rq-team-card-top { display: flex; justify-content: space-between; align-items: start; gap: 10px; color: #762b49; }
+.rq-team-avatar { display: inline-grid; place-items: center; flex: none; width: 68px; height: 68px; overflow: hidden; border: 1px solid #e3cbd7; border-radius: 15px; background: #f1dfe8; color: #702744; font-weight: 750; font-size: 21px; }
+.rq-team-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 32%; }
+.rq-team-card h3 { margin: 12px 0 4px; font-size: 17px; font-weight: 750; }
+.rq-team-role { color: #78314f; font-weight: 650; font-size: 14px; }
+.rq-team-card p { color: #654753; font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
+.rq-about-team-link { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 12px; color: #762b49; font-weight: 700; }
+.rq-about-team-link:hover { text-decoration: underline; }
+.rq-about-team-avatars { display: flex; gap: 4px; }
+.rq-about-team-avatars .rq-team-avatar { width: 35px; height: 35px; border-radius: 50%; font-size: 11px; }
+.rq-profile-back { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 650; color: #762b49; }
+.rq-profile-back:hover, .rq-profile-contact a:hover { text-decoration: underline; }
+.rq-profile-header { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: end; gap: 16px; margin: 20px 0 16px; padding: clamp(18px,4vw,38px); border-radius: 18px; background: #4a2034; color: #fff; }
+.rq-profile-header .rq-team-avatar { width: clamp(66px, 10vw, 112px); height: clamp(66px, 10vw, 112px); font-size: clamp(20px,4vw,35px); }
+.rq-profile-header .rq-team-role { margin: 0; color: #f3d5e2; }
+.rq-profile-message { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 14px; border-radius: 9px; background: #fff6fa; color: #5b2440; font-size: 14px; font-weight: 700; }
+.rq-profile-message:hover { background: #f5dce8; }
+.rq-profile-layout { display: grid; grid-template-columns: minmax(0,2fr) minmax(0,1fr); align-items: start; gap: 16px; }
+.rq-profile-panel { padding: clamp(16px,4vw,26px); background: #fffafa; border: 1px solid #e6d6dd; border-radius: 15px; }
+.rq-profile-panel h2 { margin: 0 0 7px; font-size: 19px; font-weight: 750; }
+.rq-profile-panel h2:not(:first-child) { margin-top: 18px; }
+.rq-profile-current { display: flex; align-items: start; gap: 9px; }
+.rq-profile-focus { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.rq-profile-focus li { padding: 5px 9px; border-radius: 8px; background: #f5e7ef; font-size: 13px; }
+.rq-profile-panel .rq-profile-back { margin-top: 15px; }
+.rq-profile-contact a { display: flex; align-items: center; gap: 8px; min-height: 42px; color: #762b49; font-weight: 650; }
+.rq-profile-contact p { margin-top: 8px; font-size: 13px; }
+:is(.rq-team-card,.rq-about-team-link,.rq-team-profile a):focus-visible { outline: 2px solid #9b4269; outline-offset: 3px; }
+@media (max-width: 700px) {
+    .rq-profile-layout { grid-template-columns: minmax(0,1fr); }
+    .rq-profile-header { grid-template-columns: auto minmax(0,1fr); align-items: center; }
+    .rq-profile-message { grid-column: 1 / -1; justify-self: start; }
+}
+.rq-profile-contact a svg { flex: none; }
+.rq-profile-contact a span { min-width: 0; overflow-wrap: anywhere; }
+.rq-profile-contact a small { display: block; color: #654753; font-size: 13px; font-weight: 500; }
+.rq-about-team-title { font-size: clamp(32px, 5vw, 57px); font-weight: 750; color: #311c27; letter-spacing: -.045em; line-height: 1.1; margin: 0 0 12px; }
+.rq-about-team-intro { color: #543347; font-size: clamp(17px, 2.3vw, 23px); font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+.rq-about-team-caption { color: #634958; font-size: 15px; line-height: 1.65; margin-bottom: 20px; }

@@ -271,3 +271,13 @@
         padding: 24px 0 8px;
     }
 }
+
+.admin-login__session {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border: 1px solid #edc8d1;
+    border-radius: 8px;
+    background: #fff0f3;
+    color: #83253e;
+    font-size: 14px;
+}

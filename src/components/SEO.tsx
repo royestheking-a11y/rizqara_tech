@@ -1,3 +1,4 @@
+import { officialSocialLinks } from '../data/social-links';
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
@@ -32,9 +33,9 @@ export const SEO: React.FC<SEOProps> = ({
         "url": "https://www.rizqara.tech",
         "logo": "https://www.rizqara.tech/images/brand/rizqara-official.png",
         "sameAs": [
-            "https://www.facebook.com/rizqaratechology/",
+            officialSocialLinks.facebook,
             "https://x.com/Rizqaratech",
-            "https://instagram.com/rizqaratech",
+            officialSocialLinks.instagram,
             "https://linkedin.com/company/rizqara-tech",
             "https://medium.com/@rizqaratech",
             "https://www.youtube.com/@rizqaratech"

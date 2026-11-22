@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "aurangzebsunny",
+    "name": "Aurangzeb Sunny",
+    "role": "Founder",
+    "roleBn": "প্রতিষ্ঠাতা",
+    "bio": "Visionary leader with 5+ years in tech innovation.",
+    "bioBn": "টেক উদ্ভাবনে ৫+ বছরের অভিজ্ঞতা সম্পন্ন দূরদর্শী নেতা।",
+    "focus": [
+      "Company strategy",
+      "Product direction"
+    ],
+    "image": "/aurangzebsunny.png",
+    "linkedin": "https://www.linkedin.com/in/aurangzebsunny/",
+    "story": "/founder",
+    "email": "aurangzebsunnyy@gmail.com"
+  },
+  {
+    "slug": "pritomsarker",
+    "name": "Pritom Sarker",
+    "role": "Chief Executive Officer",
+    "roleBn": "প্রধান নির্বাহী কর্মকর্তা",
+    "bio": "Driving global strategy and operational excellence.",
+    "bioBn": "গ্লোবাল স্ট্র্যাটেজি এবং অপারেশনাল এক্সেলেন্স পরিচালনা করছেন।",
+    "focus": [
+      "Business strategy",
+      "Operations"
+    ]
+  },
+  {
+    "slug": "sanjumonowara",
+    "name": "Sanju Monowara",
+    "role": "Management Head",
+    "roleBn": "ম্যানেজমেন্ট হেড",
+    "bio": "Ensuring seamless delivery across all projects.",
+    "bioBn": "সমস্ত প্রজেক্টে নির্বিঘ্ন ডেলিভারি নিশ্চিত করছেন।",
+    "focus": [
+      "Project delivery",
+      "Team coordination"
+    ],
+    "image": "/sanju.jpg"
+  },
+  {
+    "slug": "afrinrahmanomi",
+    "name": "Afrin Rahman Omi",
+    "role": "General Manager",
+    "roleBn": "জেনারেল ম্যানেজার",
+    "bio": "Overseeing operations and ensuring organizational success.",
+    "bioBn": "অপারেশন পরিচালনা এবং প্রাতিষ্ঠানিক সাফল্য নিশ্চিত করছেন।",
+    "focus": [
+      "Operations management",
+      "Team coordination"
+    ]
+  },
+  {
+    "slug": "safayathossenalif",
+    "name": "Safayat Hossen Alif",
+    "role": "Lead Developer",
+    "roleBn": "লিড ডেভেলপার",
+    "bio": "Architecting robust and scalable software solutions.",
+    "bioBn": "শক্তিশালী এবং স্্যালবাল সফটওয়্যার সলিউশন তৈরি করছেন।",
+    "focus": [
+      "Software architecture",
+      "Application development"
+    ],
+    "image": "/alif.jpg"
+  },
+  {
+    "slug": "muhammadsami",
+    "name": "Muhammad Sami",
+    "role": "Senior UI/UX Designer",
+    "roleBn": "সিনিয়র ইউআই/ইউএক্স ডিজাইনার",
+    "bio": "Crafting intuitive and aesthetically pleasing user experiences.",
+    "bioBn": "সহজ এবং দৃষ্টিননন্দ ইউজার এক্সপেরিয়েন্স তৈরি করছেন।",
+    "focus": [
+      "UI design",
+      "User experience"
+    ],
+    "image": "/samii.jpg"
+  },
+  {
+    "slug": "taskianewaz",
+    "name": "Taskia Newaz",
+    "role": "Senior Graphics Designer",
+    "roleBn": "সিনিয়র গ্রাফিক্স ডিজাইনার",
+    "bio": "Specializing in creative visuals and branding.",
+    "bioBn": "সৃজনশীল ভিজ্যুয়াল এবং ব্র্যান্ডিংয়ে বিশেষজ্ঞ।",
+    "focus": [
+      "Graphic design",
+      "Brand identity"
+    ]
+  },
+  {
+    "slug": "tamzidislamrafat",
+    "name": "Tamzid Islam Rafat",
+    "role": "Graphics Designer",
+    "roleBn": "গ্রাফিক্স ডিজাইনার",
+    "bio": "Bringing ideas to life through creative visual storytelling.",
+    "bioBn": "সৃজনশীল ভিজ্যুয়াল স্টোরিটেলিংয়ের মাধ্যমে আইডিয়ায় প্রাণ দিচ্ছেন।",
+    "focus": [
+      "Graphic design",
+      "Visual storytelling"
+    ]
+  },
+  {
+    "slug": "gmmoshiur",
+    "name": "GM Moshiur",
+    "role": "Marketing Head",
+    "roleBn": "মার্কেটিং হেড",
+    "bio": "Leading marketing strategies to drive brand growth and presence.",
+    "bioBn": "ব্র্যান্ডের বৃদ্ধি এবং উপস্থিতি বাড়াতে মার্কেটিং স্ট্র্যাটেজি পরিচালনা করছেন।",
+    "focus": [
+      "Marketing strategy",
+      "Brand growth"
+    ]
+  },
+  {
+    "slug": "mafuzahmed",
+    "name": "Mafuz Ahmed",
+    "role": "Content Writer",
+    "roleBn": "কন্টেন্ট রাইটার",
+    "bio": "Creating compelling narratives to engage and inspire audiences.",
+    "bioBn": "দর্শকদের আকৃষ্ট এবং অনুপ্রাণিত করতে চমৎকার কনটেন্ট তৈরি করছেন।",
+    "focus": [
+      "Content writing",
+      "Editorial storytelling"
+    ],
+    "image": "/mahfuz.jpg"
+  },
+  {
+    "slug": "sourobhawlader",
+    "name": "Sourob Hawlader",
+    "role": "Digital Marketer",
+    "roleBn": "ডিজিটাল মার্কেটার",
+    "bio": "Executing data-driven digital campaigns for maximum reach.",
+    "bioBn": "সর্বোচ্চ রিচ পেতে ডেটা-নির্ভর ডিজিটাল ক্যাম্পেইন পরিচালনা করছেন।",
+    "focus": [
+      "Digital campaigns",
+      "Campaign performance"
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "academy-starter-responsive-web",
+    "title": "Responsive Website Studio",
+    "description": "Build a responsive service landing page with semantic HTML, CSS Grid, and keyboard-friendly navigation. Includes a project brief, sample code, and a mobile review checklist.",
+    "category": "Web development",
+    "level": "Beginner",
+    "image": "/images/services/premium/software-web-v1-card.webp",
+    "downloadUrl": "starter:responsive-website-studio",
+    "published": true
+  },
+  {
+    "id": "academy-starter-ui-audit",
+    "title": "Practical UI/UX Audit",
+    "description": "Audit a booking flow for clarity, accessibility, and mobile usability. Includes a finding template, redesign exercise, and a usability test script.",
+    "category": "UI/UX design",
+    "level": "Beginner",
+    "image": "/images/services/premium/uiux-creative-v1-card.webp",
+    "downloadUrl": "starter:practical-ui-ux-audit",
+    "published": true
+  },
+  {
+    "id": "academy-starter-workflow",
+    "title": "Workflow Automation Blueprint",
+    "description": "Map a manual inquiry workflow, design rules for exceptions, and estimate the time saved. Includes a process map, decision table, and test scenarios.",
+    "category": "Automation",
+    "level": "Intermediate",
+    "image": "/images/services/premium/ai-automation-v1-card.webp",
+    "downloadUrl": "starter:workflow-automation-blueprint",
+    "published": true
+  }
+]

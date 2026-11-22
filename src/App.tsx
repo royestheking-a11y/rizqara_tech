@@ -1,3 +1,4 @@
+import { officialSocialLinks } from './data/social-links';
 import { ProjectEstimator } from './components/studio/ProjectEstimator';
 import { trackGrowth } from './utils/growthAnalytics';
 import { VisitorTracker } from './components/VisitorTracker';
@@ -5,6 +6,10 @@ import { useDialog } from './utils/useDialog';
 import './styles/mobile-navigation.css';
 import './styles/admin-login.css';
 import { ProjectPathfinder } from './components/studio/ProjectPathfinder';
+import { AcademySample } from './components/pages/AcademySample';
+import { AcademyPage } from './components/pages/AcademyPage';
+import { ClientDelivery } from './components/editorial/ClientDelivery';
+
 import { EditorialSection, TechnologyExperience } from './components/editorial/HomeEditorial';
 import './styles/footer-experience.css';
 import { CaseStudyExperience } from './components/case-studies/CaseStudyExperience';
@@ -32,7 +37,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation,
 // Imports
 import { Toaster, toast } from 'sonner';
 import { DataProvider, useData, Project } from './context/DataContext';
-import { apiRequest } from './utils/api';
+import { ADMIN_SESSION_ENDED, ApiError, apiRequest } from './utils/api';
 const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 import { GalleryPage } from './components/pages/GalleryPage';
 
@@ -49,7 +54,8 @@ import {
     ServicesSkeleton, ProjectsSkeleton, AboutHero,
     SectionTitle, XLogo, MediumLogo, WhatsAppLogo
 } from './components/premium/UIComponents';
-import { BlogPage, VideosPage, VideoDetail, TeamPage, BlogDetail, TeamSection, CareersPage } from './components/pages/ExtraPages';
+import { BlogPage, VideosPage, VideoDetail, BlogDetail, CareersPage } from './components/pages/ExtraPages';
+import { TeamPage, TeamProfile, TeamSection, teamMembers } from './components/pages/TeamProfiles';
 import FounderPage from './components/pages/FounderPage';
 import { Vision2030Page } from './components/pages/Vision2030Page';
 import { PrivacyPolicy, TermsOfService } from './components/LegalPages';
@@ -222,6 +228,12 @@ const CaseStudyDetail = () => {
                         {description}
                     </p>
 
+                    {study.gallery?.length ? (
+                        <a href="#case-study-gallery" className="rq-case-gallery-jump">
+                            {language === 'bn' ? 'প্রজেক্টের ছবি দেখুন' : 'View project gallery'} <ArrowRight size={17} aria-hidden="true" />
+                        </a>
+                    ) : null}
+
                     <div className="pb-24">
                         {/* Problem Section */}
                         <div className="mb-40">
@@ -289,21 +301,21 @@ const CaseStudyDetail = () => {
 
                         {/* Gallery */}
                         {study.gallery && study.gallery.length > 0 && (
-                            <div className="pt-20 animate-in slide-in-from-bottom-8 duration-700 mb-40">
+                            <div id="case-study-gallery" className="pt-20 animate-in slide-in-from-bottom-8 duration-700 mb-40">
                                 <h3 className="text-2xl font-bold text-gray-900 mb-12 flex items-center gap-2">
                                     <ImageIcon size={24} className="text-[#500000]" /> Project Showcase
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {study.gallery.map((img: string, i: number) => (
-                                        <div key={i} className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative h-80 bg-gray-50 flex justify-center items-center cursor-zoom-in">
+                                        <a key={img + i} href={img} target="_blank" rel="noopener noreferrer"
+                                            className="group rounded-3xl overflow-hidden border border-gray-200 shadow-md relative h-80 bg-gray-50 flex justify-center items-center cursor-zoom-in">
                                             <img
                                                 src={img}
-                                                alt={`Gallery ${i + 1}`}
+                                                alt={`${title} · Project image ${i + 1}`}
                                                 className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                                                onClick={() => window.open(img, '_blank')}
                                             />
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none" />
-                                        </div>
+                                         </a>
                                     ))}
                                 </div>
                             </div>
@@ -824,6 +836,7 @@ const Navbar = () => {
         { name: t('services'), path: '/services' },
         { name: t('projects'), path: '/projects' },
         { name: t('caseStudies'), path: '/case-studies' },
+        { name: language === 'bn' ? 'একাডেমি' : 'Academy', path: '/academy' },
         { name: language === 'bn' ? 'গ্যালারি' : 'Gallery', path: '/gallery' },
         { name: t('contact'), path: '/contact' }
     ];
@@ -949,9 +962,9 @@ const Footer = () => {
                         <div className="flex gap-4 flex-wrap items-center">
                             {[
                                 { name: 'X', Icon: XLogo, link: 'https://x.com/Rizqaratech' },
-                                { name: 'Facebook', Icon: Facebook, link: 'https://www.facebook.com/rizqaratechology/' },
+                                { name: 'Facebook', Icon: Facebook, link: officialSocialLinks.facebook },
                                 { name: 'LinkedIn', Icon: Linkedin, link: 'https://www.linkedin.com/company/rizqara-tech' },
-                                { name: 'Instagram', Icon: Instagram, link: 'https://www.instagram.com/rizqaratech/' },
+                                { name: 'Instagram', Icon: Instagram, link: officialSocialLinks.instagram },
                                 { name: 'Medium', Icon: MediumLogo, link: 'https://medium.com/@rizqaratech' },
                                 { name: 'YouTube', Icon: Youtube, link: 'https://www.youtube.com/@rizqaratech' }
                             ].map(({ name, Icon, link }, i) => (
@@ -1177,6 +1190,7 @@ const Home = () => {
 
 
 
+
             {/* 3. TRUSTED COMPANIES */}
             <section data-rq-reveal className="container mx-auto px-6">
                 <h2 className="text-center mb-8 text-[#500000] uppercase tracking-widest text-sm font-black">{language === 'bn' ? 'শিল্প নেতাদের দ্বারা বিশ্বস্ত' : 'Trusted by Industry Leaders'}</h2>
@@ -1346,7 +1360,7 @@ const Home = () => {
 
 // --- App Container ---
 
-const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean) => void }) => {
+const AdminLogin = ({ setIsAuthenticated, sessionEnded }: { setIsAuthenticated: (val: boolean) => void; sessionEnded: boolean }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -1406,6 +1420,9 @@ const AdminLogin = ({ setIsAuthenticated }: { setIsAuthenticated: (val: boolean)
                                 : 'Sign in with your RizQara Tech admin account.'}</p>
                         </header>
 
+                        {sessionEnded && <p className="admin-login__session" role="alert">{isBangla
+                            ? 'অ্যাডমিন সেশনের মেয়াদ শেষ হয়েছে। আবার সাইন ইন করুন।'
+                            : 'Your admin session ended. Sign in again to view reports and messages.'}</p>}
                         <form className="admin-login__form" onSubmit={handleLogin} aria-busy={busy}>
                             <div className="admin-login__field">
                                 <label htmlFor="admin-email">{isBangla ? 'ইমেইল ঠিকানা' : 'Email address'}</label>
@@ -1463,11 +1480,39 @@ const MainContent = () => {
     });
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [checkingSession, setCheckingSession] = useState(true);
-    useEffect(() => {
-        localStorage.removeItem('rizqara_admin_auth');
-        apiRequest('auth/session').then(() => setIsAuthenticated(true)).catch(() => setIsAuthenticated(false)).finally(() => setCheckingSession(false));
-    }, []);
+    const [sessionEnded, setSessionEnded] = useState(false);
+    const [sessionUnavailable, setSessionUnavailable] = useState(false);
+    const [sessionAttempt, setSessionAttempt] = useState(0);
     const location = useLocation();
+    const onAdminRoute = location.pathname === '/admin';
+    useEffect(() => {
+        if (!onAdminRoute) return;
+        const check = new AbortController();
+        const expireSession = () => {
+            check.abort();
+            setIsAuthenticated(false);
+            setCheckingSession(false);
+            setSessionEnded(true);
+        };
+        window.addEventListener(ADMIN_SESSION_ENDED, expireSession);
+        setCheckingSession(true);
+        setSessionUnavailable(false);
+        apiRequest('auth/session', { signal: AbortSignal.any([check.signal, AbortSignal.timeout(12000)]) })
+            .then(() => { if (!check.signal.aborted) setIsAuthenticated(true); })
+            .catch(error => {
+                if (check.signal.aborted) return;
+                setIsAuthenticated(false);
+                setSessionUnavailable(!(error instanceof ApiError && error.status === 401));
+            })
+            .finally(() => { if (!check.signal.aborted) setCheckingSession(false); });
+        return () => {
+            check.abort();
+            window.removeEventListener(ADMIN_SESSION_ENDED, expireSession);
+            setIsAuthenticated(false);
+            setCheckingSession(true);
+            setSessionEnded(false);
+        };
+    }, [onAdminRoute, sessionAttempt]);
     const navigate = useNavigate();
     const { t, language, loading, services } = useData();
 
@@ -1505,11 +1550,15 @@ const MainContent = () => {
             <AmbientBackground />
             {showNavbar && <PremiumExperience />}
 
+            <a className="rq-skip-link" href="#rq-main-content" onClick={event => {
+                const main = document.getElementById('rq-main-content');
+                if (main) { event.preventDefault(); main.focus(); main.scrollIntoView(); }
+            }}>{language === 'bn' ? 'মূল কনটেন্টে যান' : 'Skip to main content'}</a>
             {showNavbar && <Navbar />}
 
             {location.pathname.startsWith('/admin') && <SEO title="Administrator sign in" description="Private administration area." noIndex />}
             {loading && <div className="rq-brand-loader" role="status" aria-label="Loading website"><div className="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i/><i/><i/></div></div>}
-            <main className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
+            <main id="rq-main-content" tabIndex={-1} className={`relative z-10 ${location.pathname === '/' || location.pathname === '/admin' ? 'pt-0' : 'pt-24'}`}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/vision-2030" element={<Vision2030Page />} />
@@ -1567,6 +1616,7 @@ const MainContent = () => {
                             ) : (
                                 <div className="">
                                      <AboutHero />
+                                     <ClientDelivery bookingUrl={bookingUrl} />
                                      
                                      {/* Founder Link Banner */}
                                      <div className="container mx-auto px-6 pt-32 pb-16 text-center max-w-4xl border-b border-gray-100 mb-16">
@@ -1588,6 +1638,9 @@ const MainContent = () => {
                     </>} />
                     <Route path="/founder" element={<FounderPage />} />
                     <Route path="/team" element={<TeamPage />} />
+                    <Route path="/academy" element={<AcademyPage />} />
+                    <Route path="/academy/responsive-web-sample" element={<AcademySample />} />
+                    {teamMembers.map(member => <Route key={member.slug} path={`/${member.slug}`} element={<TeamProfile member={member} />} />)}
                     <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
                     <Route path="/blog/top-software-companies-in-bangladesh" element={<TopCompaniesSEOPage />} />
@@ -1620,7 +1673,15 @@ const MainContent = () => {
                     </>} />
 
                     <Route path="/admin" element={
-                        checkingSession ? <AdminBootSkeleton /> : isAuthenticated ?
+                        checkingSession ? <AdminBootSkeleton /> : sessionUnavailable ?
+                            <div className="admin-login">
+                                <div className="admin-login__session" role="alert">
+                                    <p>{language === 'bn' ? 'অ্যাডমিন সেশন এখন যাচাই করা যাচ্ছে না।' : 'The admin session could not be verified right now.'}</p>
+                                    <button className="admin-login__submit" type="button" onClick={() => setSessionAttempt(attempt => attempt + 1)}>
+                                        {language === 'bn' ? 'আবার চেষ্টা করুন' : 'Try again'}
+                                    </button>
+                                </div>
+                            </div> : isAuthenticated ?
                             <div className="bg-[#fcf9fa]">
                                 <Suspense fallback={<AdminBootSkeleton />}><AdminDashboard onLogout={async () => {
                                     try {
@@ -1630,7 +1691,7 @@ const MainContent = () => {
                                     } catch { toast.error('Unable to sign out. Please try again.'); }
                                 }} /></Suspense>
                             </div> :
-                            <AdminLogin setIsAuthenticated={setIsAuthenticated} />
+                            <AdminLogin sessionEnded={sessionEnded} setIsAuthenticated={value => { setSessionEnded(false); setIsAuthenticated(value); }} />
                     } />
 
                     <Route path="*" element={<div className="container mx-auto p-12"><SEO title="Page not found" description="The requested page could not be found." /><h1 className="text-3xl font-bold">Page not found</h1><Link to="/">Return home</Link></div>} />

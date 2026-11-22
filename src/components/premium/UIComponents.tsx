@@ -2,7 +2,8 @@ import { trackGrowth } from '../../utils/growthAnalytics';
 import { useDialog } from '../../utils/useDialog';
 import { AssistantCharacter, StudioProcess, ContactDetails } from '../studio/StudioDetails';
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { TeamAvatar, teamMembers } from '../pages/TeamProfiles';
 import { getProxiedImage } from '../../utils/imageProxy';
 import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import {
@@ -1622,8 +1623,14 @@ export const ContactFormWithMap = () => {
     const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
     const [initialSubject, setInitialSubject] = useState('');
     const [initialMessage, setInitialMessage] = useState('');
+    const [params] = useSearchParams();
+    const recipient = teamMembers.find(member => member.slug === params.get('teamMember'));
 
     useEffect(() => {
+        if (recipient) {
+            setInitialSubject(language === 'bn' ? `${recipient.name}-এর জন্য বার্তা` : `Message for ${recipient.name}`);
+            return;
+        }
         // Check for pending inquiry from Build Page
         const goalInquiry = sessionStorage.getItem('rizqaraGoalInquiry');
         const pendingInquiry = goalInquiry || localStorage.getItem('pendingInquiry');
@@ -1639,7 +1646,7 @@ export const ContactFormWithMap = () => {
                 console.error("Failed to parse inquiry", e);
             }
         }
-    }, []);
+    }, [recipient, language]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -2415,37 +2422,15 @@ export const AboutHero = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <div className="inline-block px-4 py-2 rounded-full bg-[#500000]/10 border border-[#500000]/20 text-[#500000] text-xs font-black uppercase tracking-[0.2em] mb-8">
-                            {language === 'bn' ? 'আমাদের সম্পর্কে' : 'About RizQara Tech'}
-                        </div>
-                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] mb-8">
-                            {t('aboutHeroTitle')}
-                        </h1>
-                        <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-10 border-l-4 border-[#500000] pl-6 font-medium">
-                            {t('aboutHeroDesc')}
-                        </p>
-                        <div className="flex flex-wrap gap-6 items-center">
-                            <div className="flex -space-x-3">
-                                {[
-                                    { name: 'aurangzeb', url: '/aurangzebsunny.png' },
-                                    { name: 'pritom', url: '/pritom.jpg' },
-                                    { name: 'sanju', url: '/sanju.jpg' },
-                                    { name: 'sami', url: '/samii.jpg' },
-                                    { name: 'taskia', url: '/taskia.jpg' },
-                                    { name: 'afrin', url: '/afrin.jpg' }
-                                ].map(member => (
-                                    <div key={member.name} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-md group/avatar">
-                                        <img src={member.url} alt={member.name} loading="lazy" className="w-full h-full object-cover grayscale group-hover/avatar:grayscale-0 transition-all duration-500" />
-                                    </div>
-                                ))}
-                                <div className="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-[#500000] font-bold text-xs shadow-md">
-                                    +25
-                                </div>
-                            </div>
-                            <div className="text-sm font-bold text-gray-500 uppercase tracking-widest">
-                                {language === 'bn' ? 'আমাদের বিশেষজ্ঞ টিম' : 'Our Expert Team'}
-                            </div>
-                        </div>
+                        <h1 className="rq-about-team-title">{language === 'bn' ? 'রিজকারা টেক সম্পর্কে' : 'About RizQara Tech'}</h1>
+                        <p className="rq-about-team-intro">{t('aboutHeroTitle')}</p>
+                        <p className="rq-about-team-caption">{t('aboutHeroDesc')}</p>
+                        <Link to="/team" className="rq-about-team-link">
+                            <span className="rq-about-team-avatars">
+                                {teamMembers.slice(0, 5).map(member => <TeamAvatar key={member.slug} member={member} />)}
+                            </span>
+                            {language === 'bn' ? 'আমাদের টিমের সঙ্গে পরিচিত হোন' : 'Meet the team'}
+                        </Link>
                     </motion.div>
 
                     <motion.div 

@@ -2,7 +2,7 @@ const mongoose=require('mongoose');
 const {requireAdmin,rateLimit}=require('./security');
 const schema=new mongoose.Schema({eventId:{type:String,unique:true},visitor:String,path:String,action:String,createdAt:{type:Date,default:Date.now,expires:7776000}});
 schema.index({createdAt:1,path:1});
-const actions=new Set(['estimate_completed','estimate_shared','booking_clicked','inquiry_sent']);
+const actions=new Set(['estimate_completed','estimate_shared','booking_clicked','inquiry_sent','academy_sample_click']);
 const View=mongoose.model('PageView',schema);
 module.exports=function(router){
  router.post('/analytics/view',rateLimit('pageview',120),async(req,res,next)=>{

@@ -4,11 +4,13 @@ const archivedConcepts=new Set(require('../src/data/project-concepts.json').map(
 const caseStudies=require('../src/data/case-studies.json');
 const catalog=require('../shared/service-catalog.json');
 const editorialFallback={blog:require('../src/data/blogs.json'),videos:require('../src/data/videos.json')};
+const teamMembers=require('../src/data/team-members.json');
 const origin='https://www.rizqara.tech';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const slug=title=>title.toLowerCase().normalize('NFKC').trim().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'')||'item';
 async function sitemap(){
- const paths=['/','/about','/services','/projects','/case-studies','/blog','/videos','/contact','/team','/gallery','/careers','/founder','/vision-2030','/registered-company','/privacy-policy','/terms-of-service','/estimate'];
+ const paths=['/','/about','/services','/projects','/case-studies','/blog','/videos','/contact','/team','/gallery','/careers','/founder','/vision-2030','/registered-company','/privacy-policy','/terms-of-service','/estimate','/academy','/academy/responsive-web-sample'];
+ paths.push(...teamMembers.map(member=>'/'+member.slug));
  paths.push(...caseStudies.map(item=>'/case-studies/'+item.slug));
  paths.push(...catalog.categories.flatMap(category=>category.offerings.map(item=>'/services/'+item.key)));
  for(const [route,model] of Object.entries({services:Service,projects:Project,blog:Blog,'case-studies':CaseStudy,videos:Video})){

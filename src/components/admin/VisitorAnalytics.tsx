@@ -113,7 +113,7 @@ export function VisitorAnalytics() {
                     <section aria-label="Growth actions" className="mb-8">
                         <h3 className="mb-3 font-bold">Growth actions</h3>
                         <div className="rq-admin-stat-grid">
-                            {Object.entries({ estimate_completed: 'Estimates completed', estimate_shared: 'Estimate links copied', booking_clicked: 'Booking clicks', inquiry_sent: 'Inquiries sent' }).map(([key, label]) => (
+                            {Object.entries({ estimate_completed: 'Estimates completed', estimate_shared: 'Estimate links copied', booking_clicked: 'Booking clicks', inquiry_sent: 'Inquiries sent', academy_sample_click: 'Sample-to-course clicks' }).map(([key, label]) => (
                                 <div className="rq-admin-stat" key={key}>
                                     <strong>{data.actions?.find(action => action._id === key)?.count ?? 0}</strong>
                                     <span>{label}</span>
