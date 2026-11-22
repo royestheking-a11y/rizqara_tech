@@ -11,7 +11,7 @@ import {
     LayoutDashboard, Briefcase, Users, MessageSquare,
     Plus, Trash2, Edit2, Save, X, RotateCcw,
     FileText, PlayCircle, Image, Settings, LogOut,
-    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Check, Bell, Sparkles
+    ChevronRight, Search, Sliders, Globe, Inbox, Mail, FileDown, Tag, Bell, Sparkles
 } from 'lucide-react';
 import { ImageUploader } from './admin/ImageUploader';
 import { UserInteractionAnalytics } from './admin/UserInteractionAnalytics';
@@ -315,42 +315,32 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
         </div>
     );
 
-    const renderList = (title: string, data: any[], type: string, renderItem: (item: any) => React.ReactNode) => {
+    const renderList = (data: any[], type: string, renderItem: (item: any) => React.ReactNode) => {
         const filteredData = data.filter(item =>
             JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         return (
-            <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-[#f0e4eb]">
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-2xl font-black text-[#230711] tracking-tight">{title}</h2>
-                            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#500000]/10 text-[#500000] border border-[#500000]/15">
-                                {data.length} {language === 'bn' ? 'টি আইটেম' : 'records'}
-                            </span>
-                        </div>
-                        <p className="text-[#8c6d7a] text-xs font-medium mt-1">
-                            {language === 'bn' ? 'রেকর্ড পরিচালনা ও হালনাগাদ করুন।' : 'Manage, review, and edit live catalog entries.'}
-                        </p>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                        <div className="relative flex-1 sm:w-72">
-                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a7d8c]" size={16} />
+            <div className="rq-admin-records">
+                <div className="rq-admin-list-toolbar">
+                    <span className="rq-admin-count">{data.length} {language === 'bn' ? 'টি রেকর্ড' : 'records'}</span>
+                    <div className="rq-admin-list-controls">
+                        <div className="rq-admin-search">
+                            <Search size={17} aria-hidden="true" />
                             <input
                                 aria-label="Search records"
-                                type="text"
+                                type="search"
                                 placeholder={language === 'bn' ? 'অনুসন্ধান করুন...' : "Search records..."}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-9 py-2.5 bg-white border border-[#e5d4dc] rounded-xl text-xs font-medium text-[#230711] placeholder:text-[#9e838f] focus:outline-none focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/15 transition-all"
+                                className="rq-admin-search-input"
                             />
                             {searchTerm && (
                                 <button
                                     type="button"
                                     onClick={() => setSearchTerm('')}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 cursor-pointer"
+                                    aria-label={language === 'bn' ? 'অনুসন্ধান মুছুন' : 'Clear search'}
+                                    className="rq-admin-search-clear"
                                 >
                                     <X size={14} />
                                 </button>
@@ -364,16 +354,16 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3.5">
+                <div className="rq-admin-record-grid">
                     {filteredData.map(item => (
                         <div
                             key={item.id}
-                            className="bg-white/95 backdrop-blur-sm rounded-2xl p-5 border border-[#ebdce3] shadow-xs hover:border-[#500000]/30 hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group"
+                            className="rq-admin-record"
                         >
-                            <div className="flex-1 w-full min-w-0">
+                            <div className="rq-admin-record-content">
                                 {renderItem(item)}
                             </div>
-                            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                            <div className="rq-admin-record-actions">
                                 {!['message', 'application'].includes(type) && (
                                     <AdminButton
                                         aria-label="Edit record"
@@ -399,8 +389,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     ))}
 
                     {filteredData.length === 0 && (
-                        <div className="text-center py-16 px-4 bg-[#faf6f8] rounded-2xl border border-dashed border-[#e5d4dc]">
-                            <div className="w-12 h-12 rounded-2xl bg-[#500000]/10 text-[#500000] flex items-center justify-center mx-auto mb-3">
+                        <div className="rq-admin-empty">
+                            <div className="rq-admin-empty-icon">
                                 <Search size={22} />
                             </div>
                             <h4 className="text-sm font-bold text-[#230711] mb-1">
@@ -411,7 +401,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                     ? (language === 'bn' ? 'আপনার অনুসন্ধানের সাথে মিলছে এমন কোনো আইটেম নেই।' : 'No items match your search term. Try adjusting your filter.')
                                     : (language === 'bn' ? 'এই ক্যাটাগরিতে এখনও কোনো আইটেম যোগ করা হয়নি।' : 'No entries have been created for this category yet.')}
                             </p>
-                            {!['message', 'application'].includes(type) && (
+                            {!searchTerm.trim() && !['message', 'application'].includes(type) && (
                                 <AdminButton onClick={() => openModal(type)} className="mx-auto text-xs py-2 px-4">
                                     <Plus size={15} /> {language === 'bn' ? 'প্রথম আইটেম যোগ করুন' : 'Add First Entry'}
                                 </AdminButton>
@@ -510,8 +500,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
             {/* Top Header */}
             <header className="rq-admin-top">
-                <div className="flex items-center gap-3.5">
-                    <div className="w-9 h-9 bg-gradient-to-br from-[#500000] to-[#781b37] rounded-xl flex items-center justify-center text-white font-serif font-black shadow-md shadow-[#500000]/25">
+                <div className="rq-admin-header-group">
+                    <div className="rq-admin-mark">
                         R
                     </div>
                     <div>
@@ -521,12 +511,12 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         <p className="text-[10px] font-semibold tracking-wider uppercase text-[#967484] mt-0.5">Control & Management Portal</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="rq-admin-header-group">
                     <a
                         href="/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#500000] bg-[#faf2f5] hover:bg-[#f3e3eb] border border-[#ebdbe3] rounded-lg transition-colors cursor-pointer"
+                        className="rq-admin-site-link"
                     >
                         <span>{language === 'bn' ? 'ওয়েবসাইট দেখুন' : 'View Live Site'}</span>
                         <ChevronRight size={13} />
@@ -535,14 +525,15 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     <div className="text-right hidden md:block">
                         <div className="text-xs font-bold text-[#230711]">{language === 'bn' ? 'সুপার অ্যাডমিনিস্ট্রেটর' : 'Administrator'}</div>
                     </div>
-                    <button
+                    <AdminButton
+                        variant="secondary"
                         aria-label="Sign out"
                         onClick={onLogout}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-red-700 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-lg transition-colors cursor-pointer"
+                        className="rq-admin-signout"
                     >
                         <LogOut size={14} />
                         <span className="hidden sm:inline">{language === 'bn' ? 'প্রস্থান' : 'Sign out'}</span>
-                    </button>
+                    </AdminButton>
                 </div>
             </header>
 
@@ -576,7 +567,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     <h2 className="rq-admin-page-title">{navItems.find(tab => tab.id === activeTab)?.label}</h2>
                     {activeTab === 'dashboard' && renderDashboard()}
 
-                    {activeTab === 'inbox' && renderList(language === 'bn' ? 'ইনবক্স' : 'Inbox', messages, 'message', (item) => (
+                    {activeTab === 'inbox' && renderList(messages, 'message', (item) => (
                         <div className="space-y-2">
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${
@@ -617,13 +608,12 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     ))}
 
                     {activeTab === 'promotions' && (
-                        <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+                        <div className="rq-admin-workspace">
                             <div className="pb-4 border-b border-[#f0e4eb]">
-                                <h2 className="text-2xl font-black text-[#230711] tracking-tight">{language === 'bn' ? 'প্রচার এবং অফার' : 'Promotions & Campaigns'}</h2>
                                 <p className="text-xs text-[#8c6d7a] mt-1">{language === 'bn' ? 'গ্লোবাল ওয়েবসাইট পপআপ প্রচারাভিযান পরিচালনা করুন।' : 'Configure promotional banners, discount rates, and live overlay rules.'}</p>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="rq-admin-campaign-grid">
                                 {/* Settings Form */}
                                 <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xs border border-[#ebdce3]">
                                     <div className="flex items-center gap-2.5 mb-6 pb-4 border-b border-[#f0e4eb]">
@@ -633,25 +623,9 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                         <h3 className="text-base font-bold text-[#230711]">Campaign Settings</h3>
                                     </div>
 
-                                    <form onSubmit={(e) => {
-                                        e.preventDefault();
+                                    <form onSubmit={(event) => {
+                                        event.preventDefault();
                                         void updateData('promotion', localPromotion).catch(() => {});
-                                        // Custom Premium Toast
-                                        toast.custom((t) => (
-                                            <div className="flex items-center gap-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-sm animate-in slide-in-from-top-5 fade-in duration-300">
-                                                <div className="w-10 h-10 rounded-full bg-[#500000] flex items-center justify-center text-white shadow-lg shrink-0">
-                                                    <Check size={20} />
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900 text-sm">Update Successful!</h4>
-                                                    <p className="text-xs text-gray-500">Promotion is now live on the site.</p>
-                                                </div>
-                                                <button aria-label="Close" onClick={() => toast.dismiss(t)} className="ml-auto p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors">
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ), { duration: 4000 });
-
                                     }}>
                                         <div className="space-y-6">
                                             <label className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-[#500000]/30 transition-colors cursor-pointer">
@@ -797,7 +771,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     )}
 
-                    {activeTab === 'notice' && renderList(language === 'bn' ? 'ওয়েবসাইট নোটিশ' : 'Website Notices', notices, 'notice', (item) => (
+                    {activeTab === 'notice' && renderList(notices, 'notice', (item) => (
                         <div className="flex items-start gap-4">
                             <div className={`p-2.5 rounded-xl shrink-0 ${item.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-400'}`}>
                                 <Bell size={18} />
@@ -817,7 +791,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'gallery' && renderList(language === 'bn' ? 'গ্যালারি' : 'Gallery', galleryItems, 'galleryItem', (item) => (
+                    {activeTab === 'gallery' && renderList(galleryItems, 'galleryItem', (item) => (
                         <div className="flex items-center gap-4">
                             {item.image ? (
                                 <img src={item.image} alt={item.title} className="w-18 h-18 object-cover rounded-xl shadow-xs border border-[#ebdce3] shrink-0" />
@@ -843,9 +817,8 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                     ))}
 
                     {activeTab === 'buildOption' && (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="rq-admin-workspace">
                             <div className="pb-4 border-b border-[#f0e4eb]">
-                                <h2 className="text-2xl font-black text-[#230711] tracking-tight">{language === 'bn' ? 'বিল্ড সিস্টেম কনফিগারেশন' : 'Build System Configuration'}</h2>
                                 <p className="text-xs text-[#8c6d7a] mt-1">Configure interactive pricing models and feature multipliers.</p>
                             </div>
 
@@ -886,7 +859,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     )}
 
-                    {activeTab === 'carousel' && renderList(language === 'bn' ? 'হিরো ক্যারোজেল' : 'Hero Carousel', carouselSlides, 'carousel', (item) => (
+                    {activeTab === 'carousel' && renderList(carouselSlides, 'carousel', (item) => (
                         <div className="flex items-center gap-4">
                             <img src={item.image} alt="" className="w-24 h-16 rounded-xl bg-gray-100 object-cover shadow-xs border border-[#ebdce3] shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -901,7 +874,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'services' && renderList(language === 'bn' ? 'সেবাসমূহ' : 'Services', services, 'service', (item) => (
+                    {activeTab === 'services' && renderList(services, 'service', (item) => (
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <div className="w-7 h-7 rounded-lg bg-[#500000]/10 text-[#500000] flex items-center justify-center shrink-0">
@@ -918,7 +891,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'projects' && renderList(language === 'bn' ? 'প্রকল্প' : 'Portfolio projects', projects, 'project', (item) => (
+                    {activeTab === 'projects' && renderList(projects, 'project', (item) => (
                         <div className="flex items-center gap-4">
                             <img src={item.image} alt="" className="w-16 h-16 rounded-xl bg-gray-100 object-cover shadow-xs border border-[#ebdce3] shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -939,7 +912,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'reviews' && renderList(language === 'bn' ? 'পর্যালোচনা' : 'Reviews', reviews, 'review', (item) => (
+                    {activeTab === 'reviews' && renderList(reviews, 'review', (item) => (
                         <div>
                             <div className="flex items-center gap-3 mb-1.5">
                                 <h3 className="font-bold text-[#230711] text-sm">{item.name}</h3>
@@ -955,7 +928,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'blogs' && renderList(language === 'bn' ? 'ব্লগ পোস্ট' : 'Blog Posts', blogs, 'blog', (item) => (
+                    {activeTab === 'blogs' && renderList(blogs, 'blog', (item) => (
                         <div className="flex items-center gap-4">
                             <img src={item.image} className="w-16 h-16 rounded-xl object-cover bg-gray-100 border border-[#ebdce3] shadow-xs shrink-0" alt="" />
                             <div className="min-w-0 flex-1">
@@ -969,7 +942,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'jobs' && renderList(language === 'bn' ? 'ক্যারিয়ার' : 'Careers', jobs, 'job', (item) => (
+                    {activeTab === 'jobs' && renderList(jobs, 'job', (item) => (
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <h3 className="font-bold text-[#230711] text-sm">{item.title}</h3>
@@ -987,7 +960,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'applications' && renderList(language === 'bn' ? 'চাকরির আবেদন' : 'Job Applications', careerApplications, 'application', (item) => (
+                    {activeTab === 'applications' && renderList(careerApplications, 'application', (item) => (
                         <div className="space-y-3">
                             <div className="flex flex-wrap items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
@@ -1046,7 +1019,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'videos' && renderList(language === 'bn' ? 'ভিডিও' : 'Videos', videos, 'video', (item) => (
+                    {activeTab === 'videos' && renderList(videos, 'video', (item) => (
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-12 bg-gradient-to-br from-[#500000] to-[#781b37] rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs">
                                 <PlayCircle size={22} />
@@ -1060,7 +1033,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                         </div>
                     ))}
 
-                    {activeTab === 'caseStudies' && renderList(language === 'bn' ? 'কেস স্টাডিজ' : 'Case Studies', caseStudies, 'caseStudy', (item) => (
+                    {activeTab === 'caseStudies' && renderList(caseStudies, 'caseStudy', (item) => (
                         <div className="flex items-center gap-4">
                             <img src={item.image} alt="" className="w-16 h-16 rounded-xl bg-gray-100 object-cover shadow-xs border border-[#ebdce3] shrink-0" />
                             <div className="min-w-0 flex-1">
@@ -1080,13 +1053,13 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             {/* Modal Overlay */}
             {isModalOpen && (
                 <div className="rq-admin-modal">
-                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Edit content" tabIndex={-1} className="rq-admin-modal-panel">
-                        <div className="px-6 py-4 border-b border-[#ebdce3] flex justify-between items-center bg-gradient-to-r from-[#faf4f7] via-white to-[#faf4f7]">
+                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="rq-admin-editor-title" tabIndex={-1} className="rq-admin-modal-panel">
+                        <div className="rq-admin-modal-header">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-xl bg-[#500000]/10 text-[#500000] flex items-center justify-center">
                                     <Sparkles size={16} />
                                 </div>
-                                <h3 className="text-lg font-black text-[#230711] tracking-tight">
+                                <h3 id="rq-admin-editor-title" className="text-lg font-black text-[#230711] tracking-tight">
                                     {editingItem ? (language === 'bn' ? 'সম্পাদনা করুন' : 'Edit') : (language === 'bn' ? 'নতুন যোগ করুন' : 'Add New')} {modalType.charAt(0).toUpperCase() + modalType.slice(1)}
                                 </h3>
                             </div>
@@ -1165,7 +1138,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
 
                                     <AdminInput label="Project image URL (optional)" name="coverUrl" placeholder="https://example.com/project.webp" />
 
-                                    <div className="grid grid-cols-3 gap-4 mb-6">
+                                    <div className="rq-admin-media-fields">
                                         <ImageUploader
                                             label="Gallery 1"
                                             name="gallery_1"
@@ -1468,7 +1441,7 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                             </form>
                         </div>
 
-                        <div className="px-6 py-4 border-t border-[#ebdce3] bg-[#faf6f8] flex items-center justify-end gap-3">
+                        <div className="rq-admin-modal-footer">
                             <AdminButton 
                                 type="button" 
                                 variant="secondary" 

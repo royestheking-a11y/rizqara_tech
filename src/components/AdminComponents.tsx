@@ -32,9 +32,9 @@ const AdminField = ({ as: Tag, label, id, ...props }: any) => {
   const generated = useId();
   const fieldId = id || generated;
   return (
-    <div className="mb-4">
+    <div className="rq-admin-field">
       {label && (
-        <label htmlFor={fieldId} className="block text-[11px] font-bold text-[#785967] uppercase tracking-[0.12em] mb-1.5">
+        <label htmlFor={fieldId} className="rq-admin-field-label">
           {label}
         </label>
       )}
@@ -42,7 +42,7 @@ const AdminField = ({ as: Tag, label, id, ...props }: any) => {
         {...props} 
         id={fieldId} 
         aria-label={props['aria-label'] || label || props.name} 
-        className={`w-full bg-[#fdfbfc] border border-[#e5d4dc] rounded-xl px-4 py-3 text-sm font-medium text-[#230711] placeholder:text-[#9e838f] focus:outline-none focus:bg-white focus:border-[#500000] focus:ring-2 focus:ring-[#500000]/15 transition-all duration-200 ${Tag === 'textarea' ? 'min-h-[120px] resize-y' : ''} ${Tag === 'select' ? 'cursor-pointer' : ''}`} 
+        className="rq-admin-field-control"
       />
     </div>
   );
@@ -53,15 +53,8 @@ export const AdminSelect = (props: any) => <AdminField {...props} as="select" />
 
 // --- Buttons ---
 export const AdminButton = ({ children, onClick, variant = 'primary', className = "", ...props }: any) => {
-  const base = "px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
-  const variants = {
-    primary: "bg-gradient-to-r from-[#500000] via-[#680b26] to-[#781b37] text-white hover:brightness-110 shadow-sm shadow-[#500000]/25 border border-[#500000]/60 active:scale-[0.98]",
-    secondary: "bg-white text-[#422230] border border-[#e5d4dc] hover:bg-[#faf4f7] hover:border-[#500000]/30 shadow-xs active:scale-[0.98]",
-    danger: "bg-[#fff1f4] text-[#b91c1c] hover:bg-[#ffe4e8] border border-[#fecdd3] active:scale-[0.98]"
-  };
-  
   return (
-    <button onClick={onClick} className={`${base} ${variants[variant as keyof typeof variants]} ${className}`} {...props}>
+    <button onClick={onClick} className={`rq-admin-button rq-admin-button--${variant} ${className}`} {...props}>
       {children}
     </button>
   );
