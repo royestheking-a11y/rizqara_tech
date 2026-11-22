@@ -20,15 +20,16 @@ export function VisitorAnalytics() {
         const controller = new AbortController();
         setIsRefreshing(true);
         setError('');
-        apiRequest(`analytics/summary?days=${days}`, { signal: controller.signal })
+        apiRequest(`analytics/summary?days=${days}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(12000)]), cache: 'no-store' })
             .then(r => r.json())
             .then(res => {
+                if (controller.signal.aborted) return;
                 setData(res);
                 setIsRefreshing(false);
             })
             .catch(e => {
                 if (!controller.signal.aborted) {
-                    setError(e.message);
+                    setError(e.name === 'TimeoutError' ? 'The report took too long to load. Try refreshing.' : e.message);
                     setIsRefreshing(false);
                 }
             });
@@ -40,30 +41,18 @@ export function VisitorAnalytics() {
         : 1;
 
     return (
-        <section className="bg-white/95 backdrop-blur-sm border border-[#ebdce3] rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_-4px_rgba(80,0,0,0.04)] mb-8">
-            <header className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 pb-6 border-b border-[#f0e4eb]">
+        <section className="rq-admin-report" aria-labelledby="rq-traffic-title" aria-busy={isRefreshing}>
+            <header className="rq-admin-report-header">
                 <div>
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-[#500000]/10 flex items-center justify-center text-[#500000]">
-                            <BarChart3 size={18} />
-                        </div>
-                        <h2 className="text-xl font-bold text-[#230711] tracking-tight">Website Traffic & Audience</h2>
-                    </div>
-                    <p className="text-xs font-medium text-[#8c6d7a] mt-1 flex items-center gap-2">
-                        <span>Consent-based telemetry</span>
-                        <span>•</span>
-                        <span>Bangladesh Time (BST)</span>
-                        <span>•</span>
-                        <span>90-day retention window</span>
-                    </p>
+                    <h2 id="rq-traffic-title"><BarChart3 size={19} aria-hidden="true" /> Website Traffic &amp; Audience</h2>
+                    <p>Consented visits · Bangladesh time (UTC+6) · 90-day history</p>
                 </div>
-
-                <div className="flex items-center gap-2.5">
+                <div className="rq-admin-report-controls">
                     <select
                         aria-label="Visitor reporting period"
                         value={days}
                         onChange={e => setDays(Number(e.target.value))}
-                        className="bg-[#fcf9fa] border border-[#e5d4dc] rounded-xl px-3.5 py-2 text-xs font-bold text-[#422230] focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-colors cursor-pointer"
+                        className="rq-admin-report-select"
                     >
                         <option value={7}>Last 7 Days</option>
                         <option value={30}>Last 30 Days</option>
@@ -74,28 +63,28 @@ export function VisitorAnalytics() {
                         type="button"
                         onClick={() => setRefresh(n => n + 1)}
                         disabled={isRefreshing}
-                        className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#500000] bg-[#faf2f5] hover:bg-[#f3e3eb] border border-[#ebdbe3] rounded-xl transition-all cursor-pointer disabled:opacity-50"
+                        className="rq-admin-button rq-admin-button--secondary"
                         title="Refresh analytics"
                     >
                         <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
-                        <span className="hidden sm:inline">Refresh</span>
+                        <span>{isRefreshing ? 'Refreshing…' : 'Refresh'}</span>
                     </button>
                 </div>
             </header>
 
             {error ? (
-                <div role="alert" className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                <div role="alert" className="rq-admin-report-state rq-admin-report-state--error">
                     Unable to load visitor data: {error}
                 </div>
-            ) : !data ? (
-                <div role="status" className="py-12 flex flex-col items-center justify-center text-center">
-                    <div className="w-8 h-8 border-2 border-[#500000]/20 border-t-[#500000] rounded-full animate-spin mb-3"></div>
+            ) : isRefreshing || !data ? (
+                <div role="status" className="rq-admin-report-state">
+                    <RefreshCw size={18} className="animate-spin" aria-hidden="true" />
                     <p className="text-sm font-medium text-[#8c6d7a]">Loading visitor analytics…</p>
                 </div>
             ) : (
                 <>
                     {/* Top Totals */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div className="rq-admin-report-totals">
                         <div className="rounded-2xl bg-gradient-to-br from-[#faf4f7] to-[#ffffff] border border-[#ecdce5] p-5 shadow-xs flex items-center justify-between">
                             <div>
                                 <p className="text-[11px] font-bold text-[#8c6d7a] uppercase tracking-[0.14em] mb-1">Total Page Views</p>
@@ -140,7 +129,7 @@ export function VisitorAnalytics() {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="rq-admin-report-breakdown">
                             {/* Daily breakdown */}
                             <div className="bg-[#fcf9fa] border border-[#f0e4eb] rounded-2xl p-5">
                                 <h3 className="text-xs font-bold text-[#634754] uppercase tracking-[0.12em] mb-4 flex items-center justify-between">

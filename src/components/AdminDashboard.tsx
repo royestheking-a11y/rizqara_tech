@@ -33,9 +33,21 @@ const PremiumStatCard = ({ icon: Icon, value, label }: {
 export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     const { services, projects, reviews, blogs, jobs, videos, carouselSlides, buildOptions, messages, careerApplications, caseStudies, promotion, notices, galleryItems, updateData, resetData, language, deleteData, fetchAdminData, markMessageRead } = useData();
 
+    const [privateStatus, setPrivateStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+    const [privateAttempt, setPrivateAttempt] = useState(0);
     React.useEffect(() => {
-        void fetchAdminData().catch(error => toast.error(error.message));
-    }, []);
+        let active = true;
+        setPrivateStatus('loading');
+        void fetchAdminData().then(() => {
+            if (active) setPrivateStatus('ready');
+        }).catch(() => {
+            if (active) {
+                setPrivateStatus('error');
+                toast.error('Unable to load messages and applications.');
+            }
+        });
+        return () => { active = false; };
+    }, [privateAttempt]);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [editingItem, setEditingItem] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -297,16 +309,16 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
             </div>
 
             <VisitorAnalytics />
-            <UserInteractionAnalytics />
+            <UserInteractionAnalytics status={privateStatus} retry={() => setPrivateAttempt(attempt => attempt + 1)} />
 
             {/* System Preferences Card */}
-            <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#faf4f7] via-white to-[#fdf9fb] border border-[#ebdce3] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="rq-admin-report rq-admin-preferences">
                 <div>
                     <div className="flex items-center gap-2 mb-1.5">
                         <div className="w-2 h-2 rounded-full bg-[#500000] animate-pulse"></div>
-                        <h3 className="text-base font-bold text-[#230711]">{language === 'bn' ? "সিস্টেম ও লোকাল কন্ট্রোল" : "System & Local Controls"}</h3>
+                        <h3 className="text-base font-bold text-[#230711]">{language === 'bn' ? "সিস্টেম ও লোকাল কন্ট্রোল" : "Language preference"}</h3>
                     </div>
-                    <p className="text-xs text-[#8c6d7a] max-w-xl">{language === 'bn' ? "ল্যাঙ্গুয়েজ প্রেফারেন্স রিসেট করুন অথবা রিফ্রেশ করুন।" : "Reset client language cache and re-sync editorial assets with the production database."}</p>
+                    <p className="text-xs text-[#8c6d7a] max-w-xl">{language === 'bn' ? "এই ব্রাউজারে ওয়েবসাইটের ডিফল্ট ভাষা ফিরিয়ে আনুন।" : "Restore the default website language in this browser."}</p>
                 </div>
                 <AdminButton variant="secondary" onClick={() => { if (window.confirm(language === 'bn' ? 'ভাষার পছন্দ রিসেট করবেন?'  : 'Reset your language preference?')) resetData(); }}>
                     <RotateCcw size={16} /> {language === 'bn' ? "ভাষার পছন্দ রিসেট করুন" : "Reset Language Preference"}

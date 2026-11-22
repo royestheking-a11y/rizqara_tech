@@ -86,3 +86,23 @@ textarea.rq-admin-field-control { min-height: 92px; resize: vertical; }
     .rq-admin-campaign-grid { grid-template-columns: minmax(0,1fr); }
 }
 .rq-admin-workspace { display: grid; gap: 20px; min-width: 0; }
+
+.rq-admin-report { min-width: 0; padding: clamp(16px, 3vw, 28px); border: 1px solid #e5d5db; border-radius: 16px; background: #fffafa; }
+.rq-admin-report-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #e5d5db; }
+.rq-admin-report-header h2 { display: flex; align-items: center; gap: 9px; font-size: 19px; font-weight: 750; }
+.rq-admin-report-header h2 svg { flex: none; color: #67263e; }
+.rq-admin-report-header p, .rq-admin-preferences p { margin-top: 5px; color: #694654; font-size: 13px; }
+.rq-admin-report-controls, .rq-admin-report-periods { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rq-admin-report-select, .rq-admin-report-periods button { min-height: 42px; padding: 8px 12px; border: 1px solid #ddc9d3; border-radius: 9px; background: #fff; color: #542637; font-size: 13px; font-weight: 650; cursor: pointer; }
+.rq-admin-report-periods button[aria-pressed="true"] { border-color: #67263e; background: #67263e; color: #fff; }
+.rq-admin-report-state { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; border: 1px solid #e7d5df; border-radius: 10px; background: #f8f0f4; color: #573044; font-size: 14px; }
+.rq-admin-report-state--error { border-color: #edc8d1; background: #fff3f5; color: #8a233c; }
+.rq-admin-report-totals, .rq-admin-report-breakdown { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
+.rq-admin-interaction-totals { margin-bottom: 14px; }
+.rq-admin-interaction-totals dt { color: #694553; font-size: 13px; font-weight: 650; }
+.rq-admin-interaction-totals dd { font-size: 26px; font-weight: 750; }
+.rq-admin-report-chart { width: 100%; min-width: 0; height: clamp(210px, 34vw, 300px); }
+.rq-admin-preferences { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+@media (max-width: 600px) {
+    .rq-admin-report-totals, .rq-admin-report-breakdown { grid-template-columns: minmax(0,1fr); }
+}
