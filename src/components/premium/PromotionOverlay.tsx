@@ -55,101 +55,59 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         return () => clearInterval(timer);
     }, [expiryDate]);
 
-    // If expired and not in preview (we assume consistent date for preview), handled by parent or just show 00
-    const timeDisplay = timeLeft || { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const bn = language === 'bn';
+    const rate = offerRate.trim().replace(/[%٪]+\s*$/, '').trim();
+    const end = promotionExpiry(expiryDate);
+    const date = Number.isFinite(end)
+        ? new Intl.DateTimeFormat(bn ? 'bn-BD' : 'en-US', { dateStyle: 'long', timeZone: 'Asia/Dhaka' }).format(end)
+        : '';
+    const units = [
+        { value: timeLeft?.days, label: bn ? 'দিন' : 'Days' },
+        { value: timeLeft?.hours, label: bn ? 'ঘণ্টা' : 'Hours' },
+        { value: timeLeft?.minutes, label: bn ? 'মিনিট' : 'Mins' },
+        { value: timeLeft?.seconds, label: bn ? 'সেকেন্ড' : 'Secs' },
+    ];
 
     return (
-        <div className={`relative w-full max-w-[480px] bg-white rounded-3xl shadow-2xl overflow-hidden ring-1 ring-black/5 ${className}`}>
-            {/* Premium Glass Effect Header */}
-            <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-br from-[#500000] to-[#2a0000] overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                {/* Abstract Shapes */}
-                <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
-                <div className="absolute top-12 -left-12 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+        <div className={`relative w-full max-w-[480px] overflow-hidden rounded-[26px] border border-[#ffffff40] bg-[#fffaf8] shadow-2xl ${className}`}>
+            <div className="relative overflow-hidden bg-[#3b1024] px-6 pb-7 pt-6 text-center text-white"
+                style={{ backgroundImage: 'radial-gradient(ellipse at 12% 0%, #822b4a 0%, transparent 58%), linear-gradient(150deg, #4d152c, #280b19)' }}>
+                <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-28 h-72 w-72 rounded-full border border-white/15 shadow-[0_0_0_24px_#ffffff0a,0_0_0_50px_#ffffff06]" />
+                {onClose && (
+                    <button type="button" aria-label={bn ? 'অফার বন্ধ করুন' : 'Close offer'} onClick={onClose}
+                        className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full text-white hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+                        <X size={20} aria-hidden="true" />
+                    </button>
+                )}
+                <div className="relative">
+                    <span className="mx-auto grid size-11 place-items-center rounded-xl bg-white/10 text-[#ffd9e6] ring-1 ring-white/20">
+                        <Gift size={22} aria-hidden="true" />
+                    </span>
+                    <div className="mt-3 flex items-baseline justify-center gap-2">
+                        <span className="text-[clamp(44px,13vw,68px)] font-black leading-none tracking-[-0.065em]">{rate}%</span>
+                        <span className="text-lg font-bold text-[#ffd2e2]">{bn ? 'ছাড়' : 'OFF'}</span>
+                    </div>
+                    <h2 className="mt-2 break-words text-xl font-bold leading-tight">{serviceName}</h2>
+                </div>
             </div>
 
-            {/* Close Button */}
-            {onClose && (
-                <button aria-label="Close"
-                    onClick={onClose}
-                    className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white/80 hover:text-white transition-all duration-300"
-                >
-                    <X size={16} />
-                </button>
-            )}
-
-            <div className="relative pt-12 px-8 pb-8 text-center">
-                {/* Floating Icon */}
-                <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="mx-auto w-20 h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center text-[#500000] mb-8 relative z-10 ring-4 ring-white"
-                >
-                    <Gift size={36} strokeWidth={2.5} />
-                </motion.div>
-
-                <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">
-                        {language === 'bn' ? 'এক্সক্লুসিভ অফার' : 'Exclusive Offer'}
-                    </h2>
-                    <p className="text-gray-500 mb-8 font-medium max-w-xs mx-auto leading-relaxed">
-                        {language === 'bn' ? 'একটি অপরাজেয় হারে আপনার ব্যবসার জন্য প্রিমিয়াম সক্ষমতা আনলক করুন।' : 'Unlock premium capabilities for your business at an unbeatable rate.'}
-                    </p>
-                </motion.div>
-
-                {/* Main Offer Card */}
-                <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-6 border border-gray-200 mb-8 relative overflow-hidden group"
-                >
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#500000]"></div>
-                    <div className="flex flex-col items-center relative z-10">
-                        <div className="text-sm font-bold text-[#500000] uppercase tracking-widest mb-1">{language === 'bn' ? 'সীমিত সময়ের ডিসকাউন্ট' : 'Limited Time Discount'}</div>
-                        <div className="flex items-baseline justify-center gap-1 mb-1">
-                            <span className="text-6xl font-black text-gray-900 tracking-tight">{offerRate.trim().replace(/[%٪]+\s*$/, '').trim()}%</span>
-                            <span className="text-2xl font-bold text-gray-400">{language === 'bn' ? 'ছাড়' : 'OFF'}</span>
-                        </div>
-                        <div className="text-gray-600 font-medium">{serviceName}</div>
-                    </div>
-                </motion.div>
-
-                {/* Countdown Timer */}
-                <div className="flex justify-center gap-4 mb-8">
-                    {[
-                        { val: timeDisplay.days, label: language === 'bn' ? 'দিন' : 'Days' },
-                        { val: timeDisplay.hours, label: language === 'bn' ? 'ঘন্টা' : 'Hours' },
-                        { val: timeDisplay.minutes, label: language === 'bn' ? 'মিনিট' : 'Mins' },
-                        { val: timeDisplay.seconds, label: language === 'bn' ? 'সেকেন্ড' : 'Secs' }
-                    ].map((item, i) => (
-                        <div key={i} className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-white border border-gray-200 text-gray-900 rounded-xl flex items-center justify-center text-lg font-bold shadow-sm mb-2">
-                                {item.val.toString().padStart(2, '0')}
-                            </div>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{item.label}</span>
+            <div className="px-5 pb-5 pt-5 text-center sm:px-7">
+                <div className="grid grid-cols-4 gap-2" aria-label={bn ? 'অফারের বাকি সময়' : 'Time remaining'}>
+                    {units.map(unit => (
+                        <div key={unit.label} className="rounded-xl border border-[#ebdce2] bg-[#f7edf1] px-1 py-2.5">
+                            <strong className="block text-xl font-bold leading-none text-[#3b1024] tabular-nums">{String(unit.value ?? 0).padStart(2, '0')}</strong>
+                            <span className="mt-1.5 block text-[11px] font-semibold text-[#674958]">{unit.label}</span>
                         </div>
                     ))}
                 </div>
-
-                {/* CTA */}
-                <button
-                    onClick={onClaim}
-                    className="w-full py-4 bg-[#500000] text-white rounded-xl font-bold shadow-xl shadow-red-900/20 hover:bg-[#3a0000] hover:shadow-2xl hover:shadow-red-900/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group"
-                >
-                    <span>{language === 'bn' ? 'এই অফারটি দাবি করুন' : 'Claim This Offer'}</span>
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                {date && <p className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-[#674958]">
+                    <Clock size={13} aria-hidden="true" />
+                    {bn ? 'মেয়াদ শেষ' : 'Offer ends'} <time dateTime={expiryDate}>{date}</time>
+                </p>}
+                <button type="button" onClick={onClaim} disabled={!onClaim}
+                    className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#661d3a] px-4 py-3 text-sm font-bold text-white hover:bg-[#4c122b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#661d3a]">
+                    {bn ? 'অফারটি নিন' : 'Claim This Offer'} <ArrowRight size={17} aria-hidden="true" />
                 </button>
-
-                <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
-                    <Clock size={12} />
-                    <span>{language === 'bn' ? 'মেয়াদ শেষ হবে' : 'Expires on'} {new Date(promotionExpiry(expiryDate)).toLocaleDateString(undefined, { timeZone: 'Asia/Dhaka' })}</span>
-                </div>
             </div>
         </div>
     );
