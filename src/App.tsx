@@ -1,3 +1,4 @@
+import { HotPlateWalkthrough } from './components/case-studies/HotPlateWalkthrough';
 import restaurant from '../shared/restaurant-service.json';
 import { RestaurantWebsiteService } from './components/services/RestaurantWebsiteService';
 import { officialSocialLinks } from './data/social-links';
@@ -235,6 +236,8 @@ const CaseStudyDetail = () => {
                             {language === 'bn' ? 'প্রজেক্টের ছবি দেখুন' : 'View project gallery'} <ArrowRight size={17} aria-hidden="true" />
                         </a>
                     ) : null}
+
+                    {study.id === RESTAURANT_CASE && <HotPlateWalkthrough bn={language === 'bn'} />}
 
                     {study.id === RESTAURANT_CASE && (
                         <Link className="rq-case-gallery-jump" to={restaurant.path}>

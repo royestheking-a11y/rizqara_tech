@@ -82,7 +82,7 @@ async function renderPage(file, pathname, ready) {
     const restaurantContent = pathname === restaurant.path
         ? `<section><h2>What your restaurant website can include</h2>${restaurant.deliverables.map(item => `<h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.text)}</p>`).join('')}<a href="#restaurant-scorecard">Free restaurant website scorecard</a> · <a href="${escapeHTML(restaurant.casePath)}">Hot Plate Restaurant case study</a> · <a href="${escapeHTML(restaurant.quotePath)}">Get a quote for your restaurant website</a></section><section id="restaurant-scorecard"><h2>Restaurant website scorecard</h2><p>Check whether guests can find and read the menu, see opening hours and directions, request a table, and understand the booking status. Ask staff to answer a test request.</p></section>`
         : pathname === restaurant.casePath || detail?.id === 'st2usv9cb'
-            ? `<p><a href="${restaurant.path}">${escapeHTML(restaurant.title)}</a></p>`
+            ? `<section><h2>Hot Plate restaurant reservation walkthrough</h2><p>See how guests browse the menu and request a table.</p><a href="/media/hot-plate-reservation-walkthrough.mp4">Watch the 45-second video</a> · <a href="${restaurant.path}#restaurant-scorecard">Run the free six-point check</a></section>`
             : pathname === '/blog/top-software-companies-in-bangladesh'
                 ? `<p><a href="${restaurant.casePath}">Hot Plate Restaurant case study</a></p>`
                 : '';
