@@ -1,0 +1,47 @@
+.rq-restaurant {
+    padding-block: clamp(120px, 12vw, 178px) 80px;
+    color: #2c1924;
+}
+
+.rq-restaurant-back { display: inline-block; color: #742b48; margin-bottom: 24px; font-weight: 650; }
+.rq-restaurant-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(24px, 5vw, 68px);
+    align-items: center;
+    margin-bottom: 64px;
+}
+
+.rq-restaurant h1 { font-size: clamp(35px, 5vw, 68px); font-weight: 720; letter-spacing: -.048em; line-height: 1.05; }
+.rq-restaurant h2 { font-size: clamp(25px, 3vw, 37px); font-weight: 700; line-height: 1.15; margin-bottom: 16px; }
+.rq-restaurant h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+.rq-restaurant p { color: #624955; line-height: 1.7; margin-bottom: 16px; }
+.rq-restaurant-hero p { font-size: clamp(16px, 2vw, 19px); margin: 20px 0 24px; max-width: 48ch; }
+.rq-restaurant-quote {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 12px;
+    padding: 14px 19px;
+    background: #631c37;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.rq-restaurant-quote svg, .rq-restaurant figcaption svg { flex: none; }
+.rq-restaurant a:focus-visible { outline: 2px solid #9d5b76; outline-offset: 4px; }
+.rq-restaurant figure { overflow: hidden; border-radius: 22px; border: 1px solid #e8d7df; background: #faf3f6; }
+.rq-restaurant figure img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: #191017; }
+.rq-restaurant figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 14px 17px; font-size: 14px; }
+.rq-restaurant figcaption a { display: inline-flex; align-items: center; gap: 5px; color: #742b48; font-weight: 650; }
+.rq-restaurant-deliverables, .rq-restaurant-delivery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.rq-restaurant-deliverables article, .rq-restaurant-delivery > div { padding: clamp(18px, 3vw, 30px); border-radius: 18px; background: #fbf5f7; border: 1px solid #e8d7df; }
+.rq-restaurant-deliverables p, .rq-restaurant-delivery p:last-child { margin-bottom: 0; }
+.rq-restaurant-delivery { margin-top: 36px; grid-template-columns: 1.3fr 1fr; }
+#contact-inquiry { scroll-margin-top: 120px; }
+
+@media (max-width: 760px) {
+    .rq-restaurant-hero, .rq-restaurant-deliverables, .rq-restaurant-delivery { grid-template-columns: 1fr; }
+    .rq-restaurant-hero { margin-bottom: 40px; }
+}

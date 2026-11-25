@@ -1624,6 +1624,16 @@ export const ContactFormWithMap = () => {
     const [initialSubject, setInitialSubject] = useState('');
     const [initialMessage, setInitialMessage] = useState('');
     const [params] = useSearchParams();
+    const restaurantInquiry = params.get('service') === 'restaurant-website';
+    const restaurantSubject = language === 'bn' ? 'রেস্তোরাঁর ওয়েবসাইটের কোট' : 'Restaurant website quote';
+    const inquiryTitle = useRef<HTMLHeadingElement>(null);
+
+    useEffect(() => {
+        if (!restaurantInquiry) return;
+        inquiryTitle.current?.focus({ preventScroll: true });
+        inquiryTitle.current?.scrollIntoView({ block: 'start' });
+    }, [restaurantInquiry]);
+
     const recipient = teamMembers.find(member => member.slug === params.get('teamMember'));
 
     useEffect(() => {
@@ -1631,6 +1641,7 @@ export const ContactFormWithMap = () => {
             setInitialSubject(language === 'bn' ? `${recipient.name}-এর জন্য বার্তা` : `Message for ${recipient.name}`);
             return;
         }
+        if (restaurantInquiry) return;
         // Check for pending inquiry from Build Page
         const goalInquiry = sessionStorage.getItem('rizqaraGoalInquiry');
         const pendingInquiry = goalInquiry || localStorage.getItem('pendingInquiry');
@@ -1646,7 +1657,7 @@ export const ContactFormWithMap = () => {
                 console.error("Failed to parse inquiry", e);
             }
         }
-    }, [recipient, language]);
+    }, [recipient, language, restaurantInquiry]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -1671,6 +1682,7 @@ export const ContactFormWithMap = () => {
             });
 
             trackGrowth('inquiry_sent');
+            if (restaurantInquiry) trackGrowth('restaurant_inquiry_sent');
             setStatus('success');
             toast.success(language === 'bn' ? "বার্তা সফলভাবে পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।" : "Message sent successfully! We'll be in touch shortly.");
 
@@ -1764,7 +1776,12 @@ export const ContactFormWithMap = () => {
                 <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-gray-100 relative overflow-hidden self-start h-fit">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#500000] opacity-5 rounded-bl-[100px] pointer-events-none" />
 
-                    <span className="rq-contact-eyebrow">YOUR NEXT IDEA STARTS HERE</span><h3 className="text-2xl font-black text-gray-900 mb-8">{language === 'bn' ? 'বার্তা পাঠান' : 'Send a Message'}</h3>
+                    <h3 id="contact-inquiry" ref={inquiryTitle} tabIndex={-1} className="text-2xl font-black text-gray-900 mb-4 scroll-mt-32">
+                        {restaurantInquiry ? restaurantSubject : (language === 'bn' ? 'বার্তা পাঠান' : 'Send a Message')}
+                    </h3>
+                    {restaurantInquiry && <p className="text-gray-600 mb-6">{language === 'bn'
+                        ? 'রেস্তোরাঁর নাম, অবস্থান, বর্তমান বুকিং পদ্ধতি এবং কাঙ্ক্ষিত লঞ্চের সময় লিখুন।'
+                        : 'Include your restaurant name, location, current booking process, and preferred launch date.'}</p>}
 
                     <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                         <div className="space-y-2">
@@ -1803,7 +1820,8 @@ export const ContactFormWithMap = () => {
                                     name="subject"
                                     type="text"
                                     required
-                                    defaultValue={initialSubject}
+                                    key={restaurantInquiry ? 'restaurant' : 'contact'}
+                                    defaultValue={restaurantInquiry ? restaurantSubject : initialSubject}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-4 pl-12 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all placeholder:text-gray-300 font-medium"
                                     placeholder={language === 'bn' ? 'প্রকল্প অনুসন্ধান...' : "Project Inquiry..."}
                                 />
@@ -1816,7 +1834,8 @@ export const ContactFormWithMap = () => {
                                 name="message"
                                 rows={4}
                                 required
-                                defaultValue={initialMessage}
+                                key={restaurantInquiry ? 'restaurant-message' : 'contact-message'}
+                                defaultValue={restaurantInquiry ? '' : initialMessage}
                                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-4 focus:outline-none focus:border-[#500000] focus:ring-1 focus:ring-[#500000] transition-all placeholder:text-gray-300 font-medium resize-none"
                                 placeholder={language === 'bn' ? 'আমাদের আপনার প্রকল্প সম্পর্কে বলুন...' : "Tell us about your project..."}
                             ></textarea>

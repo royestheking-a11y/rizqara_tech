@@ -225,6 +225,14 @@ test('visitor analytics requires consent, deduplicates events, and protects repo
     assert.deepEqual(result.actions,[{_id:'estimate_completed',count:1}]);
     assert.equal(result.totals.views,2);assert.equal(result.totals.visitors,1);
     assert.equal(result.pages.length,2);assert.equal(result.daily.reduce((n,row)=>n+row.views,0),2);
+    const restaurant = require('../../shared/restaurant-service.json');
+    assert.equal((await send({...event,eventId:crypto.randomUUID(),path:restaurant.path})).status,204);
+    assert.equal((await send({...event,eventId:crypto.randomUUID(),path:restaurant.path,action:'restaurant_quote_clicked'})).status,204);
+    assert.equal((await send({...event,eventId:crypto.randomUUID(),path:'/contact',action:'restaurant_inquiry_sent'})).status,204);
+    const restaurantReport=await (await request('/analytics/summary?days=28',{admin:true})).json();
+    assert.equal(restaurantReport.restaurantViews,1);
+    assert.equal(restaurantReport.actions.find(action=>action._id==='restaurant_quote_clicked').count,1);
+    assert.equal(restaurantReport.actions.find(action=>action._id==='restaurant_inquiry_sent').count,1);
     assert.equal((await request('/analytics/summary?days=999',{admin:true})).status,400);
 });
 

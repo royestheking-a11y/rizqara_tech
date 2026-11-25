@@ -1,3 +1,4 @@
+const restaurant = require('../shared/restaurant-service.json');
 const fs = require('node:fs/promises');
 const { Service, Project, Blog, CaseStudy, Video } = require('./models/Schemas');
 const selectedConcepts = require('../src/data/selected-concepts.json');
@@ -15,6 +16,7 @@ const pages = {
     '/': ['RizQara Tech | Software & AI Solutions', 'Custom web, mobile and AI software built by RizQara Tech in Bangladesh.'],
     '/about': ['About RizQara Tech', 'Meet our software team and learn about our engineering approach.'],
     '/contact': ['Contact RizQara Tech', 'Contact RizQara Tech about your software, web, mobile or AI project.'],
+    [restaurant.path]: [restaurant.title + ' | RizQara Tech', restaurant.description],
     '/services': ['Our Services | RizQara Tech', 'Explore 44 core offerings across software, business systems, AI, mobile, design, digital marketing and enterprise solutions.'],
     '/projects': ['Software Projects | RizQara Tech', 'Explore selected software projects, including mobile apps, websites, web applications and design concepts.'],
     '/case-studies': ['Case Studies', 'Read about our engineering process and project outcomes.'],
@@ -46,6 +48,7 @@ async function renderPage(file, pathname, ready) {
         page = [member.name + ' — ' + member.role + ' | RizQara Tech', member.bio];
         if (member.image) image = SITE_URL + member.image;
     }
+    if (pathname === restaurant.path) image = restaurant.cover;
     if (pathname === '/estimate') image = SITE_URL + '/images/projects/selected/pocketstock.webp';
     if (pathname === '/academy/responsive-web-sample') image = SITE_URL + '/images/academy/responsive-web-sample.jpg';
 
@@ -76,6 +79,13 @@ async function renderPage(file, pathname, ready) {
     html = html.replace(/<title>[\s\S]*?<\/title>/, tags);
     const navigation = Object.entries(pages).filter(([url]) => !['/admin','/build','/packages'].includes(url)).map(([url, info]) => `<a href="${url}">${escapeHTML(info[0])}</a>`).join(' · ');
     const serviceContent = ['/', '/services'].includes(pathname) ? `<section><h2>Software, mobile applications and digital services</h2>${catalog.categories.map(category => `<article><h3><a href="/services#${category.id}">${escapeHTML(category.title || category.name)}</a></h3><p>${escapeHTML(category.description || category.summary || '')}</p></article>`).join('')}</section>` : '';
+    const restaurantContent = pathname === restaurant.path
+        ? `<section><h2>What your restaurant website can include</h2>${restaurant.deliverables.map(item => `<h3>${escapeHTML(item.title)}</h3><p>${escapeHTML(item.text)}</p>`).join('')}<a href="${escapeHTML(restaurant.casePath)}">Hot Plate Restaurant case study</a> · <a href="${escapeHTML(restaurant.quotePath)}">Get a quote for your restaurant website</a></section>`
+        : pathname === restaurant.casePath || detail?.id === 'st2usv9cb'
+            ? `<p><a href="${restaurant.path}">${escapeHTML(restaurant.title)}</a></p>`
+            : pathname === '/blog/top-software-companies-in-bangladesh'
+                ? `<p><a href="${restaurant.casePath}">Hot Plate Restaurant case study</a></p>`
+                : '';
     const detailContent = detail ? `${detail.details ? `<section><h2>About this service or project</h2><p>${escapeHTML(detail.details)}</p></section>` : ''}${['capabilities','process'].map(key => Array.isArray(detail[key]) && detail[key].length ? `<section><h2>${key === 'capabilities' ? 'Capabilities' : 'Our process'}</h2><ul>${detail[key].map(value=>`<li>${escapeHTML(value)}</li>`).join('')}</ul></section>` : '').join('')}` : '';
     const isArticle = pathname.startsWith('/blog/') && detail?.content;
     const articleBody = isArticle ? detail.content.split(/\r?\n/).filter(line => line.trim()).map(line => {
@@ -109,7 +119,7 @@ async function renderPage(file, pathname, ready) {
         directory = `<section><h2>Explore ${escapeHTML(pathname.slice(1))}</h2><ul>${entries.map(item=>`<li><a href="${pathname}/${escapeHTML(item.slug || `${slug(item.title)}-${item.id.slice(0,8)}`)}">${escapeHTML(item.title)}</a><p>${escapeHTML(item.description || item.excerpt || '')}</p></li>`).join('')}</ul></section>`;
     }
     const brandLoader = `<div class="rq-brand-loader" role="status" aria-label="Loading website"><div class="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i></i><i></i><i></i></div></div>`;
-    const fallback = `<main class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${articleBody}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
+    const fallback = `<main class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${restaurantContent}${detailContent}${articleBody}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
     const adminBoot = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e0407;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased">
         <div style="width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#500000,#7e1735);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(80,0,0,0.55);margin-bottom:20px;border:1px solid rgba(255,255,255,0.12)">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fce4ec" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

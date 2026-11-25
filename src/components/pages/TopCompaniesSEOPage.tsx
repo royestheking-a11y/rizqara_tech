@@ -1,7 +1,8 @@
+import restaurant from '../../../shared/restaurant-service.json';
 
 import { SEO } from '../SEO';
 import { Trophy, Star, Shield, ArrowRight, ExternalLink, Globe, Users } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const companies = [
     {
@@ -283,6 +284,15 @@ export const TopCompaniesSEOPage = () => {
                         Choosing the "best" software company depends entirely on your specific needs. Bangladesh's IT sector has grown significantly. Whether you need custom web platforms, AI integrations, or enterprise offshore teams, here is the definitive ranking of the top software development companies for 2026.
                     </p>
                 </div>
+
+                <section className="max-w-4xl mx-auto mb-12 p-6 rounded-2xl border border-[#e8d7df] bg-white">
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Ask to see how a real project works</h2>
+                    <p className="text-gray-600 leading-relaxed">
+                        When comparing agencies, look for a project that solves a problem similar to yours. In the{' '}
+                        <Link className="text-[#701b32] font-semibold underline" to={restaurant.casePath}>Hot Plate Restaurant case study</Link>,
+                        {' '}you can see how RizQara organized menu browsing, table reservations, and catering inquiries.
+                    </p>
+                </section>
 
                 {/* List Container */}
                 <div className="max-w-5xl mx-auto space-y-6 mb-24 relative z-10">

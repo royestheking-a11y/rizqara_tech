@@ -1,3 +1,4 @@
+import restaurant from '../../../shared/restaurant-service.json';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Search, ArrowUpRight } from 'lucide-react';
@@ -40,6 +41,9 @@ export function ServiceCatalogPage() {
   const resultCount=groups.reduce((n,g)=>n+g.items.length,0)+(filter==='all'?ungrouped.length:0);
   return <div className="rq-catalog rq-catalog-page container mx-auto px-6">
     <header className="rq-catalog-intro"><span className="rq-catalog-eyebrow">RIZQARA TECH / {bn ? 'আমাদের সেবাসমূহ' : 'OUR SERVICES'}</span><h1>{bn ? 'ভাবনা থেকে বাস্তবায়ন।' : <>From possibility<br/>to <em>what’s next.</em></>}</h1><p>{bn ? 'সফটওয়্যার, এআই, ডিজাইন ও প্রবৃদ্ধির জন্য একটি সমন্বিত দল। আপনার প্রয়োজনের সমাধানটি বেছে নিন।' : 'Software, intelligence, design, and growth—built around your business. Find the expertise to move your next idea forward.'}</p><div className="rq-catalog-stats"><span><strong>07</strong> {bn ? 'সেবা বিভাগ' : 'service disciplines'}</span><span><strong>44</strong> {bn ? 'মূল সেবা' : 'core offerings'}</span></div></header>
+    <Link to={restaurant.path} className="rq-catalog-link inline-flex mb-6">
+      {bn ? restaurant.titleBn : restaurant.title} <ArrowUpRight size={17} aria-hidden="true" />
+    </Link>
     <div className="rq-catalog-tools"><label className="rq-service-search"><Search size={19}/><input aria-label={bn?'সেবা খুঁজুন':'Search services'} placeholder={bn?'কোন সেবাটি প্রয়োজন?':'What would you like to build?'} value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="rq-category-select"><span className="sr-only">{bn?'সেবার বিভাগ':'Service category'}</span><select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">{bn?'সব বিভাগ':'All disciplines'}</option>{catalog.categories.map(c=><option key={c.id} value={c.id}>{bn?c.title_bn:c.title}</option>)}</select></label></div>
     {loading && !services.length ? <p role="status">{bn?'সেবাসমূহ লোড হচ্ছে…':'Loading services…'}</p> : <>
       <p className="rq-catalog-result" aria-live="polite">{resultCount} {bn?'টি সেবা পাওয়া গেছে':resultCount===1?'service available':'services available'}</p>

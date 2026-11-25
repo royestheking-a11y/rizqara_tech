@@ -1,0 +1,15 @@
+{
+  "path": "/services/restaurant-websites-and-reservations",
+  "casePath": "/case-studies/from-outdated-to-premium-complete-website-transformation-for-hot-plate-restaurant-st2usv9c",
+  "quotePath": "/contact?service=restaurant-website#contact-inquiry",
+  "title": "Restaurant websites and online reservations",
+  "titleBn": "রেস্তোরাঁর ওয়েবসাইট ও অনলাইন রিজার্ভেশন",
+  "description": "Give guests one place to browse your menu, request a table, or ask about catering. We design the website around how your team handles each request.",
+  "descriptionBn": "এক জায়গায় মেনু দেখুন, টেবিলের জন্য অনুরোধ করুন বা ক্যাটারিং সম্পর্কে জানান। আপনার টিম যেভাবে অনুরোধগুলো পরিচালনা করে, সেভাবেই আমরা ওয়েবসাইট তৈরি করি।",
+  "cover": "https://res.cloudinary.com/dhutfywg2/image/upload/v1774425331/rizqaratech/uploads/hulrwtbfdjo9p0bejr8b.jpg",
+  "deliverables": [
+    { "title": "A mobile-friendly menu", "titleBn": "মোবাইলের উপযোগী মেনু", "text": "Give guests readable categories, dish details and prices. Decide who can update the menu and how changes go live.", "textBn": "মেনুর বিভাগ, খাবারের বিবরণ ও দাম সহজে দেখান। মেনু কে হালনাগাদ করবেন এবং কীভাবে পরিবর্তন প্রকাশ হবে তা ঠিক করুন।" },
+    { "title": "Table reservations", "titleBn": "টেবিল রিজার্ভেশন", "text": "Let guests request a date, time and party size, or connect an existing booking provider. Make it clear when a table is confirmed.", "textBn": "তারিখ, সময় ও অতিথির সংখ্যা নিয়ে অনুরোধ গ্রহণ করুন অথবা বিদ্যমান বুকিং সেবা যুক্ত করুন। কখন টেবিল নিশ্চিত হবে তা স্পষ্ট করুন।" },
+    { "title": "Catering inquiries", "titleBn": "ক্যাটারিংয়ের অনুরোধ", "text": "Give events a separate form for the date, headcount and contact details so staff have enough context to follow up.", "textBn": "ইভেন্টের তারিখ, অতিথির সংখ্যা ও যোগাযোগের তথ্য নেওয়ার জন্য আলাদা ফর্ম রাখুন।" }
+  ]
+}

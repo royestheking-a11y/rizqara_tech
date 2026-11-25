@@ -1,3 +1,5 @@
+import restaurant from '../shared/restaurant-service.json';
+import { RestaurantWebsiteService } from './components/services/RestaurantWebsiteService';
 import { officialSocialLinks } from './data/social-links';
 import { ProjectEstimator } from './components/studio/ProjectEstimator';
 import { trackGrowth } from './utils/growthAnalytics';
@@ -233,6 +235,12 @@ const CaseStudyDetail = () => {
                             {language === 'bn' ? 'প্রজেক্টের ছবি দেখুন' : 'View project gallery'} <ArrowRight size={17} aria-hidden="true" />
                         </a>
                     ) : null}
+
+                    {study.id === RESTAURANT_CASE && (
+                        <Link className="rq-case-gallery-jump" to={restaurant.path}>
+                            {language === 'bn' ? restaurant.titleBn : restaurant.title} <ArrowRight size={17} aria-hidden="true" />
+                        </Link>
+                    )}
 
                     <div className="pb-24">
                         {/* Problem Section */}
@@ -1572,6 +1580,7 @@ const MainContent = () => {
                         />
                         {loading && !services.length ? <ServicesSkeleton /> : <ServicesPage />}
                     </>} />
+                    <Route path={restaurant.path} element={<RestaurantWebsiteService />} />
                     <Route path="/services/:id" element={<ServiceDetail />} />
 
                     <Route path="/projects" element={<>

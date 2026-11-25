@@ -3,6 +3,7 @@ import { apiRequest } from '../../utils/api';
 import { Eye, Users, RefreshCw, BarChart3, ShieldCheck } from 'lucide-react';
 
 type Summary = {
+    restaurantViews?: number;
     actions?: { _id: string; count: number }[];
     totals: { views: number; visitors: number };
     daily: { _id: string; views: number }[];
@@ -55,6 +56,7 @@ export function VisitorAnalytics() {
                         className="rq-admin-report-select"
                     >
                         <option value={7}>Last 7 Days</option>
+                        <option value={28}>Last 28 Days</option>
                         <option value={30}>Last 30 Days</option>
                         <option value={90}>Last 90 Days</option>
                     </select>
@@ -119,6 +121,16 @@ export function VisitorAnalytics() {
                                     <span>{label}</span>
                                 </div>
                             ))}
+                        </div>
+                    </section>
+                    <section aria-label="Restaurant service activity" className="mb-8">
+                        <h3 className="mb-3 font-bold">Restaurant service activity</h3>
+                        <div className="rq-admin-stat-grid">
+                            {[
+                                ['Service page views', data.restaurantViews ?? 0],
+                                ['Quote button clicks', data.actions?.find(action => action._id === 'restaurant_quote_clicked')?.count ?? 0],
+                                ['Completed restaurant inquiries', data.actions?.find(action => action._id === 'restaurant_inquiry_sent')?.count ?? 0],
+                            ].map(([label, count]) => <div className="rq-admin-stat" key={label}><strong>{count}</strong><span>{label}</span></div>)}
                         </div>
                     </section>
                     {data.totals.views === 0 ? (

@@ -1,3 +1,4 @@
+const restaurant=require('../shared/restaurant-service.json');
 const {Service,Project,Blog,CaseStudy,Video}=require('./models/Schemas');
 const selectedConcepts=require('../src/data/selected-concepts.json');
 const archivedConcepts=new Set(require('../src/data/project-concepts.json').map(item=>item.id));
@@ -10,6 +11,7 @@ const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const slug=title=>title.toLowerCase().normalize('NFKC').trim().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'')||'item';
 async function sitemap(){
  const paths=['/','/about','/services','/projects','/case-studies','/blog','/videos','/contact','/team','/gallery','/careers','/founder','/vision-2030','/registered-company','/privacy-policy','/terms-of-service','/estimate','/academy','/academy/responsive-web-sample'];
+ paths.push(restaurant.path);
  paths.push(...teamMembers.map(member=>'/'+member.slug));
  paths.push(...caseStudies.map(item=>'/case-studies/'+item.slug));
  paths.push(...catalog.categories.flatMap(category=>category.offerings.map(item=>'/services/'+item.key)));
