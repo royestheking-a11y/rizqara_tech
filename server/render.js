@@ -16,7 +16,7 @@ const pages = {
     '/about': ['About RizQara Tech', 'Meet our software team and learn about our engineering approach.'],
     '/contact': ['Contact RizQara Tech', 'Contact RizQara Tech about your software, web, mobile or AI project.'],
     '/services': ['Our Services | RizQara Tech', 'Explore 44 core offerings across software, business systems, AI, mobile, design, digital marketing and enterprise solutions.'],
-    '/projects': ['Our Projects', 'Explore software projects delivered by RizQara Tech.'],
+    '/projects': ['Software Projects | RizQara Tech', 'Explore selected software projects, including mobile apps, websites, web applications and design concepts.'],
     '/case-studies': ['Case Studies', 'Read about our engineering process and project outcomes.'],
     '/careers': ['Careers at RizQara Tech', 'Explore open roles and submit your application.'],
     '/blog': ['RizQara Journal | Software Guides and Project Stories', 'Practical software planning guides, website checklists, and behind-the-scenes stories from RizQara Tech.'],
