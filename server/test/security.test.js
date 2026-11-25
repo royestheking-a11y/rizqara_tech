@@ -231,6 +231,15 @@ test('visitor analytics requires consent, deduplicates events, and protects repo
     assert.equal((await send({...event,eventId:crypto.randomUUID(),path:'/contact',action:'restaurant_inquiry_sent'})).status,204);
     const restaurantReport=await (await request('/analytics/summary?days=28',{admin:true})).json();
     assert.equal(restaurantReport.restaurantViews,1);
+    const source = 'facebook';
+    for (const action of ['restaurant_scorecard_view', 'restaurant_quote_clicked', 'restaurant_inquiry_sent']) {
+        assert.equal((await send({...event, eventId: crypto.randomUUID(), path: restaurant.path, action, source})).status, 204);
+    }
+    assert.equal((await send({...event, eventId: crypto.randomUUID(), path: restaurant.path, action: 'restaurant_scorecard_view', source: 'unknown'})).status, 400);
+    const campaign = await (await request('/analytics/summary?days=28',{admin:true})).json();
+    assert.equal(campaign.restaurantCampaign.length, 3);
+    assert.ok(campaign.restaurantCampaign.every(row => row._id.source === source && row.count === 1));
+
     assert.equal(restaurantReport.actions.find(action=>action._id==='restaurant_quote_clicked').count,1);
     assert.equal(restaurantReport.actions.find(action=>action._id==='restaurant_inquiry_sent').count,1);
     assert.equal((await request('/analytics/summary?days=999',{admin:true})).status,400);

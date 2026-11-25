@@ -41,6 +41,7 @@ export function saveConsent(value: Consent, choice: string) {
       }
     }
     localStorage.removeItem('rizqara_visitor_id');
+    sessionStorage.removeItem('rizqara_hot_plate_source');
     location.reload();
     return;
   }

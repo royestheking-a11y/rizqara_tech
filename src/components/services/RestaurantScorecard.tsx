@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Clipboard, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import restaurant from '../../../shared/restaurant-service.json';
-import { trackGrowth } from '../../utils/growthAnalytics';
+import { readConsent } from '../../utils/consent';
+import { rememberScorecardCampaign, trackGrowth } from '../../utils/growthAnalytics';
 
 const checks = [
     { en: 'Guests can find the menu from the homepage in one tap.', bn: 'হোমপেজ থেকে এক ট্যাপেই মেনু পাওয়া যায়।', fix: 'Add a clearly labeled Menu link near the top of the homepage.', fixBn: 'হোমপেজের ওপরে স্পষ্ট একটি মেনু লিংক দিন।' },
@@ -22,6 +23,28 @@ export function RestaurantScorecard({ bn }: { bn: boolean }) {
 
     useEffect(() => {
         if (window.location.hash === '#restaurant-scorecard') section.current?.scrollIntoView();
+    }, []);
+
+    const tracked = useRef(false);
+    useEffect(() => {
+        const element = section.current;
+        if (!element) return;
+        let visible = false;
+        const record = () => {
+            if (!visible || tracked.current || !readConsent().analytics) return;
+            tracked.current = true;
+            rememberScorecardCampaign();
+            trackGrowth('restaurant_scorecard_view');
+        };
+        // Capture tagged arrivals even if they choose a quote before scrolling to the tool.
+        if (readConsent().analytics) rememberScorecardCampaign();
+        const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; record(); });
+        observer.observe(element);
+        window.addEventListener('rizqara-consent-change', record);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('rizqara-consent-change', record);
+        };
     }, []);
 
     const next = checks.find((_, index) => !passed.has(index));

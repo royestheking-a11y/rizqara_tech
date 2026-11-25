@@ -4,6 +4,7 @@ import { Eye, Users, RefreshCw, BarChart3, ShieldCheck } from 'lucide-react';
 
 type Summary = {
     restaurantViews?: number;
+    restaurantCampaign?: { _id: { source: string; action: string }; count: number }[];
     actions?: { _id: string; count: number }[];
     totals: { views: number; visitors: number };
     daily: { _id: string; views: number }[];
@@ -131,6 +132,26 @@ export function VisitorAnalytics() {
                                 ['Quote button clicks', data.actions?.find(action => action._id === 'restaurant_quote_clicked')?.count ?? 0],
                                 ['Completed restaurant inquiries', data.actions?.find(action => action._id === 'restaurant_inquiry_sent')?.count ?? 0],
                             ].map(([label, count]) => <div className="rq-admin-stat" key={label}><strong>{count}</strong><span>{label}</span></div>)}
+                        </div>
+                    </section>
+                    <section aria-label="Hot Plate campaign" className="mb-8">
+                        <h3 className="mb-3 font-bold">Hot Plate campaign</h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm">
+                                <thead><tr>
+                                    {['Source', 'Scorecard views', 'Quote clicks', 'Completed inquiries'].map(label => <th key={label} scope="col" className="p-2">{label}</th>)}
+                                </tr></thead>
+                                <tbody>
+                                    {Object.entries({ facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', case_study: 'Case study' }).map(([source, label]) => (
+                                        <tr key={source} className="border-t border-[#ecdce5]">
+                                            <th scope="row" className="p-2">{label}</th>
+                                            {['restaurant_scorecard_view', 'restaurant_quote_clicked', 'restaurant_inquiry_sent'].map(action => (
+                                                <td key={action} className="p-2">{data.restaurantCampaign?.find(row => row._id.source === source && row._id.action === action)?.count ?? 0}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </section>
                     {data.totals.views === 0 ? (
