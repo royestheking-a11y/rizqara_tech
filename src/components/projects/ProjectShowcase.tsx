@@ -12,9 +12,32 @@ const archiveIds = new Set(concepts.map(project => project.id));
 const categoryLabels: Record<string, string> = {
   'Mobile App': 'মোবাইল অ্যাপ', Website: 'ওয়েবসাইট', 'Business Software': 'ব্যবসায়িক সফটওয়্যার',
   'Web Application': 'ওয়েব অ্যাপ্লিকেশন', 'E-commerce': 'ই-কমার্স', 'Tablet App': 'ট্যাবলেট অ্যাপ',
-  'AI Automation': 'এআই অটোমেশন', 'UI/UX Design': 'ইউআই/ইউএক্স ডিজাইন', 'Analytics Dashboard': 'অ্যানালিটিক্স ড্যাশবোর্ড',
-
+  'Web App': 'ওয়েব অ্যাপ', 'AI Automation': 'এআই অটোমেশন', 'UI/UX Design': 'ইউআই/ইউএক্স ডিজাইন', 'Analytics Dashboard': 'অ্যানালিটিক্স ড্যাশবোর্ড',
 };
+
+const projectCardCopy = new Map([
+  ['1ylv2p2wb', {
+    title: 'RizQara Solution',
+    category: 'Retail & POS',
+    categoryBn: 'খুচরা বিক্রি ও পিওএস',
+    summary: 'Manage checkout, inventory, and sales reports across retail stores.',
+    summaryBn: 'একাধিক দোকানের বিক্রি, মজুত ও বিক্রির রিপোর্ট পরিচালনা করুন।',
+  }],
+  ['7rul8wf6n', {
+    title: 'RizQara Extraction',
+    category: 'Lead intelligence',
+    categoryBn: 'লিড ইন্টেলিজেন্স',
+    summary: 'Turn business listings into organized leads you can filter and export.',
+    summaryBn: 'ব্যবসার তালিকা থেকে লিড সংগ্রহ, বাছাই ও এক্সপোর্ট করুন।',
+  }],
+  ['rwvigbe6d', {
+    title: 'RizQara University',
+    category: 'Education software',
+    categoryBn: 'শিক্ষা সফটওয়্যার',
+    summary: 'Manage students, courses, exams, and billing in one system.',
+    summaryBn: 'একই সিস্টেমে শিক্ষার্থী, কোর্স, পরীক্ষা ও বিলিং পরিচালনা করুন।',
+  }],
+]);
 
 export function ProjectShowcase({ preview = false }: { preview?: boolean }) {
   const { projects, language } = useData();
@@ -52,7 +75,7 @@ export function ProjectShowcase({ preview = false }: { preview?: boolean }) {
         </Link>
       </header>
       <DocumentedWork />
-      <h2 className="rq-portfolio-gallery-heading">{bn ? 'ডিজাইন কনসেপ্ট ও অন্যান্য প্রজেক্ট' : 'Design concepts and other projects'}</h2>
+      <h2 className="rq-portfolio-gallery-heading">{bn ? 'সফটওয়্যার প্রজেক্ট' : 'Software projects'}</h2>
       {!preview && (
         <div className="rq-work-tools">
           <div className="rq-work-tabs" aria-label={bn ? 'প্রজেক্টের ধরন' : 'Project categories'}>
@@ -72,24 +95,34 @@ export function ProjectShowcase({ preview = false }: { preview?: boolean }) {
           </label>
         </div>
       )}
-      <div className="rq-work-grid">
+      <div className="rq-work-grid rq-portfolio-cards">
         {shown.map(project => {
           const concept = selectedConcepts.find(item => item.id === project.id);
-          const category = bn ? categoryLabels[project.category] || project.category : project.category;
+          const copy = projectCardCopy.get(project.id);
+          const category = bn
+            ? copy?.categoryBn || project.category_bn || categoryLabels[project.category] || project.category
+            : copy?.category || project.category;
+          const title = (bn && project.title_bn) || copy?.title || project.title;
+          const summary = bn
+            ? copy?.summaryBn || project.description_bn || project.description
+            : copy?.summary || project.description;
           return (
             <Link className="rq-work-card" key={project.id} to={`/projects/${getSlug(project)}`}>
               <div className="rq-work-art">
                 <img src={project.image} alt={concept?.imageAlt || ''} width="1200" height="800" loading="lazy" decoding="async" />
               </div>
               <div className="rq-work-copy">
-                <div>
-                  <span className="rq-portfolio-type">{category}{project.status === 'Concept' && (
-                    <> · {bn ? 'ডিজাইন কনসেপ্ট' : 'Design concept'}</>
-                  )}</span>
-                  <h3>{bn ? project.title_bn || project.title : project.title}</h3>
-                  <p>{bn ? project.description_bn || project.description : project.description}</p>
+                <div className="rq-portfolio-meta">
+                  <span className="rq-portfolio-type">{category}</span>
+                  {project.status === 'Concept' && (
+                    <span className="rq-portfolio-concept">{bn ? 'ডিজাইন কনসেপ্ট' : 'Concept'}</span>
+                  )}
                 </div>
-                <ArrowUpRight size={20} aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{summary}</p>
+                <span className="rq-portfolio-link">
+                  {bn ? 'প্রজেক্ট দেখুন' : 'View project'} <ArrowUpRight size={16} aria-hidden="true" />
+                </span>
               </div>
             </Link>
           );

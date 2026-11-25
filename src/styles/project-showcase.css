@@ -40,3 +40,94 @@
 @media (max-width: 600px) {
     .rq-portfolio-evidence .rq-work-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.rq-portfolio .rq-portfolio-cards {
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.rq-portfolio-cards .rq-work-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e8d9df;
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 8px 26px #50000008;
+}
+
+.rq-portfolio-cards .rq-work-card:hover,
+.rq-portfolio-cards .rq-work-card:focus-visible {
+    border-color: #a8667e;
+}
+
+.rq-portfolio-cards .rq-work-card .rq-work-art {
+    aspect-ratio: 16 / 10;
+    border: 0;
+    border-bottom: 1px solid #e8d9df;
+    border-radius: 0;
+    background: #f6eef1;
+    box-shadow: none;
+    padding: clamp(10px, 1.5vw, 18px);
+}
+
+.rq-portfolio-cards .rq-work-art img {
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.rq-portfolio .rq-portfolio-cards .rq-work-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px 20px;
+    overflow-wrap: anywhere;
+}
+
+.rq-portfolio-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+}
+
+.rq-portfolio-concept {
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #f5eaef;
+    color: #69344b;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.rq-portfolio .rq-portfolio-cards .rq-work-copy h3 {
+    margin: 0;
+    line-height: 1.25;
+}
+
+.rq-portfolio .rq-portfolio-cards .rq-work-copy p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.55;
+}
+
+.rq-portfolio-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid #efe4e9;
+    padding-top: 13px;
+    margin-top: auto;
+    color: #701b32;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.rq-portfolio-cards .rq-work-card:is(:hover, :focus-visible) .rq-portfolio-link {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
