@@ -19,7 +19,7 @@ const pages = {
     '/projects': ['Our Projects', 'Explore software projects delivered by RizQara Tech.'],
     '/case-studies': ['Case Studies', 'Read about our engineering process and project outcomes.'],
     '/careers': ['Careers at RizQara Tech', 'Explore open roles and submit your application.'],
-    '/blog': ['RizQara Tech Blog', 'Software engineering and technology insights.'],
+    '/blog': ['RizQara Journal | Software Guides and Project Stories', 'Practical software planning guides, website checklists, and behind-the-scenes stories from RizQara Tech.'],
     '/videos': ['RizQara Tech Videos', 'Project showcases, technology videos and tutorials.'],
     '/academy/responsive-web-sample': ['Build a Responsive Card Grid | RizQara Tech Academy', 'A free Responsive Website Studio sample lesson on CSS Grid and testing layouts at three screen widths.'],
     '/academy': ['RizQara Tech Academy | Courses and Learning Resources', 'Explore courses and downloadable learning resources from RizQara Tech Academy.'],
@@ -59,7 +59,7 @@ async function renderPage(file, pathname, ready) {
             const defaults = collection === 'projects' ? [...require('../src/data/project-concepts.json'), ...selectedConcepts] : (bundled[collection] || []);
             const recordsById = new Map(defaults.map(item => [item.id, item]));
             if (ready) {
-                const saved = await model.find().select('id title description excerpt image slug previousSlugs details capabilities process archived').limit(1000).lean();
+                const saved = await model.find().select('id title description excerpt content date image slug previousSlugs details capabilities process archived').limit(1000).lean();
                 for (const item of saved) recordsById.set(item.id, item);
             }
             const records = recordsById.size ? [...recordsById.values()].filter(item => !item.archived) : (editorialFallback[collection] || []);
@@ -77,6 +77,25 @@ async function renderPage(file, pathname, ready) {
     const navigation = Object.entries(pages).filter(([url]) => !['/admin','/build','/packages'].includes(url)).map(([url, info]) => `<a href="${url}">${escapeHTML(info[0])}</a>`).join(' · ');
     const serviceContent = ['/', '/services'].includes(pathname) ? `<section><h2>Software, mobile applications and digital services</h2>${catalog.categories.map(category => `<article><h3><a href="/services#${category.id}">${escapeHTML(category.title || category.name)}</a></h3><p>${escapeHTML(category.description || category.summary || '')}</p></article>`).join('')}</section>` : '';
     const detailContent = detail ? `${detail.details ? `<section><h2>About this service or project</h2><p>${escapeHTML(detail.details)}</p></section>` : ''}${['capabilities','process'].map(key => Array.isArray(detail[key]) && detail[key].length ? `<section><h2>${key === 'capabilities' ? 'Capabilities' : 'Our process'}</h2><ul>${detail[key].map(value=>`<li>${escapeHTML(value)}</li>`).join('')}</ul></section>` : '').join('')}` : '';
+    const isArticle = pathname.startsWith('/blog/') && detail?.content;
+    const articleBody = isArticle ? detail.content.split(/\r?\n/).filter(line => line.trim()).map(line => {
+        if (line.startsWith('## ')) return `<h2>${escapeHTML(line.slice(3))}</h2>`;
+        const paragraph = escapeHTML(line).replace(/\[([^\]\n]+)\]\((\/[a-z0-9][a-z0-9/-]*)\)/gi, '<a href="$2">$1</a>');
+        return `<p>${paragraph}</p>`;
+    }).join('') : '';
+    if (isArticle) {
+        const articleSchema = {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: title,
+            description,
+            image,
+            mainEntityOfPage: canonical,
+            author: { '@type': 'Organization', name: 'RizQara Tech', url: SITE_URL + '/about' },
+            ...(/^\d{4}-\d{2}-\d{2}$/.test(detail.date) ? { datePublished: detail.date } : {}),
+        };
+        html = html.replace('</head>', () => `<meta data-rh="true" property="og:type" content="article"><script data-rh="true" type="application/ld+json">${JSON.stringify(articleSchema).replace(/</g, '\\u003c')}</script></head>`);
+    }
     let directory = '';
     const listModel = {'/services':Service,'/projects':Project,'/blog':Blog,'/case-studies':CaseStudy,'/videos':Video}[pathname];
     if (listModel) {
@@ -90,7 +109,7 @@ async function renderPage(file, pathname, ready) {
         directory = `<section><h2>Explore ${escapeHTML(pathname.slice(1))}</h2><ul>${entries.map(item=>`<li><a href="${pathname}/${escapeHTML(item.slug || `${slug(item.title)}-${item.id.slice(0,8)}`)}">${escapeHTML(item.title)}</a><p>${escapeHTML(item.description || item.excerpt || '')}</p></li>`).join('')}</ul></section>`;
     }
     const brandLoader = `<div class="rq-brand-loader" role="status" aria-label="Loading website"><div class="rq-loader-symbol"><img src="/images/brand/rizqara-official.png" alt="" width="104" height="104"/><i></i><i></i><i></i></div></div>`;
-    const fallback = `<main class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
+    const fallback = `<main class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><h1>${escapeHTML(title)}</h1><p>${escapeHTML(description)}</p>${serviceContent}${detailContent}${articleBody}${directory}<nav aria-label="Site navigation">${navigation}</nav></main>`;
     const adminBoot = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e0407;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased">
         <div style="width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#500000,#7e1735);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(80,0,0,0.55);margin-bottom:20px;border:1px solid rgba(255,255,255,0.12)">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fce4ec" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

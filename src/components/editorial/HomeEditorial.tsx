@@ -1,3 +1,4 @@
+import { BlogJournal } from './BlogJournal';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Play, Pause, ArrowRight } from 'lucide-react';
@@ -5,12 +6,43 @@ import { useData } from '../../context/DataContext';
 import { getSlug } from '../../utils/content';
 import { techStack } from '../../data/techStack';
 import '../../styles/home-editorial.css';
-export function EditorialSection({kind}:{kind:'videos'|'blogs'}) {
- const data=useData(); const bn=data.language==='bn',video=kind==='videos'; const items=video?data.videos.map(v=>({id:v.id,slug:getSlug(v),title:bn?(v.title_bn||v.title):v.title,image:v.thumbnail,category:bn?(v.category_bn||v.category):v.category,description:bn?(v.description_bn||v.description):v.description,date:''})):data.blogs.map(b=>({id:b.id,slug:getSlug(b),title:bn?(b.title_bn||b.title):b.title,image:b.image,category:bn?(b.category_bn||b.category):b.category,description:bn?(b.excerpt_bn||b.excerpt):b.excerpt,date:b.date}));
- const route=video?'videos':'blog'; const selected=items.slice(0,video?3:4);
- return <section className={`rq-editorial container mx-auto px-6 ${video?'rq-editorial-film':'rq-editorial-journal'}`} id={video?'latest-insights':'tech-blog'}><header><div><span className="rq-ed-eyebrow">{video?'RIZQARA / IN MOTION':'RIZQARA / THE JOURNAL'}</span><h2>{bn?(video?'প্রযুক্তি, নতুন দৃষ্টিতে।':'ভাবনা থেকে নতুন সম্ভাবনা।'):video?<>Ideas worth<br/><em>seeing in action.</em></>:<>Fresh thinking.<br/><em>Lasting perspective.</em></>}</h2><p>{bn?(video?'আমাদের কাজ, প্রযুক্তি ও প্রোডাক্টের গল্প।':'প্রযুক্তি, ডিজাইন ও উদ্ভাবন নিয়ে আমাদের লেখা।'):video?'Latest Insights — a closer look at the products, ideas, and technology behind our work.':'Tech Blog — perspectives on design, engineering, and building better digital businesses.'}</p></div><Link to={`/${route}`}>{bn?'সব দেখুন':video?'Explore the screening room':'Read the journal'} <ArrowUpRight size={19}/></Link></header>
- {selected.length?<div className="rq-ed-grid">{selected.map((item,i)=><Link className={`rq-ed-card rq-ed-card-${i}`} key={item.id} to={`/${route}/${item.slug}`}><div className="rq-ed-art"><img src={item.image} alt={item.title} width="1200" height="800" loading="lazy"/>{video?<span className="rq-ed-play"><Play size={22} fill="currentColor"/></span>:<span className="rq-ed-issue">{String(i+1).padStart(2,'0')} / PERSPECTIVES</span>}<span className="rq-ed-art-arrow"><ArrowUpRight size={21}/></span></div><div className="rq-ed-copy"><div className="rq-ed-meta"><span>{item.category|| (video?'SHOWCASE':'INSIGHT')}</span><span>{video?'WATCH THE STORY':item.date}</span></div><h3>{item.title}</h3><p>{item.description}</p><span className="rq-ed-read">{bn?'বিস্তারিত দেখুন':video?'Watch the showcase':'Read the article'} <ArrowRight size={15}/></span></div></Link>)}</div>:<p role="status">{data.secondaryLoading?'Loading stories…':'New stories are coming soon.'}</p>}
- </section>;
+export function EditorialSection({ kind }: { kind: 'videos' | 'blogs' }) {
+ const { videos, language, secondaryLoading } = useData();
+ const bn = language === 'bn';
+ if (kind === 'blogs') return <BlogJournal preview />;
+
+ return (
+  <section className="rq-editorial rq-editorial-film container mx-auto px-6" id="latest-insights">
+   <header>
+    <div>
+     <span className="rq-ed-eyebrow">RIZQARA / IN MOTION</span>
+     <h2>{bn ? 'প্রযুক্তি, নতুন দৃষ্টিতে।' : <>Ideas worth<br/><em>seeing in action.</em></>}</h2>
+     <p>{bn ? 'আমাদের কাজ, প্রযুক্তি ও প্রোডাক্টের গল্প।' : 'Latest Insights — a closer look at the products, ideas, and technology behind our work.'}</p>
+    </div>
+    <Link to="/videos">{bn ? 'সব দেখুন' : 'Explore the screening room'} <ArrowUpRight size={19} /></Link>
+   </header>
+   {videos.length ? <div className="rq-ed-grid">
+    {videos.slice(0, 3).map((video, index) => {
+     const title = (bn && video.title_bn) || video.title;
+     return (
+      <Link className={`rq-ed-card rq-ed-card-${index}`} key={video.id} to={`/videos/${getSlug(video)}`}>
+       <div className="rq-ed-art">
+        <img src={video.thumbnail} alt={title} width="1200" height="800" loading="lazy" />
+        <span className="rq-ed-play"><Play size={22} fill="currentColor" /></span>
+        <span className="rq-ed-art-arrow"><ArrowUpRight size={21} /></span>
+       </div>
+       <div className="rq-ed-copy">
+        <div className="rq-ed-meta"><span>{(bn && video.category_bn) || video.category || 'SHOWCASE'}</span><span>WATCH THE STORY</span></div>
+        <h3>{title}</h3>
+        <p>{(bn && video.description_bn) || video.description}</p>
+        <span className="rq-ed-read">{bn ? 'বিস্তারিত দেখুন' : 'Watch the showcase'} <ArrowRight size={15} /></span>
+       </div>
+      </Link>
+     );
+    })}
+   </div> : <p role="status">{secondaryLoading ? 'Loading stories…' : 'New stories are coming soon.'}</p>}
+  </section>
+ );
 }
 const groups=[{label:'All',start:0,end:100},{label:'Design',start:0,end:4},{label:'Engineering',start:4,end:15},{label:'Cloud & AI',start:15,end:100}];
 export function TechnologyExperience(){const {language}=useData();const bn=language==='bn';const [group,setGroup]=useState(0),[paused,setPaused]=useState(false),[visible,setVisible]=useState(false);const root=useRef<HTMLElement>(null);

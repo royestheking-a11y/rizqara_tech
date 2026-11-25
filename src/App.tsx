@@ -1641,7 +1641,7 @@ const MainContent = () => {
                     <Route path="/academy" element={<AcademyPage />} />
                     <Route path="/academy/responsive-web-sample" element={<AcademySample />} />
                     {teamMembers.map(member => <Route key={member.slug} path={`/${member.slug}`} element={<TeamProfile member={member} />} />)}
-                    <Route path="/blog" element={<BlogPage onNavigate={onNavigate} />} />
+                    <Route path="/blog" element={<BlogPage />} />
                     <Route path="/blog/:id" element={<BlogDetail />} />
                     <Route path="/blog/top-software-companies-in-bangladesh" element={<TopCompaniesSEOPage />} />
 

@@ -1,3 +1,4 @@
+import { BlogJournal } from '../editorial/BlogJournal';
 import { useDialog } from '../../utils/useDialog';
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -8,7 +9,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { getYoutubeId } from '../premium/UIComponents';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { SEO } from '../SEO';
 import { getSlug, matchesContent } from '../../utils/content';
 
@@ -122,48 +123,29 @@ const ApplicationModal = ({ job, onClose, onSubmit }: any) => {
     );
 };
 
-export const BlogPage = ({ onNavigate }: { onNavigate: (page: string, id?: string) => void }) => {
-    const { blogs, language } = useData();
+export const BlogPage = () => (
+    <>
+        <SEO title="RizQara Journal | Software Guides and Project Stories"
+            description="Practical software planning guides, website checklists, and behind-the-scenes stories from RizQara Tech."
+            canonical="https://www.rizqara.tech/blog" />
+        <BlogJournal />
+    </>
+);
 
+function BlogContent({ content }: { content: string }) {
     return (
-        <div className="container mx-auto px-6 py-32">
-            <SEO 
-                title="Tech Blog | RizQara Tech - Insights on Software & AI"
-                description="Explore our latest blog posts on software development, AI, UI/UX design, and digital business trends. Stay updated with RizQara Tech."
-                canonical="https://www.rizqara.tech/blog"
-            />
-            <PageHeader
-                title={language === 'bn' ? 'সর্বশেষ অন্তর্দৃষ্টি' : "Latest Insights"}
-                subtitle={language === 'bn' ? 'প্রযুক্তি, ডিজাইন এবং ডিজিটাল ব্যবসার ভবিষ্যৎ নিয়ে চিন্তা-ভাবনা।' : "Thoughts on technology, design, and the future of digital business."}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {blogs.map(post => {
-                    const title = language === 'bn' ? (post.title_bn || post.title) : post.title;
-                    const excerpt = language === 'bn' ? (post.excerpt_bn || post.excerpt) : post.excerpt;
-                    const category = language === 'bn' ? (post.category_bn || post.category) : post.category;
-
-                    return (
-                        <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }} key={post.id} className="group cursor-pointer" onClick={() => onNavigate('BlogDetail', getSlug(post))}>
-                            <div className="aspect-[16/10] overflow-hidden rounded-2xl mb-6 relative shadow-md">
-                                <img src={post.image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                <div className="absolute top-4 left-4 bg-white text-[#500000] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">{category}</div>
-                            </div>
-                            <div className="flex items-center gap-3 text-gray-400 text-xs mb-3 font-medium uppercase tracking-widest">
-                                <Calendar size={12} /> {post.date}
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#500000] transition-colors leading-tight">{title}</h3>
-                            <p className="text-gray-600 mb-6 line-clamp-2 leading-relaxed">{excerpt}</p>
-                            <div className="flex items-center text-[#500000] font-bold text-sm uppercase tracking-wider group-hover:gap-2 transition-all">
-                                {language === 'bn' ? 'নিবন্ধ পড়ুন' : 'Read Article'} <ArrowRight size={16} className="ml-2" />
-                            </div>
-                        </div>
-                    )
-                })}
-            </div>
+        <div className="rq-journal-body">
+            {content.split(/\r?\n/).map((line, index) => {
+                if (!line.trim()) return null;
+                if (line.startsWith('## ')) return <h2 key={index}>{line.slice(3)}</h2>;
+                return <p key={index}>{line.split(/(\[[^\]\n]+\]\(\/[a-z0-9][a-z0-9/-]*\))/gi).map((part, position) => {
+                    const link = part.match(/^\[([^\]]+)\]\((\/[a-z0-9][a-z0-9/-]*)\)$/i);
+                    return link ? <Link key={position} to={link[2]}>{link[1]}</Link> : part;
+                })}</p>;
+            })}
         </div>
     );
-};
+}
 
 export const BlogDetail = () => {
     const { id } = useParams();
@@ -182,7 +164,7 @@ export const BlogDetail = () => {
         }
     }, [blog, id, navigate, loading]);
 
-    if (loading) {
+    if (loading && !blog) {
         return (
             <div className="min-h-screen flex items-center justify-center pt-32">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#500000]"></div>
@@ -237,13 +219,15 @@ export const BlogDetail = () => {
 
     const relatedBlogs = (blogs as BlogPost[]).filter((b: BlogPost) => b.id !== blog.id && b.category === blog.category).slice(0, 3);
 
+    const canonical = `https://www.rizqara.tech/blog/${getSlug(blog)}`;
     const schema = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "headline": title,
         "description": excerpt,
-        "image": blog.image,
-        "datePublished": blog.date,
+        "image": blog.image.startsWith('/') ? `https://www.rizqara.tech${blog.image}` : blog.image,
+        "mainEntityOfPage": canonical,
+        ...(/^\d{4}-\d{2}-\d{2}$/.test(blog.date) ? { datePublished: blog.date } : {}),
         "author": {
             "@type": "Organization",
             "name": "RizQara Tech"
@@ -255,7 +239,7 @@ export const BlogDetail = () => {
             <SEO 
                 title={`${title} | Tech Blog | RizQara Tech`}
                 description={excerpt}
-                canonical={`https://www.rizqara.tech/blog/${getSlug(blog)}`}
+                canonical={canonical}
                 schema={schema}
                 type="article"
                 image={blog.image}
@@ -282,9 +266,7 @@ export const BlogDetail = () => {
                         <span className="text-gray-500 flex items-center gap-2 text-sm"><Calendar size={16} /> {blog.date}</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">{title}</h1>
-                    <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed whitespace-pre-line border-l border-gray-200 pl-6 mb-24">
-                        {content}
-                    </div>
+                    <BlogContent content={content} />
                 </motion.div>
 
                 {/* Related Blogs - Internal Linking System */}
@@ -295,21 +277,14 @@ export const BlogDetail = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {relatedBlogs.map(post => (
-                                <div role="button" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); event.currentTarget.click(); } }}
-                                    key={post.id} 
-                                    className="group cursor-pointer" 
-                                    onClick={() => {
-                                        navigate(`/blog/${getSlug(post)}`);
-                                        window.scrollTo(0, 0);
-                                    }}
-                                >
+                                <Link key={post.id} to={`/blog/${getSlug(post)}`} className="group">
                                     <div className="aspect-[16/10] overflow-hidden rounded-xl mb-4 relative shadow-sm border border-gray-100">
                                         <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                     </div>
                                     <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#500000] transition-colors line-clamp-2">
                                         {language === 'bn' ? (post.title_bn || post.title) : post.title}
                                     </h4>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
