@@ -769,16 +769,14 @@ export const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
                                                 </div>
                                             </div>
 
-                                            {/* The Overlay Simulation */}
-                                            <div className={`absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-8 transition-opacity duration-300 ${localPromotion.isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                                            {/* Website offer preview */}
+                                            <div className={`absolute inset-0 flex items-end justify-start p-4 transition-opacity duration-300 ${localPromotion.isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                                 {/* The Actual Card Component */}
-                                                <div className="scale-90 origin-center transition-all duration-300 shadow-2xl">
+                                                <div className="w-full max-w-[360px]">
                                                     <PromotionCard
                                                         offerRate={localPromotion.offerRate}
                                                         serviceName={localPromotion.serviceName}
                                                         expiryDate={localPromotion.expiryDate}
-                                                        // No close handler in preview to keep it visible
-                                                        className="shadow-2xl"
                                                     />
                                                 </div>
                                             </div>
