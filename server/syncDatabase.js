@@ -255,12 +255,21 @@ async function syncDatabase() {
   // 7. SYNC BLOGS
   if (fs.existsSync(blogsPath)) {
     const blogs = JSON.parse(fs.readFileSync(blogsPath, 'utf8'));
+    const previousJournalCovers = {
+      'rizqara-academy-free-courses': '/images/academy/responsive-web-sample.jpg',
+      'rizqara-remote-delivery': '/images/brand/rizqara-official.png',
+      'rizqara-software-project-estimator-guide': '/images/projects/selected/pocketstock.webp',
+    };
     let blogChanges = 0;
     for (const blog of blogs) {
       const existing = await Blog.findOne({ id: blog.id }).lean();
       if (!existing) {
         await Blog.create(blog);
         blogChanges++;
+      } else if (blog.id === `editorial-${blog.slug}` && blog.image === `/images/journal/${blog.slug}.webp`) {
+        // Match only the previous bundled cover so editor-selected images are preserved.
+        const previous = previousJournalCovers[blog.slug] || `/images/blog/${blog.slug}.webp`;
+        await Blog.updateOne({ id: blog.id, image: previous }, { $set: { image: blog.image }, $inc: { __v: 1 } });
       }
     }
     summary.blogs = { total: await Blog.countDocuments(), seeded: blogChanges };

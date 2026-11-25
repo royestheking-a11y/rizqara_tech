@@ -157,3 +157,20 @@
     .rq-journal-feature .rq-ed-art { height: auto; min-height: 0; }
     .rq-journal-search { width: 100%; }
 }
+
+.rq-journal-card .rq-ed-art {
+    aspect-ratio: 3 / 2;
+}
+
+.rq-journal-card .rq-ed-art img[src^="/images/journal/"] {
+    object-fit: contain;
+    background: #f6eef2;
+}
+
+.rq-journal-feature .rq-ed-art {
+    aspect-ratio: auto;
+}
+
+@media (max-width: 640px) {
+    .rq-journal-feature .rq-ed-art { aspect-ratio: 3 / 2; }
+}

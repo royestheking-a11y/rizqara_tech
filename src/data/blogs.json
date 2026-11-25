@@ -6,7 +6,7 @@
     "excerpt": "A practical checklist for a restaurant website that helps guests find the menu, book a table, or ask about catering.",
     "content": "A guest looking up your restaurant usually needs three answers: what you serve, where you are, and whether they can get a table. Put those answers within one or two taps of the home page. Before approving a design, ask someone who has never visited the restaurant to book for four using only their phone.\n## Make the menu useful on a phone\nPublish readable HTML with dish names, prices, and dietary notes you can keep accurate. Add a downloadable PDF if guests need one, but make the phone-friendly menu the primary version. Give one staff member permission to update sold-out items and seasonal prices without waiting for a developer.\n## Design the booking handoff\nDecide whether the website confirms a table or simply sends a request. Tell guests which one happened. Capture the date, time, party size, and one contact method. Test how staff will handle a full evening, late arrivals, and a cancellation. If you use a booking provider, link to the correct venue and check the return path.\n## Run a launch rehearsal\nTest on a narrow screen and a slow connection. Confirm opening hours, maps, click-to-call, and special-event messaging. Ask staff to process a test reservation and a catering inquiry from start to finish. Review the documented [Hot Plate Restaurant project](/case-studies/from-outdated-to-premium-complete-website-transformation-for-hot-plate-restaurant-st2usv9c) for an example of how these guest journeys can fit on one website.",
     "date": "2026-11-25",
-    "image": "/images/blog/restaurant-website-checklist.webp",
+    "image": "/images/journal/restaurant-website-checklist.webp",
     "category": "Business Software"
   },
   {
@@ -16,7 +16,7 @@
     "excerpt": "Evaluate a retail POS with real checkout, stock transfer, and refund scenarios before buying or building one.",
     "content": "A POS demonstration often starts with a clean sale. Your staff will also handle barcode failures, exchanges, stock gaps, and end-of-day mismatches. Ask each vendor to run the same short exercise with products and prices that resemble your store.\n## Rehearse a realistic sale\nCreate a product with two sizes and two colors. Scan two variants, apply a discount, accept payment, and print or send a receipt. Then return one line item. Check whether the return changes the correct inventory record and whether a manager can see who approved it.\n## Verify how stock moves\nTransfer five items between branches, receive four, and reconcile the missing unit. The receiving store should see what was expected and what actually arrived. Check who can adjust counts and how the audit trail distinguishes an inventory correction from a refund.\n## Plan for closing time and outages\nReconcile a day of cash and card sales against the sales report. Export the results and open the file yourself. Then simulate an internet outage and document which tasks still work. Bring your preferred workflows and exceptions to a [project planning conversation](/contact) before committing to a custom build.",
     "date": "2026-11-25",
-    "image": "/images/blog/pos-inventory-checklist.webp",
+    "image": "/images/journal/pos-inventory-checklist.webp",
     "category": "Business Software"
   },
   {
@@ -26,7 +26,7 @@
     "excerpt": "Turn an informal sales process into a CRM brief with clear stages, permissions, imports, and acceptance tests.",
     "content": "Start with a single sales workflow you want to improve. If reps currently hand leads around in a spreadsheet, record what happens when a lead goes unanswered, changes owner, or returns after six months. Those exceptions give a developer more useful information than a list of dashboard widgets.\n## Define stages in terms of actions\nFor each stage, decide who owns the record, what information is mandatory, and what action moves it forward. For example, a quote can move to “sent” after a rep saves the quoted amount and date. Define what happens when a deal is lost or reopened, and decide whether the reason should appear in reporting.\n## Prepare a sample import\nShare a small, sanitized spreadsheet that includes duplicate rows, incomplete phone numbers, and prospects with multiple contacts. Agree on the duplicate rule. Assign permissions for export, reassignment, and deletion before any customer data is imported.\n## Specify one report and one acceptance test\nChoose an operational question such as “Which open quotes have had no follow-up this week?” Define its date range, exclusions, and owner. Then turn a sample lead into a quote with two different users to verify permissions. Use the [project estimator](/estimate) after you have outlined the first release.",
     "date": "2026-11-25",
-    "image": "/images/blog/custom-crm-scope.webp",
+    "image": "/images/journal/custom-crm-scope.webp",
     "category": "Business Software"
   },
   {
@@ -36,7 +36,7 @@
     "excerpt": "Pick a manageable automation pilot, define exception handling, and measure whether the workflow actually improves.",
     "content": "The safest first pilot is usually a repeated task that has a clear owner and a simple way to undo a mistake. Start by observing the manual process and noting where staff stop to make a judgment. An automation should handle predictable steps and send unusual cases to someone who can resolve them.\n## Map the trigger and the handoff\nWrite down the event that starts the workflow, the information it needs, and the person who owns the result. For an order confirmation, the trigger might be a paid order, while incomplete addresses should be sent to a staff queue. Write an example of both paths before building anything.\n## Design for retries\nDecide how to recognize a duplicate input so a retry does not send two messages or create two records. Keep a record of failures that includes the order reference and a safe reason. Give staff a way to retry or finish the task manually.\n## Compare the same work before and after\nRun the pilot on a limited batch and compare time spent per case, exception volume, and failed runs. Keep the manual path available until a real owner can manage the exceptions. Use the [Workflow Automation Blueprint](/academy) to practice planning a workflow.",
     "date": "2026-11-25",
-    "image": "/images/blog/workflow-automation-first-pilot.webp",
+    "image": "/images/journal/workflow-automation-first-pilot.webp",
     "category": "Business Software"
   },
   {
@@ -46,7 +46,7 @@
     "excerpt": "Review guest checkout, delivery costs, and payment recovery with a repeatable six-step test on a phone.",
     "content": "Open your store on a phone using a private window. Aim to buy one ordinary item, starting from its product page. Write down every point where you have to guess what happens next. Capture the sentence or field causing the confusion so the issue can be reproduced.\n## Show the customer what they will pay\nAdd an item, change its quantity, and look for shipping and tax before payment. If shipping depends on location, give a clear estimate or show when the total will be calculated. Check the back button and make sure cart contents survive the return to the product page.\n## Test the difficult paths\nTry checkout as a guest, enter an invalid phone number, and use the keyboard suggestions for address fields. Trigger a payment failure with your provider’s test mode and confirm the customer can safely retry. Look for a receipt or order reference after success.\n## Turn findings into testable changes\nWrite each issue as a task, the observed problem, and the expected result. Prioritize issues that prevent a purchase or hide the price. Retest after fixing them using the same device and steps. Try the [Practical UI/UX Audit course](/academy) for a structured review exercise.",
     "date": "2026-11-25",
-    "image": "/images/blog/mobile-checkout-audit.webp",
+    "image": "/images/journal/mobile-checkout-audit.webp",
     "category": "Web & UX"
   },
   {
@@ -56,7 +56,7 @@
     "excerpt": "Write a software brief that explains the workflow, user roles, existing tools, and acceptance criteria.",
     "content": "A useful development brief lets someone understand the business problem before proposing screens or technology. Describe what happens today, where it breaks, and what should be easier after launch. Include a clear contact who can answer workflow questions.\n## Write one example from start to finish\nFor a bookings app, a useful example is a guest choosing a time, staff confirming it, and both parties receiving an update. Include an exception such as a request arriving after closing time. Identify which steps require human judgment.\n## State constraints and responsibilities\nList the tools that must stay in use, the data that needs to move, and any accounts the customer must own. Give a budget range or ask for a phased estimate. Explain who supplies content, reviews work, and makes the final decision.\n## Define what the first release must do\nWrite a handful of acceptance checks that can be observed, such as “A manager can export last week’s confirmed bookings.” Put optional ideas in a later phase. Use the [project estimator](/estimate) to explore initial scope or [send your brief](/contact) when ready.",
     "date": "2026-11-25",
-    "image": "/images/blog/software-development-brief.webp",
+    "image": "/images/journal/software-development-brief.webp",
     "category": "Planning"
   },
   {
@@ -66,7 +66,7 @@
     "excerpt": "Use Tab, Enter, Escape, and arrow keys to check menus, forms, dialogs, and focus before launch.",
     "content": "Unplug your mouse or put it aside. Start from the top of the page and use Tab through the header, main actions, forms, and footer. Ask someone recording the test to note where the focus indicator disappears or lands in an unexpected place.\n## Follow a real task\nTry to find a service, open a form, fill it out, and recover from an error. Confirm that focused controls are visible and that the focus order matches how the task works. Try Shift+Tab to go back and a skip link to move past repeated navigation.\n## Test overlays and menus\nOpen a dialog, move through its controls, then press Escape if it is designed to close that way. Focus should return to the control that opened it. Test both opening and closing menus and verify that hidden controls are not focusable.\n## Record what broke and retest it\nInclude the page URL, keys pressed, expected behavior, and actual behavior. Browser audits can supplement this manual check. Run the same task after a change and use the [RizQara admin sign-in design study](/case-studies/rizqara-admin-sign-in) for a related example of reviewing form behavior.",
     "date": "2026-11-25",
-    "image": "/images/blog/keyboard-accessibility-test.webp",
+    "image": "/images/journal/keyboard-accessibility-test.webp",
     "category": "Web & UX"
   },
   {
@@ -76,7 +76,7 @@
     "excerpt": "Choose a reservation model that fits how your restaurant handles table availability, staff capacity, and cancellations.",
     "content": "An instant booking gives guests a confirmed time as soon as they finish the form. A request tells them that staff will review the booking. Choose based on how reliably you can track availability during service and what happens when staffing or seating changes.\n## Know who owns availability\nInstant confirmation works best with one reliable inventory of tables and times. List the other channels that accept bookings and decide how they share availability. If bookings still live partly in a paper notebook or messages, a request workflow may be easier to operate while you consolidate them.\n## Set clear guest expectations\nA request needs an expected response time, a contact fallback, and a clear status message. For instant bookings, make changes and cancellation rules visible before the form is sent. Test what happens to a request made after hours or for a group larger than your standard table size.\n## Trial the workflow with staff\nSimulate two bookings for the same window, a canceled booking, and a late arrival. Ask staff to reconcile the events using the same tools they’ll have on shift. See how reservations fit alongside menus and catering in the [Hot Plate Restaurant case study](/case-studies/from-outdated-to-premium-complete-website-transformation-for-hot-plate-restaurant-st2usv9c).",
     "date": "2026-11-25",
-    "image": "/images/blog/online-reservation-request-vs-instant.webp",
+    "image": "/images/journal/online-reservation-request-vs-instant.webp",
     "category": "Planning"
   },
   {
@@ -86,7 +86,7 @@
     "excerpt": "Agree on access, source code, data exports, documentation, and support before a software project goes live.",
     "content": "A business should know how to operate its software on the first day after launch. Start the handover checklist while agreeing on scope because contract terms, licenses, and provider accounts often determine what can be transferred.\n## List the accounts and assets\nRecord who owns the domain, hosting, analytics, payment provider, and deployment account. Name an owner for the source repository and list any licensed assets or tools. Transfer credentials through the provider’s account management or a secure password manager.\n## Rehearse a routine task and a recovery\nHave a staff member edit content, add a user, and export a sample report using the documentation. Ask how backups are made, where they are stored, and how to restore one without touching live data. Write down who should be contacted when a release fails.\n## Agree what support looks like\nSeparate launch assistance, defects, and future feature work in the written agreement. Confirm the escalation contact and response expectations, including where remote working hours overlap. See [how we work with clients](/about) for the conversation topics we cover.",
     "date": "2026-11-25",
-    "image": "/images/blog/software-project-handover-checklist.webp",
+    "image": "/images/journal/software-project-handover-checklist.webp",
     "category": "Planning"
   },
   {
@@ -96,7 +96,7 @@
     "excerpt": "Use CSS Grid to create a card layout that adapts without horizontal scrolling, then test its content at three widths.",
     "content": "A card grid should respond to the space it actually has. Start with two cards and give one a short title and the other a long one. You will see layout problems much earlier if you test mismatched content instead of using identical placeholder cards.\n## Give the grid a sensible minimum\nOn your grid container, set display: grid and a gap. Use grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)). The minimum is capped by available space so one column can shrink on a narrow screen. The flexible maximum lets columns share the remaining width.\n## Check content stress cases\nTry a long title, a missing picture, a large font setting, and an unbroken string such as a URL. Give images a consistent aspect ratio and choose how they should crop. Let long text wrap and check that a keyboard focus outline remains visible.\n## Test at three useful widths\nUse a narrow phone, a tablet, and a desktop viewport. Record the first width at which anything clips and inspect the real card content at that point. The [free Academy sample](/academy/responsive-web-sample) includes an example and a hands-on exercise.",
     "date": "2026-11-25",
-    "image": "/images/blog/css-grid-responsive-card-layout.webp",
+    "image": "/images/journal/css-grid-responsive-card-layout.webp",
     "category": "Web & UX"
   },
   {
@@ -106,7 +106,7 @@
     "excerpt": "Explore RizQara Tech Academy’s free sample lesson and starter resources for responsive websites, UX audits, and workflow automation.",
     "content": "If you are learning web design or software delivery, start with something you can finish and show. RizQara Tech Academy offers a public CSS Grid sample lesson and starter resources organized around practical tasks.\n## Start with a short lesson\nOpen the [responsive card grid sample](/academy/responsive-web-sample). Work through the layout and change one breakpoint or column width yourself. Take a screenshot before and after the change and write down how it affects narrow displays. This makes a small but concrete portfolio exercise.\n## Choose the resource that matches your goal\nResponsive Website Studio is a starting point for layout practice. Practical UI/UX Audit is for learners who want to identify and explain interface problems. Workflow Automation Blueprint helps you map a process and think about handoffs. The [Academy catalog](/academy) has current course and access details.\n## Put the result into your own words\nAfter finishing, describe what you built, what changed after testing, and what you would improve next. For a design review, include two before-and-after examples. For automation, sketch how an exception moves to a person. This record makes your work easier to discuss in interviews or with peers.",
     "date": "2026-11-25",
-    "image": "/images/academy/responsive-web-sample.jpg",
+    "image": "/images/journal/rizqara-academy-free-courses.webp",
     "category": "RizQara Stories"
   },
   {
@@ -116,7 +116,7 @@
     "excerpt": "See how RizQara Tech discusses scope, shared hours, demos, and handover with clients in other time zones.",
     "content": "Our team is based in Bangladesh (UTC+6). If your team works in another time zone, use the discovery call to decide who can make decisions, where working hours overlap, and what should happen between live meetings.\n## Start with a shared scope\nBring your goals, the systems you already use, and an example of a workflow that needs to improve. Agree on deliverables, milestones, and what is included before work begins. A short sample journey gives both sides something concrete to review during estimation.\n## Agree when and how to review progress\nSet a point of contact on each side and a time for demos. Use written notes for decisions that affect scope or timing. If the people expected to review a demo cannot attend, decide how they will send feedback and who will resolve conflicting requests.\n## Plan launch and handover early\nBefore launch, agree on acceptance checks, source code and account handover, documentation, and the post-launch support scope. Read [Working with RizQara Tech](/about) for the delivery overview or [request a discovery call](/contact) to discuss your project.",
     "date": "2026-11-25",
-    "image": "/images/brand/rizqara-official.png",
+    "image": "/images/journal/rizqara-remote-delivery.webp",
     "category": "RizQara Stories"
   },
   {
@@ -146,7 +146,7 @@
     "excerpt": "Use the RizQara Tech estimator to start a budget conversation and decide which features belong in a first release.",
     "content": "The RizQara Tech estimator lets you explore a planning range before writing a full project brief. It is most helpful when you already have a business workflow to describe and want to compare a smaller first release with a broader build.\n## Define a first release around one outcome\nFor a service business, an initial release might let customers request a booking and let staff review that request. Keep reporting, payments, and other integrations on the list if they matter. Decide which are needed to make the initial workflow usable.\n## Record the assumptions behind the range\nWrite down which integrations, user roles, and content you selected and which items remain unknown. A stock import, permission rule, or payment provider can add work that only becomes clear during discovery. Use the planning result as a discussion aid when asking for a formal quote.\n## Use the result to start a conversation\nOpen the [project estimator](/estimate) and note the suggested scope. Use the [development brief guide](/blog/software-development-brief) to describe one workflow and its exceptions. Then [send the project outline](/contact) so the team can discuss priorities and delivery.",
     "date": "2026-11-25",
-    "image": "/images/projects/selected/pocketstock.webp",
+    "image": "/images/journal/rizqara-software-project-estimator-guide.webp",
     "category": "RizQara Stories"
   },
   {

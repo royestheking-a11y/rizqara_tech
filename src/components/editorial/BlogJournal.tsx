@@ -37,7 +37,7 @@ export function BlogJournal({ preview = false }: { preview?: boolean }) {
     const Heading = preview ? 'h2' : 'h1';
     const isoDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '';
     const sorted = [...blogs].sort((a, b) => isoDate(b.date).localeCompare(isoDate(a.date)));
-    const lead = sorted.find(post => post.slug === 'restaurant-website-checklist') || sorted[0];
+    const lead = sorted.find(post => post.slug === 'hot-plate-restaurant-project-notes') || sorted[0];
     const academy = sorted.find(post => post.slug === 'rizqara-academy-free-courses');
     const highlights = [lead, academy, ...sorted.filter(post => post !== lead && post !== academy)].filter((post): post is BlogPost => Boolean(post));
     const items = preview ? highlights.slice(0, 4) : sorted.filter(post => {
