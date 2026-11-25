@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import restaurant from '../../../shared/restaurant-service.json';
 import { useData } from '../../context/DataContext';
 import { trackGrowth } from '../../utils/growthAnalytics';
+import { RestaurantScorecard } from './RestaurantScorecard';
 import { SEO } from '../SEO';
 import '../../styles/restaurant-service.css';
 
@@ -25,6 +26,9 @@ export function RestaurantWebsiteService() {
                     <h1>{title}</h1>
                     <p>{description}</p>
                     {quoteLink}
+                    <a href="#restaurant-scorecard" className="ml-4 inline-block py-3 text-sm font-semibold text-[#742b48] underline">
+                        {bn ? 'বিনামূল্যে স্কোরকার্ড ব্যবহার করুন' : 'Try the free scorecard'}
+                    </a>
                 </div>
                 <figure>
                     <img src={restaurant.cover} alt={bn ? 'হট প্লেট রেস্তোরাঁর ওয়েবসাইটের স্ক্রিনশট' : 'Screenshot of the Hot Plate Restaurant website'} fetchPriority="high" />
@@ -40,6 +44,7 @@ export function RestaurantWebsiteService() {
                     </article>)}
                 </div>
             </section>
+            <RestaurantScorecard bn={bn} />
             <section className="rq-restaurant-delivery" aria-labelledby="restaurant-delivery">
                 <div>
                     <h2 id="restaurant-delivery">{bn ? 'স্কোপ থেকে হস্তান্তর' : 'From project scope to handover'}</h2>
