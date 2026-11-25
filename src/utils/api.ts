@@ -1,4 +1,7 @@
-export const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+// Production admin cookies belong to the website host. Vercel proxies /api to Render.
+const onPublicSite = typeof window !== 'undefined' &&
+  ['rizqara.tech', 'www.rizqara.tech'].includes(window.location.hostname);
+export const API_URL = (onPublicSite ? '/api' : (import.meta.env.VITE_API_URL || '/api')).replace(/\/$/, '');
 export class ApiError extends Error {
   constructor(message: string, public readonly status: number) {
     super(message);
